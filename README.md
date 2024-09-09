@@ -11,13 +11,13 @@
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   [Simple, fast routing engine](https://laravel.com/docs/routing).
+-   [Powerful dependency injection container](https://laravel.com/docs/container).
+-   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+-   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+-   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+-   [Robust background job processing](https://laravel.com/docs/queues).
+-   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
@@ -35,19 +35,19 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+-   **[Vehikl](https://vehikl.com/)**
+-   **[Tighten Co.](https://tighten.co)**
+-   **[WebReinvent](https://webreinvent.com/)**
+-   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+-   **[64 Robots](https://64robots.com)**
+-   **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+-   **[Cyber-Duck](https://cyber-duck.co.uk)**
+-   **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-   **[Jump24](https://jump24.co.uk)**
+-   **[Redberry](https://redberry.international/laravel/)**
+-   **[Active Logic](https://activelogic.com)**
+-   **[byte5](https://byte5.de)**
+-   **[OP.GG](https://op.gg)**
 
 ## Contributing
 
@@ -65,9 +65,8 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-
-
 ## Tutorial
+
 1 Unzip the downloaded archive
 2 Copy and paste soft-ui-dashboard-pro-tall-main folder in your projects folder. Rename the folder to your project's name
 3 In your terminal run composer install
@@ -79,3 +78,50 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 9.npm run dev
 10.php artisan queue:listen
 11.php artisan reverb:start
+
+## Setup DB
+
+1. Create a database in your local postgresql server
+   `psql -U postgres -h localhost -p 5432 -c "CREATE DATABASE tourism_jomla;"`
+2. Run migrations
+   `php artisan migrate`
+3. Place csv files in seed folder
+4. Change paths in seed.sql to match your local paths
+5. Run seed.sql
+   `psql -U postgres -h localhost -p 5432 -d tourism_jomla -f seed/seed.sql`
+6. Run hashing password command
+   `php artisan passwords:hash`
+
+## Setup with Debugging (XDebug) Macos
+
+```
+# update homebrew
+brew update
+
+brew install php@8.3
+
+# check that the path is to the correct php executable,
+# and pecl is available
+which pecl
+
+# install xdebug, see https://xdebug.org/docs/install#pecl
+pecl install xdebug
+
+# check that everything worked
+php --version
+# should show a xdebug version
+# like:  with Xdebug v2.6.0, Copyright (c) 2002-2018, by Derick Rethans
+```
+
+## Use Makefile
+
+```
+# Install PHP dependencies
+make install
+
+# Run PHP server
+make serve
+
+# Run Vite server
+make dev
+```
