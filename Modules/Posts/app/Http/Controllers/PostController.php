@@ -4,12 +4,16 @@ namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Log;
+use Modules\Department\Models\Department;
 use Modules\Posts\Models\Post;
 use Modules\Posts\Models\PostAccessibility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Posts\Models\PostComment;
 use Modules\Resources\Models\Resource;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Modules\User\Models\User;
 
 class PostController extends Controller
 {
@@ -39,33 +43,100 @@ class PostController extends Controller
 
 
     public function index(Request $request)
-{
-    // Start with a query builder instance
-    $query = Post::query();
+    {
+        // Start with a query builder instance
+        $query = Post::query()->orderBy('updated_at', 'desc');
 
-    // Check if the 'filter' parameter is present
-    if ($request->has('filter')) {
-        // Apply the necessary filters to the query
-        if (in_array('birthday', $request->input('filter'))) {
-            $query->where('type', 'birthday');
+        // Check if the 'filter' parameter is present
+        if ($request->has('filter')) {
+            // Apply the necessary filters to the query
+            if (in_array('birthday', $request->input('filter'))) {
+                $query->where('type', 'birthday');
+            }
+
+            // If filters are present, paginate the filtered query
+            $data = $this->shouldPaginate($query);
+        } else {
+            // If no filters are present, paginate using the predefined queryable method
+            $data = $this->shouldPaginate(Post::queryable());
         }
 
-        // If filters are present, paginate the filtered query
-        $data = $this->shouldPaginate($query);
-    } else {
-        // If no filters are present, paginate using the predefined queryable method
-        $data = $this->shouldPaginate(Post::queryable());
+        // Load the comments relationship with pivot data for all posts
+        // sorted by updated_at in descending order
+        $data->load([
+            'comments' => function ($query) {
+                $query->withPivot('id', 'comment_id');
+            }
+        ]);
+
+        // attach likes
+        $data->map(function ($post) {
+            $post->likes = collect($post->likes);
+            return $post;
+        });
+
+        // attach user profile
+        $data->map(function ($post) {
+            $post->user = User::find($post->user_id);
+            $post->userProfile = $post->user->profile;
+            return $post;
+        });
+
+        // attach department names
+        $data->map(function ($post) {
+            // if post has accessibilities
+            if ($post->accessibilities->isEmpty()) {
+                return $post;
+            }
+
+            $post->departments = $post->accessibilities->map(function ($accessibility) {
+                $department = Department::find($accessibility->accessable_id);
+                return $department->name;
+            });
+
+            // join with ,
+            $post->departmentNames = implode(', ', $post->departments->toArray());
+            return $post;
+        });
+
+        // TODO: review filtering out posts on backend
+        // $user = User::find(Auth::id());
+        // $communities = $user->communities;
+
+        // // filter out all posts that current user has no access to
+        // $data = $data->filter(function ($post) use ($communities) {
+        //     // if user's the author
+        //     if ($post->user_id == Auth::id()) {
+        //         return true;
+        //     }
+
+
+        //     // if post has accessibilities and user is not the author or user is not beloning to the comminity the post was made
+        //     if ($post->accessibilities->isNotEmpty()) {
+        //         // check if current user has access through accessibilities
+        //         // get list of all user's communities
+        //         // filterType = "Department"
+
+
+        //         return $post->accessibilities->filter(function ($accessibility) use ($communities) {
+        //             return $communities->contains('id', $accessibility->accessable_id);
+        //         })->isNotEmpty();
+        //     }
+
+        //     // if post is public
+        //     if ($post->visibility == 'public') {
+        //         return true;
+        //     }
+
+
+        //     return false;
+
+        // });
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
-
-    // Load the comments relationship with pivot data for all posts
-    $data->load(['comments' => function ($query) {
-        $query->withPivot('id', 'comment_id');
-    }]);
-
-    return response()->json([
-        'data' => $data,
-    ]);
-}
 
 
 
@@ -81,9 +152,20 @@ class PostController extends Controller
     {
         $post = Post::where('id', $id)->firstOrFail();
 
-        $post->load(['comments' => function ($query) {
-            $query->withPivot('id', 'comment_id');
-        }]);
+        $post->load([
+            'comments' => function ($query) {
+                $query->withPivot('id', 'comment_id');
+            }
+        ]);
+
+        // attach user by user_id
+        $post->user = User::find($post->user_id);
+        $post->attachments = Resource::where('attachable_id', $post->id)->get();
+        $post->comments = $post->comments->map(function ($comment) {
+            $comment->user = User::find($comment->user_id);
+            return $comment;
+        });
+        $post->likes = collect($post->likes);
 
         return response()->json([
             'data' => $post,
@@ -94,13 +176,15 @@ class PostController extends Controller
 
     public function store(Post $post)
     {
+        $output = new ConsoleOutput();
+        $output->writeln('PostController@store');
+
         request()->merge(['user_id' => Auth::id()]);
         if (request()->has('accessibilities')) {
 
 
             $accessibilities = request('accessibilities');
             foreach ($accessibilities as $accessibility) {
-
                 $validatedAccessibilities[] = validator($accessibility, ...PostAccessibility::rules('createFromPost'))->validated();
             }
         } else {
@@ -128,7 +212,8 @@ class PostController extends Controller
 
     public function update(Post $post)
     {
-
+        $output = new ConsoleOutput();
+        $output->writeln('PostController@update');
         $validated = request()->validate(...Post::rules('update'));
         $validated = request()->validate(...Post::rules());
         $validatedAccessibilities = [];
@@ -160,7 +245,7 @@ class PostController extends Controller
                     $currentAccessibilities->each(function ($accessibility) use ($validatedAccessibility) {
                         $accessibility->update([
                             'accessable_type' => $validatedAccessibility['accessable_type'],
-                            'accessable_id'    => $validatedAccessibility['accessable_id']
+                            'accessable_id' => $validatedAccessibility['accessable_id']
                         ]);
                     });
                 }

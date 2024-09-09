@@ -124,4 +124,7 @@ make serve
 
 # Run Vite server
 make dev
+
+# Link storage
+make storage_link
 ```

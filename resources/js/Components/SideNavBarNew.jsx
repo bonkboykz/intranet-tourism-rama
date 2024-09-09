@@ -10,7 +10,7 @@ const navigation = [
   { name: "Calendar", href: '/calendar', inactive: "/assets/Calendar Inactive.svg", active: "/assets/Calendar Active.svg" },
   { name: "Departments", href: '/departments', inactive: "/assets/Group Department Inactive.svg", active: "/assets/Group Department Active.svg" },
   { name: "Community", href: '/community', inactive: "/assets/Group Community Inactive.svg", active: "/assets/Group Community Active.svg" },
-  { name: "File Management", href: '/fileManagement', inactive: "/assets/File Management Inactive.svg", active: "/assets/File Management Active.svg" },
+  { name: "File Management", href: '/file-management', inactive: "/assets/File Management Inactive.svg", active: "/assets/File Management Active.svg" },
   { name: "Media", href: '/media', inactive: "/assets/Media Inactive.svg", active: "/assets/Media Active.svg" },
   { name: "Link", href: '/link', inactive: "/assets/Link Inactive.svg", active: "/assets/Link Active.svg" },
   { name: "Settings", href: '/settings', inactive: "/assets/Settings Inactive.svg", active: "/assets/Settings Active.svg" },

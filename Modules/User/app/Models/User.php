@@ -6,6 +6,7 @@ use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
 use Modules\Department\Models\EmploymentPost;
 use Modules\Events\Models\EventAttendance;
@@ -119,5 +120,11 @@ class User extends Model implements AuditableContract
     public function polls()
     {
         return $this->hasMany(Poll::class);
+    }
+
+    public function communities()
+    {
+        // get communities from communities member and leave only them
+        return $this->hasManyThrough(Community::class, CommunityMember::class, 'user_id', 'id', 'id', 'community_id');
     }
 }

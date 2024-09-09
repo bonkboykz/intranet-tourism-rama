@@ -17,7 +17,13 @@ migrate:
 	php artisan migrate
 
 seed:
-    php artisan db:seed
+	php artisan db:seed
+
+storage_link:
+	php artisan storage:link
+
+update_config:
+	php artisan config:cache
 
 # Run tests
 test:

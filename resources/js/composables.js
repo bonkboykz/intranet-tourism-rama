@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { usePage } from "@inertiajs/react";
 
 export function useCsrf() {
     const [csrfToken, setCsrfToken] = useState(null);

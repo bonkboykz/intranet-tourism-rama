@@ -4,7 +4,9 @@ namespace Modules\Communities\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Auth;
 use Modules\Communities\Models\Community;
+use Modules\Communities\Models\CommunityMember;
 
 class CommunityController extends Controller
 {
@@ -26,7 +28,13 @@ class CommunityController extends Controller
     {
 
         $validated = request()->validate(...Community::rules());
-        Community::create($validated);
+        $new_community = Community::create($validated);
+
+        CommunityMember::create([
+            'user_id' => Auth::id(),
+            'community_id' => $new_community['id'],
+            'role' => 'admin',
+        ]);
 
         return response()->noContent();
     }
@@ -53,7 +61,7 @@ class CommunityController extends Controller
         $user = User::findOrFail(request()->user_id);
 
         if (request()->has('role')) {
-            
+
             $role = request('role');
             $community->members()->attach($user, ['role' => $role]);
 

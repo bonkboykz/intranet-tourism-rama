@@ -1,18 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import Picker from 'emoji-picker-react';
+import Picker from "emoji-picker-react";
 // import { Tooltip } from "react-tooltip";
 import { Polls } from "./InputPolls";
 import { People } from "./InputPeople";
 import { Event } from "./InputEvent";
 import TagInput from "./AlbumTag";
-import MediaTag from '../../../../../public/assets/Media tag.svg'
-import EventTag from '../../../../../public/assets/EventTagIcon.svg'
+import MediaTag from "../../../../../public/assets/Media tag.svg";
+import EventTag from "../../../../../public/assets/EventTagIcon.svg";
 import "../css/InputBox.css";
 import "../../../Pages/Calendar/index.css";
-import Emoji from '../../../../../public/assets/EmojiIcon.svg'
+import Emoji from "../../../../../public/assets/EmojiIcon.svg";
 import { useCsrf } from "@/composables";
 
-function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filterType, filterId, variant, postedId, onCommentPosted }) {
+function ShareYourThoughts({
+    userId,
+    onCreatePoll,
+    includeAccessibilities,
+    filterType,
+    filterId,
+    variant,
+    postedId,
+    onCommentPosted,
+}) {
     const [inputValue, setInputValue] = useState("");
     const [showPollPopup, setShowPollPopup] = useState(false);
     const [showMediaTagPopup, setShowMediaTagPopup] = useState(false);
@@ -20,7 +29,7 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
     const [showEventPopup, setShowEventPopup] = useState(false);
     const [attachments, setAttachments] = useState([]);
     const [fileNames, setFileNames] = useState([]);
-    const [tag, setTag] = useState(''); // Single tag
+    const [tag, setTag] = useState(""); // Single tag
     const [mediaTagCount, setMediaTagCount] = useState(0);
     const [showReactionPicker, setShowReactionPicker] = useState(false);
     const [chosenPeople, setChosenPeople] = useState([]);
@@ -30,25 +39,24 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
     const [isMentioning, setIsMentioning] = useState(false);
     const [mentionQuery, setMentionQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [mentionSuggestionsPosition, setMentionSuggestionsPosition] = useState({ top: 0, left: 0 });
+    const [mentionSuggestionsPosition, setMentionSuggestionsPosition] =
+        useState({ top: 0, left: 0 });
     const [isSending, setIsSending] = useState(false);
     const emojiPickerRef = useRef(null);
 
-    
-    
     const textAreaRef = useRef(null);
     const csrfToken = useCsrf();
-    
+
     const handleChange = (event) => {
         const value = event.target.value;
         const cursorPosition = event.target.selectionStart;
         const beforeCursor = value.slice(0, cursorPosition);
-        
+
         // Check if the last character typed is a space
         const isSpaceTyped = beforeCursor.endsWith(" ");
-        
+
         const mentionMatch = beforeCursor.match(/@(\w*)$/);
-        
+
         if (mentionMatch && !isSpaceTyped) {
             setIsMentioning(true);
             setMentionQuery(mentionMatch[1]);
@@ -56,7 +64,7 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
             setIsMentioning(false);
             setMentionQuery("");
         }
-        
+
         setInputValue(value);
         setCursorPosition(cursorPosition);
     };
@@ -64,101 +72,112 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
     const handleTagSelection = (tag, id) => {
         // const firstName = tag.name.split(" ")[0]; // Get only the first name
         // console.log("HAHAHA", tag, id);
-        
-        
+
         const beforeCursor = inputValue.slice(0, cursorPosition);
         const afterCursor = inputValue.slice(cursorPosition);
         const mentionStartIndex = beforeCursor.lastIndexOf("@");
-        const updatedText = `${beforeCursor.slice(0, mentionStartIndex)}@${tag} ${afterCursor}`;
-        
+        const updatedText = `${beforeCursor.slice(
+            0,
+            mentionStartIndex
+        )}@${tag} ${afterCursor}`;
+
         setInputValue(updatedText);
         setChosenPeople((prevPeople) => [...prevPeople, { name: tag, id: id }]); // Store both name and user_id
         setCursorPosition(mentionStartIndex + tag.length + 2); // Adjust cursor position
         setIsMentioning(false); // Close mention suggestions
         setMentionQuery("");
     };
-    
-    
-        const handleClickSend = () => {
-            // Prevent triggering multiple times
-            if (isSending) return;
-    
-            // Check if there is no content and no attachments
-            if (!inputValue && attachments.length === 0) {
-                return; // Do nothing and exit the function
-            }
-    
-            setIsSending(true); // Set the flag to true to prevent multiple sends
-    
-            const formData = new FormData();
-            
-            // Determine if it's a post or a comment
-            const isComment = variant === "comment";
-            const endpoint = isComment ? `/api/posts/posts/${postedId}/comment` : "/api/posts/posts";
-            
-            // Append common fields
-            formData.append("visibility", "public");
-    
-            if (isAnnouncement) {
-                formData.append("type", "announcement");
-            }
-            
-            // Append content and attachments only if they exist
-            if (inputValue) {
-                formData.append("content", inputValue);
-            }
-            if (attachments.length > 0) {
-                attachments.forEach((file, index) => {
-                    formData.append(`attachments[${index}]`, file);
-                });
-            }
-    
-            // // Handle tags with spaces after commas
-            // if (tag.length > 0) {
-            //     const formattedTags = `[${tag.map(tag => `"${tag}"`).join(", ")}]`;
-            //     formData.append("tag", formattedTags);
-            // }
 
-            // Handle the single tag as a JSON array
-            if (tag) {
-               const formattedTag = JSON.stringify([tag]); // Convert the tag to a JSON array
-               formData.append("tag", formattedTag);
-            }
-    
-            // Handle mentions
-            if (chosenPeople.length > 0) {
-                const mentions = chosenPeople.map(person => `{ "id": "${person.id}", "name": "${person.name}" }`).join(", ");
-                const formattedMentions = `[${mentions}]`;
-                formData.append("mentions", formattedMentions);
-            }
-    
-            // Handle events
-            if (chosenEvent.length > 0) {
-                const events = chosenEvent.map(event => `"${event.title}"`).join(", ");
-                const formattedEvents = `[${events}]`;
-                formData.append("event", formattedEvents);
-            }
-    
-            if (includeAccessibilities) {
-                formData.append("type", "department");
-                formData.append("accessibilities[0][accessable_type]", filterType);
-                formData.append("accessibilities[0][accessable_id]", filterId);
-            }
+    const handleClickSend = () => {
+        // Prevent triggering multiple times
+        if (isSending) return;
 
-            // Adding community handling
-            if (includeAccessibilities) {
-                formData.append("type", "community");
-                formData.append("accessibilities[0][accessable_type]", filterType);
-                formData.append("accessibilities[0][accessable_id]", filterId);
+        // Check if there is no content and no attachments
+        if (!inputValue && attachments.length === 0) {
+            return; // Do nothing and exit the function
         }
-    
-            fetch(endpoint, {
-                method: "POST",
-                body: formData,
-                headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
-            })
+
+        setIsSending(true); // Set the flag to true to prevent multiple sends
+
+        const formData = new FormData();
+
+        // Determine if it's a post or a comment
+        const isComment = variant === "comment";
+        const endpoint = isComment
+            ? `/api/posts/posts/${postedId}/comment`
+            : "/api/posts/posts";
+
+        // Append common fields
+        formData.append("visibility", "public");
+
+        if (isAnnouncement) {
+            formData.append("type", "announcement");
+        }
+
+        // Append content and attachments only if they exist
+        if (inputValue) {
+            formData.append("content", inputValue);
+        }
+        if (attachments.length > 0) {
+            attachments.forEach((file, index) => {
+                formData.append(`attachments[${index}]`, file);
+            });
+        }
+
+        // // Handle tags with spaces after commas
+        // if (tag.length > 0) {
+        //     const formattedTags = `[${tag.map(tag => `"${tag}"`).join(", ")}]`;
+        //     formData.append("tag", formattedTags);
+        // }
+
+        // Handle the single tag as a JSON array
+        if (tag) {
+            const formattedTag = JSON.stringify([tag]); // Convert the tag to a JSON array
+            formData.append("tag", formattedTag);
+        }
+
+        // Handle mentions
+        if (chosenPeople.length > 0) {
+            const mentions = chosenPeople
+                .map(
+                    (person) =>
+                        `{ "id": "${person.id}", "name": "${person.name}" }`
+                )
+                .join(", ");
+            const formattedMentions = `[${mentions}]`;
+            formData.append("mentions", formattedMentions);
+        }
+
+        // Handle events
+        if (chosenEvent.length > 0) {
+            const events = chosenEvent
+                .map((event) => `"${event.title}"`)
+                .join(", ");
+            const formattedEvents = `[${events}]`;
+            formData.append("event", formattedEvents);
+        }
+
+        if (includeAccessibilities) {
+            formData.append("type", "department");
+            formData.append("accessibilities[0][accessable_type]", filterType);
+            formData.append("accessibilities[0][accessable_id]", filterId);
+        }
+
+        // Adding community handling
+        if (includeAccessibilities) {
+            formData.append("type", "community");
+            formData.append("accessibilities[0][accessable_type]", filterType);
+            formData.append("accessibilities[0][accessable_id]", filterId);
+        }
+
+        fetch(endpoint, {
+            method: "POST",
+            body: formData,
+            headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
+        })
             .then((response) => {
-                if (!response.ok) throw new Error("Network response was not ok");
+                if (!response.ok)
+                    throw new Error("Network response was not ok");
             })
             .then(() => {
                 // Reset state
@@ -166,7 +185,7 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                 setAttachments([]);
                 setFileNames([]);
                 // setTag([]);
-                setTag(''); // Reset tag as it is a string
+                setTag(""); // Reset tag as it is a string
                 setChosenPeople([]);
                 setChosenEvent([]);
                 if (!isComment) {
@@ -182,24 +201,25 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
             .finally(() => {
                 setIsSending(false); // Reset the flag once the request is complete
             });
-        };    
+    };
 
-        useEffect(() => {
-            const handleClickOutside = (event) => {
-                if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
-                    setShowReactionPicker(false);
-                }
-            };
-        
-            // Bind the event listener
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => {
-                // Unbind the event listener on clean up
-                document.removeEventListener('mousedown', handleClickOutside);
-            };
-        }, [emojiPickerRef]);
-        
-    
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                emojiPickerRef.current &&
+                !emojiPickerRef.current.contains(event.target)
+            ) {
+                setShowReactionPicker(false);
+            }
+        };
+
+        // Bind the event listener
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            // Unbind the event listener on clean up
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [emojiPickerRef]);
 
     useEffect(() => {
         const handleTagSearch = async () => {
@@ -209,16 +229,19 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                 return;
             }
 
-            const searchTerm = inputValue.slice(atIndex + 1, cursorPosition).trim();
+            const searchTerm = inputValue
+                .slice(atIndex + 1, cursorPosition)
+                .trim();
 
             if (searchTerm) {
                 try {
-                    const response = await fetch(`/api/crud/users?search=${searchTerm}&with[]=profile`);
+                    const response = await fetch(
+                        `/api/crud/users?search=${searchTerm}&with[]=profile`
+                    );
                     if (response.ok) {
                         const data = await response.json();
                         setSearchResults(data.data.data);
-                        console.log('searchResults', searchResults);
-                        
+                        console.log("searchResults", searchResults);
                     } else {
                         console.error("Failed to fetch recommended people");
                     }
@@ -231,19 +254,22 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
         handleTagSearch();
     }, [inputValue, cursorPosition]);
 
-
     const handleToggleChange = () => {
         setIsAnnouncement(!isAnnouncement);
     };
-    
+
     const handleFileUpload = (file) => {
         setAttachments((prevAttachments) => [...prevAttachments, file]);
         setFileNames((prevFileNames) => [...prevFileNames, file.name]);
     };
 
     const removeFile = (index) => {
-        setFileNames((prevFileNames) => prevFileNames.filter((_, i) => i !== index));
-        setAttachments((prevAttachments) => prevAttachments.filter((_, i) => i !== index));
+        setFileNames((prevFileNames) =>
+            prevFileNames.filter((_, i) => i !== index)
+        );
+        setAttachments((prevAttachments) =>
+            prevAttachments.filter((_, i) => i !== index)
+        );
     };
 
     const createFileInputHandler = (accept) => () => {
@@ -279,7 +305,7 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
     const handleClickEvent = () => {
         // console.log("Hello");
         setShowEventPopup(true);
-    }
+    };
 
     const closePopup = () => {
         setShowPollPopup(false);
@@ -292,7 +318,6 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
         setMediaTagCount(tag ? 1 : 0); // Set count to 1 if a tag is selected, otherwise 0
         closePopup(); // Close the popup
     };
-    
 
     const handleSavePeople = (selectedPeople) => {
         setChosenPeople(selectedPeople); // Update chosenPeople state
@@ -312,30 +337,28 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
     // const toggleReactionPicker = () => {
     //     setShowReactionPicker(!showReactionPicker);
     // };
-    
+
     const handleReactionClick = (emojiObject, event) => {
-        console.log('Emoji Object:', emojiObject);
-        console.log('Event:', event);
-    
+        console.log("Emoji Object:", emojiObject);
+        console.log("Event:", event);
+
         // Get the selected emoji
-        const selectedEmoji = emojiObject.emoji || ''; 
-        setInputValue(prevValue => prevValue + selectedEmoji);
+        const selectedEmoji = emojiObject.emoji || "";
+        setInputValue((prevValue) => prevValue + selectedEmoji);
         setShowReactionPicker(false);
     };
-    
-    
-    
-    
-    
+
     const toggleReactionPicker = () => {
         setShowReactionPicker(!showReactionPicker);
     };
-    
+
     return (
         <section className="flex flex-col justify-center text-sm text-neutral-800 w-full">
             <div
                 className={`flex flex-col gap-0 justify-between px-8 pt-5 pb-2 rounded-2xl shadow-sm max-md:flex-wrap max-md:px-5 max-w-full ${
-                    variant === "comment" ? "comment-box-container" : "input-box-container"
+                    variant === "comment"
+                        ? "comment-box-container"
+                        : "input-box-container"
                 }`}
             >
                 <div className="flex flex-col w-full">
@@ -360,13 +383,21 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                     {fileNames.length > 0 && (
                         <div className="file-names-container py-2 w-auto flex flex-col gap-2">
                             {fileNames.map((name, index) => (
-                                <div className="file-name inline-flex rounded-lg border-2 bg-gray-100 py-1 px-4 justify-between items-center overflow-hidden whitespace-nowrap text-ellipsis"
-                                    key={index}>
+                                <div
+                                    className="file-name inline-flex rounded-lg border-2 bg-gray-100 py-1 px-4 justify-between items-center overflow-hidden whitespace-nowrap text-ellipsis"
+                                    key={index}
+                                >
                                     <span className="overflow-hidden whitespace-nowrap text-ellipsis">
                                         {name}
                                     </span>
-                                    <button className="ml-2 text-blue-500" onClick={() => removeFile(index)}>
-                                        <img src="assets/cancel2.svg" alt="cancel icon" />
+                                    <button
+                                        className="ml-2 text-blue-500"
+                                        onClick={() => removeFile(index)}
+                                    >
+                                        <img
+                                            src="assets/cancel2.svg"
+                                            alt="cancel icon"
+                                        />
                                     </button>
                                 </div>
                             ))}
@@ -376,25 +407,35 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                         <div className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-4 items-center">
                             {variant === "comment" && (
                                 <>
-                                    <button className="tooltip" onClick={toggleReactionPicker}>
+                                    <button
+                                        className="tooltip"
+                                        onClick={toggleReactionPicker}
+                                    >
                                         <img
                                             loading="lazy"
                                             src={Emoji}
                                             alt="Emoji Icon"
                                             className="w-[16px] h-[16px]"
                                         />
-                                        <span className="tooltiptext">React 😀🤣😤</span>
+                                        <span className="tooltiptext">
+                                            React 😀🤣😤
+                                        </span>
                                     </button>
                                     {showReactionPicker && (
-                                        <div ref={emojiPickerRef} className="emoji-picker-container ">
+                                        <div
+                                            ref={emojiPickerRef}
+                                            className="emoji-picker-container "
+                                        >
                                             <Picker
-                                                onEmojiClick={handleReactionClick}  // Ensure this correctly triggers the handler
+                                                onEmojiClick={
+                                                    handleReactionClick
+                                                } // Ensure this correctly triggers the handler
                                             />
                                         </div>
                                     )}
                                     <div className="flex flex-row w-full justify-between items-center mt-1">
-                                    <div>
-                                        {/* <button
+                                        <div>
+                                            {/* <button
                                             type="button"
                                             onClick={handleClickPeople}
                                             className="tooltip relative text-md text-blue-500 hover:text-blue-700"
@@ -412,67 +453,95 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                                                 </span>
                                             )}
                                         </button> */}
-                                    
-                                    </div>
-                                    {/* <button onClick={handleClickSend} className="flex send-button align-item justify-end">
-                                        {isSending ? "" : ""}
+                                        </div>
+                                        <button
+                                            onClick={handleClickSend}
+                                            className="flex send-button align-item justify-end"
+                                        >
+                                            {isSending ? "" : ""}
                                             <img
                                                 loading="lazy"
                                                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
                                                 alt="SEND"
                                                 className="h-6 w-6 max-md:mt-8"
                                             />
-                                        </button> */}
-                             </div>
+                                        </button>
+                                    </div>
                                 </>
                             )}
                             {variant !== "comment" && (
                                 <>
                                     <div className="flex w-full max-md:flex-col lg:flex-row max-md:gap-4 lg: justify-between">
                                         <div className="flex w-full flex-row justify-between lg:w-2/3 max-md:py">
-                                            <button className="tooltip" onClick={handleClickPoll}>
+                                            <button
+                                                className="tooltip"
+                                                onClick={handleClickPoll}
+                                            >
                                                 <img
                                                     loading="lazy"
                                                     src="assets/inputpolls.svg"
                                                     alt="Poll Icon"
                                                     className="w-4 h-4"
                                                 />
-                                                <span className="tooltiptext">Poll</span>
+                                                <span className="tooltiptext">
+                                                    Poll
+                                                </span>
                                             </button>
-                                            <button className="tooltip" onClick={handleClickImg}>
+                                            <button
+                                                className="tooltip"
+                                                onClick={handleClickImg}
+                                            >
                                                 <img
                                                     loading="lazy"
                                                     src="assets/inputimg.svg"
                                                     alt="Image Icon"
                                                     className="w-4 h-4"
                                                 />
-                                                <span className="tooltiptext">Image</span>
+                                                <span className="tooltiptext">
+                                                    Image
+                                                </span>
                                             </button>
-                                            <button className="tooltip" onClick={handleClickVid}>
+                                            <button
+                                                className="tooltip"
+                                                onClick={handleClickVid}
+                                            >
                                                 <img
                                                     loading="lazy"
                                                     src="assets/inputvid.svg"
                                                     alt="Video Icon"
                                                     className="w-4 h-4"
                                                 />
-                                                <span className="tooltiptext">Video</span>
+                                                <span className="tooltiptext">
+                                                    Video
+                                                </span>
                                             </button>
-                                            <button className="tooltip" onClick={handleClickDoc}>
+                                            <button
+                                                className="tooltip"
+                                                onClick={handleClickDoc}
+                                            >
                                                 <img
                                                     loading="lazy"
                                                     src="assets/inputdoc.svg"
                                                     alt="Document Icon"
                                                     className="w-3 h-3"
                                                 />
-                                                <span className="tooltiptext">Document</span>
+                                                <span className="tooltiptext">
+                                                    Document
+                                                </span>
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={handleClickMediaTag}
                                                 className="tooltip relative text-md text-blue-500 hover:text-blue-700"
                                             >
-                                                <img src={MediaTag} alt="Tag Media" className="w-4 h-4" />
-                                                <span className="tooltiptext">Album Tag</span>
+                                                <img
+                                                    src={MediaTag}
+                                                    alt="Tag Media"
+                                                    className="w-4 h-4"
+                                                />
+                                                <span className="tooltiptext">
+                                                    Album Tag
+                                                </span>
                                                 {mediaTagCount > 0 && (
                                                     <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
                                                         {mediaTagCount}
@@ -508,7 +577,9 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                                                     alt="Event Icon"
                                                     className="w-4 h-4"
                                                 />
-                                                <span className="tooltiptext">Event Tag</span>
+                                                <span className="tooltiptext">
+                                                    Event Tag
+                                                </span>
                                                 {chosenEvent.length > 0 && (
                                                     <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
                                                         {chosenEvent.length}
@@ -522,16 +593,29 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                                             <div className="flex flex-row w-full max-md:justify-between justify-end gap-4">
                                                 {variant !== "comment" && (
                                                     <div className="flex items-center">
-                                                        <label className="text-sm mr-3">Set as Announcement?</label>
+                                                        <label className="text-sm mr-3">
+                                                            Set as Announcement?
+                                                        </label>
                                                         <label className="switch">
-                                                            <input type="checkbox" checked={isAnnouncement} onChange={handleToggleChange} />
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={
+                                                                    isAnnouncement
+                                                                }
+                                                                onChange={
+                                                                    handleToggleChange
+                                                                }
+                                                            />
                                                             <span className="slider"></span>
                                                         </label>
                                                     </div>
                                                 )}
                                             </div>
-                                            <button onClick={handleClickSend} className="flex send-button align-item justify-end">
-                                            {isSending ? "" : ""}
+                                            <button
+                                                onClick={handleClickSend}
+                                                className="flex send-button align-item justify-end"
+                                            >
+                                                {isSending ? "" : ""}
                                                 <img
                                                     loading="lazy"
                                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
@@ -541,11 +625,10 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                                             </button>
                                         </div>
                                         {/* column sampaisini */}
-                                        
                                     </div>
                                 </>
                             )}
-                             {/* <button onClick={handleClickSend} className="flex send-button align-item justify-end">
+                            {/* <button onClick={handleClickSend} className="flex send-button align-item justify-end">
                              {isSending ? "" : ""}
                                  <img
                                      loading="lazy"
@@ -558,7 +641,7 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
                     </div>
                 </div>
             </div>
-    
+
             {showMediaTagPopup && (
                 <TagInput
                     tag={tag}
@@ -586,21 +669,26 @@ function ShareYourThoughts({ userId, onCreatePoll, includeAccessibilities, filte
             )}
             {isMentioning && mentionQuery && (
                 <div className="mention-suggestions">
-                    {searchResults.filter(person =>
-                        person.name.toLowerCase().includes(mentionQuery.toLowerCase())
-                    ).map(person => (
-                        <div
-                            key={person.id}
-                            onClick={() => handleTagSelection(person.name, person.id)}
-                        >
-                            {person.name}
-                        </div>
-                    ))}
+                    {searchResults
+                        .filter((person) =>
+                            person.name
+                                .toLowerCase()
+                                .includes(mentionQuery.toLowerCase())
+                        )
+                        .map((person) => (
+                            <div
+                                key={person.id}
+                                onClick={() =>
+                                    handleTagSelection(person.name, person.id)
+                                }
+                            >
+                                {person.name}
+                            </div>
+                        ))}
                 </div>
             )}
         </section>
     );
-    
 }
 
 export default ShareYourThoughts;

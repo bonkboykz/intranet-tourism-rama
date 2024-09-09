@@ -40,7 +40,10 @@ Route::post('/logout', function () {
 
     return redirect('/');  // Redirect to home or login page
 })->name('logout');
+
 Route::get('/user/{id}/profile-qr', [ProfileController::class, 'profileQr'])->name('profileQr');
+
+Route::get('/csrf-token', \App\Http\Controllers\RefreshCsrfTokenController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -63,13 +66,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/departmentInner', [departments::class, 'renderinner'])->name('DepartmentInner');
     Route::get('/communityInner', [Community::class, 'renderinner'])->name('CommunityInner');
     Route::get('/communityPost', [communityPost::class, 'index'])->name('communityPosts');
-    Route::get('/fileManagement', [fileManagement::class, 'index'])->name('fileManagement');
+    Route::get('/file-management', [FileManagement::class, 'index'])->name('FileManagement');
     Route::get('/onlinelist', [DashboardController::class, 'onlinelist'])->name('onlinelist');
     Route::get('/link', [LinkController::class, 'index'])->name('link');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::get('/media', [MediaController::class, 'index'])->name('Media');
     Route::get('/manage-links', [ManageLinksController::class, 'index'])->name('manage-links');
-    Route::get('/Album', [MediaController::class, 'indexalbum'])->name('Album');
+    Route::get('/album', [MediaController::class, 'indexalbum'])->name('Album');
 });
 
 require __DIR__ . '/auth.php';

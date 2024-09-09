@@ -5,7 +5,9 @@ namespace Modules\Posts\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
-use Modules\User\Models\User;;
+use Modules\Communities\Models\CommunityMember;
+use Modules\User\Models\User;
+;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

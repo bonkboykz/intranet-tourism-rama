@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 
-class fileManagement extends Controller
+class FileManagement extends Controller
 {
     public function index()
     {
-        return Inertia::render('fileManagement', ['id' => auth()->id()]);
+        return Inertia::render('FileManagement', ['id' => auth()->id()]);
     }
 }

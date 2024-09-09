@@ -8,20 +8,6 @@ storage/*.key
 npm-debug.log
 yarn-error.log
 
-# Inertia.js
-resources/js/components/
-resources/js/pages/
-resources/js/Layouts/
-resources/js/Shared/
-resources/js/Plugins/
-resources/js/Utils/
-resources/js/app.js
-resources/js/bootstrap.js
-resources/js/routes.js
-resources/js/entry-client.js
-resources/js/entry-server.js
-resources/js/entry-server.js.map
-resources/js/entry-client.js.map
 
 # Build files
 public/css/
