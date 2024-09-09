@@ -1,25 +1,49 @@
 import { cn } from "@/Utils/cn";
 import { DefaultPostCard } from "./DefaultPostCard/DefaultPostCard";
 import { AnnouncementPostCard } from "./AnnouncementPostCard/AnnouncementPostCard";
+import InfiniteScroll from "react-infinite-scroller";
+import { Loader2 } from "lucide-react";
+import { useContext } from "react";
+import { WallContext } from "./WallContext";
 
-export function UserWall({ PostDataFiltered }) {
-    return PostDataFiltered.filter((post) => {
-        const isAuthor = post.user.id === userId;
-        const isMentioned =
-            post.mentions &&
-            JSON.parse(post.mentions).some((mention) => mention.id == userId);
+export function UserWall({ onLoad, hasMore, posts, userId }) {
+    return (
+        <InfiniteScroll
+            pageStart={1}
+            loadMore={onLoad}
+            hasMore={hasMore}
+            loader={
+                <div
+                    className="loader h-full w-full min-h-32 flex items-center justify-center"
+                    key={0}
+                >
+                    <Loader2 className="w-12 h-12 animate-spin" />
+                </div>
+            }
+        >
+            {posts
+                .filter((post) => {
+                    const isAuthor = post.user.id === userId;
+                    const isMentioned =
+                        post.mentions &&
+                        JSON.parse(post.mentions).some(
+                            (mention) => mention.id == userId
+                        );
 
-        return isAuthor || isMentioned;
-    }).map((post, index) => {
-        return (
-            <div className="w-full" key={post.id}>
-                {/* Conditional Rendering for Announcement */}
-                {post.type === "announcement" && (
-                    <AnnouncementPostCard announce={post.announce} />
-                )}
+                    return isAuthor || isMentioned;
+                })
+                .map((post, index) => {
+                    return (
+                        <div className="w-full" key={post.id}>
+                            {/* Conditional Rendering for Announcement */}
+                            {post.type === "announcement" && (
+                                <AnnouncementPostCard
+                                    announce={post.announce}
+                                />
+                            )}
 
-                {/* Birthday Post For Profile */}
-                {/* {post.type === "birthday" && (
+                            {/* Birthday Post For Profile */}
+                            {/* {post.type === "birthday" && (
                     <article
                         className={cn(
                             post.type === "announcement" ? "mt-10" : "mt-10",
@@ -223,11 +247,15 @@ export function UserWall({ PostDataFiltered }) {
                     </article>
                 )} */}
 
-                {/* Main Post Content */}
-                {post.type !== "birthday" && <DefaultPostCard post={post} />}
-            </div>
-        );
+                            {/* Main Post Content */}
+                            {post.type !== "birthday" && (
+                                <DefaultPostCard post={post} />
+                            )}
+                        </div>
+                    );
 
-        // wallposting
-    });
+                    // wallposting
+                })}
+        </InfiniteScroll>
+    );
 }

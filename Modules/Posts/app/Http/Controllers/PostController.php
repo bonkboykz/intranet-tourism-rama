@@ -45,7 +45,9 @@ class PostController extends Controller
     public function index(Request $request)
     {
         // Start with a query builder instance
-        $query = Post::query()->orderBy('updated_at', 'desc');
+        $query = Post::query();
+
+
 
         // Check if the 'filter' parameter is present
         if ($request->has('filter')) {
@@ -55,6 +57,30 @@ class PostController extends Controller
             }
 
             // If filters are present, paginate the filtered query
+            $data = $this->shouldPaginate($query);
+        } else if ($request->has('user_id')) {
+            $query->when(request()->has('with'), function ($query) {
+                $query->with(request('with'));
+            });
+
+            $query->when(request()->has('sort'), function ($query) {
+                foreach (request('sort') as $sort) {
+                    $query->orderBy(key($sort), current($sort) ?? 'asc');
+                }
+            });
+
+            // if trying to access another user posts, include mentions
+            $query->where(function ($query) use ($request) {
+                $userId = $request->input('user_id');
+
+                $query->where('user_id', $userId)
+                    ->orWhere(function ($query) use ($userId) {
+                        $query->where('mentions', '!=', null)
+                            ->whereJsonContains('mentions', [['id' => $userId]]);
+                    });
+            });
+
+            // combine Post::queryable() with the query
             $data = $this->shouldPaginate($query);
         } else {
             // If no filters are present, paginate using the predefined queryable method

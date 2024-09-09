@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Nwidart\Modules\Facades\Module;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 trait QueryableApi
 {
@@ -59,7 +60,7 @@ trait QueryableApi
                     if ($value == null || is_bool($value)) {
                         $query->$scopeBy();
                     } else {
-                        if(is_array($value)) {
+                        if (is_array($value)) {
                             $query->$scopeBy(...$value);
                         } else {
                             $query->$scopeBy($value);
@@ -75,7 +76,7 @@ trait QueryableApi
         if (is_callable($relation)) {
             $query->when(Module::find($module) && Module::isEnabled($module), $relation);
         } else {
-            $query->when(Module::find($module) && Module::isEnabled($module), fn ($query) => $query->with($relation));
+            $query->when(Module::find($module) && Module::isEnabled($module), fn($query) => $query->with($relation));
         }
     }
 

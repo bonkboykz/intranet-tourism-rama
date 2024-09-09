@@ -3,16 +3,22 @@ import { useState, useEffect } from "react";
 
 const postsPerScroll = 5;
 
-export function useInfiniteScroll() {
+export function useInfiniteScroll(
+    options = {
+        userId,
+    }
+) {
     const [loading, setLoading] = useState(false);
     const [rawPosts, setRawPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const hasMore = currentPage < totalPages;
-
-    // const [postsWithUserProfiles, setPostsWithUserProfiles] = useState([]);
+    const [totalPages, setTotalPages] = useState(-1);
+    const hasMore = currentPage <= totalPages;
 
     async function fetchData() {
+        if (totalPages !== -1 && !hasMore) {
+            return;
+        }
+
         setLoading(true);
         try {
             const postsResponse = await axios.get(`/api/posts/posts`, {
@@ -23,40 +29,29 @@ export function useInfiniteScroll() {
                         "accessibilities",
                         "comments",
                     ],
+                    sort: [{ updated_at: "desc" }],
                     page: currentPage,
+                    paginate: true,
+                    perpage: postsPerScroll,
+                    limit: postsPerScroll,
+                    offset: (currentPage - 1) * postsPerScroll,
+                    user_id: options.userId,
                 },
             });
 
             if ([401, 403, 500].includes(postsResponse.status)) {
                 throw new Error("Network response was not ok");
             }
-            // const postsData = await postsResponse.json();
             const postsData = postsResponse.data;
 
-            // Add the data from the current page to allPosts
-            // allPosts = allPosts.concat(
-            //     postsData.data.data.map((post) => {
-            //         post.attachments = Array.isArray(post.attachments)
-            //             ? post.attachments
-            //             : [post.attachments];
-            //         return post;
-            //     })
-            // );
-
-            console.log("posts data", postsData);
-            setRawPosts((prevPosts) => {
-                return prevPosts.concat(
-                    postsData.data.data.map((post) => {
-                        post.attachments = Array.isArray(post.attachments)
-                            ? post.attachments
-                            : [post.attachments];
-                        return post;
-                    })
-                );
-            });
+            const deduplicatePosts = postsData.data.data.filter(
+                (post) => !rawPosts.some((p) => p.id === post.id)
+            );
+            setRawPosts([...rawPosts, ...deduplicatePosts]);
 
             console.log("postsData", postsData);
             setTotalPages(postsData.data.last_page);
+            setCurrentPage(currentPage + 1);
         } catch (error) {
             console.error("Error fetching posts:", error);
         } finally {
@@ -67,62 +62,6 @@ export function useInfiniteScroll() {
     useEffect(() => {
         fetchData();
     }, []);
-
-    // const loadProfilesForPosts = async (rawPosts) => {
-    //     setLoading(true);
-    //     const data = await Promise.all(
-    //         rawPosts.map(async (post) => {
-    //             const userProfileResponse = await fetch(
-    //                 `/api/users/users/${post.user_id}?with[]=profile`,
-    //                 {
-    //                     method: "GET",
-    //                 }
-    //             );
-    //             const userProfileData = await userProfileResponse.json();
-    //             post.userProfile = userProfileData.data;
-
-    //             if (
-    //                 Array.isArray(post.accessibilities) &&
-    //                 post.accessibilities.length > 0
-    //             ) {
-    //                 const departmentNames = await Promise.all(
-    //                     post.accessibilities.map(async (accessibility) => {
-    //                         // TODO: Why we need this check?
-    //                         if (
-    //                             accessibility.accessable_type ===
-    //                             accessibility.accessable_type
-    //                         ) {
-    //                             const departmentResponse = await fetch(
-    //                                 `/api/department/departments/${accessibility.accessable_id}`
-    //                             );
-    //                             const departmentData =
-    //                                 await departmentResponse.json();
-    //                             return departmentData.data.name;
-    //                         }
-    //                         return null;
-    //                     })
-    //                 );
-    //                 post.departmentNames = departmentNames
-    //                     .filter((name) => name !== null)
-    //                     .join(", ");
-    //             } else {
-    //                 post.departmentNames = null;
-    //             }
-
-    //             return post;
-    //         })
-    //     );
-
-    //     console.log("Data", data);
-
-    //     setPostsWithUserProfiles(data);
-
-    //     setLoading(false);
-    // };
-
-    // useEffect(() => {
-    //     loadProfilesForPosts(rawPosts);
-    // }, [rawPosts]);
 
     const announcements = useMemo(() => {
         return rawPosts
@@ -145,5 +84,7 @@ export function useInfiniteScroll() {
     return {
         posts,
         loading,
+        fetchData,
+        hasMore,
     };
 }

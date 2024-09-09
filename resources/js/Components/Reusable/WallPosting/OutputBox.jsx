@@ -19,7 +19,9 @@ function OutputData({
     postType,
     variant,
 }) {
-    const { posts, loading } = useInfiniteScroll();
+    const { posts, loading, fetchData, hasMore } = useInfiniteScroll({
+        userId: userId,
+    });
 
     const { someonesPosts, filteredUserPosts } = useFilterPosts({
         postData: posts,
@@ -28,13 +30,15 @@ function OutputData({
         postType,
     });
 
-    if (loading) {
-        return (
-            <div className="h-full w-full min-h-32 flex items-center justify-center">
-                <Loader2 className="w-12 h-12 animate-spin" />
-            </div>
-        );
-    }
+    console.log("someonesPosts", someonesPosts);
+
+    // if (loading) {
+    //     return (
+    //         <div className="h-full w-full min-h-32 flex items-center justify-center">
+    //             <Loader2 className="w-12 h-12 animate-spin" />
+    //         </div>
+    //     );
+    // }
 
     return (
         <WallContext.Provider
@@ -45,9 +49,18 @@ function OutputData({
         >
             <Polls polls={polls} />
             {userId ? (
-                <UserWall PostDataFiltered={someonesPosts} />
+                <UserWall
+                    posts={someonesPosts}
+                    onLoad={fetchData}
+                    hasMore={hasMore}
+                    userId={userId}
+                />
             ) : (
-                <PersonalWall filteredFinalPosts={filteredUserPosts} />
+                <PersonalWall
+                    posts={filteredUserPosts}
+                    onLoad={fetchData}
+                    hasMore={hasMore}
+                />
             )}
         </WallContext.Provider>
     );
