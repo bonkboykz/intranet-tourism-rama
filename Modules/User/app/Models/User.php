@@ -6,6 +6,7 @@ use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
 use Modules\Department\Models\EmploymentPost;
@@ -22,7 +23,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class User extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi;
+    use Auditable, Authorizable, HasFactory, QueryableApi, Notifiable;
 
     protected $table = 'users';
 

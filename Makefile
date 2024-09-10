@@ -31,6 +31,9 @@ migration:
 model:
 	php artisan make:model
 
+start_reverb:
+	php artisan reverb:start
+
 # Run tests
 test:
 	$(PHPUNIT)

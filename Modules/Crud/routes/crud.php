@@ -30,7 +30,7 @@ Route::apiResources([
     'migrations' => \Modules\Crud\Http\Controllers\MigrationController::class,
     'model_has_permissions' => \Modules\Crud\Http\Controllers\ModelHasPermissionController::class,
     'model_has_roles' => \Modules\Crud\Http\Controllers\ModelHasRoleController::class,
-    'notifications' => \Modules\Crud\Http\Controllers\NotificationController::class,
+    // 'notifications' => \Modules\Crud\Http\Controllers\NotificationController::class,
     'password_reset_tokens' => \Modules\Crud\Http\Controllers\PasswordResetTokenController::class,
     'permissions' => \Modules\Crud\Http\Controllers\PermissionController::class,
     'posts' => \Modules\Crud\Http\Controllers\PostController::class,

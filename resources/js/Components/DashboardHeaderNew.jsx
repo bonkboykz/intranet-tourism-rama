@@ -5,7 +5,7 @@ import {
     ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 import { usePage } from "@inertiajs/react";
-import NotificationPopup from "../Components/Noti-popup-test";
+import NotificationPopup from "./NotificationPopup";
 import BirthdayNotificationPopup from "../Components/BirthdayNotificationPopup";
 
 export default function Header({ setSidebarOpen }) {

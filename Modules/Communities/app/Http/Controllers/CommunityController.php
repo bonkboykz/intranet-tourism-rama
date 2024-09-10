@@ -3,10 +3,12 @@
 namespace Modules\Communities\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Request as AppRequest;
 use App\Models\User;
 use Auth;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CommunityController extends Controller
 {
@@ -19,8 +21,22 @@ class CommunityController extends Controller
 
     public function show($id)
     {
+        $community_member = CommunityMember::where('user_id', Auth::id())->where('community_id', $id);
+
+        $data = Community::where('id', $id)->queryable()->firstOrFail();
+
+        $data['is_member'] = $community_member->exists();
+        $data['role'] = $community_member->value('role');
+
+        // check if user have sent a request to join
+        $data['is_join_request_pending'] = AppRequest::where('user_id', Auth::id())
+            ->where('request_type', 'join_group')
+            ->where('status', 'pending')
+            ->whereJsonContains('details->group_id', intval($id))
+            ->exists();
+
         return response()->json([
-            'data' => Community::where('id', $id)->queryable()->firstOrFail(),
+            'data' => $data,
         ]);
     }
 

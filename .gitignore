@@ -17,6 +17,7 @@ public/mix.js
 public/mix.js.map
 public/mix.css
 public/mix.css.map
+public/build
 
 # IDE/Editor specific
 .idea/
