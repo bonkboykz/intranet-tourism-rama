@@ -171,7 +171,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->email($this->email)
             // ->email('john.smith@company.com', [Email::WORK, Email::INTERNET])
             ->tel($this->profile->phone_no ?? 0, [Tel::WORK, Tel::VOICE])
-            ->bday(Carbon::parse($this->profile->dob))
+            // ->bday(Carbon::parse($this->profile->dob))
             // ->adr('','','1600 Pennsylvania Ave NW', 'Washington', 'DC', '20500-0003', 'USA')
             // ->photo('data:image/jpeg;base64,'.base64_encode(file_get_contents(__DIR__.'/stubs/photo.jpg')))
             // ->title('V. P. Research and Development')

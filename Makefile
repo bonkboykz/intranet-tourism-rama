@@ -25,6 +25,12 @@ storage_link:
 update_config:
 	php artisan config:cache
 
+migration:
+	php artisan make:migration
+
+model:
+	php artisan make:model
+
 # Run tests
 test:
 	$(PHPUNIT)

@@ -3,6 +3,7 @@
 namespace Modules\Posts\Models;
 
 use App\Models\BaseModel as Model;
+use App\Models\PostViewHistory;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
 use Modules\Communities\Models\CommunityMember;
@@ -96,4 +97,8 @@ class Post extends Model implements AuditableContract
         return $this->belongsToMany(self::class, 'post_comment', 'post_id', 'comment_id');
     }
 
+    public function viewHistories()
+    {
+        return $this->hasMany(PostViewHistory::class);
+    }
 }

@@ -49,7 +49,6 @@ export function useInfiniteScroll(
             );
             setRawPosts([...rawPosts, ...deduplicatePosts]);
 
-            console.log("postsData", postsData);
             setTotalPages(postsData.data.last_page);
             setCurrentPage(currentPage + 1);
         } catch (error) {

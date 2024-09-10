@@ -3,6 +3,7 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Posts\Models\PostViewHistory;
 use Illuminate\Support\Facades\DB;
 use Log;
 use Modules\Department\Models\Department;
@@ -366,6 +367,65 @@ class PostController extends Controller
 
         return response()->json([
             'data' => $users,
+        ]);
+    }
+
+    public function markAsViewed($id)
+    {
+        $post = Post::where('id', $id)->firstOrFail();
+        $user = Auth::user();
+
+        $viewed = PostViewHistory::where('post_id', $post->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$viewed) {
+            PostViewHistory::create([
+                'post_id' => $post->id,
+                'user_id' => $user->id,
+                'viewed_at' => now(),
+            ]);
+        }
+
+        return response()->noContent();
+    }
+
+    public function getRecentStories()
+    {
+        $output = new ConsoleOutput();
+        $output->writeln('PostController@getRecentStories');
+
+        // get all stories that were created in the last 72 hours
+        $stories = Post::where('type', 'story')
+            ->where('created_at', '>', now()->subHours(72))
+            ->get();
+
+
+        $stories->map(function ($post) {
+            $post->attachments = Resource::where('attachable_id', $post->id)->get();
+            $post->comments = $post->comments->map(function ($comment) {
+                $comment->user = User::find($comment->user_id);
+                return $comment;
+            });
+            $post->likes = collect($post->likes);
+
+            return $post;
+        });
+
+        // Attach user viewed
+        $user = Auth::user();
+
+        $stories->map(function ($post) use ($user) {
+            $viewed = PostViewHistory::where('post_id', $post->id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            $post->viewed = $viewed ? true : false;
+            return $post;
+        });
+
+        return response()->json([
+            'data' => $stories,
         ]);
     }
 }

@@ -64,7 +64,7 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
                     viewed: false, // Set viewed to false
                 };
                 onPostStory(newStory); // Call the onPostStory callback with the new story
-                window.location.reload(); // Reload the page
+                // window.location.reload(); // Reload the page
             } else {
                 throw new Error("Network response was not ok");
             }

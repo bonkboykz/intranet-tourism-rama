@@ -22,6 +22,8 @@ use Modules\Posts\Http\Controllers\PostController;
 
 // require_once 'crud.php';
 Route::group(['middleware' => ['auth:api']], function () {
+    // GET stories
+    Route::get('get_recent_stories', [PostController::class, 'getRecentStories'])->name('post.getRecentStories');
 
     Route::apiResources([
         'posts' => PostController::class,
@@ -36,5 +38,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('{post}/access', [PostController::class, 'access'])->name('post.access');
         // GET route to get all likes of a post, pass id
         Route::get('{id}/likes', [PostController::class, 'likes'])->name('post.likes');
+        // POST route to mark as viewed
+        Route::post('{id}/markAsViewed', [PostController::class, 'markAsViewed'])->name('post.markAsViewed');
     });
 });

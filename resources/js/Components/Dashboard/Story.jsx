@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Popup from './CreateStoryPopup';
-import CreateImageStory from './CreateImageStory';
-import { usePage } from '@inertiajs/react';
-import StoryViewer from './StoryViewer';
-import './styles.css';
-import { useCsrf } from "@/composables";
+import React, { useState, useEffect, useRef } from "react";
+import { usePage } from "@inertiajs/react";
+import axios from "axios";
+import { useMemo } from "react";
+import { createPortal } from "react-dom";
 
+import StoryViewer from "./StoryViewer";
+import { PersonalStory } from "./Story/PersonalStory";
+import { UserStory } from "./Story/UserStory";
+import Popup from "./CreateStoryPopup";
+import CreateImageStory from "./CreateImageStory";
+
+import "./styles.css";
 
 const StoryNew = ({ userId }) => {
     const [showStoryViewer, setShowStoryViewer] = useState(false);
@@ -13,201 +18,107 @@ const StoryNew = ({ userId }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const fileInputRef = useRef(null);
-    const [avatars, setAvatars] = useState([
-        {
-            src: "assets/user4.jpeg",
-            alt: "Avatar of Thomas",
-            name: "Musa",
-            stories: []
-        }
-    ]);
-    const [sortedAvatars, setSortedAvatars] = useState([]);
 
     const { props } = usePage();
     const { id } = props; // Access the user ID from props
-    const [userData, setUserData] = useState({});
     const [userStories, setUserStories] = useState([]);
-    const csrfToken = useCsrf();
+
+    // const userData = useUserData(id);
 
     const containerRef = useRef(null);
 
-    useEffect(() => {
-        fetchUserData(id);
-    }, [id]);
-
-    const fetchUserData = (id) => {
-        fetch(`/api/users/users/${id}?with[]=profile&with[]=employmentPost.department&with[]=employmentPost.businessPost`, {
-            method: "GET",
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then(({ data }) => {
-            setUserData({
-                ...data,
-                profileImage: data.profile?.image
-            });
-        })
-        .catch((error) => {
-            console.error("Error fetching user data:", error);
-        });
-    };
-
-    useEffect(() => {
-        setAvatars(avatars.map(avatar => ({
-            ...avatar,
-            viewed: false
-        })));
-    }, []);
-
-    const API_URL = "/api/posts/posts";
-    const USERS_API_URL = "/api/users/users/";
+    const fileInputRef = useRef(null);
 
     const fetchStories = async () => {
-        let allStories = [];
-        let currentPage = 1;
-        let lastPage = 1;
+        const response = await axios.get(`/api/posts/get_recent_stories`);
 
-        try {
-            while (currentPage <= lastPage) {
-                const response = await fetch(`${API_URL}?with[]=author&with[]=attachments&page=${currentPage}`, {
-                    method: "GET",
-                });
-
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
-                const data = await response.json();
-                const storiesToAdd = data.data.data
-                .filter(story => story.type === 'story')
-                .map(story => ({
-                        url: story.attachments.length > 0 ? `${story.attachments[0].path}` : '', 
-                        type: story.attachments.length > 0 ? (story.attachments[0].mime_type.startsWith('image') ? 'image' : 'video') : 'image',
-                        text: story.content,
-                        userId: story.user_id,
-                        postId: story.id,
-                        imageName: story.attachments.length > 0 ? story.attachments[0].metadata?.original_name : '',
-                        timestamp: new Date(story.created_at).getTime()
-                    }));
-
-                allStories = allStories.concat(storiesToAdd);
-
-                setAvatars(prevAvatars => {
-                    const updatedAvatars = prevAvatars.map(avatar => ({
-                        ...avatar,
-                        stories: avatar.stories.concat(allStories.filter(story => story.url !== '' && story.userId === id))
-                    }));
-                    return updatedAvatars;
-                });
-
-                lastPage = data.data.last_page;
-                currentPage++;
-            }
-
-            setUserStories(allStories);
-            deleteOldStories(allStories); // Initial check on fetch
-        } catch (error) {
-            console.error('Error fetching data:', error);
+        if ([401, 403, 500].includes(response.status)) {
+            throw new Error("Network response was not ok");
         }
+
+        const storiesToAdd = response.data.data.map((story) => ({
+            url:
+                story.attachments.length > 0
+                    ? `${story.attachments[0].path}`
+                    : "",
+            type:
+                story.attachments.length > 0
+                    ? story.attachments[0].mime_type.startsWith("image")
+                        ? "image"
+                        : "video"
+                    : "image",
+            text: story.content,
+            userId: story.user_id,
+            postId: story.id,
+            imageName:
+                story.attachments.length > 0
+                    ? story.attachments[0].metadata?.original_name
+                    : "",
+            timestamp: new Date(story.created_at).getTime(),
+            viewed: story.viewed,
+        }));
+
+        setUserStories(storiesToAdd);
     };
-    
+
     useEffect(() => {
         fetchStories();
     }, [id]);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const uniqueUserIds = [...new Set(userStories.map(story => story.userId))];
-            const userPromises = uniqueUserIds.map(userId => fetch(`${USERS_API_URL}${userId}?with[]=profile`));
-            const userResponses = await Promise.all(userPromises);
-            const userJsonPromises = userResponses.map(response => response.json());
-            const users = await Promise.all(userJsonPromises);
-            
+    const [avatars, setAvatars] = useState({});
 
-            const userAvatars = users.map(user => ({
-                // src: user.data.profile && user.data.profile.image ? user.data.profile.image : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.data.name}&rounded=true`,
-                src: user.data.profile?.image,
-                alt: `Avatar of ${user.data.name}`,
-                name: user.data.username,
-                fullName: user.data.name,
-                stories: userStories.filter(story => story.userId === user.data.id)
-            }));
+    const fetchAvatars = async () => {
+        const userIds = [...userStories.map((story) => story.userId), id];
 
-            // console.log("VV", userAvatars);
+        const uniqueUserIds = [...new Set(userIds)];
 
-            setAvatars(prevAvatars => [...prevAvatars, ...userAvatars]);
-        };
+        const userAvatars = await Promise.all(
+            uniqueUserIds.map(async (userId) => {
+                const response = await axios.get(`/api/users/users/${userId}`, {
+                    params: {
+                        with: ["profile"],
+                    },
+                });
 
-        if (userStories.length > 0) {
-            fetchUsers();
-        }
-    }, [userStories]);
+                const user = response.data.data;
 
-    const deleteOldStories = async (stories) => {
-        const now = Date.now();
-        const oneDay = 24 * 60 * 60 * 1000;
-        // const oneDay = 5 * 1000; // 5 seconds
+                return {
+                    id: user.id,
+                    src: user.profile?.image,
+                    alt: `Avatar of ${user.name}`,
+                    name: user.username,
+                    fullName: user.name,
+                };
+            })
+        );
 
-        for (const story of stories) {
-            if (now - story.timestamp > oneDay) {
-                try {
-                    const response = await fetch(`${API_URL}/${story.postId}`, {
-                        method: 'DELETE',
-                        headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
-                    });
+        // turn userAvatars into an object with the user ID as the key
+        const userAvatarsObject = userAvatars.reduce((acc, cur) => {
+            acc[cur.id] = cur;
+            return acc;
+        }, {});
 
-                    if (response.ok) {
-                        console.log(`Post with ID ${story.postId} deleted successfully.`);
-                        // Optionally refresh the data or update state
-                        fetchStories(); // Refresh stories after deletion
-                    } else {
-                        console.error(`Failed to delete post with ID ${story.postId}.`);
-                    }
-                } catch (error) {
-                    console.error(`Error deleting post with ID ${story.postId}:`, error);
-                }
-            }
-        }
+        setAvatars(userAvatarsObject);
     };
 
     useEffect(() => {
-        // Set an interval to check for old stories every hour
-        const intervalId = setInterval(() => {
-            deleteOldStories(userStories);
-        }, 60 * 60 * 1000); // 60 minutes
-        // }, 10 * 1000); // 10 seconds
-
-        // Clean up the interval on component unmount
-        return () => clearInterval(intervalId);
+        fetchAvatars();
     }, [userStories]);
 
-    useEffect(() => {
-        // Update sortedAvatars whenever avatars change
-        setSortedAvatars(avatars
-            .filter(avatar => avatar.stories.length > 0 && avatar.stories[0].userId !== id)
-            .sort((a, b) => a.viewed - b.viewed)
-        );
-    }, [avatars, id]);
-    
     const handleAvatarClick = (avatar) => {
-        if (avatar === loggedInUserAvatar) {
-            if (avatar.stories.length === 0) {
-                fileInputRef.current.click();
-            } else {
-                setSelectedStory(avatar.stories);
-                setSelectedUser(avatar);
-                setShowStoryViewer(true);
-            }
-        } else {
-            setSelectedStory(avatar.stories);
-            setSelectedUser(avatar);
-            setShowStoryViewer(true);
+        const avatarStories = userStories.filter(
+            (story) => story.userId === avatar.id
+        );
+
+        if (avatar.id === id && avatarStories.length === 0) {
+            fileInputRef.current.click();
+
+            return;
         }
+
+        setSelectedStory(avatarStories);
+        setSelectedUser(avatar);
+        setShowStoryViewer(true);
     };
 
     const handlePlusButtonClick = () => {
@@ -226,7 +137,7 @@ const StoryNew = ({ userId }) => {
         setSelectedFile(null);
         setIsPopupOpen(false);
         handlePlusButtonClick();
-    };    
+    };
 
     const handleCloseViewer = () => {
         setShowStoryViewer(false);
@@ -234,173 +145,174 @@ const StoryNew = ({ userId }) => {
         setSelectedUser(null);
     };
 
-    const handlePostStory = (newStory) => {
-        newStory.timestamp = Date.now(); // Add current timestamp to new story
-
-        setAvatars(prevAvatars => {
-            const updatedAvatars = [...prevAvatars];
-            updatedAvatars[0].stories.push(newStory);
-            return updatedAvatars;
-        });
+    const handlePostStory = async () => {
+        await fetchStories();
         setIsPopupOpen(false);
     };
 
-    const markUserAsViewed = (user) => {
-        setAvatars(prevAvatars => {
-            const updatedAvatars = prevAvatars.map(avatar => {
-                if (avatar === user) {
-                    return { ...avatar, viewed: true };
-                }
-                return avatar;
-            });
-            return updatedAvatars;
+    const [viewedMap, setViewedMap] = useState({});
+
+    useEffect(() => {
+        const newViewedMap = userStories.reduce((acc, cur) => {
+            acc[cur.postId] = Boolean(cur.viewed);
+            return acc;
+        }, {});
+
+        setViewedMap(newViewedMap);
+    }, [userStories]);
+
+    const markStoryAsViewed = async (story) => {
+        setViewedMap({
+            ...viewedMap,
+            [story.postId]: true,
         });
-    };
 
-    // console.log("USERDATA", userData);
-    
-    const source = () => {
-        if (!userData.profileImage) {
-            return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${userData.name}&rounded=true`;
+        try {
+            await axios.post(`/api/posts/posts/${story.postId}/markAsViewed`);
+        } catch (e) {
+            console.error(e);
         }
-    
-        return userData.profileImage === '/assets/dummyStaffPlaceHolder.jpg'
-            ? userData.profileImage
-            : userData.profileImage.startsWith('avatar/')
-            ? `/storage/${userData.profileImage}`
-            : `/avatar/${userData.profileImage}`;
     };
-    
-    const loggedInUserAvatar = {
-        src: source(),
-        alt: "Avatar of logged in user",
-        name: userData.username,
-        stories: avatars[0].stories.filter(story => story.userId === id)
-    };
-    
-    console.log("FF", sortedAvatars.src);
-    
 
+    const storiesByUsers = useMemo(() => {
+        return userStories.reduce((acc, cur) => {
+            if (acc[cur.userId]) {
+                acc[cur.userId].push(cur);
+            } else {
+                acc[cur.userId] = [cur];
+            }
 
+            return acc;
+        }, {});
+    }, [userStories]);
+
+    const { userGroupedStories, otherUsersGroupedStories } = useMemo(() => {
+        const userGroupedStories = [];
+        const otherUsersGroupedStories = [];
+
+        for (const [userId, stories] of Object.entries(storiesByUsers)) {
+            if (userId.toString() === id.toString()) {
+                userGroupedStories.push({
+                    userId: userId,
+                    stories,
+                    avatar: avatars[id],
+                    allViewed: stories.every((story) => {
+                        return viewedMap[story.postId];
+                    }),
+                });
+            } else {
+                otherUsersGroupedStories.push({
+                    userId: userId,
+                    stories,
+                    avatar: avatars[userId],
+                    allViewed: stories.every((story) => {
+                        return viewedMap[story.postId];
+                    }),
+                });
+            }
+        }
+
+        // apply custom sorting for other users' stories
+        // 1. Don't show users without stories
+        // 2. Sort by timestamp
+        // 3. If user watched all stories, move them to the end
+        otherUsersGroupedStories.sort((a, b) => {
+            if (a.stories.length === 0) {
+                return 1;
+            }
+
+            if (b.stories.length === 0) {
+                return -1;
+            }
+
+            if (a.allViewed && !b.allViewed) {
+                return 1;
+            }
+
+            if (!a.allViewed && b.allViewed) {
+                return -1;
+            }
+
+            return a.stories[0].timestamp - b.stories[0].timestamp;
+        });
+
+        return {
+            userGroupedStories: userGroupedStories[0] ?? {
+                userId: id,
+                stories: [],
+                avatar: avatars[id] ?? {
+                    id: id,
+                    src: "",
+                    alt: `Avatar of ${id}`,
+                    name: "",
+                    fullName: "",
+                },
+                allViewed: false,
+            },
+            otherUsersGroupedStories: otherUsersGroupedStories.filter(
+                (group) => group.stories.length > 0 && group.avatar
+            ),
+        };
+    }, [storiesByUsers, viewedMap, avatars]);
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left', marginBottom: '30px', marginLeft: '-20px', width: 'full' , }}>
-            <div style={{ display: 'inline-block', margin: '10px', position: 'relative', marginRight: '30px', flexShrink: 0 }}>
-                <button style={{ border: 'none', background: 'none', padding: '0', position: 'relative' }} onClick={() => handleAvatarClick(loggedInUserAvatar)} >
-                    <div style={{
-                        borderRadius: '50%',
-                        width: '104px',
-                        height: '104px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: loggedInUserAvatar.stories.length > 0 ? 'linear-gradient(45deg, #FCAF45, #FF3559, #FF9C33, #FF3559)' : 'transparent',
-                        padding: '2px'
-                    }}>
-                        <img
-                            src={loggedInUserAvatar.src}
-                            alt={loggedInUserAvatar.alt}
-                            style={{
-                                borderRadius: '50%',
-                                width: '100px',
-                                height: '100px',
-                                border: '3px solid white'
-                            }}
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "left",
+                marginBottom: "30px",
+                marginLeft: "-20px",
+                width: "full",
+            }}
+        >
+            <PersonalStory
+                stories={userGroupedStories.stories}
+                avatar={userGroupedStories.avatar}
+                handleAvatarClick={handleAvatarClick}
+                handlePlusButtonClick={handlePlusButtonClick}
+                handleFileChange={handleFileChange}
+                fileInputRef={fileInputRef}
+            />
+            <div
+                ref={containerRef}
+                style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+            >
+                {otherUsersGroupedStories.map((group, index) => {
+                    return (
+                        <UserStory
+                            key={index}
+                            allStoriesViewed={group.allViewed}
+                            avatar={group.avatar}
+                            handleAvatarClick={handleAvatarClick}
+                            stories={group.stories}
                         />
-                    </div>
-                </button>
-                <button style={{ border: 'none', background: 'none', padding: '0', position: 'relative' }} onClick={handlePlusButtonClick}>
-                    <span style={{
-                        position: 'absolute',
-                        bottom: '0px',
-                        right: '5px',
-                        width: '22px',
-                        height: '22px',
-                        background: 'blue',
-                        color: 'white',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '12px',
-                        border: '2px solid white',
-                    }}>+</span>
-                </button>
-                <input
-                    type="file"
-                    accept="image/*, video/*"
-                    onChange={handleFileChange}
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                />
-                <div style={{ textAlign: 'center', marginTop: '-5px', fontSize: '12px', color: '#888' }}>
-                    {loggedInUserAvatar.stories.length} {loggedInUserAvatar.stories.length === 1 ? 'story' : 'stories'}
-                </div>
-                <div style={{ textAlign: 'center', marginTop: '-5px' }}>Your Story</div>
-            </div>
-            <div ref={containerRef} style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                {sortedAvatars.map((avatar, index) => (
-                    console.log("AVATAR", avatar),
-                <div key={index} style={{ display: 'inline-block', margin: '10px', position: 'relative', marginRight: '10px' }}>
-                        <button style={{ border: 'none', background: 'none', padding: '0', position: 'relative' }}>
-                            <div style={{
-                                borderRadius: '50%',
-                                background: avatar.stories.length > 0 ? 'linear-gradient(45deg, #FCAF45, #FF3559, #FF9C33, #FF3559)' : 'transparent',
-                                padding: '2px',
-                                filter: avatar.viewed ? 'grayscale(100%)' : 'none' // Apply grayscale filter if the stories have been viewed
-                            }}>
-                                <img
-                                    // src={avatar.src}
-                                    // src={`/storage/${avatar.src}` : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${userData.name}&rounded=true`}
-                                    // src={avatar.src}
-                                    src={
-                                        !avatar.src // check if src variable is empty
-                                          ? `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${avatar.fullName}&rounded=true` // if src is empty = src equals to this path
-                                          : avatar.src === '/assets/dummyStaffPlaceHolder.jpg' //if avatar.src is not empty, check id avatar.src is equal to this path
-                                          ? avatar.src // if it is equal to the path, then src = avatar.src
-                                          : avatar.src.startsWith('avatar/') // if not equal, then check if avatar.src starts with avatar/
-                                          ? `/storage/${avatar.src}` // if yes, then src = storage/{avatar.src}
-                                          : `/storage/avatar/${avatar.src}`// If no then then src = 
-                                      }
-                                    alt={avatar.alt}
-                                    style={{
-                                        borderRadius: '50%',
-                                        width: '80px',
-                                        height: '80px',
-                                        border: '3px solid white',
-                                        objectFit: 'cover',
-                                    }}
-                                    onClick={() => handleAvatarClick(avatar)}
-                                />
-                            </div>
-                        </button>
-                        <div style={{ textAlign: 'center', marginTop: '-5px', fontSize: '12px', color: '#888' }}>
-                            {avatar.stories.length} {avatar.stories.length === 1 ? 'story' : 'stories'}
-                        </div>
-                        {/* <div style={{ textAlign: 'center', marginTop: '-5px' }}>{avatar.fullName}</div> */}
-                        <div
-                            style={{
-                                textAlign: 'center',
-                                marginTop: '-5px',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                maxWidth: '85px' // Adjust the width as needed
-                            }}
-                            >
-                            {avatar.fullName}
-                        </div>
-                </div>
-                ))}
+                    );
+                })}
             </div>
             {showStoryViewer && selectedStory && (
-                <StoryViewer stories={selectedStory} onClose={handleCloseViewer} user={selectedUser} onViewed={markUserAsViewed} />
+                <StoryViewer
+                    stories={selectedStory}
+                    onClose={handleCloseViewer}
+                    user={selectedUser}
+                    onViewed={markStoryAsViewed}
+                />
             )}
-            {isPopupOpen && (
-                <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-                    <CreateImageStory userId={userId} onPostStory={handlePostStory} file={selectedFile} onGoBack={handleGoBack} />
-                </Popup>
-            )}
+            {isPopupOpen &&
+                createPortal(
+                    <Popup
+                        isOpen={isPopupOpen}
+                        onClose={() => setIsPopupOpen(false)}
+                    >
+                        <CreateImageStory
+                            userId={userId}
+                            onPostStory={handlePostStory}
+                            file={selectedFile}
+                            onGoBack={handleGoBack}
+                        />
+                    </Popup>,
+                    document.body
+                )}
         </div>
     );
 };

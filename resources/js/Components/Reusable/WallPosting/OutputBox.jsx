@@ -30,16 +30,6 @@ function OutputData({
         postType,
     });
 
-    console.log("someonesPosts", someonesPosts);
-
-    // if (loading) {
-    //     return (
-    //         <div className="h-full w-full min-h-32 flex items-center justify-center">
-    //             <Loader2 className="w-12 h-12 animate-spin" />
-    //         </div>
-    //     );
-    // }
-
     return (
         <WallContext.Provider
             value={{

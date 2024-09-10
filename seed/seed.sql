@@ -223,6 +223,10 @@ VALUES
     ('Visualizer'),
     ('Writer');
 
+INSERT INTO business_schemes (title, code)
+VALUES
+    ('Test Business Scheme', 'BS');
+
 
 INSERT INTO business_units (department_id, name)
 SELECT DISTINCT d.id AS department_id, u.unit AS name
