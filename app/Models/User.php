@@ -34,6 +34,7 @@ use Astrotomic\Vcard\Properties\Kind;
 use Astrotomic\Vcard\Properties\Tel;
 use Astrotomic\Vcard\Vcard;
 use Carbon\Carbon;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -179,6 +180,26 @@ class User extends Authenticatable implements MustVerifyEmail
             // ->member('john.smith@company.com', '550e8400-e29b-11d4-a716-446655440000')
             // ->note('Hello world')
         ;
+
+        if ($this->employmentPost) {
+            if ($this->employmentPost->businessPost) {
+                $vcard->title($this->employmentPost->businessPost->title);
+            }
+
+            $departmentName = "";
+            $businessUnitName = "";
+
+            if ($this->employmentPost->department) {
+                $departmentName = $this->employmentPost->department->name;
+            }
+
+            if ($this->employmentPost->businessUnit) {
+                $businessUnitName = $this->employmentPost->businessUnit->name;
+            }
+
+            $vcard->org($departmentName, $businessUnitName);
+        }
+
         $svg = (new Writer(
             new ImageRenderer(
                 new RendererStyle(192, 0, null, null, Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(45, 55, 72))),
