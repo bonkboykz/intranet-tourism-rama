@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Stories from "react-insta-stories";
 import DeleteIcon from "../../../../public/assets/DeleteRedButton.svg";
-import { useCsrf } from "@/composables";
+import { createPortal } from "react-dom";
 
-const StoryViewer = ({ stories, onClose, user, onViewed }) => {
-    // console.log("USER", user);
-
-    const csrfToken = useCsrf();
-
+const StoryViewer = ({ stories, onClose, user, onViewed, onDelete }) => {
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-
-    useEffect(() => {
-        setIsPaused(showDeletePopup);
-    }, [showDeletePopup]);
 
     const handleStoryStart = async () => {
         onViewed(stories[currentStoryIndex]);
@@ -44,30 +36,28 @@ const StoryViewer = ({ stories, onClose, user, onViewed }) => {
 
     const API_URL = "/api/posts/posts";
 
+    const handleClosePopup = () => {
+        setShowDeletePopup(false);
+
+        setIsPaused(false);
+    };
+
     const handleDelete = async () => {
         const { postId } = stories[currentStoryIndex];
-        try {
-            const response = await fetch(`${API_URL}/${postId}`, {
-                method: "DELETE",
-                headers: {
-                    Accept: "application/json",
-                    "X-CSRF-Token": csrfToken,
-                },
-            });
 
-            if (response.ok) {
+        try {
+            const response = await axios.delete(`${API_URL}/${postId}`);
+
+            if ([200, 201, 204].includes(response.status)) {
                 console.log(`Post with ID ${postId} deleted successfully.`);
-                window.location.reload();
+                onDelete();
             } else {
                 console.error(`Failed to delete post with ID ${postId}.`);
             }
         } catch (error) {
             console.error(`Error deleting post with ID ${postId}:`, error);
         }
-        setShowDeletePopup(false);
-    };
 
-    const handleClosePopup = () => {
         setShowDeletePopup(false);
     };
 
@@ -105,35 +95,27 @@ const StoryViewer = ({ stories, onClose, user, onViewed }) => {
                     justifyContent: "center",
                     flexDirection: "column",
                 }}
-                onClick={(e) => {
-                    if (!showDeletePopup) {
-                        if (e.clientX < window.innerWidth / 2) {
-                            handlePrevStory();
-                        } else {
-                            handleNextStory();
-                        }
-                    }
-                }}
+                // onClick={(e) => {
+                //     if (!showDeletePopup) {
+                //         if (e.clientX < window.innerWidth / 2) {
+                //             handlePrevStory();
+                //         } else {
+                //             handleNextStory();
+                //         }
+                //     }
+                // }}
             >
                 <div
+                    className="relative bg-white p-[12px]"
                     style={{
-                        position: "relative",
-                        backgroundColor: "white",
                         borderRadius: "8px",
-                        padding: "12px",
                         boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.2)",
                         maxWidth: "400px",
                         maxHeight: "700px",
                         overflow: "hidden",
                     }}
                 >
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                        }}
-                    >
+                    <div className="flex items-center justify-between">
                         <div
                             style={{
                                 display: "flex",
@@ -174,7 +156,13 @@ const StoryViewer = ({ stories, onClose, user, onViewed }) => {
                         </div>
                         <button
                             type="button"
-                            onClick={() => setShowDeletePopup(true)}
+                            onClick={(e) => {
+                                e.preventDefault();
+
+                                setIsPaused(true);
+
+                                setShowDeletePopup(true);
+                            }}
                             style={{
                                 border: "none",
                                 background: "none",
@@ -211,9 +199,6 @@ const StoryViewer = ({ stories, onClose, user, onViewed }) => {
                                 }}
                             />
                         </button>
-                        {/* <button onClick={onClose} className="modal-close-button pt-3 px-2">
-                            <img src="/assets/cancel.svg" alt="Close icon" className="w-6 h-6" />
-                        </button> */}
                     </div>
                     <Stories
                         stories={stories.map((story) => ({
@@ -232,6 +217,8 @@ const StoryViewer = ({ stories, onClose, user, onViewed }) => {
                         storyStyles={{
                             width: "360px",
                         }}
+                        onNext={handleNextStory}
+                        onPrevious={handlePrevStory}
                     />
                     {stories[currentStoryIndex]?.text && (
                         <div
@@ -252,91 +239,95 @@ const StoryViewer = ({ stories, onClose, user, onViewed }) => {
                     )}
                 </div>
             </div>
-            {showDeletePopup && (
-                <div
-                    style={{
-                        position: "fixed",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        backgroundColor: "white",
-                        borderRadius: "16px",
-                        padding: "20px",
-                        boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.2)",
-                        zIndex: 10000,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        minWidth: "400px",
-                    }}
-                >
+            {showDeletePopup &&
+                createPortal(
                     <div
                         style={{
-                            marginBottom: "20px",
-                            fontWeight: "bold",
-                            fontSize: "larger",
-                        }}
-                    >
-                        <h2>Delete Story?</h2>
-                    </div>
-                    <div
-                        style={{
+                            position: "fixed",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            backgroundColor: "white",
+                            borderRadius: "16px",
+                            padding: "20px",
+                            boxShadow: "0px 0px 12px rgba(0, 0, 0, 0.2)",
+                            zIndex: 10000,
                             display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
                             justifyContent: "center",
-                            width: "100%",
+                            minWidth: "400px",
                         }}
                     >
-                        <button
-                            onClick={handleDelete}
+                        <div
                             style={{
-                                backgroundColor: "white",
-                                color: "#333",
-                                border: "1px solid #ccc",
-                                borderRadius: "25px",
-                                width: "80px",
-                                padding: "10px 20px",
-                                cursor: "pointer",
-                                marginRight: "16px",
-                                transition: "background-color 0.3s, color 0.3s", // For smooth transition
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = "#f5f5f5";
-                                e.target.style.color = "#000";
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "white";
-                                e.target.style.color = "#333";
+                                marginBottom: "20px",
+                                fontWeight: "bold",
+                                fontSize: "larger",
                             }}
                         >
-                            Yes
-                        </button>
+                            <h2>Delete Story?</h2>
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <button
+                                onClick={handleDelete}
+                                style={{
+                                    backgroundColor: "white",
+                                    color: "#333",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "25px",
+                                    width: "80px",
+                                    padding: "10px 20px",
+                                    cursor: "pointer",
+                                    marginRight: "16px",
+                                    transition:
+                                        "background-color 0.3s, color 0.3s", // For smooth transition
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = "#f5f5f5";
+                                    e.target.style.color = "#000";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = "white";
+                                    e.target.style.color = "#333";
+                                }}
+                            >
+                                Yes
+                            </button>
 
-                        <button
-                            onClick={handleClosePopup}
-                            style={{
-                                backgroundColor: "#E53935",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "25px",
-                                width: "80px",
-                                padding: "10px 20px",
-                                cursor: "pointer",
-                                marginRight: "10px",
-                                transition: "background-color 0.3s, color 0.3s", // For smooth transition
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = "#d32f2f";
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "#E53935";
-                            }}
-                        >
-                            No
-                        </button>
-                    </div>
-                </div>
-            )}
+                            <button
+                                onClick={handleClosePopup}
+                                style={{
+                                    backgroundColor: "#E53935",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "25px",
+                                    width: "80px",
+                                    padding: "10px 20px",
+                                    cursor: "pointer",
+                                    marginRight: "10px",
+                                    transition:
+                                        "background-color 0.3s, color 0.3s", // For smooth transition
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = "#d32f2f";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = "#E53935";
+                                }}
+                            >
+                                No
+                            </button>
+                        </div>
+                    </div>,
+                    document.body
+                )}
         </div>
     );
 };

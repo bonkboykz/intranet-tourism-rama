@@ -240,13 +240,7 @@ const StoryNew = ({ userId }) => {
             userGroupedStories: userGroupedStories[0] ?? {
                 userId: id,
                 stories: [],
-                avatar: avatars[id] ?? {
-                    id: id,
-                    src: "",
-                    alt: `Avatar of ${id}`,
-                    name: "",
-                    fullName: "",
-                },
+                avatar: avatars[id],
                 allViewed: false,
             },
             otherUsersGroupedStories: otherUsersGroupedStories.filter(
@@ -254,6 +248,14 @@ const StoryNew = ({ userId }) => {
             ),
         };
     }, [storiesByUsers, viewedMap, avatars]);
+
+    const userAvatar = avatars[id] ?? {
+        id: id,
+        src: "",
+        alt: `Avatar of ${id}`,
+        name: "",
+        fullName: "",
+    };
 
     return (
         <div
@@ -268,7 +270,7 @@ const StoryNew = ({ userId }) => {
         >
             <PersonalStory
                 stories={userGroupedStories.stories}
-                avatar={userGroupedStories.avatar}
+                avatar={userAvatar}
                 handleAvatarClick={handleAvatarClick}
                 handlePlusButtonClick={handlePlusButtonClick}
                 handleFileChange={handleFileChange}
@@ -296,6 +298,13 @@ const StoryNew = ({ userId }) => {
                     onClose={handleCloseViewer}
                     user={selectedUser}
                     onViewed={markStoryAsViewed}
+                    onDelete={() => {
+                        setShowStoryViewer(false);
+                        setSelectedStory(null);
+                        setSelectedUser(null);
+
+                        fetchStories();
+                    }}
                 />
             )}
             {isPopupOpen &&

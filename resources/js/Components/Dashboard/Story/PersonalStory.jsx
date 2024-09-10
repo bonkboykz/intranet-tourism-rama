@@ -6,8 +6,6 @@ export function PersonalStory({
     handleFileChange,
     fileInputRef,
 }) {
-    console.log("PersonalStory", avatar, stories);
-
     return (
         <div
             style={{
