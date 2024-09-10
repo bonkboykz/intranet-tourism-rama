@@ -16,6 +16,7 @@ import { UserProfileAvatar } from "../UserProfileAvatar";
 import Comment from "../Comment";
 import { useLayoutEffect } from "react";
 import { DeletePopup } from "../DeletePopup";
+import LikesPopup from "../LikesPopup";
 
 const renderContentWithTags = (content, mentions) => {
     const mentionData = mentions ? JSON.parse(mentions) : [];
@@ -159,15 +160,21 @@ export function DefaultPostCard({ post }) {
     const [showModal, setShowModal] = useState(false);
     const [showCommentsModal, setShowCommentsModal] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [showLikesPopup, setShowLikesPopup] = useState(false);
 
     useLayoutEffect(() => {
-        if (!showModal && !showCommentsModal && !showDeletePopup) {
+        if (
+            !showModal &&
+            !showCommentsModal &&
+            !showDeletePopup &&
+            !showLikesPopup
+        ) {
             document.body.style.overflow = "auto";
             return;
         }
 
         document.body.style.overflow = "hidden";
-    }, [showModal, showCommentsModal, showDeletePopup]);
+    }, [showModal, showCommentsModal, showDeletePopup, showLikesPopup]);
 
     const [isDeleted, setIsDeleted] = useState(false);
 
@@ -277,30 +284,13 @@ export function DefaultPostCard({ post }) {
         try {
             const newType =
                 post.type === "announcement" ? "post" : "announcement";
-            const response = await fetch(`/api/posts/posts/${post.id}`, {
-                method: "PUT",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "X-CSRF-Token": csrfToken,
-                },
-                // body: JSON.stringify({ type: newType }),
-                body: JSON.stringify({
-                    type: newType,
-                    user_id: String(post.user.id),
-                    visibility: "public",
-                }),
+            const response = await axios.put(`/api/posts/posts/${post.id}`, {
+                type: newType,
+                user_id: String(post.user.id),
+                visibility: "public",
             });
 
             if (response.ok) {
-                // Update the postData state with the new type
-                // setPostData((prevData) =>
-                //     prevData.map((p) =>
-                //         p.id === post.id ? { ...p, type: newType } : p
-                //     )
-                // );
-                // setIsPopupOpen(false);
-                // fetchData();
                 setShowDetails(false);
                 refetchPost();
             } else {
@@ -384,6 +374,10 @@ export function DefaultPostCard({ post }) {
                             loggedInUserId={loggedInUserId}
                             postId={post.id}
                             onLike={refetchPost}
+                            onUnlike={refetchPost}
+                            onLikesClick={() => {
+                                setShowLikesPopup(true);
+                            }}
                         />
                     </div>
                     <Comments
@@ -448,6 +442,15 @@ export function DefaultPostCard({ post }) {
                             onDelete={handleDelete}
                         />
                     </div>,
+                    document.body
+                )}
+
+            {showLikesPopup &&
+                createPortal(
+                    <LikesPopup
+                        onClose={() => setShowLikesPopup(false)}
+                        postId={cachedPost.id}
+                    />,
                     document.body
                 )}
         </>

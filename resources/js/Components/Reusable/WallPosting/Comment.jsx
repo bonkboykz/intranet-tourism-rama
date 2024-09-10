@@ -183,12 +183,11 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
     // Function to handle liking a post
     const handleLike = async (postId) => {
         try {
-            const response = await fetch(`/api/posts/posts/${postId}/like`, {
-                method: "POST",
-                headers: { "X-CSRF-Token": csrfToken },
-            });
+            const response = await axios.post(
+                `/api/posts/posts/${postId}/like`
+            );
 
-            if (response.ok) {
+            if ([200, 201, 204].includes(response.status)) {
                 setLikedPosts((prevLikedPosts) => ({
                     ...prevLikedPosts,
                     [postId]: true,
@@ -205,12 +204,11 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
     // Function to handle unliking a post
     const handleUnlike = async (postId) => {
         try {
-            const response = await fetch(`/api/posts/posts/${postId}/unlike`, {
-                method: "POST",
-                headers: { "X-CSRF-Token": csrfToken },
-            });
+            const response = await axios.post(
+                `/api/posts/posts/${postId}/unlike`
+            );
 
-            if (response.ok) {
+            if ([200, 201, 204].includes(response.status)) {
                 setLikedPosts((prevLikedPosts) => ({
                     ...prevLikedPosts,
                     [postId]: false,

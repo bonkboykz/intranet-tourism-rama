@@ -11,6 +11,7 @@ import "../css/InputBox.css";
 import "../../../Pages/Calendar/index.css";
 import Emoji from "../../../../../public/assets/EmojiIcon.svg";
 import { useCsrf } from "@/composables";
+import axios from "axios";
 
 function ShareYourThoughts({
     userId,
@@ -88,7 +89,7 @@ function ShareYourThoughts({
         setMentionQuery("");
     };
 
-    const handleClickSend = () => {
+    const handleClickSend = async () => {
         // Prevent triggering multiple times
         if (isSending) return;
 
@@ -170,37 +171,32 @@ function ShareYourThoughts({
             formData.append("accessibilities[0][accessable_id]", filterId);
         }
 
-        fetch(endpoint, {
-            method: "POST",
-            body: formData,
-            headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
-        })
-            .then((response) => {
-                if (!response.ok)
-                    throw new Error("Network response was not ok");
-            })
-            .then(() => {
-                // Reset state
-                setInputValue("");
-                setAttachments([]);
-                setFileNames([]);
-                // setTag([]);
-                setTag(""); // Reset tag as it is a string
-                setChosenPeople([]);
-                setChosenEvent([]);
-                if (!isComment) {
-                    window.location.reload();
-                } else {
-                    // Handle any other actions required after posting a comment, e.g., reloading comments
-                    onCommentPosted();
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            })
-            .finally(() => {
-                setIsSending(false); // Reset the flag once the request is complete
-            });
+        try {
+            const response = await axios.post(endpoint, formData);
+
+            if ([401, 403, 500].includes(response.status)) {
+                throw new Error("Network response was not ok");
+            }
+
+            // Reset state
+            setInputValue("");
+            setAttachments([]);
+            setFileNames([]);
+            // setTag([]);
+            setTag(""); // Reset tag as it is a string
+            setChosenPeople([]);
+            setChosenEvent([]);
+            if (!isComment) {
+                window.location.reload();
+            } else {
+                // Handle any other actions required after posting a comment, e.g., reloading comments
+                onCommentPosted();
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setIsSending(false); // Reset the flag once the request is complete
+        }
     };
 
     useEffect(() => {

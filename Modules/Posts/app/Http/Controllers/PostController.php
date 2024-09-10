@@ -347,4 +347,25 @@ class PostController extends Controller
 
         return response()->noContent();
     }
+
+    public function likes($id)
+    {
+        $post = Post::where('id', $id)->firstOrFail();
+        // get all users who liked the post
+
+        $users = User::whereIn('id', $post->likes)->get();
+
+        // contsuct object with only name and image
+        $users = $users->map(function ($user) {
+            return [
+                'name' => $user->name,
+                'image' => $user->profile->image,
+            ];
+        });
+
+
+        return response()->json([
+            'data' => $users,
+        ]);
+    }
 }

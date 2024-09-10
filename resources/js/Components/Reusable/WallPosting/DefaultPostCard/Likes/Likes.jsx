@@ -5,18 +5,14 @@ import { useState } from "react";
 import "./Likes.css";
 import LikesPopup from "../../LikesPopup";
 
-export function Likes({ likes, loggedInUserId, postId, onLike }) {
-    const togglePopup = (index) => {
-        setIsPopupOpen((prevState) => {
-            // If the clicked popup is already open, close it
-            if (prevState[index]) {
-                return {};
-            }
-            // Otherwise, open the clicked popup and close all others
-            return { [index]: true };
-        });
-    };
-
+export function Likes({
+    likes,
+    loggedInUserId,
+    postId,
+    onLike,
+    onUnlike,
+    onLikesClick,
+}) {
     // Function to handle liking a post
     const handleLike = async (postId) => {
         try {
@@ -25,11 +21,6 @@ export function Likes({ likes, loggedInUserId, postId, onLike }) {
             );
 
             if ([200, 201, 204].includes(response.status)) {
-                // setLikedPosts((prevLikedPosts) => ({
-                //     ...prevLikedPosts,
-                //     [postId]: true,
-                // }));
-
                 onLike(); // Refetch the data to update the post likes count
             } else {
                 console.error("Failed to like the post");
@@ -47,26 +38,13 @@ export function Likes({ likes, loggedInUserId, postId, onLike }) {
             );
 
             if ([200, 201, 204].includes(response.status)) {
-                // setLikedPosts((prevLikedPosts) => ({
-                //     ...prevLikedPosts,
-                //     [postId]: false,
-                // }));
-
-                onLike(); // Refetch the data to update the post likes count
+                onUnlike(); // Refetch the data to update the post likes count
             } else {
                 console.error("Failed to unlike the post");
             }
         } catch (error) {
             console.error("Error unliking the post:", error);
         }
-    };
-
-    const handleLikesClick = (postId) => {
-        // Handle the display of liked users
-        // const likedUserNames = likedUsers[postId] ? Object.values(likedUsers[postId]) : [];
-        // alert(`Liked by: ${likedUserNames.join(", ")}`);
-        setSelectedPostId(postId);
-        setShowLikesPopup(true);
     };
 
     const likesCount = likes.length;
@@ -100,15 +78,13 @@ export function Likes({ likes, loggedInUserId, postId, onLike }) {
                 </button>
             )}
             {likesCount > 0 && (
-                <span className="text-sm font-medium">{likesCount}</span>
+                <span
+                    className="text-sm font-medium cursor-pointer"
+                    onClick={onLikesClick}
+                >
+                    {likesCount}
+                </span>
             )}
-
-            {/* <LikesPopup
-                show={showLikesPopup}
-                likedUsers={likedUsers}
-                onClose={() => setShowLikesPopup(false)}
-                commentId={selectedPostId}
-            /> */}
         </>
     );
 }
