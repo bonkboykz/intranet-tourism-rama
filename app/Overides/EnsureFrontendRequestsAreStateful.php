@@ -6,6 +6,7 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful as BaseEnsureFrontendRequestsAreStateful;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class EnsureFrontendRequestsAreStateful extends BaseEnsureFrontendRequestsAreStateful
 {
@@ -22,13 +23,13 @@ class EnsureFrontendRequestsAreStateful extends BaseEnsureFrontendRequestsAreSta
         if (is_null($domain) || Str::contains($domain, 'docs/api')) {
             return false;
         }
-        
+
         $domain = Str::replaceFirst('https://', '', $domain);
         $domain = Str::replaceFirst('http://', '', $domain);
         $domain = Str::endsWith($domain, '/') ? $domain : "{$domain}/";
-        
+
         $stateful = array_filter(config('sanctum.stateful', []));
-        
+
         // dd($domain, $stateful);
         return Str::is(Collection::make($stateful)->map(function ($uri) {
             return trim($uri) . '/*';

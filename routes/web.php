@@ -9,6 +9,7 @@ use App\Http\Controllers\departments;
 use App\Http\Controllers\fileManagement;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PusherController;
 use App\Http\Controllers\RequestController;
 use App\Models\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,8 @@ Route::post('/logout', function () {
 Route::get('/user/{id}/profile-qr', [ProfileController::class, 'profileQr'])->name('profileQr');
 
 Route::get('/csrf-token', \App\Http\Controllers\RefreshCsrfTokenController::class);
+action:
+Route::post('/pusher/user-auth', [PusherController::class, 'pusherAuth']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

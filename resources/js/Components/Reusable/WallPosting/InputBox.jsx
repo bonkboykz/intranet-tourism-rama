@@ -12,6 +12,7 @@ import "../../../Pages/Calendar/index.css";
 import Emoji from "../../../../../public/assets/EmojiIcon.svg";
 import { useCsrf } from "@/composables";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 function ShareYourThoughts({
     userId,
@@ -100,6 +101,8 @@ function ShareYourThoughts({
 
         setIsSending(true); // Set the flag to true to prevent multiple sends
 
+        console.log(attachments);
+
         const formData = new FormData();
 
         // Determine if it's a post or a comment
@@ -171,6 +174,8 @@ function ShareYourThoughts({
             formData.append("accessibilities[0][accessable_id]", filterId);
         }
 
+        console.log(formData);
+
         try {
             const response = await axios.post(endpoint, formData);
 
@@ -187,7 +192,8 @@ function ShareYourThoughts({
             setChosenPeople([]);
             setChosenEvent([]);
             if (!isComment) {
-                window.location.reload();
+                // TODO: add handler to refetch or reload based on context
+                // window.location.reload();
             } else {
                 // Handle any other actions required after posting a comment, e.g., reloading comments
                 onCommentPosted();
@@ -454,13 +460,16 @@ function ShareYourThoughts({
                                             onClick={handleClickSend}
                                             className="flex send-button align-item justify-end"
                                         >
-                                            {isSending ? "" : ""}
-                                            <img
-                                                loading="lazy"
-                                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
-                                                alt="SEND"
-                                                className="h-6 w-6 max-md:mt-8"
-                                            />
+                                            {isSending ? (
+                                                <Loader2 className="w-6 h-6 animate-spin" />
+                                            ) : (
+                                                <img
+                                                    loading="lazy"
+                                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
+                                                    alt="SEND"
+                                                    className="h-6 w-6 max-md:mt-8"
+                                                />
+                                            )}
                                         </button>
                                     </div>
                                 </>

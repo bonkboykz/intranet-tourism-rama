@@ -2,6 +2,7 @@
 
 
 use \Illuminate\Http\UploadedFile;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 
@@ -27,6 +28,17 @@ if (!function_exists('uploadFile')) {
         //     $uploadedFile->getSize(),
         // );
         // dd($uploadedFile);
+
+        // $output = new ConsoleOutput();
+        // $output->writeln($uploadedFile->extension());
+        // $output->writeln($uploadedFile->clientExtension());
+        // $output->writeln($uploadedFile->getMimeType());
+        // $output->writeln($uploadedFile->getSize());
+        // $output->writeln($uploadedFile->getClientOriginalName());
+        // $output->writeln($uploadedFile->path());
+        // $output->writeln($uploadedFile->getPathname());
+        // $output->writeln($uploadedFile->dimensions());
+
         $fileRef['extension'] = strtolower($uploadedFile->extension() ?? $uploadedFile->clientExtension());
         $fileRef['mime_type'] = $uploadedFile->getMimeType();
         $fileRef['filesize'] = $uploadedFile->getSize();

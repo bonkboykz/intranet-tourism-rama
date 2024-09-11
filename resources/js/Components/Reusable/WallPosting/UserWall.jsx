@@ -7,32 +7,31 @@ import { useContext } from "react";
 import { WallContext } from "./WallContext";
 
 export function UserWall({ onLoad, hasMore, posts, userId }) {
-    return (
-        <InfiniteScroll
-            pageStart={1}
-            loadMore={onLoad}
-            hasMore={hasMore}
-            loader={
-                <div
-                    className="loader h-full w-full min-h-32 flex items-center justify-center"
-                    key={0}
-                >
-                    <Loader2 className="w-12 h-12 animate-spin" />
-                </div>
-            }
-        >
-            {posts
-                .filter((post) => {
-                    const isAuthor = post.user.id === userId;
-                    const isMentioned =
-                        post.mentions &&
-                        JSON.parse(post.mentions).some(
-                            (mention) => mention.id == userId
-                        );
+    const filderedPosts = posts.filter((post) => {
+        const isAuthor = post.user.id === userId;
+        const isMentioned =
+            post.mentions &&
+            JSON.parse(post.mentions).some((mention) => mention.id == userId);
 
-                    return isAuthor || isMentioned;
-                })
-                .map((post, index) => {
+        return isAuthor || isMentioned;
+    });
+
+    return (
+        <>
+            <InfiniteScroll
+                pageStart={1}
+                loadMore={onLoad}
+                hasMore={hasMore}
+                loader={
+                    <div
+                        className="loader h-full w-full min-h-32 flex items-center justify-center"
+                        key={0}
+                    >
+                        <Loader2 className="w-12 h-12 animate-spin" />
+                    </div>
+                }
+            >
+                {filderedPosts.map((post, index) => {
                     return (
                         <div className="w-full" key={post.id}>
                             {/* Conditional Rendering for Announcement */}
@@ -256,6 +255,7 @@ export function UserWall({ onLoad, hasMore, posts, userId }) {
 
                     // wallposting
                 })}
-        </InfiniteScroll>
+            </InfiniteScroll>
+        </>
     );
 }

@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
     // ->withSchedule(function (Schedule $schedule) {
     //     $schedule->job(DepartmentWishBirthday::class)->dailyAt('07:00');
     // })
+    // ->withBroadcasting(
+    //     __DIR__ . '/../routes/channels.php',
+    //     ['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum']],
+    // )
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

@@ -128,3 +128,13 @@ make dev
 # Link storage
 make storage_link
 ```
+
+## Deployment Caveats
+
+### post_max_size
+
+1. php -i | grep php.ini
+2. sudo nano /etc/php/8.3/cli/php.ini
+3. post_max_size = 1024M
+4. upload_max_filesize = 1024M
+5. sudo service php8.3-fpm restart

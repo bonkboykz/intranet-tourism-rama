@@ -38,6 +38,8 @@ function OutputData({
             }}
         >
             <Polls polls={polls} />
+
+            {/* TODO: PersonalWall is used on communities page, which could trigger multiple loads */}
             {userId ? (
                 <UserWall
                     posts={someonesPosts}

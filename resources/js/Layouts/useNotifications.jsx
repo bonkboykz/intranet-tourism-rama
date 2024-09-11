@@ -42,17 +42,54 @@ export function useSetupNotifications() {
 
     useEffect(() => {
         // Listen for notifications on the user's private channel
-        window.Echo.private(`user.${user.id}`).listen(
-            ".notification-event",
-            (e) => {
-                setNotifications([...notifications, e.notification]);
-                console.log("New notification received:", e.notification);
-            }
-        );
+        // window.Echo.private(`user.${user.id}`).listen(
+        //     ".notification-event",
+        //     (e) => {
+        //         setNotifications([...notifications, e.notification]);
+        //         console.log("New notification received:", e.notification);
+        //     }
+        // );
+
+        console.log(`Listening for notifications on users.${user.id}`);
+
+        window.Echo.private(`users.${user.id}`)
+            .notification((notification) => {
+                console.log("Notification received:", notification);
+            })
+            .listenToAll((event, data) => {
+                console.log(event, data);
+            });
+
+        // window.Echo.channel(`users.${user.id}`).listenToAll((event, data) => {
+        //     // do what you need to do based on the event name and data
+        //     console.log(event, data);
+        // });
+        // .listen(
+        //     ".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated",
+        //     (e) => {
+        //         // setNotifications([...notifications, e.notification]);
+        //         console.log("New notification received:", e.notification);
+        //     }
+        // )
+        // .listen(".App\\Notifications\\RequestNotification", (e) => {
+        //     // setNotifications([...notifications, e.notification]);
+        //     console.log("New notification received:", e.notification);
+        // });
+
+        // window.Echo.private(`user.${user.id}`)
+        //     .notification((notification) => {
+        //         console.log("Notification received:", notification);
+        //     })
+        //     .listen(".notification-event", (e) => {
+        //         setNotifications([...notifications, e.notification]);
+        //         console.log("New notification received:", e.notification);
+        //     });
 
         return () => {
+            console.log(`Leaving users.${user.id}`);
+            window.Echo.leave(`users.${user.id}`);
             // Unsubscribe from the private channel when the component is unmounted
-            window.Echo.leaveChannel(`user.${user.id}`);
+            // window.Echo.leaveChannel(`user.${user.id}`);
         };
     }, []);
 

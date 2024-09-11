@@ -208,8 +208,6 @@ class PostController extends Controller
 
         request()->merge(['user_id' => Auth::id()]);
         if (request()->has('accessibilities')) {
-
-
             $accessibilities = request('accessibilities');
             foreach ($accessibilities as $accessibility) {
                 $validatedAccessibilities[] = validator($accessibility, ...PostAccessibility::rules('createFromPost'))->validated();
@@ -224,10 +222,11 @@ class PostController extends Controller
         try {
             $post->fill($validated)->save();
             $post->storeAttachments();
-            if (request()->has('accessibilities')) {
 
+            if (request()->has('accessibilities')) {
                 $post->accessibilities()->createMany($validatedAccessibilities);
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();

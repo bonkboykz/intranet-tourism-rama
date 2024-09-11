@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessageEvent;
 use App\Models\Request;
-use App\Notifications\RequestNotification;
+use App\Notifications\GroupJoinRequestNotification;
 use Illuminate\Http\Request as HttpRequest;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
@@ -55,7 +56,10 @@ class RequestController extends Controller
         ]);
 
         // Notify the superuser with a reference to the request
-        $superuser->notify(new RequestNotification($newRequest));
+        $superuser->notify(new GroupJoinRequestNotification($newRequest));
+
+        $event = new NewMessageEvent($superuser, 'New request to join a group.');
+        broadcast($event)->via('reverb');
 
         return response()->json(['status' => 'request_sent']);
     }
@@ -80,7 +84,8 @@ class RequestController extends Controller
         $group->members()->attach($requestToUpdate->user_id, ['role' => 'member']);
 
         $user = User::find($requestToUpdate->user_id);
-        $user->notify(new RequestNotification($requestToUpdate));
+        $user->notify(new GroupJoinRequestNotification($requestToUpdate));
+
 
         return response()->json(['status' => $requestToUpdate->status]);
     }
@@ -100,10 +105,11 @@ class RequestController extends Controller
 
 
         $user = User::find($requestToUpdate->user_id);
+        $user->notify(new GroupJoinRequestNotification($requestToUpdate));
 
-        $output = new ConsoleOutput();
-        $output->writeln('User: ' . $user);
-        $user->notify(new RequestNotification($requestToUpdate));
+        $event = new NewMessageEvent($user, 'Your request to join a group has been rejected.');
+        broadcast($event)->via('reverb');
+
 
         return response()->json(['status' => $requestToUpdate->status]);
     }

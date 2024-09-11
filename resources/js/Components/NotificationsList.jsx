@@ -69,7 +69,7 @@ function NotificationsList({ activeTab, notifications }) {
                                 />
                             )}
                             {notification.type ===
-                                "App\\Notifications\\RequestNotification" && (
+                                "App\\Notifications\\GroupJoinRequestNotification" && (
                                 <img
                                     className="absolute h-5 w-5 left-20 mt-14 bg-blue"
                                     src="/assets/noti-icon-react/community_I.svg"

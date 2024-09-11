@@ -20,6 +20,7 @@ use Modules\Resources\Models\ResourceAccess;
 use Modules\Settings\Models\UserPreference;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class User extends Model implements AuditableContract
 {
@@ -127,5 +128,10 @@ class User extends Model implements AuditableContract
     {
         // get communities from communities member and leave only them
         return $this->hasManyThrough(Community::class, CommunityMember::class, 'user_id', 'id', 'id', 'community_id');
+    }
+
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'users.' . $this->id;
     }
 }

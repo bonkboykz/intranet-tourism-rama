@@ -1,32 +1,39 @@
 <?php
-
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use App\Models\Request;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class RequestNotification extends Notification
+// This notification informs an admin or superuser when a user requests to join a group.
+class GroupJoinRequestNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public $group;
+    public $user;
+
     public $request;
 
-    public function __construct(Request $request)
+    // public function __construct($request, $group, $user)
+    // {
+    //     $this->group = $group;
+    //     $this->user = $user;
+    // }
+
+
+    public function __construct($request)
     {
         $this->request = $request;
     }
 
-    // Define which channels the notification will be sent on
     public function via($notifiable)
     {
         return ['database', 'broadcast'];
     }
 
-    // Database notification format
     public function toDatabase($notifiable)
     {
         if ($this->request->status !== 'pending') {
@@ -63,12 +70,12 @@ class RequestNotification extends Notification
         ]);
     }
 
-    // Optional: Email notification (if you want to notify via email as well)
+
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('New request to join a group.')
-            ->action('View Request', url('/requests/' . $this->request->id))
-            ->line('Please approve or reject the request.');
+            ->line($this->user->name . ' has requested to join the group ' . $this->group->name)
+            ->action('Review Request', url('/groups/' . $this->group->id . '/requests'))
+            ->line('Please review the request and take appropriate action.');
     }
 }
