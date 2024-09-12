@@ -40,34 +40,39 @@ const FeaturedEvents = () => {
             >
                 Upcoming Events
             </h2>
-            <hr className="underline" />
-            <ul className="featured-events-list text-ellipsis overflow-hidden whitespace-nowrap">
-                {featuredEvents.map((event) => (
-                    <React.Fragment key={event.id}>
-                        <EventItem
-                            id={event.id}
-                            start_date={new Date(event.start_at).toLocaleString(
-                                "en-US",
-                                {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                }
-                            )}
-                            end_date={new Date(event.end_at).toLocaleString(
-                                "en-US",
-                                {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                }
-                            )}
-                            title={event.title}
-                        />
-                        <hr className="event-separator" />
-                    </React.Fragment>
-                ))}
+            <hr style={{marginTop: '5px', marginBottom: '5px'}} className="underline"/>
+            <ul className="featured-events-list text-ellipsis mt-2 mb-2 overflow-hidden whitespace-nowrap">
+                {featuredEvents.length === 0 ? (
+                    <p>No Upcoming Events</p>
+                ) : (
+                    featuredEvents.map((event) => (
+                        <React.Fragment key={event.id}>
+                            <EventItem
+                                id={event.id}
+                                start_date={new Date(event.start_at).toLocaleString(
+                                    "en-US",
+                                    {
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                    }
+                                )}
+                                end_date={new Date(event.end_at).toLocaleString(
+                                    "en-US",
+                                    {
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                    }
+                                )}
+                                title={event.title}
+                            />
+                            <hr className="event-separator"/>
+                        </React.Fragment>
+                    ))
+                )}
             </ul>
+            <hr style={{marginTop: '5px', marginBottom: '5px'}} className="underline"/>
             <a href="../calendar">
                 <button className="view-all-btn">
                     VIEW ALL
