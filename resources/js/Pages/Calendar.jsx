@@ -17,6 +17,7 @@ import axios from "axios";
 
 function Calendar() {
     const [events, setEvents] = useState([]);
+    const [showAllEvents, setShowAllEvents] = useState(false);
     const [filteredEvents, setFilteredEvents] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -44,6 +45,11 @@ function Calendar() {
     const [eventId, setEventId] = useState(null);
     const calendarRef = useRef(null);
 
+    const displayedEvents = showAllEvents ? filteredEvents : filteredEvents.slice(0, 5);
+
+    const toggleShowAllEvents = () => {
+        setShowAllEvents(!showAllEvents);
+    };
     useEffect(() => {
         fetchEvents();
         fetchBirthdayEvents(); // Fetch and add birthday events
@@ -210,6 +216,7 @@ function Calendar() {
             console.error("Error fetching birthdays: ", error);
         }
     };
+
 
     const filterEvents = () => {
         if (searchTerm.trim() === "") {
@@ -541,12 +548,9 @@ function Calendar() {
                         month: "Month",
                         day: "Day",
                     }}
-                    events={filteredEvents}
+                    events={displayedEvents}
                     eventDidMount={(info) => {
-                        console.log(
-                            "eventDidMount called for event:",
-                            info.event
-                        );
+                        console.log("eventDidMount called for event:", info.event);
 
                         if (info.event.extendedProps.isBirthday) {
                             console.log(
@@ -554,7 +558,6 @@ function Calendar() {
                                 info.event.extendedProps.names
                             );
 
-                            // Clear any default styles
                             info.el.style.backgroundColor = "transparent";
                             info.el.style.border = "none";
                             info.el.style.color = "black";
@@ -563,7 +566,6 @@ function Calendar() {
                             let namesList;
 
                             if (namesArray.length > 1) {
-                                // Use numbering if more than one person
                                 namesList = namesArray
                                     .map(
                                         (name, index) =>
@@ -571,64 +573,47 @@ function Calendar() {
                                     )
                                     .join("");
                             } else {
-                                // Display without numbering if only one person
                                 namesList = `<li>${namesArray[0]}</li>`;
                             }
 
                             const popoverContent = `
-                                <div className="">
-                                    <p class="event-title"><strong>Birthdays:</strong></p>
-                                    <ul>${namesList}</ul>
-                                </div>
-                            `;
+                            <div className="">
+                                <p class="event-title"><strong>Birthdays:</strong></p>
+                                <ul>${namesList}</ul>
+                            </div>
+                        `;
 
                             new bootstrap.Popover(info.el, {
-                                placement: "bottom", // Position popover below the cake icon
+                                placement: "bottom",
                                 trigger: "hover",
                                 container: "body",
                                 customClass: "custom-popover",
                                 content: popoverContent,
                                 html: true,
-                                offset: "0,10", // Adjust the offset if necessary (e.g., 0 pixels horizontally, 10 pixels vertically)
+                                offset: "0,10",
                             });
                         } else {
-                            console.log(
-                                "Non-birthday event detected:",
-                                info.event
-                            );
-                            const formattedStartTime = new Date(
-                                info.event.start
-                            ).toLocaleString("en-US", {
+                            const formattedStartTime = new Date(info.event.start).toLocaleString("en-US", {
                                 hour: "numeric",
                                 minute: "numeric",
                                 hour12: true,
                             });
 
-                            // const urlContent = (info.event.url && info.event.url.trim() && info.event.url !== 'null')
-                            //     ? `<p><strong>Url:</strong> ${info.event.url}</p>`
-                            //     : '';
+                            const descContent = info.event.extendedProps.description
+                                ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
+                                : "";
 
-                            const descContent =
-                                info.event.extendedProps.description &&
-                                info.event.extendedProps.description.trim() &&
-                                info.event.extendedProps.description !== "null"
-                                    ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
-                                    : "";
-
-                            const VenueContent =
-                                info.event.extendedProps.venue &&
-                                info.event.extendedProps.venue.trim() &&
-                                info.event.extendedProps.venue !== "null"
-                                    ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
-                                    : "";
+                            const venueContent = info.event.extendedProps.venue
+                                ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
+                                : "";
 
                             const popoverContent = `
-                                <div>
-                                    <p class="event-title"><strong>${info.event.title}</strong></p>
-                                    <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
-                                    ${VenueContent}
-                                    ${descContent}
-                                </div>`;
+                            <div>
+                                <p class="event-title"><strong>${info.event.title}</strong></p>
+                                <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
+                                ${venueContent}
+                                ${descContent}
+                            </div>`;
 
                             new bootstrap.Popover(info.el, {
                                 placement: "auto",
@@ -641,15 +626,10 @@ function Calendar() {
                         }
                     }}
                     eventContent={(eventInfo) => {
-                        // console.log("eventContent called for event:", eventInfo.event);
+                        const isBirthday = eventInfo.event.extendedProps.isBirthday;
 
-                        const isBirthday =
-                            eventInfo.event.extendedProps.isBirthday;
                         if (isBirthday) {
-                            const names =
-                                eventInfo.event.extendedProps.names || [];
-                            // console.log("Rendering birthday icon for:", names);
-
+                            const names = eventInfo.event.extendedProps.names || [];
                             return (
                                 <div
                                     style={{
@@ -658,31 +638,30 @@ function Calendar() {
                                         width: "100%",
                                     }}
                                 >
-                                    <span
-                                        role="img"
-                                        aria-label="cake"
-                                        style={{
-                                            position: "absolute",
-                                            bottom: "0", // Adjust to position as needed
-                                            left: "5px", // Adjust to position as needed
-                                            fontSize: "1.8em",
-                                            cursor: "pointer",
-                                            zIndex: 1, // Ensure it appears above other content
-                                        }}
-                                        title={names.join(", ")} // Show names on hover
-                                    >
-                                        🎂
-                                    </span>
+                                <span
+                                    role="img"
+                                    aria-label="cake"
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "0",
+                                        left: "5px",
+                                        fontSize: "1.8em",
+                                        cursor: "pointer",
+                                        zIndex: 1,
+                                    }}
+                                    title={names.join(", ")}
+                                >
+                                    🎂
+                                </span>
                                 </div>
                             );
                         } else {
-                            const borderColor =
-                                eventInfo.event.backgroundColor || "gray";
+                            const borderColor = eventInfo.event.backgroundColor || "gray";
+
                             return (
                                 <div
                                     style={{
-                                        backgroundColor:
-                                            eventInfo.backgroundColor,
+                                        backgroundColor: eventInfo.backgroundColor,
                                         padding: "10px 15px",
                                         borderRadius: "2px",
                                         display: "flex",
@@ -707,8 +686,8 @@ function Calendar() {
                                         className="event-title"
                                         style={{ color: "white", flexGrow: 1 }}
                                     >
-                                        {eventInfo.event.title}
-                                    </span>
+                                    {eventInfo.event.title}
+                                </span>
                                     <img
                                         src={pencilIcon}
                                         alt="Edit"
@@ -724,6 +703,20 @@ function Calendar() {
                         }
                     }}
                 />
+
+                {filteredEvents.length > 5 && (
+                    <button
+                        onClick={() => setShowAllEvents(!showAllEvents)}
+                        className="show-more-button"
+                        style={{
+                            color: "blue",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                        }}
+                    >
+                        {showAllEvents ? "Показать меньше" : "Показать больше"}
+                    </button>
+                )}
 
                 <div className="pb-10"></div>
 
