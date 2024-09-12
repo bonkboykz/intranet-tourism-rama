@@ -1,6 +1,8 @@
 import { useContext } from "react";
 
 import { WallContext } from "../WallContext";
+import { cn } from "@/Utils/cn";
+import { SpeakerIcon, Volume, Volume2 } from "lucide-react";
 
 export function AnnouncementPostCard({ announce }) {
     const { variant } = useContext(WallContext);
@@ -14,11 +16,7 @@ export function AnnouncementPostCard({ announce }) {
             )}
         >
             <div className="mb-2 flex items-center gap-1">
-                <img
-                    src={announce}
-                    className="flex-shrink-0 rounded-xl w-7 h-7"
-                    alt="Announcement"
-                />
+                <Volume2 className="w-6 h-6 text-white" />
                 <div className="text-white text-center font-bold text-lg	ml-2">
                     Announcement
                 </div>

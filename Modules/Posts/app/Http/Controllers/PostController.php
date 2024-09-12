@@ -22,76 +22,68 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        // Start with a query builder instance
-        $query = Post::query();
+        // // Check if the 'filter' parameter is present
+        // if ($request->has('filter')) {
+        //     // Apply the necessary filters to the query
+        //     if (in_array('birthday', $request->input('filter'))) {
+        //         $query->where('type', 'birthday');
+        //     }
 
-
-
-        // Check if the 'filter' parameter is present
-        if ($request->has('filter')) {
-            // Apply the necessary filters to the query
-            if (in_array('birthday', $request->input('filter'))) {
-                $query->where('type', 'birthday');
-            }
-
-            // If filters are present, paginate the filtered query
-            $data = $this->shouldPaginate($query);
-        } else if ($request->has('user_id')) {
-            $query->when(request()->has('with'), function ($query) {
-                $query->with(request('with'));
-            });
-
-            $query->when(request()->has('sort'), function ($query) {
-                foreach (request('sort') as $sort) {
-                    $query->orderBy(key($sort), current($sort) ?? 'asc');
-                }
-            });
-
-            // if trying to access another user posts, include mentions
-            $query->where(function ($query) use ($request) {
-                $userId = $request->input('user_id');
-
-                $query->where('user_id', $userId)
-                    ->orWhere(function ($query) use ($userId) {
-                        $query->where('mentions', '!=', null)
-                            ->whereJsonContains('mentions', [['id' => $userId]]);
-                    });
-            });
-
-            // combine Post::queryable() with the query
-            $data = $this->shouldPaginate($query);
-        } else {
-            $query = Post::queryable();
-            // If no filters are present, paginate using the predefined queryable method
-            // Logic for filtering based on community and department membership
-            if (!auth()->user()->hasRole('superadmin')) {
+        //     // If filters are present, paginate the filtered query
+        //     $data = $this->shouldPaginate($query);
+        // }
+        $query = Post::queryable();
+        // If no filters are present, paginate using the predefined queryable method
+        // Logic for filtering based on community and department membership
+        if (!auth()->user()->hasRole('superadmin')) {
+            $query->where(function ($query) {
+                // Filter by community if it exists
                 $query->where(function ($query) {
-                    // Filter by community if it exists
-                    $query->where(function ($query) {
-                        // Either community_id is null, or the community is public, or the user is a member of a private community
-                        $query->whereNull('community_id') // No community, pass
-                            ->orWhereHas('community', function ($query) {
-                                $query->where('type', 'public') // Public community
-                                    ->orWhereHas('members', function ($query) {
-                                        $query->where('user_id', Auth::id()); // Private community, user is a member
-                                    });
-                            });
-                    });
-
-                    // Filter by department if it exists
-                    $query->where(function ($query) {
-                        // Either department_id is null, or the user is employed in the department
-                        $query->whereNull('department_id') // No department, pass
-                            ->orWhereHas('department', function ($query) {
-                                $query->whereHas('employmentPosts', function ($query) {
-                                    $query->where('user_id', Auth::id()); // User is employed in the department
+                    // Either community_id is null, or the community is public, or the user is a member of a private community
+                    $query->whereNull('community_id') // No community, pass
+                        ->orWhereHas('community', function ($query) {
+                            $query->where('type', 'public') // Public community
+                                ->orWhereHas('members', function ($query) {
+                                    $query->where('user_id', Auth::id()); // Private community, user is a member
                                 });
-                            });
-                    });
+                        });
                 });
-            }
-            $data = $this->shouldPaginate($query);
+
+                // Filter by department if it exists
+                $query->where(function ($query) {
+                    // Either department_id is null, or the user is employed in the department
+                    $query->whereNull('department_id') // No department, pass
+                        ->orWhereHas('department', function ($query) {
+                            $query->whereHas('employmentPosts', function ($query) {
+                                $query->where('user_id', Auth::id()); // User is employed in the department
+                            });
+                        });
+                });
+            });
         }
+
+        $query->orderByRaw("CASE WHEN announced = true THEN 0 ELSE 1 END")
+            ->orderBy('updated_at', 'desc'); // Sort by created_at for all posts
+
+        $data = $this->shouldPaginate($query);
+
+        // $output = new ConsoleOutput();
+
+        // function replaceBindings($sql, $bindings)
+        // {
+        //     foreach ($bindings as $binding) {
+        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+        //         $sql = preg_replace('/\?/', $value, $sql, 1);
+        //     }
+        //     return $sql;
+        // }
+
+        // $sql = $query->toSql(); // Get the raw SQL query
+        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
+        // // Show the full SQL query with bindings replaced
+        // $fullSql = replaceBindings($sql, $bindings);
+
+        // $output->writeln($fullSql);
 
         // Load the comments relationship with pivot data for all posts
         // sorted by updated_at in descending order

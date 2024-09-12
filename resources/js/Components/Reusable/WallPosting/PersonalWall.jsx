@@ -23,11 +23,7 @@ export function PersonalWall({ posts, onLoad, hasMore }) {
                     return (
                         <div className="w-full" key={post.id}>
                             {/* Conditional Rendering for Announcement */}
-                            {post.type === "announcement" && (
-                                <AnnouncementPostCard
-                                    announce={post.announce}
-                                />
-                            )}
+                            {/* {post.announced && <AnnouncementPostCard />} */}
 
                             {/* Main Post Content */}
                             {post.type !== "birthday" && (

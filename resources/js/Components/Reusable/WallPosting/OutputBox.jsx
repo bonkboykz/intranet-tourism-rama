@@ -1,7 +1,6 @@
 import React from "react";
 
 import { useInfiniteScroll } from "./useInfiniteScroll";
-import { Loader2 } from "lucide-react";
 import { useFilterPosts } from "./useFilterPosts";
 import { UserWall } from "./UserWall";
 import { PersonalWall } from "./PersonalWall";
@@ -14,21 +13,31 @@ function OutputData({
     polls,
     filterType,
     filterId,
+    communityId,
+    departmentId,
     userId,
     loggedInUserId,
     postType,
     variant,
 }) {
+    // TODO: return announcments
     const { posts, loading, fetchData, hasMore } = useInfiniteScroll({
         userId: userId,
+        communityId,
+        departmentId,
+        filter: {
+            filterId,
+            filterType,
+            postType,
+        },
     });
 
-    const { someonesPosts, filteredUserPosts } = useFilterPosts({
-        postData: posts,
-        filterId,
-        filterType,
-        postType,
-    });
+    // const { someonesPosts, filteredUserPosts } = useFilterPosts({
+    //     postData: posts,
+    //     filterId,
+    //     filterType,
+    //     postType,
+    // });
 
     return (
         <WallContext.Provider
@@ -42,14 +51,14 @@ function OutputData({
             {/* TODO: PersonalWall is used on communities page, which could trigger multiple loads */}
             {userId ? (
                 <UserWall
-                    posts={someonesPosts}
+                    posts={posts}
                     onLoad={fetchData}
                     hasMore={hasMore}
                     userId={userId}
                 />
             ) : (
                 <PersonalWall
-                    posts={filteredUserPosts}
+                    posts={posts}
                     onLoad={fetchData}
                     hasMore={hasMore}
                 />

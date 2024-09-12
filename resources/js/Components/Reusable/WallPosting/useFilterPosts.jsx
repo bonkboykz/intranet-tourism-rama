@@ -3,8 +3,8 @@ import { useMemo } from "react";
 
 export function useFilterPosts({
     postData,
-    filterType = null,
-    filterId = null,
+    // filterType = null,
+    // filterId = null,
     postType,
 }) {
     // Define the filtering function
@@ -49,21 +49,21 @@ export function useFilterPosts({
         // Filter posts based on accessable_type and accessable_id
         let filteredPostData = postData.filter((post) => post.type !== "story");
 
-        if (filterType !== null && filterId !== null) {
-            filteredPostData = filteredPostData.filter((post) => {
-                if (
-                    Array.isArray(post.accessibilities) &&
-                    post.accessibilities.length > 0
-                ) {
-                    return post.accessibilities.some(
-                        (accessibility) =>
-                            accessibility.accessable_type === filterType &&
-                            accessibility.accessable_id == filterId
-                    );
-                }
-                return false;
-            });
-        }
+        // if (filterType !== null && filterId !== null) {
+        //     filteredPostData = filteredPostData.filter((post) => {
+        //         if (
+        //             Array.isArray(post.accessibilities) &&
+        //             post.accessibilities.length > 0
+        //         ) {
+        //             return post.accessibilities.some(
+        //                 (accessibility) =>
+        //                     accessibility.accessable_type === filterType &&
+        //                     accessibility.accessable_id == filterId
+        //             );
+        //         }
+        //         return false;
+        //     });
+        // }
 
         // Separate announcements and non-announcements
         const announcements = filteredPostData.filter(
@@ -74,30 +74,29 @@ export function useFilterPosts({
         );
 
         // Reverse the non-announcement posts
-        const reversedNonAnnouncements = filterType
-            ? [...nonAnnouncements]
-            : [...nonAnnouncements];
+        // const reversedNonAnnouncements = filterType
+        //     ? [...nonAnnouncements]
+        //     : [...nonAnnouncements];
 
         // console.log("REVERSEDNON", reversedNonAnnouncements);
 
         // Combine announcements at the top with the reversed non-announcement posts
-        const finalPosts = [
-            ...announcements,
-            ...reversedNonAnnouncements,
-        ].filter((post) => {
-            return (
-                post.type !== "story" &&
-                post.type !== "files" &&
-                post.type !== "comment"
-            );
-        });
+        const finalPosts = [...announcements, ...nonAnnouncements].filter(
+            (post) => {
+                return (
+                    post.type !== "story" &&
+                    post.type !== "files" &&
+                    post.type !== "comment"
+                );
+            }
+        );
 
         return { finalPosts };
-    }, [postData, filterType, filterId]);
+    }, [postData]);
 
     return {
         // Apply the filter function to both postData and finalPosts
-        someonesPosts: postData.filter(filterPosts),
-        filteredUserPosts: finalPosts.filter(filterPosts),
+        someonesPosts: postData,
+        filteredUserPosts: finalPosts,
     };
 }

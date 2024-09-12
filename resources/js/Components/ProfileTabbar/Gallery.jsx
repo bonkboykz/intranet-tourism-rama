@@ -28,7 +28,6 @@ const ImageProfile = ({
         let apiUrl = "/api/resources/resources?";
 
         if (filterBy === "user") {
-            console.log("userrrr");
             apiUrl += `with[]=attachable.accessibilities`;
         } else if (filterBy === "department") {
             apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;

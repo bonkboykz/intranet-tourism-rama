@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import Popup from './Reusable/Popup';
-import BirthdayCom from './Reusable/Birthdayfunction/birthdaypopup';
+import React, { useState, useEffect } from "react";
+import Popup from "./Reusable/Popup";
+import BirthdayCom from "./Reusable/Birthdayfunction/birthdaypopup";
 
 function BirthdayNotificationPopup({ onClose, userData }) {
     // console.log("GGG", userData);
@@ -17,7 +17,9 @@ function BirthdayNotificationPopup({ onClose, userData }) {
 
             while (currentPage <= totalPages) {
                 // const response = await fetch(`/api/profile/profiles?page=${currentPage}`);
-                const response = await fetch(`/api/profile/profiles?filter[]=dob&paginate=false`);
+                const response = await fetch(
+                    `/api/profile/profiles?filter[]=dob&paginate=false`
+                );
 
                 const data = await response.json();
 
@@ -26,7 +28,7 @@ function BirthdayNotificationPopup({ onClose, userData }) {
                     totalPages = data.data.last_page;
                     currentPage++;
                 } else {
-                    console.error('Error: Expected an array, but got:', data);
+                    console.error("Error: Expected an array, but got:", data);
                     break;
                 }
             }
@@ -49,7 +51,10 @@ function BirthdayNotificationPopup({ onClose, userData }) {
                     acc.push({
                         name: profile.bio,
                         profileId: profile.user_id,
-                        profileImage: getAvatarSource(profile.image, profile.bio),
+                        profileImage: getAvatarSource(
+                            profile.image,
+                            profile.bio
+                        ),
                     });
                 }
 
@@ -59,29 +64,29 @@ function BirthdayNotificationPopup({ onClose, userData }) {
             // Sort the birthday events by name alphabetically
             birthdayEvents.sort((a, b) => a.name.localeCompare(b.name));
 
-            console.log('birthdayEvents', birthdayEvents);
-            
+            console.log("birthdayEvents", birthdayEvents);
 
             setBirthdays(birthdayEvents);
         } catch (error) {
-            console.error('Error fetching birthdays: ', error);
+            console.error("Error fetching birthdays: ", error);
         }
     };
 
     const getAvatarSource = (src, name) => {
         let source = null;
 
-        if (!src || src.trim() === '') {
+        if (!src || src.trim() === "") {
             // If src is empty or only contains whitespace, use the UI Avatars URL
             source = `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${name}`;
-        } else if (src.startsWith('avatar/')) {
+        } else if (src.startsWith("avatar/")) {
             // If src already starts with 'avatar/', map it directly
             source = `/storage/${src}`;
         } else {
             // If src doesn't start with 'avatar/', check if it's a placeholder or not
-            source = src === '/assets/dummyStaffPlaceHolder.jpg' 
-              ? src 
-              : `/avatar/${src}`;
+            source =
+                src === "/assets/dummyStaffPlaceHolder.jpg"
+                    ? src
+                    : `/avatar/${src}`;
         }
 
         return source;
@@ -93,7 +98,7 @@ function BirthdayNotificationPopup({ onClose, userData }) {
 
     const handleBirthdayClick = (birthday) => {
         // console.log("BDAY", birthday);
-        
+
         setSelectedBirthday(birthday);
         setIsBirthdayComOpen(true); // Open the BirthdayCom popup
     };
@@ -103,22 +108,25 @@ function BirthdayNotificationPopup({ onClose, userData }) {
     };
 
     const renderBirthdays = () => {
-        return birthdays.map((birthday, index) => (
-            console.log("BIRTHDAYS", birthday),
-            
-            <div
-                key={index}
-                className="cursor-pointer text-sm text-gray-600 mt-1 p-2 hover:bg-blue-100 rounded flex items-center"
-                onClick={() => handleBirthdayClick(birthday)}
-            >
-                <img
-                    src={birthday.profileImage}
-                    alt={`${birthday.name}'s avatar`}
-                    className="w-8 h-8 rounded-full mr-2"
-                />
-                <p className="font-semibold">{birthday.name}</p>
-            </div>
-        ));
+        return birthdays.map(
+            (birthday, index) => (
+                console.log("BIRTHDAYS", birthday),
+                (
+                    <div
+                        key={index}
+                        className="cursor-pointer text-sm text-gray-600 mt-1 p-2 hover:bg-blue-100 rounded flex items-center"
+                        onClick={() => handleBirthdayClick(birthday)}
+                    >
+                        <img
+                            src={birthday.profileImage}
+                            alt={`${birthday.name}'s avatar`}
+                            className="w-8 h-8 rounded-full mr-2"
+                        />
+                        <p className="font-semibold">{birthday.name}</p>
+                    </div>
+                )
+            )
+        );
     };
 
     return (
@@ -129,7 +137,9 @@ function BirthdayNotificationPopup({ onClose, userData }) {
                 </p>
                 {renderBirthdays()}
                 {birthdays.length === 0 && (
-                    <p className="text-sm text-gray-600 mt-1">No birthday today.</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                        No birthday today.
+                    </p>
                 )}
                 <div className="w-full flex justify-end">
                     <button
@@ -144,9 +154,17 @@ function BirthdayNotificationPopup({ onClose, userData }) {
             {/* Independent BirthdayCom Popup */}
             {selectedBirthday && (
                 // console.log("SBDAY", selectedBirthday.id),
-                
-                <Popup isOpen={isBirthdayComOpen} onClose={closeBirthdayComPopup}>
-                    <BirthdayCom loggedInUser={userData} profileImage={selectedBirthday.profileImage} name={selectedBirthday.name} selectedID={selectedBirthday.profileId} />
+
+                <Popup
+                    isOpen={isBirthdayComOpen}
+                    onClose={closeBirthdayComPopup}
+                >
+                    <BirthdayCom
+                        loggedInUser={userData}
+                        profileImage={selectedBirthday.profileImage}
+                        name={selectedBirthday.name}
+                        selectedID={selectedBirthday.profileId}
+                    />
                 </Popup>
             )}
         </>

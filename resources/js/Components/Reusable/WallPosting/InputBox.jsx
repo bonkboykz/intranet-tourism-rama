@@ -116,7 +116,7 @@ function ShareYourThoughts({
 
         setIsSending(true); // Set the flag to true to prevent multiple sends
 
-        console.log(attachments);
+        // console.log(attachments);
 
         const formData = new FormData();
 
@@ -129,9 +129,7 @@ function ShareYourThoughts({
         // Append common fields
         formData.append("visibility", "public");
 
-        if (isAnnouncement) {
-            formData.append("type", "announcement");
-        }
+        formData.append("announced", isAnnouncement ? 1 : 0);
 
         // Append content and attachments only if they exist
         if (inputValue) {
@@ -639,26 +637,44 @@ function ShareYourThoughts({
                                                             {isAdmin && (
                                                                 <div className="relative inline-block text-left">
                                                                     <button
-                                                                        onClick={togglePostAsDropdown}
+                                                                        onClick={
+                                                                            togglePostAsDropdown
+                                                                        }
                                                                         className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
                                                                     >
                                                                         {postAs}
-                                                                        <span className="ml-2">▼</span>
+                                                                        <span className="ml-2">
+                                                                            ▼
+                                                                        </span>
                                                                     </button>
                                                                     {postAsOpen && (
                                                                         <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg">
                                                                             <ul className="py-1">
                                                                                 <li
                                                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                                                                    onClick={() => handlePostAsSelect("Post as a member")}
+                                                                                    onClick={() =>
+                                                                                        handlePostAsSelect(
+                                                                                            "Post as a member"
+                                                                                        )
+                                                                                    }
                                                                                 >
-                                                                                    Post as a member
+                                                                                    Post
+                                                                                    as
+                                                                                    a
+                                                                                    member
                                                                                 </li>
                                                                                 <li
                                                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                                                                    onClick={() => handlePostAsSelect("Post as an admin")}
+                                                                                    onClick={() =>
+                                                                                        handlePostAsSelect(
+                                                                                            "Post as an admin"
+                                                                                        )
+                                                                                    }
                                                                                 >
-                                                                                    Post as an admin
+                                                                                    Post
+                                                                                    as
+                                                                                    an
+                                                                                    admin
                                                                                 </li>
                                                                             </ul>
                                                                         </div>
@@ -666,7 +682,6 @@ function ShareYourThoughts({
                                                                 </div>
                                                             )}
                                                             <span className="slider"></span>
-
                                                         </label>
                                                     </div>
                                                 )}

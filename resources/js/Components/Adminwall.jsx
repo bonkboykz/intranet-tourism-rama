@@ -292,8 +292,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                             <br />
                             <OutputData
                                 polls={polls}
-                                filterType="Department"
-                                filterId={departmentID}
+                                departmentId={departmentID}
                                 departmentName={departmentName}
                                 variant="department"
                             />

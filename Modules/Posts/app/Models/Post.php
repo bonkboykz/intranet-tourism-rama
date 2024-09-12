@@ -8,6 +8,7 @@ use App\Models\Traits\QueryableApi;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
 use Modules\Department\Models\Department;
+use Modules\Resources\Models\Resource;
 use Modules\User\Models\User;
 
 
@@ -36,6 +37,7 @@ class Post extends Model implements AuditableContract
         'event',
         'department_id',
         'community_id',
+        'announced'
     ];
     protected $casts = [
         'likes' => 'array',
@@ -59,6 +61,7 @@ class Post extends Model implements AuditableContract
                     'event' => ['string'],
                     'department_id' => ['string'],
                     'community_id' => ['string'],
+                    'announced' => ['boolean'],
                 ],
                 // [],
             ],
@@ -76,6 +79,7 @@ class Post extends Model implements AuditableContract
                     'event' => ['string'],
                     'department_id' => ['string'],
                     'community_id' => ['string'],
+                    'announced' => ['boolean'],
                 ],
                 // [],
             ],
@@ -117,5 +121,10 @@ class Post extends Model implements AuditableContract
     public function community()
     {
         return $this->belongsTo(Community::class, 'community_id');
+    }
+
+    public function attachments()
+    {
+        return $this->morphMany(Resource::class, 'attachable');
     }
 }

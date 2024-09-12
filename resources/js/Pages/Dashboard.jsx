@@ -46,10 +46,8 @@ const Dashboard = () => {
                             <OutputData
                                 loggedInUserId={id}
                                 polls={polls}
-                                filterType={null}
                                 postType={filterType}
                             />
-
                         </div>
                     </main>
 

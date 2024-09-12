@@ -15,18 +15,49 @@ trait QueryableApi
         $query->when(request()->has('with'), function ($query) {
             $query->with(request('with'));
         });
-
         $query->when(request()->has('filter') || request()->has('filters'), function (Builder $query) {
             $filters = request('filter') ?? request('filters');
             if (!is_array($filters)) {
                 return;
             }
+
             foreach ($filters as $filter) {
                 if (!empty($filter['type']) && $filter['type'] == 'like') {
-                    $query->where($filter['field'], $filter['type'], '%' . $filter['value'] . '%');
+                    // Check if we are filtering a relationship field
+                    if (strpos($filter['field'], '.') !== false) {
+                        [$relation, $column] = explode('.', $filter['field'], 2);
+                        $query->whereHas($relation, function ($q) use ($column, $filter) {
+                            // Handle multiple mime_types using whereIn()
+                            if (is_array($filter['value'])) {
+                                $q->where(function ($query) use ($column, $filter) {
+                                    foreach ($filter['value'] as $value) {
+                                        $query->orWhere($column, 'like', '%' . $value . '%');
+                                    }
+                                });
+                            } else {
+                                // Single value
+                                $q->where($column, 'like', '%' . $filter['value'] . '%');
+                            }
+                        });
+                    } else {
+                        // Direct field filter
+                        if (is_array($filter['value'])) {
+                            // Handle multiple mime_types using whereIn() for direct fields
+                            $query->where(function ($query) use ($filter) {
+                                foreach ($filter['value'] as $value) {
+                                    $query->orWhere($filter['field'], 'like', '%' . $value . '%');
+                                }
+                            });
+                        } else {
+                            // Single value
+                            $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
+                        }
+                    }
+                } elseif ($filter['field'] == 'mentions') {
+                    // Special case for filtering mentions JSON column
+                    $query->whereJsonContains('mentions', $filter['value']);
                 } else {
                     foreach ($filter as $filterBy => $value) {
-                        // dd($filterBy, ...$value);
                         if (is_array($value)) {
                             $query->$filterBy(...$value);
                         } else {
@@ -68,13 +99,6 @@ trait QueryableApi
                     }
                 }
             }
-        });
-
-        // if the post itself not request is in community or department check if current user is a member
-        $query->when(request()->has('community') || request()->has('department'), function ($query) {
-            $query->whereHas('members', function ($query) {
-                $query->where('user_id', auth()->id());
-            });
         });
     }
 

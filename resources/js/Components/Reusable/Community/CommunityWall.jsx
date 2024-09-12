@@ -424,6 +424,8 @@ function Navigation({ userId, communityID, departmentName, type }) {
         ));
     };
 
+    const [filterType, setFilterType] = useState(null);
+
     return (
         <div className="flex flex-col">
             <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
@@ -519,13 +521,17 @@ function Navigation({ userId, communityID, departmentName, type }) {
                                 filterType="Department"
                                 filterId={communityID}
                             />
-                            <Filter />
+                            <Filter
+                                onFilterChange={(filter) =>
+                                    setFilterType(filter)
+                                }
+                            />
                             <br />
                             <OutputData
                                 polls={polls}
-                                filterType="Community"
-                                filterId={communityID}
                                 communityId={communityID}
+                                postType={filterType}
+                                variant="community"
                             />
                         </div>
                     </div>
