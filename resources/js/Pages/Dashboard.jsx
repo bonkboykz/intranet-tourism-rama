@@ -1,26 +1,21 @@
 import React, { useState } from "react";
-import { usePage } from "@inertiajs/react";
+import useUserData from "../../hooks/useUserData.js";
 import PageTitle from "../Components/Reusable/PageTitle";
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
 import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
-import "./css/StaffDirectory.css";
-// import Example from '../Layouts/DashboardLayoutNew';
 import Example from "@/Layouts/DashboardLayoutNew";
 import { StoryNew } from "@/Components/Dashboard";
-import {
-    ShareYourThoughts,
-    Filter,
-    OutputData,
-} from "@/Components/Reusable/WallPosting";
+import { ShareYourThoughts, Filter, OutputData } from "@/Components/Reusable/WallPosting";
 import MyComponent from "@/Components/Reusable/CommunitySide";
-import Birthdaypopup from "@/Components/Reusable/Birthdayfunction/birthdayalert";
 import AdvertisementDashboard from "@/Components/Reusable/AdvertisementDashboard";
 import InfoGraphic from "@/Components/Reusable/InfoGraphic";
 
 const Dashboard = () => {
-    const { id } = usePage().props; // Retrieve the user_id from the Inertia view
+    const { isAdmin, id } = useUserData();
     const [polls, setPolls] = useState([]);
     const [filterType, setFilterType] = useState(null);
+    const [postAsOpen, setPostAsOpen] = useState(false);
+    const [postAs, setPostAs] = useState("Post as");
 
     const handleCreatePoll = (poll) => {
         setPolls((prevPolls) => [...prevPolls, poll]);
@@ -30,6 +25,15 @@ const Dashboard = () => {
         setFilterType(filter);
     };
 
+    const togglePostAsDropdown = () => {
+        setPostAsOpen((prevState) => !prevState);
+    };
+
+    const handlePostAsSelect = (option) => {
+        setPostAs(option);
+        setPostAsOpen(false);
+    };
+
     return (
         <Example>
             <div className="flex-row">
@@ -37,21 +41,40 @@ const Dashboard = () => {
                     <main className="xl:pl-[calc(22%+4rem)] xl:pr-[calc(25%+2rem)] min-h-screen bg-gray-100">
                         <div className="flex flex-col items-start px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
                             <StoryNew userId={id} />
-                            <ShareYourThoughts
-                                userId={id}
-                                onCreatePoll={handleCreatePoll}
-                            />
-                            <Filter
-                                className="mr-10"
-                                onFilterChange={handleFilterChange}
-                            />
+                            <ShareYourThoughts userId={id} onCreatePoll={handleCreatePoll} />
+                            <Filter className="mr-10" onFilterChange={handleFilterChange} />
                             <div className="mb-4"></div>
-                            <OutputData
-                                loggedInUserId={id}
-                                polls={polls}
-                                filterType={null}
-                                postType={filterType}
-                            />
+                            <OutputData loggedInUserId={id} polls={polls} filterType={null} postType={filterType} />
+
+                            {isAdmin && (
+                                <div className="relative inline-block text-left">
+                                    <button
+                                        onClick={togglePostAsDropdown}
+                                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+                                    >
+                                        {postAs}
+                                        <span className="ml-2">▼</span>
+                                    </button>
+                                    {postAsOpen && (
+                                        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg">
+                                            <ul className="py-1">
+                                                <li
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                                    onClick={() => handlePostAsSelect("Post as a member")}
+                                                >
+                                                    Post as a member
+                                                </li>
+                                                <li
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                                    onClick={() => handlePostAsSelect("Post as an admin")}
+                                                >
+                                                    Post as an admin
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </main>
 
@@ -64,7 +87,7 @@ const Dashboard = () => {
                 }
                 aside {
                   scrollbar-width: none !important; /* For Firefox */
-                  -ms-overflow-style: none;  /* IE and Edge */
+                  -ms-overflow-style: none;  /* IE и Edge */
                 }
               `}
                         </style>

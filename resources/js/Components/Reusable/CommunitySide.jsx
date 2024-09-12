@@ -19,7 +19,7 @@ const CommunityItem = ({ id, name, category, imgSrc, altText, memberCount }) => 
           )}
         </div>
         <p className="text-xs font-semibold text-neutral-600">{memberCount} followers</p>
-       
+
       </div>
     </article>
   </a>
@@ -101,7 +101,7 @@ function MyComponent() {
                 category={community.category}
                 imgSrc={community.imgSrc}
                 altText={community.altText}
-                memberCount={community.memberCount} 
+                memberCount={community.memberCount}
               />
             ))
           )}

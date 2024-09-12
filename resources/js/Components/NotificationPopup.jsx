@@ -108,7 +108,7 @@ const NotificationPopup = () => {
                 activeTab={activeTab}
             />
             <div
-                onClick={() => (window.location.href = "../notification")}
+                onClick={() => (window.location.href = "../profile/notification")}
                 className="flex flex-row font-bold bg-slaute-400 h-10 px-2 w-full gap-2 cursor-pointer hover:bg-slate-200 rounded-lg items-center"
             >
                 VIEW ALL
