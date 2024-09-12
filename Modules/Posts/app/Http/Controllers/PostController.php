@@ -114,6 +114,12 @@ class PostController extends Controller
             return $post;
         });
 
+        // attach tags
+        $data->map(function ($post) {
+            $post->tags = collect($post->tags);
+            return $post;
+        });
+
         $data->map(function ($post) {
             // if post has accessibilities
             if ($post->accessibilities->isEmpty()) {
@@ -157,7 +163,6 @@ class PostController extends Controller
             'data' => $data,
         ]);
     }
-
 
 
 

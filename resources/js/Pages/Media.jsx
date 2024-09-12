@@ -6,6 +6,7 @@ import Example from "../Layouts/DashboardLayoutNew";
 import "./css/StaffDirectory.css";
 import "../Components/Reusable/css/FileManagementSearchBar.css";
 import { router } from "@inertiajs/react";
+import { Gallery } from "./Media/Gallery";
 
 const Media = () => {
     // const [selectedMedia, setSelectedMedia] = useState('All');
@@ -36,6 +37,7 @@ const Media = () => {
                         data.data.data.flatMap((post) => post.tag || [])
                     ),
                 ];
+
                 setTagOptions(uniqueTags);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -45,7 +47,7 @@ const Media = () => {
         fetchData();
     }, []);
 
-    console.log("DATA", posts);
+    // console.log("DATA", posts);
 
     useEffect(() => {
         if (selectedTag === "") {
@@ -61,40 +63,6 @@ const Media = () => {
 
     const handleTagChange = (event) => {
         setSelectedTag(event.target.value);
-    };
-
-    const renderImages = () => {
-        return filteredPosts.map((post) =>
-            post.attachments
-                ?.filter((attachment) =>
-                    attachment.mime_type.startsWith("image/")
-                )
-                .map((imageAttachment) => (
-                    <img
-                        key={imageAttachment.id}
-                        src={`/storage/${imageAttachment.path}`}
-                        alt="Image Attachment"
-                        className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover"
-                    />
-                ))
-        );
-    };
-
-    const renderVideos = () => {
-        return filteredPosts.map((post) =>
-            post.attachments
-                ?.filter((attachment) =>
-                    attachment.mime_type.startsWith("video/")
-                )
-                .map((videoAttachment) => (
-                    <video
-                        key={videoAttachment.id}
-                        controls
-                        src={`/storage/${videoAttachment.path}`}
-                        className="grow shrink-0 max-w-full aspect-[1.19] w-full"
-                    />
-                ))
-        );
     };
 
     const handleManageAlbum = () => {
@@ -135,38 +103,7 @@ const Media = () => {
                             </div>
                         </div>
 
-                        <div>
-                            <section className="flex flex-col px-4 pt-4 py-3 pb-3 max-w-[1500px] max-md:px-5 bg-white rounded-2xl shadow-lg mt-4">
-                                <header>
-                                    <h1 className="pb-2 text-2xl font-bold text-neutral-800 max-md:max-w-full">
-                                        Images
-                                    </h1>
-                                    <hr className="underline" />
-                                </header>
-                                <section className="mt-4 max-md:max-w-full">
-                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
-                                        {/* <h1 className="pb-2 text-2xl font-bold text-neutral-800 max-md:max-w-full">Images</h1> */}
-                                        {renderImages()}
-                                    </div>
-                                </section>
-                            </section>
-                        </div>
-                        <div>
-                            <section className="flex flex-col px-4 pt-4 py-3 pb-3 max-w-[1500px] max-md:px-5 bg-white rounded-2xl shadow-lg mt-4">
-                                <header>
-                                    <h1 className="pb-2 text-2xl font-bold text-neutral-800 max-md:max-w-full">
-                                        Videos
-                                    </h1>
-                                    <hr className="underline" />
-                                </header>
-                                <section className="mt-4 max-md:max-w-full">
-                                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
-                                        {/* <h1 className="pb-2 text-2xl font-bold text-neutral-800 max-md:max-w-full">Images</h1> */}
-                                        {renderVideos()}
-                                    </div>
-                                </section>
-                            </section>
-                        </div>
+                        <Gallery filteredPosts={filteredPosts} />
                     </div>
                 </div>
             </main>

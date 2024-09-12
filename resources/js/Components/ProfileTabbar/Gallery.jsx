@@ -1,3 +1,4 @@
+import { VideoGallery } from "@/Pages/Media/Video";
 import { useWindowSize } from "@uidotdev/usehooks";
 import React, { useEffect, useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
@@ -30,6 +31,8 @@ const ImageProfile = ({
             console.log("userrrr");
             apiUrl += `with[]=attachable.accessibilities`;
         } else if (filterBy === "department") {
+            apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
+        } else if (filterBy === "community") {
             apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
         }
 
@@ -110,13 +113,6 @@ const ImageProfile = ({
     );
 };
 
-const VideoComponent = ({ src, alt, className, controls }) => (
-    <video className={className} controls={controls}>
-        <source src={src} type="video/mp4" />
-        {alt}
-    </video>
-);
-
 const VideoProfile = ({
     selectedItem,
     userId,
@@ -132,6 +128,8 @@ const VideoProfile = ({
         if (filterBy === "user") {
             apiUrl = apiUrl;
         } else if (filterBy === "department") {
+            apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
+        } else if (filterBy === "community") {
             apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
         }
 
@@ -156,9 +154,10 @@ const VideoProfile = ({
                         ].includes(fileExtension);
                     })
                     .map((item) => ({
+                        id: item.id,
                         src: `/storage/${item.path}`,
                         alt: `Description ${item.id}`,
-                        category: item.attachable_type, // Adjust as per your condition
+                        category: item.attachable_type,
                     }));
                 setVideos(videoPaths);
             })
@@ -171,8 +170,6 @@ const VideoProfile = ({
             ? videos
             : videos.filter((video) => video.category === selectedItem);
 
-    const size = useWindowSize();
-
     return (
         <section className="flex flex-col px-4 pt-4 py-3 pb-3 max-w-[1500px] max-md:px-5 bg-white rounded-lg shadow-custom mt-4">
             <header>
@@ -182,53 +179,13 @@ const VideoProfile = ({
                 <hr className="underline" />
             </header>
             <section className="mt-8 max-md:max-w-full">
-                <PhotoProvider maskOpacity={0.8} maskClassName="backdrop">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                        {filteredVideos.length > 0 ? (
-                            filteredVideos.map((video, index) => {
-                                let elementSize = 600;
-
-                                if (elementSize > size.width) {
-                                    elementSize = size.width;
-                                }
-
-                                return (
-                                    <PhotoView
-                                        height={elementSize}
-                                        width={elementSize}
-                                        className="relative"
-                                        render={({ scale, attrs }) => {
-                                            return (
-                                                <div {...attrs}>
-                                                    <VideoComponent
-                                                        src={video.src}
-                                                        alt={video.alt}
-                                                        className="w-full h-full"
-                                                        controls={true}
-                                                    />
-                                                </div>
-                                            );
-                                        }}
-                                    >
-                                        <figure
-                                            key={index}
-                                            className="flex flex-col"
-                                        >
-                                            <VideoComponent
-                                                src={video.src}
-                                                alt={video.alt}
-                                                className="grow shrink-0 max-w-full aspect-[1.19] w-full cursor-pointer"
-                                                controls={false}
-                                            />
-                                        </figure>
-                                    </PhotoView>
-                                );
-                            })
-                        ) : (
-                            <p>No Videos available...</p>
-                        )}
-                    </div>
-                </PhotoProvider>
+                <VideoGallery
+                    videos={filteredVideos.map((video) => ({
+                        id: video.id,
+                        path: video.src,
+                        alt: video.alt,
+                    }))}
+                />
             </section>
         </section>
     );

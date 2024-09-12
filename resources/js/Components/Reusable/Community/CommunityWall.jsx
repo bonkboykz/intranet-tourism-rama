@@ -494,15 +494,15 @@ function Navigation({ userId, communityID, departmentName, type }) {
                     <section>
                         <ImageProfile
                             selectedItem="All"
-                            accessableType="Department"
+                            accessableType="Community"
                             accessableId={communityID}
-                            filterBy="department"
+                            filterBy="community"
                         />
                         <VideoProfile
                             selectedItem="All"
-                            accessableType="Department"
+                            accessableType="Community"
                             accessableId={communityID}
-                            filterBy="department"
+                            filterBy="community"
                         />
                     </section>
                 )}
