@@ -69,11 +69,6 @@ class User extends Model implements AuditableContract
         return $this->hasMany(CommunityMember::class);
     }
 
-    public function employmentPosts()
-    {
-        return $this->hasMany(EmploymentPost::class);
-    }
-
     public function employmentPost()
     {
         return $this->hasOne(EmploymentPost::class)->latestOfMany();
@@ -124,14 +119,27 @@ class User extends Model implements AuditableContract
         return $this->hasMany(Poll::class);
     }
 
-    public function communities()
-    {
-        // get communities from communities member and leave only them
-        return $this->hasManyThrough(Community::class, CommunityMember::class, 'user_id', 'id', 'id', 'community_id');
-    }
+    // public function communities()
+    // {
+    //     // get communities from communities member and leave only them
+    //     return $this->hasManyThrough(Community::class, CommunityMember::class, 'user_id', 'id', 'id', 'community_id');
+    // }
 
     public function receivesBroadcastNotificationsOn()
     {
         return 'users.' . $this->id;
+    }
+
+    // Relationship to communities through the community_members table
+    public function communities()
+    {
+        return $this->belongsToMany(Community::class, 'community_members', 'user_id', 'community_id')
+            ->withPivot('role');
+    }
+
+    // Relationship to employment posts
+    public function employmentPosts()
+    {
+        return $this->hasMany(EmploymentPost::class, 'user_id');
     }
 }

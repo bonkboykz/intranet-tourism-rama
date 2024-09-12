@@ -10,8 +10,6 @@ export function useFilterPosts({
     // Define the filtering function
     const filterPosts = useCallback(
         (post) => {
-            // console.log("POSTING", post);
-
             if (!postType) return true;
 
             // Handle mention type

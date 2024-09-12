@@ -14,7 +14,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Department extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi , Attachable;
+    use Auditable, Authorizable, HasFactory, QueryableApi, Attachable;
 
     protected static function newFactory()
     {
@@ -35,19 +35,19 @@ class Department extends Model implements AuditableContract
         $rules = [
             'create' => [
                 [
-                    'name' => ['string' , 'required'],
-                    'banner' => [ 'file'],
-                    'description' => ['string' , 'nullable'],
-                    'order' => ['integer' ,'nullable'],
+                    'name' => ['string', 'required'],
+                    'banner' => ['file'],
+                    'description' => ['string', 'nullable'],
+                    'order' => ['integer', 'nullable'],
                 ],
                 // [],
             ],
             'update' => [
                 [
-                    'name' => ['string','required'],
+                    'name' => ['string', 'required'],
                     'banner' => ['file'],
-                    'description' => ['string' , 'nullable'],
-                    'order' => ['integer' ,'nullable'],
+                    'description' => ['string', 'nullable'],
+                    'order' => ['integer', 'nullable'],
                 ],
                 // [],
             ],
@@ -63,6 +63,6 @@ class Department extends Model implements AuditableContract
 
     public function employmentPosts()
     {
-        return $this->hasMany(EmploymentPost::class);
+        return $this->hasMany(EmploymentPost::class, 'department_id');
     }
 }

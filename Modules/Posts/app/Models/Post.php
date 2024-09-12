@@ -111,11 +111,11 @@ class Post extends Model implements AuditableContract
 
     public function department()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function community()
     {
-        return $this->belongsTo(Community::class);
+        return $this->belongsTo(Community::class, 'community_id');
     }
 }

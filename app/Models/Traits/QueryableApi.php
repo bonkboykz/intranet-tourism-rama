@@ -69,6 +69,13 @@ trait QueryableApi
                 }
             }
         });
+
+        // if the post itself not request is in community or department check if current user is a member
+        $query->when(request()->has('community') || request()->has('department'), function ($query) {
+            $query->whereHas('members', function ($query) {
+                $query->where('user_id', auth()->id());
+            });
+        });
     }
 
     public function scopeWithModuleRelation($query, $module, $relation)

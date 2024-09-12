@@ -19,30 +19,6 @@ use Modules\User\Models\User;
 
 class PostController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     // Start with a query builder instance
-    //     $query = Post::query();
-
-    //     // Check if the 'filter' parameter is present
-    //     if ($request->has('filter')) {
-    //         // Apply the necessary filters to the query
-    //         if (in_array('birthday', $request->input('filter'))) {
-    //             $query->where('type', 'birthday');
-    //         }
-
-    //         // If filters are present, paginate the filtered query
-    //         $data = $this->shouldPaginate($query);
-    //     } else {
-    //         // If no filters are present, paginate using the predefined queryable method
-    //         $data = $this->shouldPaginate(Post::queryable());
-    //     }
-
-    //     return response()->json([
-    //         'data' => $data,
-    //     ]);
-    // }
-
 
     public function index(Request $request)
     {
@@ -85,8 +61,36 @@ class PostController extends Controller
             // combine Post::queryable() with the query
             $data = $this->shouldPaginate($query);
         } else {
+            $query = Post::queryable();
             // If no filters are present, paginate using the predefined queryable method
-            $data = $this->shouldPaginate(Post::queryable());
+            // Logic for filtering based on community and department membership
+            if (!auth()->user()->hasRole('superadmin')) {
+                $query->where(function ($query) {
+                    // Filter by community if it exists
+                    $query->where(function ($query) {
+                        // Either community_id is null, or the community is public, or the user is a member of a private community
+                        $query->whereNull('community_id') // No community, pass
+                            ->orWhereHas('community', function ($query) {
+                                $query->where('type', 'public') // Public community
+                                    ->orWhereHas('members', function ($query) {
+                                        $query->where('user_id', Auth::id()); // Private community, user is a member
+                                    });
+                            });
+                    });
+
+                    // Filter by department if it exists
+                    $query->where(function ($query) {
+                        // Either department_id is null, or the user is employed in the department
+                        $query->whereNull('department_id') // No department, pass
+                            ->orWhereHas('department', function ($query) {
+                                $query->whereHas('employmentPosts', function ($query) {
+                                    $query->where('user_id', Auth::id()); // User is employed in the department
+                                });
+                            });
+                    });
+                });
+            }
+            $data = $this->shouldPaginate($query);
         }
 
         // Load the comments relationship with pivot data for all posts
@@ -132,41 +136,6 @@ class PostController extends Controller
 
             return $post;
         });
-
-        // TODO: review filtering out posts on backend
-        // $user = User::find(Auth::id());
-        // $communities = $user->communities;
-
-        // // filter out all posts that current user has no access to
-        // $data = $data->filter(function ($post) use ($communities) {
-        //     // if user's the author
-        //     if ($post->user_id == Auth::id()) {
-        //         return true;
-        //     }
-
-
-        //     // if post has accessibilities and user is not the author or user is not beloning to the comminity the post was made
-        //     if ($post->accessibilities->isNotEmpty()) {
-        //         // check if current user has access through accessibilities
-        //         // get list of all user's communities
-        //         // filterType = "Department"
-
-
-        //         return $post->accessibilities->filter(function ($accessibility) use ($communities) {
-        //             return $communities->contains('id', $accessibility->accessable_id);
-        //         })->isNotEmpty();
-        //     }
-
-        //     // if post is public
-        //     if ($post->visibility == 'public') {
-        //         return true;
-        //     }
-
-
-        //     return false;
-
-        // });
-
 
         // attach community if present
         $data->map(function ($post) {

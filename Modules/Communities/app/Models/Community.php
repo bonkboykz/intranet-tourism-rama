@@ -58,7 +58,8 @@ class Community extends Model implements AuditableContract
 
     public function members()
     {
-        return $this->belongsToMany(User::class, CommunityMember::class);
+        return $this->belongsToMany(User::class, 'community_members', 'community_id', 'user_id')
+            ->withPivot('role');
     }
 
     public function preferences()
