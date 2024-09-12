@@ -39,7 +39,7 @@ const WhosOnline = () => {
     });
 
     useEffect(() => {
-        const channel = window.Echo.join("online")
+        window.Echo.join("online")
             .here((users) => {
                 setOnlineUsers(
                     users.map((user) => ({ ...user, avatar: dummyProfilePic }))
@@ -60,7 +60,7 @@ const WhosOnline = () => {
             });
 
         return () => {
-            channel.leave();
+            window.Echo.leave("online");
         };
     }, []);
 

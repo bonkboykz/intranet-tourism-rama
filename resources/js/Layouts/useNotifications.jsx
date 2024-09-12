@@ -75,16 +75,22 @@ export function useSetupNotifications() {
         setNotifications,
         hasNewNotifications,
         setHasNewNotifications,
+        fetchNotifications,
     };
 }
 
 export function useNotifications() {
-    const { notifications, hasNewNotifications, setHasNewNotifications } =
-        useContext(NotificationsContext);
+    const {
+        notifications,
+        hasNewNotifications,
+        setHasNewNotifications,
+        fetchNotifications,
+    } = useContext(NotificationsContext);
 
     return {
         notifications,
         hasNewNotifications,
         setHasNewNotifications,
+        fetchNotifications,
     };
 }

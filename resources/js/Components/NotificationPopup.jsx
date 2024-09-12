@@ -23,7 +23,7 @@ const NotificationPopup = () => {
     //         read: true,
     //     },
     // ]);
-    const { notifications } = useNotifications();
+    const { notifications, fetchNotifications } = useNotifications();
 
     const [isPopupOpen, setIsPopupOpen] = useState(true);
     const popupRef = useRef(null);
@@ -32,6 +32,8 @@ const NotificationPopup = () => {
         const handleClickOutside = (event) => {
             // Check if the click is outside the popup
             if (popupRef.current && !popupRef.current.contains(event.target)) {
+                fetchNotifications();
+
                 setIsPopupOpen(false);
             }
         };
@@ -92,7 +94,7 @@ const NotificationPopup = () => {
                     >
                         Unread
                         <span
-                            className={`orange-circle ${
+                            className={`${
                                 activeTab === "unread"
                                     ? "opacity-100"
                                     : "opacity-50"
