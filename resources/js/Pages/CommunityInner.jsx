@@ -10,6 +10,7 @@ import EditCommunity from "@/Components/Reusable/Community/EditCommunity";
 import { set } from "date-fns";
 import { CommunityContext } from "./CommunityContext";
 import { Loader2 } from "lucide-react";
+import useUserData from "@/Utils/hooks/useUserData";
 
 const CommunityInner = () => {
     const { id } = usePage().props;
@@ -17,6 +18,12 @@ const CommunityInner = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const [type, setType] = useState(null);
+
+    const {
+        props: { auth },
+    } = usePage();
+
+    const userData = useUserData();
 
     const getCommunityIdFromQuery = () => {
         const params = new URLSearchParams(window.location.search);
@@ -57,7 +64,7 @@ const CommunityInner = () => {
         }
     }, []);
 
-    console.log("DEPARTMENT DATA", communityData);
+    // console.log("DEPARTMENT DATA", communityData);
 
     if (!communityData) {
         return (
@@ -75,6 +82,8 @@ const CommunityInner = () => {
                 type: communityData?.type,
                 communityID: communityData?.id,
                 isJoinRequestPending: communityData?.is_join_request_pending,
+                isAdmin:
+                    communityData?.role === "admin" || userData?.isSuperAdmin,
             }}
         >
             <Example>

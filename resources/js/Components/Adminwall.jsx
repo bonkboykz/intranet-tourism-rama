@@ -12,6 +12,7 @@ import {
     VideoProfile,
 } from "../Components/ProfileTabbar/Gallery";
 import EditDepartments from "../Components/Reusable/Departments/EditDepartments"; // Import EditDepartments
+import { WallContext } from "./Reusable/WallPosting/WallContext";
 
 function HeaderSection({
     departmentID,
@@ -391,14 +392,18 @@ export default function Adminwall({
     userId,
 }) {
     return (
-        <div className="flex flex-wrap mx-auto my-20 text-black justify-left max-w-7xl gap-y-10">
-            <Adminsection
-                departmentID={departmentID}
-                departmentHeader={departmentHeader}
-                departmentDescription={departmentDescription}
-                departmentBanner={departmentBanner}
-                userId={userId}
-            />
-        </div>
+        <WallContext.Provider
+            value={{ variant: "department", loggedInUserId: userId }}
+        >
+            <div className="flex flex-wrap mx-auto my-20 text-black justify-left max-w-7xl gap-y-10">
+                <Adminsection
+                    departmentID={departmentID}
+                    departmentHeader={departmentHeader}
+                    departmentDescription={departmentDescription}
+                    departmentBanner={departmentBanner}
+                    userId={userId}
+                />
+            </div>
+        </WallContext.Provider>
     );
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\ProfileModel;
-use App\Models\User;
+use Modules\User\Models\User;
 use Carbon\Carbon; // Import Carbon for date handling
 
 use Inertia\Inertia;

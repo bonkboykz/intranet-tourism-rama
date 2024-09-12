@@ -14,4 +14,6 @@ Route::group(['middleware' => ['auth:api']], function () {
         'model-has-roles' => ModelHasRoleController::class,
         'permissions' => PermissionController::class
     ]);
+
+    Route::post('assign_superadmin', [RoleController::class, 'assignSuperadmin']);
 });

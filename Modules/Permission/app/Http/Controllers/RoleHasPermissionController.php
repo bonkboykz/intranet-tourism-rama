@@ -3,7 +3,7 @@
 namespace Modules\Permission\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Modules\User\Models\User;
 use Modules\Permission\Models\ModelHasRole;
 use Modules\Permission\Models\RoleHasPermission;
 use Spatie\Permission\Models\Permission;
@@ -60,7 +60,7 @@ class RoleHasPermissionController extends Controller
         $permission_ids = $validated['permission_id'];
 
         $role = Role::findOrFail($id);
-        
+
         $role->permissions()->detach();
 
         foreach ($permission_ids as $permission_id) {

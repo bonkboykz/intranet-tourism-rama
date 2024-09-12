@@ -21,7 +21,7 @@ export function CardHeader({ post }) {
 
     return (
         <div className="flex w-full items-center justify-between h-auto mb-4">
-            {post.type !== "announcement" && post.type !== "post" && (
+            {!post.announced && post.type !== "post" && (
                 <span className="text-sm font-semibold text-neutral-600 bg-gray-200 rounded-lg px-2 py-1">
                     {post.accessibilities?.map((accessibility, index) => (
                         <span key={index}>

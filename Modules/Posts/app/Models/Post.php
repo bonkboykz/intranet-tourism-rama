@@ -37,7 +37,8 @@ class Post extends Model implements AuditableContract
         'event',
         'department_id',
         'community_id',
-        'announced'
+        'announced',
+        'post_as',
     ];
     protected $casts = [
         'likes' => 'array',
@@ -62,6 +63,7 @@ class Post extends Model implements AuditableContract
                     'department_id' => ['string'],
                     'community_id' => ['string'],
                     'announced' => ['boolean'],
+                    'post_as' => ['string', 'nullable'],
                 ],
                 // [],
             ],
@@ -80,6 +82,7 @@ class Post extends Model implements AuditableContract
                     'department_id' => ['string'],
                     'community_id' => ['string'],
                     'announced' => ['boolean'],
+                    'post_as' => ['string', 'nullable'],
                 ],
                 // [],
             ],

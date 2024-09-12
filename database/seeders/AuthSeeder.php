@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Seeder;
 use Modules\Crud\Models\Profile;
 use Spatie\Permission\Models\Permission;
@@ -56,7 +56,7 @@ class AuthSeeder extends Seeder
         Profile::factory()->create(['user_id' => $admin->id, 'bio' => $admin->name]);
         $admin->assignRole($adminRole->name);
 
-        if (! app()->isProduction()) {
+        if (!app()->isProduction()) {
             $user = User::factory()->create(['email' => 'test@example.com']);
             Profile::factory()->create(['user_id' => $user->id, 'bio' => $user->name]);
             $user->assignRole($userRole->name);

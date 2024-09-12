@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Communities\Models\Community;
 use Modules\Department\Models\Department;
@@ -31,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('azure', \SocialiteProviders\Azure\Provider::class);
+        });
+
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('superadmin') ? true : null;
         });
     }
 

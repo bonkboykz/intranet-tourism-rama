@@ -14,6 +14,10 @@ import Emoji from "../../../../../public/assets/EmojiIcon.svg";
 import { useCsrf } from "@/composables";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useContext } from "react";
+import { WallContext } from "./WallContext";
+import { SendAs } from "./InputBox/SendAs";
+import { cn } from "@/Utils/cn";
 
 function ShareYourThoughts({
     userId,
@@ -27,10 +31,8 @@ function ShareYourThoughts({
     communityId,
     departmentId,
 }) {
-    const [inputValue, setInputValue] = useState("");
-    const { isSuperAdmin, id } = useUserData();
-    const [postAsOpen, setPostAsOpen] = useState(false);
     const [postAs, setPostAs] = useState("Post as");
+    const [inputValue, setInputValue] = useState("");
     const [showPollPopup, setShowPollPopup] = useState(false);
     const [showMediaTagPopup, setShowMediaTagPopup] = useState(false);
     const [showPeoplePopup, setShowPeoplePopup] = useState(false);
@@ -77,15 +79,6 @@ function ShareYourThoughts({
         setCursorPosition(cursorPosition);
     };
 
-    const togglePostAsDropdown = () => {
-        setPostAsOpen((prevState) => !prevState);
-    };
-
-    const handlePostAsSelect = (option) => {
-        setPostAs(option);
-        setPostAsOpen(false);
-    };
-
     const handleTagSelection = (tag, id) => {
         // const firstName = tag.name.split(" ")[0]; // Get only the first name
         // console.log("HAHAHA", tag, id);
@@ -130,6 +123,10 @@ function ShareYourThoughts({
         formData.append("visibility", "public");
 
         formData.append("announced", isAnnouncement ? 1 : 0);
+
+        if (postAs !== "Post as") {
+            formData.append("post_as", postAs);
+        }
 
         // Append content and attachments only if they exist
         if (inputValue) {
@@ -379,11 +376,13 @@ function ShareYourThoughts({
     return (
         <section className="flex flex-col justify-center text-sm text-neutral-800 w-full">
             <div
-                className={`flex flex-col gap-0 justify-between px-8 pt-5 pb-2 rounded-2xl shadow-sm max-md:flex-wrap max-md:px-5 max-w-full ${
+                className={cn(
+                    `flex flex-col gap-0 justify-between px-8 pt-5 pb-2 rounded-2xl shadow-sm max-md:flex-wrap max-md:px-5 max-w-full`,
                     variant === "comment"
                         ? "comment-box-container"
-                        : "input-box-container"
-                }`}
+                        : "input-box-container",
+                    "relative"
+                )}
             >
                 <div className="flex flex-col w-full">
                     {variant === "comment" && (
@@ -499,7 +498,7 @@ function ShareYourThoughts({
                             {variant !== "comment" && (
                                 <>
                                     <div className="flex w-full max-md:flex-col lg:flex-row max-md:gap-4 lg: justify-between">
-                                        <div className="flex w-full flex-row justify-between lg:w-2/3 max-md:py">
+                                        <div className="flex w-full flex-row justify-between lg:w-2/3 max-md:py mr-4">
                                             <button
                                                 className="tooltip"
                                                 onClick={handleClickPoll}
@@ -575,24 +574,6 @@ function ShareYourThoughts({
                                                     </span>
                                                 )}
                                             </button>
-                                            {/* <button
-                                                type="button"
-                                                onClick={handleClickPeople}
-                                                className="tooltip relative text-md text-blue-500 hover:text-blue-700"
-                                            >
-                                                <img
-                                                    loading="lazy"
-                                                    src="assets/inputpeople.svg"
-                                                    alt="People Icon"
-                                                    className="w-4 h-4"
-                                                />
-                                                <span className="tooltiptext">Mentions People</span>
-                                                {chosenPeople.length > 0 && (
-                                                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
-                                                        {chosenPeople.length}
-                                                    </span>
-                                                )}
-                                            </button> */}
                                             <button
                                                 type="button"
                                                 onClick={handleClickEvent}
@@ -634,61 +615,27 @@ function ShareYourThoughts({
                                                                 }
                                                             />
 
-                                                            {isSuperAdmin && (
-                                                                <div className="relative inline-block text-left">
-                                                                    <button
-                                                                        onClick={
-                                                                            togglePostAsDropdown
-                                                                        }
-                                                                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
-                                                                    >
-                                                                        {postAs}
-                                                                        <span className="ml-2">
-                                                                            ▼
-                                                                        </span>
-                                                                    </button>
-                                                                    {postAsOpen && (
-                                                                        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg">
-                                                                            <ul className="py-1">
-                                                                                <li
-                                                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                                                                    onClick={() =>
-                                                                                        handlePostAsSelect(
-                                                                                            "Post as a member"
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    Post
-                                                                                    as
-                                                                                    a
-                                                                                    member
-                                                                                </li>
-                                                                                <li
-                                                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                                                                    onClick={() =>
-                                                                                        handlePostAsSelect(
-                                                                                            "Post as an admin"
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    Post
-                                                                                    as
-                                                                                    an
-                                                                                    admin
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            )}
                                                             <span className="slider"></span>
                                                         </label>
                                                     </div>
                                                 )}
+
+                                                <SendAs
+                                                    postAs={postAs}
+                                                    onChange={(newPostAs) =>
+                                                        setPostAs(newPostAs)
+                                                    }
+                                                />
                                             </div>
                                             <button
                                                 onClick={handleClickSend}
-                                                className="flex send-button align-item justify-end"
+                                                className="flex send-button align-item justify-end absolute"
+                                                style={{
+                                                    right: "16px",
+                                                    top: "50%",
+                                                    transform:
+                                                        "translateY(-50%)",
+                                                }}
                                             >
                                                 {isSending ? "" : ""}
                                                 <img
@@ -699,19 +646,9 @@ function ShareYourThoughts({
                                                 />
                                             </button>
                                         </div>
-                                        {/* column sampaisini */}
                                     </div>
                                 </>
                             )}
-                            {/* <button onClick={handleClickSend} className="flex send-button align-item justify-end">
-                             {isSending ? "" : ""}
-                                 <img
-                                     loading="lazy"
-                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
-                                     alt="SEND"
-                                     className="h-6 w-6 max-md:mt-8"
-                                 />
-                             </button> */}
                         </div>
                     </div>
                 </div>

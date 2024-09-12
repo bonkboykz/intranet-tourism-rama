@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\User\Models\User;
 use Pusher\Pusher;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Illuminate\Support\Facades\Config;
@@ -17,7 +18,7 @@ class PusherController extends Controller
     public function pusherAuth(Request $request)
     {
 
-        $user = auth()->user();
+        $user = User::find(auth()->user()->id);
         $socket_id = $request['socket_id'];
         $channel_name = $request['channel_name'];
         $key = Config::get('broadcasting.connections.reverb.key');

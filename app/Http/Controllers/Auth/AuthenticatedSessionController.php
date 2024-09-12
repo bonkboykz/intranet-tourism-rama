@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\User\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -34,7 +35,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        broadcast(new OnlineUsers(auth()->user()));
+        $user = User::find(auth()->id());
+
+        broadcast(new OnlineUsers($user));
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

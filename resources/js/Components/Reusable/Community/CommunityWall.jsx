@@ -15,8 +15,8 @@ import { add, set } from "date-fns";
 import defaultImage from "../../../../../public/assets/dummyStaffPlaceHolder.jpg";
 import { useContext } from "react";
 import { CommunityContext } from "@/Pages/CommunityContext";
-import axios from "axios";
 import { CommunityWallActions } from "./CommunityWallActions";
+import { WallContext } from "../WallPosting/WallContext";
 
 function HeaderSection({
     communityID,
@@ -427,219 +427,226 @@ function Navigation({ userId, communityID, departmentName, type }) {
     const [filterType, setFilterType] = useState(null);
 
     return (
-        <div className="flex flex-col">
-            <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Post" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Post")}
-                >
-                    Post
-                </div>
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Gallery" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Gallery")}
-                >
-                    Gallery
-                </div>
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Files" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Files")}
-                >
-                    Files
-                </div>
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Members" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Members")}
-                >
-                    Members
-                </div>
-                <div className="ml-auto">
-                    <CommunityWallActions
-                        hasJoined={hasJoined}
-                        handleJoinOrExit={handleJoinOrExit}
-                        handleAddMember={handleAddMember}
-                    />
-                </div>
-            </nav>
-
-            <div className="relative">
-                {activeTab === "Members" && (
-                    <div className="flex justify-center w-full mt-4">
-                        <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
-                            <CmMembers
-                                communityID={communityID}
-                                loggedInID={id}
-                            />
-                        </div>
+        <WallContext.Provider
+            value={{
+                variant: "community",
+                loggedInUserId: id,
+            }}
+        >
+            <div className="flex flex-col">
+                <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Post" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Post")}
+                    >
+                        Post
                     </div>
-                )}
-
-                {activeTab === "Files" && (
-                    <div>
-                        <div className="flex gap-4 ml-12 whitespace-nowrap">
-                            <SearchInput />
-                            <SearchButton />
-                        </div>
-                        <Table communityId={communityID} />
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Gallery" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Gallery")}
+                    >
+                        Gallery
                     </div>
-                )}
-
-                {activeTab === "Gallery" && (
-                    <section>
-                        <ImageProfile
-                            selectedItem="All"
-                            accessableType="Community"
-                            accessableId={communityID}
-                            filterBy="community"
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Files" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Files")}
+                    >
+                        Files
+                    </div>
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Members" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Members")}
+                    >
+                        Members
+                    </div>
+                    <div className="ml-auto">
+                        <CommunityWallActions
+                            hasJoined={hasJoined}
+                            handleJoinOrExit={handleJoinOrExit}
+                            handleAddMember={handleAddMember}
                         />
-                        <VideoProfile
-                            selectedItem="All"
-                            accessableType="Community"
-                            accessableId={communityID}
-                            filterBy="community"
-                        />
-                    </section>
-                )}
-
-                {activeTab === "Post" && (
-                    <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
-                        {/* TODO: if not a member -> don't show */}
-                        <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
-                            <ShareYourThoughts
-                                userId={userId}
-                                onCreatePoll={handleCreatePoll}
-                                includeAccessibilities={true}
-                                communityId={communityID}
-                                filterType="Department"
-                                filterId={communityID}
-                            />
-                            <Filter
-                                onFilterChange={(filter) =>
-                                    setFilterType(filter)
-                                }
-                            />
-                            <br />
-                            <OutputData
-                                polls={polls}
-                                communityId={communityID}
-                                postType={filterType}
-                                variant="community"
-                            />
-                        </div>
                     </div>
-                )}
-                {/* Invite Popup */}
-                {isAddMemberPopupOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white rounded-2xl pt-7 px-4 py-4 w-[400px]">
-                            <h1 className="flex justify-start mx-2 mb-4 text-2xl font-bold text-neutral-800">
-                                Add staff
-                            </h1>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {selectedUsers.map((user) => (
-                                    <span
-                                        key={user.id}
-                                        className="flex items-center px-3 py-1 text-blue-700 bg-blue-100 rounded-full"
-                                    >
-                                        {user.name}
-                                        <button
-                                            className="ml-2 text-red-500"
-                                            onClick={() =>
-                                                handleDeselectPerson(user)
-                                            }
-                                        >
-                                            ×
-                                        </button>
-                                    </span>
-                                ))}
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Search name"
-                                value={searchTerm}
-                                onChange={(e) => {
-                                    setSearchTerm(e.target.value);
-                                    setErrorMessage("");
-                                }}
-                                className="w-full px-4 py-2 mb-4 bg-gray-200 border border-gray-200 rounded-full"
-                            />
-                            <div className="overflow-y-auto max-h-[290px] pl-2 custom-scrollbar">
-                                {loading ? (
-                                    <div className="flex items-center justify-center h-64">
-                                        <div className="w-16 h-16 border-b-2 border-gray-900 rounded-full animate-spin"></div>
-                                    </div>
-                                ) : (
-                                    searchResults.map((person, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center p-2 cursor-pointer"
-                                            onClick={() =>
-                                                handleSelectPerson(person)
-                                            }
-                                        >
-                                            <img
-                                                src={getImageSource(
-                                                    person.profile
-                                                        ?.staff_image ||
-                                                        defaultImage
-                                                )}
-                                                alt={person.name}
-                                                className="object-cover w-10 h-10 mr-4 rounded-full"
-                                            />
-                                            <div>
-                                                <div className="text-lg font-bold">
-                                                    {person.name}
-                                                </div>
-                                                <div className="font-light text-gray-600">
-                                                    {renderTitles(
-                                                        person.employment_posts
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
+                </nav>
 
-                            {errorMessage && (
-                                <div className="mt-2 text-red-500">
-                                    {errorMessage}
+                <div className="relative">
+                    {activeTab === "Members" && (
+                        <div className="flex justify-center w-full mt-4">
+                            <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
+                                <CmMembers
+                                    communityID={communityID}
+                                    loggedInID={id}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "Files" && (
+                        <div>
+                            <div className="flex gap-4 ml-12 whitespace-nowrap">
+                                <SearchInput />
+                                <SearchButton />
+                            </div>
+                            <Table communityId={communityID} />
+                        </div>
+                    )}
+
+                    {activeTab === "Gallery" && (
+                        <section>
+                            <ImageProfile
+                                selectedItem="All"
+                                accessableType="Community"
+                                accessableId={communityID}
+                                filterBy="community"
+                            />
+                            <VideoProfile
+                                selectedItem="All"
+                                accessableType="Community"
+                                accessableId={communityID}
+                                filterBy="community"
+                            />
+                        </section>
+                    )}
+
+                    {activeTab === "Post" && (
+                        <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
+                            {/* TODO: if not a member -> don't show */}
+                            <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
+                                <ShareYourThoughts
+                                    userId={userId}
+                                    onCreatePoll={handleCreatePoll}
+                                    includeAccessibilities={true}
+                                    communityId={communityID}
+                                    filterType="Department"
+                                    filterId={communityID}
+                                />
+                                <Filter
+                                    onFilterChange={(filter) =>
+                                        setFilterType(filter)
+                                    }
+                                />
+                                <br />
+                                <OutputData
+                                    polls={polls}
+                                    communityId={communityID}
+                                    postType={filterType}
+                                    variant="community"
+                                />
+                            </div>
+                        </div>
+                    )}
+                    {/* Invite Popup */}
+                    {isAddMemberPopupOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="bg-white rounded-2xl pt-7 px-4 py-4 w-[400px]">
+                                <h1 className="flex justify-start mx-2 mb-4 text-2xl font-bold text-neutral-800">
+                                    Add staff
+                                </h1>
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {selectedUsers.map((user) => (
+                                        <span
+                                            key={user.id}
+                                            className="flex items-center px-3 py-1 text-blue-700 bg-blue-100 rounded-full"
+                                        >
+                                            {user.name}
+                                            <button
+                                                className="ml-2 text-red-500"
+                                                onClick={() =>
+                                                    handleDeselectPerson(user)
+                                                }
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    ))}
                                 </div>
-                            )}
-
-                            <div className="flex justify-end mt-4">
-                                <button
-                                    className="px-4 py-2 mr-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                                    onClick={handleAddMembersToCommunity}
-                                >
-                                    Add Members
-                                </button>
-                                <button
-                                    className="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700"
-                                    onClick={() => {
-                                        setIsAddMemberPopupOpen(false);
-                                        setSelectedUsers([]);
-                                        setSearchResults([]);
-                                        setSearchTerm("");
+                                <input
+                                    type="text"
+                                    placeholder="Search name"
+                                    value={searchTerm}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value);
                                         setErrorMessage("");
                                     }}
-                                >
-                                    Cancel
-                                </button>
+                                    className="w-full px-4 py-2 mb-4 bg-gray-200 border border-gray-200 rounded-full"
+                                />
+                                <div className="overflow-y-auto max-h-[290px] pl-2 custom-scrollbar">
+                                    {loading ? (
+                                        <div className="flex items-center justify-center h-64">
+                                            <div className="w-16 h-16 border-b-2 border-gray-900 rounded-full animate-spin"></div>
+                                        </div>
+                                    ) : (
+                                        searchResults.map((person, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center p-2 cursor-pointer"
+                                                onClick={() =>
+                                                    handleSelectPerson(person)
+                                                }
+                                            >
+                                                <img
+                                                    src={getImageSource(
+                                                        person.profile
+                                                            ?.staff_image ||
+                                                            defaultImage
+                                                    )}
+                                                    alt={person.name}
+                                                    className="object-cover w-10 h-10 mr-4 rounded-full"
+                                                />
+                                                <div>
+                                                    <div className="text-lg font-bold">
+                                                        {person.name}
+                                                    </div>
+                                                    <div className="font-light text-gray-600">
+                                                        {renderTitles(
+                                                            person.employment_posts
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                {errorMessage && (
+                                    <div className="mt-2 text-red-500">
+                                        {errorMessage}
+                                    </div>
+                                )}
+
+                                <div className="flex justify-end mt-4">
+                                    <button
+                                        className="px-4 py-2 mr-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                        onClick={handleAddMembersToCommunity}
+                                    >
+                                        Add Members
+                                    </button>
+                                    <button
+                                        className="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700"
+                                        onClick={() => {
+                                            setIsAddMemberPopupOpen(false);
+                                            setSelectedUsers([]);
+                                            setSearchResults([]);
+                                            setSearchTerm("");
+                                            setErrorMessage("");
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-        </div>
+        </WallContext.Provider>
     );
 }
 

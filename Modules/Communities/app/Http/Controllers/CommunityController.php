@@ -4,7 +4,10 @@ namespace Modules\Communities\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Request as AppRequest;
-use App\Models\User;
+use Illuminate\Http\Request;
+use Modules\Communities\Helpers\CommunityPermissionHelper;
+use Modules\Communities\Helpers\CommunityPermissionsHelper;
+use Modules\User\Models\User;
 use Auth;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
@@ -98,5 +101,67 @@ class CommunityController extends Controller
         $community->members()->detach($user->id);
 
         return response()->noContent();
+    }
+
+    public function getAdmins(Community $community)
+    {
+        return response()->json([
+            'data' => $community->admins,
+        ]);
+    }
+
+
+    // invie community admin
+    public function inviteCommunityAdmin(Request $request)
+    {
+        $user = User::findOrFail(auth()->id());
+        if (!CommunityPermissionsHelper::checkSpecificPermission($user, 'add remove an admin from the same group', $request->community_id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate the request to ensure user and community are valid
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'community_id' => 'required|exists:communities,id',
+        ]);
+
+        // Fetch the user and the community
+        $user = User::findOrFail($request->user_id);
+        $community = Community::findOrFail($request->community_id);
+
+        // Assign the user the community-specific permissions
+        CommunityPermissionsHelper::assignCommunityAdminPermissions($user, $community);
+
+
+        return response()->json([
+            'message' => 'User has been successfully invited as a community admin.',
+        ]);
+    }
+
+    // revoke community admin
+    public function revokeCommunityAdmin(Request $request)
+    {
+        $user = User::findOrFail(auth()->id());
+
+        if (!CommunityPermissionsHelper::checkSpecificPermission($user, 'add remove an admin from the same group', $request->community_id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate the request to ensure user and community are valid
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'community_id' => 'required|exists:communities,id',
+        ]);
+
+        // Fetch the user and the community
+        $user = User::findOrFail($request->user_id);
+        $community = Community::findOrFail($request->community_id);
+
+        // Revoke the user's community-specific permissions
+        CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
+
+        return response()->json([
+            'message' => 'User has been successfully revoked as a community admin.',
+        ]);
     }
 }

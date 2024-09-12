@@ -11,6 +11,7 @@ import "./css/StaffDirectory.css";
 import CreateCommunity from "../Components/Reusable/Community/CreateCommunity";
 import PopupMenu from "../Components/Reusable/Community/CommunityPopUp";
 import { useCsrf } from "@/composables";
+import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 
 const Community = () => {
     const [departmentsList, setDepartmentsList] = useState([]);

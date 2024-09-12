@@ -3,7 +3,7 @@
 namespace Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Http\Request;
 use Modules\Auth\Http\Requests\LoginRequest;
 
@@ -34,7 +34,8 @@ class LoginController extends Controller
             session()->invalidate();
             session()->regenerateToken();
         } else {
-            auth()->user()->currentAccessToken()->delete();
+            $user = User::find(auth()->id());
+            $user->currentAccessToken()->delete();
         }
 
         return response()->noContent();

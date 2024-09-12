@@ -7,6 +7,8 @@ import {
 import { usePage } from "@inertiajs/react";
 import NotificationPopup from "./NotificationPopup";
 import BirthdayNotificationPopup from "../Components/BirthdayNotificationPopup";
+import axios from "axios";
+import { useNotifications } from "@/Layouts/useNotifications";
 
 export default function Header({ setSidebarOpen }) {
     const { props } = usePage();
@@ -88,24 +90,20 @@ export default function Header({ setSidebarOpen }) {
         }
     };
 
-    const handleLogout = (event) => {
+    const handleLogout = async (event) => {
         event.preventDefault();
 
-        fetch("/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-        })
-            .then((response) => {
-                if (response.ok) {
-                    window.location.href = "/";
-                } else {
-                    throw new Error("Failed to logout");
-                }
-            })
-            .catch((err) => console.error("Error logging out:", err));
+        try {
+            const response = await axios.post("/logout");
+
+            if ([200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to logout");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+
+        window.location.reload();
     };
 
     const userNavigation = [
@@ -152,6 +150,10 @@ export default function Header({ setSidebarOpen }) {
             );
         };
     }, [isNotificationPopupVisible]);
+
+    const { hasNewNotifications, setHasNewNotifications } = useNotifications();
+
+    console.log("Has new notifications:", hasNewNotifications);
 
     return (
         <div className="fixed w-full lg:pr-16 top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
@@ -219,18 +221,24 @@ export default function Header({ setSidebarOpen }) {
                     <div className="relative" ref={notificationRef}>
                         <button
                             type="button"
-                            className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5"
-                            onClick={() =>
+                            className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5 relative"
+                            onClick={() => {
                                 togglePopupVisibility(
                                     setIsNotificationPopupVisible
-                                )
-                            }
+                                );
+
+                                setHasNewNotifications(false);
+                            }}
                         >
                             <img
                                 src={getBellIconSrc()}
                                 className="w-6 h-6"
                                 aria-hidden="true"
                             />
+
+                            {hasNewNotifications && (
+                                <span className="absolute bottom-[4px] right-[4px] inline-block w-2 h-2 bg-red-500 rounded-full" />
+                            )}
                         </button>
                         {isNotificationPopupVisible && <NotificationPopup />}
                     </div>

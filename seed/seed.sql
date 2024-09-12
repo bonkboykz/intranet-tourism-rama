@@ -311,3 +311,6 @@ update profiles set staff_image = '2587.jpg' where user_id = 1229;
 
 --delete from model_has_roles where model_id = 1;
 
+
+--INSERT superadmin role--
+INSERT INTO roles (name, description) VALUES ('superadmin', 'Super Admin Role');

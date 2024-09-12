@@ -35,7 +35,8 @@ class PostController extends Controller
         $query = Post::queryable();
         // If no filters are present, paginate using the predefined queryable method
         // Logic for filtering based on community and department membership
-        if (!auth()->user()->hasRole('superadmin')) {
+        $user = User::find(Auth::id());
+        if (!$user->hasRole('superadmin')) {
             $query->where(function ($query) {
                 // Filter by community if it exists
                 $query->where(function ($query) {

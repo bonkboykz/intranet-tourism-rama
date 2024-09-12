@@ -1,7 +1,7 @@
 <?php
 
 use App\Events\UserOnline;
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 

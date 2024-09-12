@@ -2,7 +2,7 @@
 
 namespace App\Models\Traits;
 
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Nwidart\Modules\Facades\Module;

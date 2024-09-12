@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./Roles.css";
 import { useCsrf } from "@/composables";
 import axios from "axios";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 export default function Roles() {
+    const { hasPermission } = usePermissions();
+
     const [people, setPeople] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCommunity, setSelectedCommunity] = useState(null);
@@ -272,10 +275,9 @@ export default function Roles() {
     const handleAssignSuperAdmin = async () => {
         try {
             const response = await axios.post(
-                "/api/permission/model-has-roles",
+                "/api/permission/assign_superadmin",
                 {
-                    role_id: [1],
-                    model_id: selectedPersonForSuperAdmin.id,
+                    user_id: selectedPersonForSuperAdmin.id,
                 }
             );
 
@@ -339,12 +341,14 @@ export default function Roles() {
                         </h1>
                         <p className="text-gray-600">View users with roles</p>
                     </div>
-                    <button
-                        onClick={() => setIsSearchPopupOpen(true)}
-                        className="px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                    >
-                        Assign New Super Admin
-                    </button>
+                    {hasPermission("assign super admin") && (
+                        <button
+                            onClick={() => setIsSearchPopupOpen(true)}
+                            className="px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                        >
+                            Assign New Super Admin
+                        </button>
+                    )}
                 </div>
 
                 {loading ? (

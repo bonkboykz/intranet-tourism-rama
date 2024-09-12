@@ -1,6 +1,17 @@
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { useContext } from "react";
+
 export function CommunityTitle({ post }) {
-    // TODO: check roles, if not admin or superadmin, show community name without poster name
-    const isAdmin = true;
+    const { isAdmin } = useContext(CommunityContext);
+
+    if (post.post_as === "member") {
+        return (
+            <div className="text-base font-semibold text-neutral-800">
+                {post.user.name}
+            </div>
+        );
+    }
+
     const title = post.community.name + (isAdmin ? ` (${post.user.name})` : "");
 
     return (
@@ -9,8 +20,8 @@ export function CommunityTitle({ post }) {
 }
 
 export function DepartmentTitle({ post }) {
-    // TODO: check roles, if not admin or superadmin, show community name without poster name
     const isAdmin = true;
+    // TODO: check roles, if not admin or superadmin, show community name without poster name
     const title =
         post.department.name + (isAdmin ? ` (${post.user.name})` : "");
 

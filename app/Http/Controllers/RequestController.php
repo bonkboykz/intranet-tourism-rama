@@ -26,7 +26,9 @@ class RequestController extends Controller
             $request->group = Community::find($details['group_id']);
             $request->user = User::find($request->user_id);
             $request->userProfile = $request->user->profile;
-            $request->userDepartment = $request->user->employmentPost->department->name;
+            if ($request->user->employmentPost) {
+                $request->userDepartment = $request->user->employmentPost->department->name;
+            }
             $request->groupFollowersCount = $request->group->members()->count();
             return $request;
         });
@@ -45,7 +47,10 @@ class RequestController extends Controller
         ]);
         $groupId = $request->group_id;
 
-        $superuser = User::find(42); // Assuming superuser has ID 42 for simplicity, change as needed
+        // find all superadmins
+        $superusers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'superadmin');
+        });
 
         // Create the request
         $newRequest = Request::create([
@@ -55,11 +60,13 @@ class RequestController extends Controller
             'status' => 'pending',
         ]);
 
-        // Notify the superuser with a reference to the request
-        $superuser->notify(new GroupJoinRequestNotification($newRequest));
+        // Notify all superusers with a reference to the request
+        $superusers->get()->each(function ($superuser) use ($newRequest) {
+            $superuser->notify(new GroupJoinRequestNotification($newRequest));
+        });
 
-        $event = new NewMessageEvent($superuser, 'New request to join a group.');
-        broadcast($event)->via('reverb');
+        // $event = new NewMessageEvent($superuser, 'New request to join a group.');
+        // broadcast($event)->via('reverb');
 
         return response()->json(['status' => 'request_sent']);
     }

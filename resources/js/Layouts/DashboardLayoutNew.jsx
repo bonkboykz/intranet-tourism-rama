@@ -7,14 +7,22 @@ import {
     NotificationsContext,
     useSetupNotifications,
 } from "./useNotifications";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 const Example = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    const { notifications } = useSetupNotifications();
+    const { notifications, hasNewNotifications, setHasNewNotifications } =
+        useSetupNotifications();
 
     return (
-        <NotificationsContext.Provider value={{ notifications }}>
+        <NotificationsContext.Provider
+            value={{
+                notifications,
+                hasNewNotifications,
+                setHasNewNotifications,
+            }}
+        >
             <div>
                 <Sidebar
                     sidebarOpen={sidebarOpen}

@@ -5,6 +5,7 @@ namespace Modules\User\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Modules\User\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class UserController extends Controller
 {
@@ -49,9 +50,15 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::where('id', $id)->queryable()->firstOrFail();
+        $user = User::where('id', $id)->firstOrFail();
 
         $user->isSuperAdmin = $user->hasRole('superadmin');
+        $user->employmentPost = $user->employmentPost()->first();
+        if ($user->employmentPost) {
+            $user->employmentPost->department = $user->employmentPost->department()->first();
+            $user->employmentPost->businessPost = $user->employmentPost->businessPost()->first();
+        }
+
 
         return response()->json([
             'data' => $user

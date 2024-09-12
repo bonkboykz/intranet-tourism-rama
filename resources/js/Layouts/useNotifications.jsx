@@ -7,10 +7,12 @@ import { createContext } from "react";
 export const NotificationsContext = createContext({
     notifications: [],
     setNotifications: () => {},
+    hasNewNotifications: false,
 });
 
 export function useSetupNotifications() {
     const [notifications, setNotifications] = useState([]);
+    const [hasNewNotifications, setHasNewNotifications] = useState(false);
 
     const {
         props: {
@@ -41,65 +43,48 @@ export function useSetupNotifications() {
     }, []);
 
     useEffect(() => {
-        // Listen for notifications on the user's private channel
-        // window.Echo.private(`user.${user.id}`).listen(
-        //     ".notification-event",
-        //     (e) => {
-        //         setNotifications([...notifications, e.notification]);
-        //         console.log("New notification received:", e.notification);
-        //     }
-        // );
-
         console.log(`Listening for notifications on users.${user.id}`);
 
-        window.Echo.private(`users.${user.id}`)
-            .notification((notification) => {
+        window.Echo.private(`users.${user.id}`).notification(
+            async (notification) => {
                 console.log("Notification received:", notification);
-            })
-            .listenToAll((event, data) => {
-                console.log(event, data);
-            });
 
-        // window.Echo.channel(`users.${user.id}`).listenToAll((event, data) => {
-        //     // do what you need to do based on the event name and data
-        //     console.log(event, data);
-        // });
-        // .listen(
-        //     ".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated",
-        //     (e) => {
-        //         // setNotifications([...notifications, e.notification]);
-        //         console.log("New notification received:", e.notification);
-        //     }
-        // )
-        // .listen(".App\\Notifications\\RequestNotification", (e) => {
-        //     // setNotifications([...notifications, e.notification]);
-        //     console.log("New notification received:", e.notification);
-        // });
+                const audio = new Audio("/assets/notification.wav");
+                audio.play();
 
-        // window.Echo.private(`user.${user.id}`)
-        //     .notification((notification) => {
-        //         console.log("Notification received:", notification);
-        //     })
-        //     .listen(".notification-event", (e) => {
-        //         setNotifications([...notifications, e.notification]);
-        //         console.log("New notification received:", e.notification);
-        //     });
+                setHasNewNotifications(true);
+
+                try {
+                    await fetchNotifications();
+                } catch (e) {
+                    console.error(e);
+                }
+
+                // setNotifications([...notifications, notification]);
+            }
+        );
 
         return () => {
             console.log(`Leaving users.${user.id}`);
             window.Echo.leave(`users.${user.id}`);
-            // Unsubscribe from the private channel when the component is unmounted
-            // window.Echo.leaveChannel(`user.${user.id}`);
         };
     }, []);
 
-    return { notifications, setNotifications };
+    return {
+        notifications,
+        setNotifications,
+        hasNewNotifications,
+        setHasNewNotifications,
+    };
 }
 
 export function useNotifications() {
-    const { notifications } = useContext(NotificationsContext);
+    const { notifications, hasNewNotifications, setHasNewNotifications } =
+        useContext(NotificationsContext);
 
     return {
         notifications,
+        hasNewNotifications,
+        setHasNewNotifications,
     };
 }

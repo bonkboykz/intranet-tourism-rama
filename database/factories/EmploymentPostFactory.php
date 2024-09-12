@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Crud\Models\BusinessGrade;
 use Modules\Crud\Models\BusinessPost;

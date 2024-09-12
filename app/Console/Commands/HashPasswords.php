@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User; // Assuming your user model is named User
+use Modules\User\Models\User; // Assuming your user model is named User
 
 class HashPasswords extends Command
 {

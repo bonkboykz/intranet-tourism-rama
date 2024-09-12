@@ -3,7 +3,7 @@
 namespace Modules\Profile\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,34 +21,34 @@ class ProfileController extends Controller
 
 
     public function index(Request $request)
-{
-    $query = Profile::query();
+    {
+        $query = Profile::query();
 
-    if ($request->has('filter')) {
-        $filters = $request->get('filter');
+        if ($request->has('filter')) {
+            $filters = $request->get('filter');
 
-        // Ensure $filters is an array
-        if (is_string($filters)) {
-            $filters = [$filters];
-        }
-
-        foreach ($filters as $filter) {
-            if ($filter === 'dob') {
-                $query->whereNotNull('dob');
+            // Ensure $filters is an array
+            if (is_string($filters)) {
+                $filters = [$filters];
             }
-            $query->select('bio', 'dob', 'image', 'user_id');
+
+            foreach ($filters as $filter) {
+                if ($filter === 'dob') {
+                    $query->whereNotNull('dob');
+                }
+                $query->select('bio', 'dob', 'image', 'user_id');
+            }
         }
+
+
+        $paginate = $request->has('paginate') ? (bool) $request->get('paginate') : true;
+
+        $data = $paginate ? $this->shouldPaginate($query) : $query->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
-
-
-    $paginate = $request->has('paginate') ? (bool) $request->get('paginate') : true;
-
-    $data = $paginate ? $this->shouldPaginate($query) : $query->get();
-
-    return response()->json([
-        'data' => $data,
-    ]);
-}
 
 
     public function show($id)
