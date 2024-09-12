@@ -204,7 +204,7 @@ function ShareYourThoughts({
             setChosenEvent([]);
             if (!isComment) {
                 // TODO: add handler to refetch or reload based on context
-                // window.location.reload();
+                window.location.reload();
             } else {
                 // Handle any other actions required after posting a comment, e.g., reloading comments
                 onCommentPosted();
