@@ -3,6 +3,7 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Communities\Models\Community;
 use Modules\Posts\Models\PostViewHistory;
 use Illuminate\Support\Facades\DB;
 use Log;
@@ -109,20 +110,26 @@ class PostController extends Controller
             return $post;
         });
 
-        // attach department names
         $data->map(function ($post) {
             // if post has accessibilities
             if ($post->accessibilities->isEmpty()) {
                 return $post;
             }
 
-            $post->departments = $post->accessibilities->map(function ($accessibility) {
-                $department = Department::find($accessibility->accessable_id);
-                return $department->name;
-            });
+            // TODO: Uncomment if needed
+            // // attach department names
+            // $post->departmentsWithAccess = $post->accessibilities->map(function ($accessibility) {
+            //     $department = Department::find($accessibility->accessable_id);
+            //     return $department;
+            // });
 
-            // join with ,
-            $post->departmentNames = implode(', ', $post->departments->toArray());
+            // // attach communities
+            // $post->communitiesWithAccess = $post->accessibilities->map(function ($accessibility) {
+            //     $community = Community::find($accessibility->accessable_id);
+            //     return $community;
+            // });
+
+
             return $post;
         });
 
@@ -159,6 +166,23 @@ class PostController extends Controller
         //     return false;
 
         // });
+
+
+        // attach community if present
+        $data->map(function ($post) {
+            if ($post->community_id) {
+                $post->community = Community::find($post->community_id);
+            }
+            return $post;
+        });
+
+        // attach department if present
+        $data->map(function ($post) {
+            if ($post->department_id) {
+                $post->department = Department::find($post->department_id);
+            }
+            return $post;
+        });
 
         return response()->json([
             'data' => $data,

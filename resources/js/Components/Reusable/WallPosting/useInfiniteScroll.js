@@ -29,6 +29,7 @@ export function useInfiniteScroll(
                         "accessibilities",
                         "comments",
                     ],
+                    // TODO: return post type announcement first, then sort by updated_at
                     sort: [{ updated_at: "desc" }],
                     page: currentPage,
                     paginate: true,

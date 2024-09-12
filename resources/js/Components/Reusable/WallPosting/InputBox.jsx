@@ -23,6 +23,8 @@ function ShareYourThoughts({
     variant,
     postedId,
     onCommentPosted,
+    communityId,
+    departmentId,
 }) {
     const [inputValue, setInputValue] = useState("");
     const [showPollPopup, setShowPollPopup] = useState(false);
@@ -161,20 +163,29 @@ function ShareYourThoughts({
             formData.append("event", formattedEvents);
         }
 
-        if (includeAccessibilities) {
-            formData.append("type", "department");
-            formData.append("accessibilities[0][accessable_type]", filterType);
-            formData.append("accessibilities[0][accessable_id]", filterId);
+        const accesibilities = [];
+
+        if (communityId) {
+            accesibilities.push({
+                accessable_type: "Community",
+                accessable_id: communityId,
+            });
+            formData.append("community_id", communityId);
         }
 
-        // Adding community handling
-        if (includeAccessibilities) {
-            formData.append("type", "community");
-            formData.append("accessibilities[0][accessable_type]", filterType);
-            formData.append("accessibilities[0][accessable_id]", filterId);
+        if (departmentId) {
+            accesibilities.push({
+                accessable_type: "Department",
+                accessable_id: departmentId,
+            });
+            formData.append("department_id", departmentId);
         }
 
-        console.log(formData);
+        for (let [index, access] of accesibilities.entries()) {
+            Object.entries(access).forEach(([key, value]) => {
+                formData.append(`accessibilities[${index}][${key}]`, value);
+            });
+        }
 
         try {
             const response = await axios.post(endpoint, formData);
@@ -193,7 +204,7 @@ function ShareYourThoughts({
             setChosenEvent([]);
             if (!isComment) {
                 // TODO: add handler to refetch or reload based on context
-                window.location.reload();
+                // window.location.reload();
             } else {
                 // Handle any other actions required after posting a comment, e.g., reloading comments
                 onCommentPosted();

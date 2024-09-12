@@ -509,11 +509,12 @@ function Navigation({ userId, communityID, departmentName, type }) {
 
                 {activeTab === "Post" && (
                     <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
-                        <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items">
+                        <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
                             <ShareYourThoughts
                                 userId={userId}
                                 onCreatePoll={handleCreatePoll}
                                 includeAccessibilities={true}
+                                communityId={communityID}
                                 filterType="Department"
                                 filterId={communityID}
                             />
@@ -521,9 +522,9 @@ function Navigation({ userId, communityID, departmentName, type }) {
                             <br />
                             <OutputData
                                 polls={polls}
-                                filterType="Department"
+                                filterType="Community"
                                 filterId={communityID}
-                                departmentName={departmentName}
+                                communityId={communityID}
                             />
                         </div>
                     </div>

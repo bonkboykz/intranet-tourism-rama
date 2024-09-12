@@ -14,6 +14,4 @@ Route::group(['middleware' => ['auth:api']], function () {
         'model-has-roles' => ModelHasRoleController::class,
         'permissions' => PermissionController::class
     ]);
-
-
 });

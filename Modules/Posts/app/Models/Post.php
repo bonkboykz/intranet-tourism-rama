@@ -5,7 +5,9 @@ namespace Modules\Posts\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
+use Modules\Department\Models\Department;
 use Modules\User\Models\User;
 
 
@@ -31,7 +33,9 @@ class Post extends Model implements AuditableContract
         'pool_posting',
         // 'likes',
         'mentions',
-        'event'
+        'event',
+        'department_id',
+        'community_id',
     ];
     protected $casts = [
         'likes' => 'array',
@@ -53,6 +57,8 @@ class Post extends Model implements AuditableContract
                     'mentions' => ['string'],
                     'accessibilities' => ['array'],
                     'event' => ['string'],
+                    'department_id' => ['string'],
+                    'community_id' => ['string'],
                 ],
                 // [],
             ],
@@ -68,6 +74,8 @@ class Post extends Model implements AuditableContract
                     'likes' => ['string'],
                     'mentions' => ['string'],
                     'event' => ['string'],
+                    'department_id' => ['string'],
+                    'community_id' => ['string'],
                 ],
                 // [],
             ],
@@ -99,5 +107,15 @@ class Post extends Model implements AuditableContract
     public function viewHistories()
     {
         return $this->hasMany(PostViewHistory::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function community()
+    {
+        return $this->belongsTo(Community::class);
     }
 }

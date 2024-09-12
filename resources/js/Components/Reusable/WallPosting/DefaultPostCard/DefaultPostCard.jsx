@@ -17,6 +17,8 @@ import Comment from "../Comment";
 import { useLayoutEffect } from "react";
 import { DeletePopup } from "../DeletePopup";
 import LikesPopup from "../LikesPopup";
+import { CardHeader } from "./CardHeader/CardHeader";
+import { CardImage } from "./CardImage/CardImage";
 
 const renderContentWithTags = (content, mentions) => {
     const mentionData = mentions ? JSON.parse(mentions) : [];
@@ -80,40 +82,6 @@ const renderContentWithTags = (content, mentions) => {
 
     return replaceContent(content);
 };
-
-function CardHeader({ post }) {
-    return (
-        <div className="flex w-full items-center justify-between h-auto mb-4">
-            {post.type !== "announcement" && post.type !== "post" && (
-                <span className="text-sm font-semibold text-neutral-600 bg-gray-200 rounded-lg px-2 py-1">
-                    {post.accessibilities?.map((accessibility, index) => (
-                        <span key={index}>
-                            {accessibility.accessable_type}
-                            {": "}
-                        </span>
-                    ))}
-                    {post.departmentNames ? post.departmentNames : post.type}
-                </span>
-            )}
-        </div>
-    );
-}
-
-function CardImage({ post }) {
-    return (
-        <div className="flex gap-1.5 -mt-1">
-            <UserProfileAvatar post={post} />
-            <div className="flex flex-col my-auto ml-1">
-                <div className="text-base font-semibold text-neutral-800">
-                    {post.user.name}
-                </div>
-                <time className="mt-1 text-xs text-neutral-800 text-opacity-50">
-                    {formatTimeAgo(post.created_at)}
-                </time>
-            </div>
-        </div>
-    );
-}
 
 export function DefaultPostCard({ post }) {
     const { variant, loggedInUserId } = useContext(WallContext);
