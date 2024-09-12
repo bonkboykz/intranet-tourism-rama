@@ -3,6 +3,7 @@ import Picker from "emoji-picker-react";
 // import { Tooltip } from "react-tooltip";
 import { Polls } from "./InputPolls";
 import { People } from "./InputPeople";
+import useUserData from "@/Utils/hooks/useUserData";
 import { Event } from "./InputEvent";
 import TagInput from "./AlbumTag";
 import MediaTag from "../../../../../public/assets/Media tag.svg";
@@ -27,6 +28,9 @@ function ShareYourThoughts({
     departmentId,
 }) {
     const [inputValue, setInputValue] = useState("");
+    const { isAdmin, id } = useUserData();
+    const [postAsOpen, setPostAsOpen] = useState(false);
+    const [postAs, setPostAs] = useState("Post as");
     const [showPollPopup, setShowPollPopup] = useState(false);
     const [showMediaTagPopup, setShowMediaTagPopup] = useState(false);
     const [showPeoplePopup, setShowPeoplePopup] = useState(false);
@@ -71,6 +75,15 @@ function ShareYourThoughts({
 
         setInputValue(value);
         setCursorPosition(cursorPosition);
+    };
+
+    const togglePostAsDropdown = () => {
+        setPostAsOpen((prevState) => !prevState);
+    };
+
+    const handlePostAsSelect = (option) => {
+        setPostAs(option);
+        setPostAsOpen(false);
     };
 
     const handleTagSelection = (tag, id) => {
@@ -622,7 +635,38 @@ function ShareYourThoughts({
                                                                     handleToggleChange
                                                                 }
                                                             />
+
+                                                            {isAdmin && (
+                                                                <div className="relative inline-block text-left">
+                                                                    <button
+                                                                        onClick={togglePostAsDropdown}
+                                                                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+                                                                    >
+                                                                        {postAs}
+                                                                        <span className="ml-2">▼</span>
+                                                                    </button>
+                                                                    {postAsOpen && (
+                                                                        <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-300 rounded-md shadow-lg">
+                                                                            <ul className="py-1">
+                                                                                <li
+                                                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                                                                    onClick={() => handlePostAsSelect("Post as a member")}
+                                                                                >
+                                                                                    Post as a member
+                                                                                </li>
+                                                                                <li
+                                                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                                                                    onClick={() => handlePostAsSelect("Post as an admin")}
+                                                                                >
+                                                                                    Post as an admin
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            )}
                                                             <span className="slider"></span>
+
                                                         </label>
                                                     </div>
                                                 )}
