@@ -38,6 +38,11 @@ class CommunityPermissionsHelper
 
         // add to list of community admins
         $community->admins()->attach($user->id);
+
+        // if not already a member of the community, add them
+        if (!$community->members->contains($user->id)) {
+            $community->members()->attach($user->id, ['role' => 'admin']);
+        }
     }
 
     public static function revokeCommunityAdminPermissions(User $user, Community $community)
@@ -65,6 +70,11 @@ class CommunityPermissionsHelper
 
         // remove from list of community admins
         $community->admins()->detach($user->id);
+
+        // if in the list of members, demote to member
+        if ($community->members->contains($user->id)) {
+            $community->members()->updateExistingPivot($user->id, ['role' => 'member']);
+        }
     }
 
     public static function checkSpecificPermission(User $user, string $permission, string $community_id)

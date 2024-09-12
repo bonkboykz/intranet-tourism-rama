@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
-import PageTitle from "../Components/Reusable/PageTitle";
-import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
-import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
-import CommunityDropdown from "../Components/Reusable/Community/CommunityDropdown";
-import CommunitySearchBar from "../Components/Reusable/Community/CommunitySearch";
-import CommunityCard from "../Components/Reusable/Community/CommunityCard";
-import Example from "@/Layouts/DashboardLayoutNew";
+import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
-import "./css/StaffDirectory.css";
-import CreateCommunity from "../Components/Reusable/Community/CreateCommunity";
-import PopupMenu from "../Components/Reusable/Community/CommunityPopUp";
-import { useCsrf } from "@/composables";
+
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
+import { useCsrf } from "@/composables";
+import Example from "@/Layouts/DashboardLayoutNew";
+
+import CommunityCard from "../Components/Reusable/Community/CommunityCard";
+import CommunityDropdown from "../Components/Reusable/Community/CommunityDropdown";
+import PopupMenu from "../Components/Reusable/Community/CommunityPopUp";
+import CommunitySearchBar from "../Components/Reusable/Community/CommunitySearch";
+import CreateCommunity from "../Components/Reusable/Community/CreateCommunity";
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+
+import "./css/StaffDirectory.css";
 
 const Community = () => {
     const [departmentsList, setDepartmentsList] = useState([]);

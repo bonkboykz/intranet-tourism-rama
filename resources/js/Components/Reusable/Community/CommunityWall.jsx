@@ -1,22 +1,24 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import CmMembers from "./CommunityMembers";
-import {
-    ShareYourThoughts,
-    Filter,
-    OutputData,
-} from "@/Components/Reusable/WallPosting";
-import { SearchInput, SearchButton, Table } from "../../ProfileTabbar";
-import { ImageProfile, VideoProfile } from "../../ProfileTabbar/Gallery";
-import EditCommunity from "./EditCommunity";
-import { useCsrf } from "@/composables";
+import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { usePage } from "@inertiajs/react";
 import { add, set } from "date-fns";
-import defaultImage from "../../../../../public/assets/dummyStaffPlaceHolder.jpg";
-import { useContext } from "react";
+
+import {
+    Filter,
+    OutputData,
+    ShareYourThoughts,
+} from "@/Components/Reusable/WallPosting";
+import { useCsrf } from "@/composables";
 import { CommunityContext } from "@/Pages/CommunityContext";
-import { CommunityWallActions } from "./CommunityWallActions";
+
+import defaultImage from "../../../../../public/assets/dummyStaffPlaceHolder.jpg";
+import { SearchButton, SearchInput, Table } from "../../ProfileTabbar";
+import { ImageProfile, VideoProfile } from "../../ProfileTabbar/Gallery";
 import { WallContext } from "../WallPosting/WallContext";
+import CmMembers from "./CommunityMembers";
+import { CommunityWallActions } from "./CommunityWallActions";
+import EditCommunity from "./EditCommunity";
 
 function HeaderSection({
     communityID,

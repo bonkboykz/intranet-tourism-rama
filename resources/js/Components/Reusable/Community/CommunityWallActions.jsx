@@ -1,5 +1,7 @@
-import { CommunityContext } from "@/Pages/CommunityContext";
 import { useContext } from "react";
+import axios from "axios";
+
+import { CommunityContext } from "@/Pages/CommunityContext";
 
 export function CommunityWallActions({
     hasJoined,
