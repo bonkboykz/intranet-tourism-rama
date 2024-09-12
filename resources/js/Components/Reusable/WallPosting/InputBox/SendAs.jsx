@@ -1,13 +1,18 @@
-import useUserData from "@/Utils/hooks/useUserData";
-import { WallContext } from "../WallContext";
 import { useContext } from "react";
 import { useState } from "react";
 
-export function SendAs({ postAs, onChange }) {
-    const { variant: wallVariant } = useContext(WallContext);
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+import useUserData from "@/Utils/hooks/useUserData";
+
+export function SendAs({ postAs, onChange, departmentId, communityId }) {
     const { isSuperAdmin, id } = useUserData();
 
+    const { hasRole } = usePermissions();
+
     const [postAsOpen, setPostAsOpen] = useState(false);
+
+    const isCommunityAdmin = hasRole(`community admin ${communityId}`);
+    const isDeparmtentAdmin = hasRole(`department admin ${departmentId}`);
 
     const togglePostAsDropdown = () => {
         setPostAsOpen(!postAsOpen);
@@ -18,15 +23,13 @@ export function SendAs({ postAs, onChange }) {
         setPostAsOpen(false);
     };
 
-    if (!["community", "department"].includes(wallVariant)) {
+    if (!departmentId && !communityId) {
         return null;
     }
 
-    if (!isSuperAdmin) {
+    if (!isSuperAdmin && !isCommunityAdmin && !isDeparmtentAdmin) {
         return null;
     }
-
-    console.log("Send as", wallVariant, isSuperAdmin);
 
     return (
         <div className="relative inline-block text-left flex self-end">

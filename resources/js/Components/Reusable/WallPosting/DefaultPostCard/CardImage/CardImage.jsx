@@ -1,6 +1,7 @@
 import { formatTimeAgo } from "@/Utils/format";
-import { UserProfileAvatar } from "../../UserProfileAvatar";
+
 import { UserPostTitle } from "../../UserPostTitle";
+import { UserProfileAvatar } from "../../UserProfileAvatar";
 
 export function CardImage({ post }) {
     return (

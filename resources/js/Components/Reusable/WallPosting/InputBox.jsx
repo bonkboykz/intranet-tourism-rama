@@ -643,6 +643,8 @@ function ShareYourThoughts({
                                                     onChange={(newPostAs) =>
                                                         setPostAs(newPostAs)
                                                     }
+                                                    communityId={communityId}
+                                                    departmentId={departmentId}
                                                 />
                                             </div>
                                             <button

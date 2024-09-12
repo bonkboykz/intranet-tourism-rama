@@ -92,4 +92,12 @@ class DepartmentController extends Controller
 
         return response()->noContent();
     }
+
+
+    public function getAdmins(Department $community)
+    {
+        return response()->json([
+            'data' => $community->admins,
+        ]);
+    }
 }

@@ -1,9 +1,14 @@
-import { CommunityContext } from "@/Pages/CommunityContext";
-import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { useContext } from "react";
 
+import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 export function CommunityTitle({ post }) {
-    const { isAdmin } = useContext(CommunityContext);
+    // const { isAdmin } = useContext(CommunityContext);
+
+    const { hasRole } = usePermissions();
+
+    const isCommunityAdmin = hasRole(`community admin ${post.community.id}`);
 
     if (post.post_as === "member") {
         return (
@@ -13,7 +18,8 @@ export function CommunityTitle({ post }) {
         );
     }
 
-    const title = post.community.name + (isAdmin ? ` (${post.user.name})` : "");
+    const title =
+        post.community.name + (isCommunityAdmin ? ` (${post.user.name})` : "");
 
     return (
         <div className="text-base font-semibold text-neutral-800">{title}</div>
