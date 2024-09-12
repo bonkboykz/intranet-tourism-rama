@@ -1,4 +1,4 @@
-import { usePage, router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 export const usePermissions = () => {
     const { auth } = usePage().props;

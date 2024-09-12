@@ -53,7 +53,7 @@ const ConfirmationPopup = ({ selectedPerson, onConfirm, onCancel }) => {
     );
 };
 
-const SearchPopup = ({
+const AddMemberPopup = ({
     isAddMemberPopupOpen,
     setIsAddMemberPopupOpen,
     departmentId,
@@ -708,4 +708,4 @@ const SearchPopup = ({
     );
 };
 
-export default SearchPopup;
+export default AddMemberPopup;

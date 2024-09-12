@@ -25,5 +25,5 @@ Route::apiResources([
 Route::post('communities/{community}/add-member', [CommunityController::class, 'addMember'])->name('community.addMember');
 Route::post('communities/{community}/delete-member', [CommunityController::class, 'deleteMember'])->name('community.deleteMember');
 Route::post('communities/{community}/invite-community-admin', [CommunityController::class, 'inviteCommunityAdmin'])->name('community.inviteCommunityAdmin');
-Route::post('communities/{community}/remove-community-admin', [CommunityController::class, 'revokeCommunityAdmin'])->name('community.revokeCommunityAdmin');
+Route::post('communities/{community}/revoke-community-admin', [CommunityController::class, 'revokeCommunityAdmin'])->name('community.revokeCommunityAdmin');
 Route::get('communities/{community}/admins', [CommunityController::class, 'getAdmins'])->name('community.getAdmins');

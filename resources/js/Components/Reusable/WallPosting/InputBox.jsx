@@ -1,23 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useContext } from "react";
+import axios from "axios";
 import Picker from "emoji-picker-react";
+import { Loader2 } from "lucide-react";
+
+import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+import useUserData from "@/Utils/hooks/useUserData";
+
+import Emoji from "../../../../../public/assets/EmojiIcon.svg";
+import EventTag from "../../../../../public/assets/EventTagIcon.svg";
+import MediaTag from "../../../../../public/assets/Media tag.svg";
+import TagInput from "./AlbumTag";
+import { SendAs } from "./InputBox/SendAs";
+import { Event } from "./InputEvent";
+import { People } from "./InputPeople";
 // import { Tooltip } from "react-tooltip";
 import { Polls } from "./InputPolls";
-import { People } from "./InputPeople";
-import useUserData from "@/Utils/hooks/useUserData";
-import { Event } from "./InputEvent";
-import TagInput from "./AlbumTag";
-import MediaTag from "../../../../../public/assets/Media tag.svg";
-import EventTag from "../../../../../public/assets/EventTagIcon.svg";
+import { WallContext } from "./WallContext";
+
 import "../css/InputBox.css";
 import "../../../Pages/Calendar/index.css";
-import Emoji from "../../../../../public/assets/EmojiIcon.svg";
-import { useCsrf } from "@/composables";
-import axios from "axios";
-import { Loader2 } from "lucide-react";
-import { useContext } from "react";
-import { WallContext } from "./WallContext";
-import { SendAs } from "./InputBox/SendAs";
-import { cn } from "@/Utils/cn";
 
 function ShareYourThoughts({
     userId,
@@ -376,6 +380,15 @@ function ShareYourThoughts({
         setShowReactionPicker(!showReactionPicker);
     };
 
+    const { hasPermission } = usePermissions();
+
+    const canSetAnnouncement =
+        (!communityId && !departmentId) ||
+        (communityId &&
+            hasPermission(`set unset post as announcement ${communityId}`)) ||
+        (departmentId &&
+            hasPermission(`set unset post as announcement ${departmentId}`));
+
     return (
         <section className="flex flex-col justify-center text-sm text-neutral-800 w-full">
             <div
@@ -602,26 +615,28 @@ function ShareYourThoughts({
                                         {/* column baru */}
                                         <div className="flex flex-row w-full justify-between gap-4">
                                             <div className="flex flex-row w-full max-md:justify-between justify-end gap-4">
-                                                {variant !== "comment" && (
-                                                    <div className="flex items-center">
-                                                        <label className="text-sm mr-3">
-                                                            Set as Announcement?
-                                                        </label>
-                                                        <label className="switch">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={
-                                                                    isAnnouncement
-                                                                }
-                                                                onChange={
-                                                                    handleToggleChange
-                                                                }
-                                                            />
+                                                {variant !== "comment" &&
+                                                    canSetAnnouncement && (
+                                                        <div className="flex items-center">
+                                                            <label className="text-sm mr-3">
+                                                                Set as
+                                                                Announcement?
+                                                            </label>
+                                                            <label className="switch">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={
+                                                                        isAnnouncement
+                                                                    }
+                                                                    onChange={
+                                                                        handleToggleChange
+                                                                    }
+                                                                />
 
-                                                            <span className="slider"></span>
-                                                        </label>
-                                                    </div>
-                                                )}
+                                                                <span className="slider"></span>
+                                                            </label>
+                                                        </div>
+                                                    )}
 
                                                 <SendAs
                                                     postAs={postAs}
