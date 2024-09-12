@@ -5,18 +5,11 @@ import axios from "axios";
 import AddMemberPopup from "../AddMemberPopup";
 import { MemberCard } from "./MemberCard";
 
-export function Members({
-    members,
-    communityID,
-    onRefetch,
-    searchInput,
-    loggedInID,
-}) {
+export function Members({ members, communityID, onRefetch, loggedInID }) {
     const [activePopupId, setActivePopupId] = useState(null);
     const closePopup = () => {
         setActivePopupId(null);
     };
-    const [searchResults, setSearchResults] = useState([]);
 
     const handleRemove = async (id) => {
         const url = `/api/communities/communities/${communityID}/delete-member`;
@@ -72,13 +65,6 @@ export function Members({
         onRefetch();
     };
 
-    useEffect(() => {
-        const filteredMembers = members.filter((member) =>
-            member.name.toLowerCase().includes(searchInput.toLowerCase())
-        );
-        setSearchResults(filteredMembers);
-    }, [searchInput, members]);
-
     const handleAssign = async (user_id) => {
         try {
             const rolesResponse = await axios.post(
@@ -111,8 +97,6 @@ export function Members({
         return urlParams.get("department_id");
     };
 
-    const displayedMembers = searchResults.length > 0 ? searchResults : members;
-
     return (
         <>
             <div className="flex justify-between gap-5 mt-10 max-md:flex-wrap max-md:max-w-full">
@@ -121,11 +105,11 @@ export function Members({
                         <h2 className="text-2xl font-bold text-black grow">
                             Members
                             <span className="ml-4 text-xl mt-0.5 font-semibold text-stone-300">
-                                {displayedMembers.length}
+                                {members.length}
                             </span>
                         </h2>
                     </div>
-                    {displayedMembers.map((member, index) => (
+                    {members.map((member, index) => (
                         <MemberCard
                             key={index}
                             id={member.user_id}

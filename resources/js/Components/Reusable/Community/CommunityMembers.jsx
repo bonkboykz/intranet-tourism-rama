@@ -72,6 +72,17 @@ function CommunityMembers({ communityID, loggedInID }) {
         setSearchInput(e.target.value);
     };
 
+    const [searchResults, setSearchResults] = useState([]);
+
+    useEffect(() => {
+        const filteredMembers = members.filter((member) =>
+            member.name.toLowerCase().includes(searchInput.toLowerCase())
+        );
+        setSearchResults(filteredMembers);
+    }, [searchInput, members]);
+
+    const displayedMembers = searchResults.length > 0 ? searchResults : members;
+
     if (isLoading) {
         return (
             <div className="loading-screen">
@@ -80,7 +91,7 @@ function CommunityMembers({ communityID, loggedInID }) {
         );
     }
 
-    const nonAdminUsers = members.filter(
+    const nonAdminUsers = displayedMembers.filter(
         (member) => !admins.some((admin) => admin.id === member.user_id)
     );
 
