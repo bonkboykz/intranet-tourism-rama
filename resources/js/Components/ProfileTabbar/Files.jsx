@@ -24,7 +24,6 @@
 //   </button>
 // );
 
-
 // // const Table = ({ userId }) => {
 // //   const [currentPage, setCurrentPage] = useState(1);
 // //   const itemsPerPage = 10;
@@ -265,142 +264,195 @@
 
 // export { SearchButton, SearchInput, Table };
 
-import React, { useState, useEffect } from 'react';
-import UserFilePopup from '../Reusable/UserFilePopup';
-import Pagination from '../Paginator';
+import React, { useState, useEffect } from "react";
+import UserFilePopup from "../Reusable/UserFilePopup";
+import Pagination from "../Paginator";
+import axios from "axios";
 
 const SearchInput = () => (
-  <div className="flex w-full gap-0 px-4 py-0.5 text-md bg-gray-100 rounded-full text-neutral-800 text-opacity-50 mt-8 my-2">
-    <input
-      type="text"
-      className="w-full text-neutral-800 bg-gray-100 border-none font-bold focus:outline-none rounded-full"
-      placeholder="Search files"
-    />
-  </div>
+    <div className="flex w-full gap-0 px-4 py-0.5 text-md bg-gray-100 rounded-full text-neutral-800 text-opacity-50 mt-8 my-2">
+        <input
+            type="text"
+            className="w-full text-neutral-800 bg-gray-100 border-none font-bold focus:outline-none rounded-full"
+            placeholder="Search files"
+        />
+    </div>
 );
 
 const SearchButton = () => (
-  <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-blue-500 hover:bg-blue-700 rounded-3xl mt-8">
-    Search
-  </button>
+    <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-blue-500 hover:bg-blue-700 rounded-3xl mt-8">
+        Search
+    </button>
 );
 
-const Table = ({ userId, departmentID }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Table = ({ userId, departmentID, communityId }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const [files, setFiles] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const response = await fetch(`/api/crud/resources`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch files');
-        }
-        const responseData = await response.json();
-        const filesData = responseData.data.data;
+    useEffect(() => {
+        const fetchFiles = async () => {
+            try {
+                const params = {};
 
-        // Filter the files based on the document types, userId, and departmentID
-        const documentFiles = filesData.filter(file => {
-          const ext = file.extension.toLowerCase();
-          return (
-            ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext) &&
-            file.user_id === userId &&
-            file.department_id === departmentID
-          );
+                if (communityId) {
+                    params["scopes"] = [
+                        {
+                            accessfor: "posts",
+                            accessableBy: ["Community", communityId],
+                        },
+                    ];
+                } else if (departmentID) {
+                    params["scopes"] = [
+                        {
+                            accessfor: "posts",
+                            accessableBy: ["Department", departmentID],
+                        },
+                    ];
+                }
+
+                const response = await axios.get(`/api/resources/resources`, {
+                    params: {
+                        with: ["attachable.accessibilities"],
+                        ...params,
+                    },
+                });
+
+                if ([401, 403, 500].includes(response.status)) {
+                    throw new Error("Failed to fetch files");
+                }
+                console.log(response.data);
+                const filesData = response.data.data.data;
+
+                // Filter the files based on the document types, userId, and departmentID
+                const documentFiles = filesData.filter((file) => {
+                    const ext = file.extension.toLowerCase();
+                    return [
+                        "pdf",
+                        "doc",
+                        "docx",
+                        "xls",
+                        "xlsx",
+                        "ppt",
+                        "pptx",
+                    ].includes(ext);
+                });
+
+                setFiles(documentFiles);
+                console.log("DATA", documentFiles);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching files:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchFiles();
+    }, [userId, departmentID]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (files.length === 0) {
+        return <div>No files available</div>;
+    }
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = files.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handleRename = (index, newName) => {
+        const updatedFiles = files.map((file, i) => {
+            if (i === index) {
+                const metadata =
+                    typeof file.metadata === "string"
+                        ? JSON.parse(file.metadata)
+                        : file.metadata;
+                metadata.name = newName;
+                return { ...file, metadata: JSON.stringify(metadata) };
+            }
+            return file;
         });
-
-        setFiles(documentFiles);
-        console.log('DATA', documentFiles);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching files:', error);
-        setLoading(false);
-      }
+        setFiles(updatedFiles);
     };
 
-    fetchFiles();
-  }, [userId, departmentID]);
+    const handleDelete = (index) => {
+        const updatedFiles = files.filter((_, i) => i !== index);
+        setFiles(updatedFiles);
+    };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (files.length === 0) {
-    return <div>No files available</div>;
-  }
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = files.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handleRename = (index, newName) => {
-    const updatedFiles = files.map((file, i) => {
-      if (i === index) {
-        const metadata = typeof file.metadata === 'string' ? JSON.parse(file.metadata) : file.metadata;
-        metadata.name = newName;
-        return { ...file, metadata: JSON.stringify(metadata) };
-      }
-      return file;
-    });
-    setFiles(updatedFiles);
-  };
-
-  const handleDelete = (index) => {
-    const updatedFiles = files.filter((_, i) => i !== index);
-    setFiles(updatedFiles);
-  };
-
-  return (
-    <div className="w-full px-4 sm:px-0 lg:px-0 overflow-visible">
-      <div className="mt-8 flow-root">
-        <div className="overflow-visible">
-            <table className="w-full rounded-2xl p-4 bg-white shadow-custom table-fixed overflow-visible border-separate border-spacing-1">
-              <thead>
-                <tr>
-                  <th className="w-1/3 md:w-3/4 lg:w-3/4 rounded-full bg-blue-200 px-3 py-3.5 text-center text-sm max-md:text-xs font-semibold text-blue-500 sm:pl-1 shadow-custom">
-                      File Name
-                  </th>
-                  {/* <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
+    return (
+        <div className="w-full px-4 sm:px-0 lg:px-0 overflow-visible">
+            <div className="mt-8 flow-root">
+                <div className="overflow-visible">
+                    <table className="w-full rounded-2xl p-4 bg-white shadow-custom table-fixed overflow-visible border-separate border-spacing-1">
+                        <thead>
+                            <tr>
+                                <th className="w-1/3 md:w-3/4 lg:w-3/4 rounded-full bg-blue-200 px-3 py-3.5 text-center text-sm max-md:text-xs font-semibold text-blue-500 sm:pl-1 shadow-custom">
+                                    File Name
+                                </th>
+                                {/* <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
                       Uploaded By
                   </th> */}
-                  <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
-                      Date Created
-                  </th>
-                  <th className="w-1/12 relative py-3.5">
-                      <span className="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y-reverse divide-neutral-300 text-center rounded-full">
-                {currentItems.map((item, index) => {
-                  const metadata = typeof item.metadata === 'string' ? JSON.parse(item.metadata) : item.metadata;
-                  return (
-                    <tr key={index}>
-                      <td className="border-b border-r text-start font-bold border-neutral-300 whitespace-nowrap px-3 py-4 text-sm text-neutral-800 sm:pl-1 overflow-hidden text-ellipsis">
-                        {metadata.original_name || 'Unknown'}
-                      </td>
-                      <td className="border-b border-r border-neutral-300 whitespace-nowrap px-3 py-4 text-sm text-neutral-800 overflow-hidden text-ellipsis">
-                        {new Date(item.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="flex relative mt-3.5">
-                        <UserFilePopup
-                          name={metadata.name}
-                          onRename={(newName) => handleRename(indexOfFirstItem + index, newName)}
-                          onDelete={() => handleDelete(indexOfFirstItem + index)}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            <Pagination totalItems={files.length} itemsPerPage={itemsPerPage} paginate={setCurrentPage} currentPage={currentPage} />
+                                <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
+                                    Date Created
+                                </th>
+                                <th className="w-1/12 relative py-3.5">
+                                    <span className="sr-only">Edit</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y-reverse divide-neutral-300 text-center rounded-full">
+                            {currentItems.map((item, index) => {
+                                const metadata =
+                                    typeof item.metadata === "string"
+                                        ? JSON.parse(item.metadata)
+                                        : item.metadata;
+                                return (
+                                    <tr key={index}>
+                                        <td className="border-b border-r text-start font-bold border-neutral-300 whitespace-nowrap px-3 py-4 text-sm text-neutral-800 sm:pl-1 overflow-hidden text-ellipsis">
+                                            {metadata.original_name ||
+                                                "Unknown"}
+                                        </td>
+                                        <td className="border-b border-r border-neutral-300 whitespace-nowrap px-3 py-4 text-sm text-neutral-800 overflow-hidden text-ellipsis">
+                                            {new Date(
+                                                item.created_at
+                                            ).toLocaleDateString()}
+                                        </td>
+                                        <td className="flex relative mt-3.5">
+                                            <UserFilePopup
+                                                name={metadata.name}
+                                                onRename={(newName) =>
+                                                    handleRename(
+                                                        indexOfFirstItem +
+                                                            index,
+                                                        newName
+                                                    )
+                                                }
+                                                onDelete={() =>
+                                                    handleDelete(
+                                                        indexOfFirstItem + index
+                                                    )
+                                                }
+                                            />
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                    <Pagination
+                        totalItems={files.length}
+                        itemsPerPage={itemsPerPage}
+                        paginate={setCurrentPage}
+                        currentPage={currentPage}
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export { SearchButton, SearchInput, Table };
