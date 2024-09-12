@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import useUserData from "../../hooks/useUserData.js";
+import useUserData from "@/Utils/hooks/useUserData";
 import PageTitle from "../Components/Reusable/PageTitle";
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
 import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { StoryNew } from "@/Components/Dashboard";
-import { ShareYourThoughts, Filter, OutputData } from "@/Components/Reusable/WallPosting";
+import {
+    ShareYourThoughts,
+    Filter,
+    OutputData,
+} from "@/Components/Reusable/WallPosting";
 import MyComponent from "@/Components/Reusable/CommunitySide";
 import AdvertisementDashboard from "@/Components/Reusable/AdvertisementDashboard";
 import InfoGraphic from "@/Components/Reusable/InfoGraphic";
@@ -41,10 +45,21 @@ const Dashboard = () => {
                     <main className="xl:pl-[calc(22%+4rem)] xl:pr-[calc(25%+2rem)] min-h-screen bg-gray-100">
                         <div className="flex flex-col items-start px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
                             <StoryNew userId={id} />
-                            <ShareYourThoughts userId={id} onCreatePoll={handleCreatePoll} />
-                            <Filter className="mr-10" onFilterChange={handleFilterChange} />
+                            <ShareYourThoughts
+                                userId={id}
+                                onCreatePoll={handleCreatePoll}
+                            />
+                            <Filter
+                                className="mr-10"
+                                onFilterChange={handleFilterChange}
+                            />
                             <div className="mb-4"></div>
-                            <OutputData loggedInUserId={id} polls={polls} filterType={null} postType={filterType} />
+                            <OutputData
+                                loggedInUserId={id}
+                                polls={polls}
+                                filterType={null}
+                                postType={filterType}
+                            />
 
                             {isAdmin && (
                                 <div className="relative inline-block text-left">
@@ -60,13 +75,21 @@ const Dashboard = () => {
                                             <ul className="py-1">
                                                 <li
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                                    onClick={() => handlePostAsSelect("Post as a member")}
+                                                    onClick={() =>
+                                                        handlePostAsSelect(
+                                                            "Post as a member"
+                                                        )
+                                                    }
                                                 >
                                                     Post as a member
                                                 </li>
                                                 <li
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                                    onClick={() => handlePostAsSelect("Post as an admin")}
+                                                    onClick={() =>
+                                                        handlePostAsSelect(
+                                                            "Post as an admin"
+                                                        )
+                                                    }
                                                 >
                                                     Post as an admin
                                                 </li>

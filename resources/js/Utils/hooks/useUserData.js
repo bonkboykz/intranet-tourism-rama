@@ -1,6 +1,12 @@
+import { usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export function useUserData(id) {
+export function useUserData() {
+    const {
+        props: {
+            auth: { user },
+        },
+    } = usePage();
     const [userData, setUserData] = useState({});
 
     const fetchUserData = (id) => {
@@ -28,8 +34,10 @@ export function useUserData(id) {
     };
 
     useEffect(() => {
-        fetchUserData(id);
-    }, [id]);
+        fetchUserData(user?.id);
+    }, [user?.id]);
 
     return userData;
 }
+
+export default useUserData;

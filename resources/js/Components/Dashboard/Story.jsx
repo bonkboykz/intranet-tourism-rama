@@ -23,8 +23,6 @@ const StoryNew = ({ userId }) => {
     const { id } = props; // Access the user ID from props
     const [userStories, setUserStories] = useState([]);
 
-    // const userData = useUserData(id);
-
     const containerRef = useRef(null);
 
     const fileInputRef = useRef(null);
