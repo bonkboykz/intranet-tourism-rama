@@ -76,17 +76,21 @@ const WhosOnline = () => {
                     {onlineUsers.length}
                 </span>
             </div>
-            <hr style={{ marginTop: '5px', marginBottom: '5px'}} className="underline" />
+            <hr style={{ marginTop: '5px', marginBottom: '5px' }} className="underline" />
             <div className="online-users text-left flex justify-start">
-                {onlineUsers.map((user, index) => (
-                    <div
-                        key={index}
-                        onMouseEnter={(event) => handleMouseEnter(event, user)}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        <UserAvatar {...user} ID_USER={user.id} />
-                    </div>
-                ))}
+                {onlineUsers.length === 0 ? (
+                    <p>No one online</p>
+                ) : (
+                    onlineUsers.map((user, index) => (
+                        <div
+                            key={index}
+                            onMouseEnter={(event) => handleMouseEnter(event, user)}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            <UserAvatar {...user} ID_USER={user.id} />
+                        </div>
+                    ))
+                )}
             </div>
             <hr style={{ marginTop: '5px', marginBottom: '5px' }} className="underline" />
             <div className="view-all-container">
