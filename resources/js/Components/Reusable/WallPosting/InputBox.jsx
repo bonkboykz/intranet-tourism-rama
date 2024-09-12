@@ -28,7 +28,7 @@ function ShareYourThoughts({
     departmentId,
 }) {
     const [inputValue, setInputValue] = useState("");
-    const { isAdmin, id } = useUserData();
+    const { isSuperAdmin, id } = useUserData();
     const [postAsOpen, setPostAsOpen] = useState(false);
     const [postAs, setPostAs] = useState("Post as");
     const [showPollPopup, setShowPollPopup] = useState(false);
@@ -634,7 +634,7 @@ function ShareYourThoughts({
                                                                 }
                                                             />
 
-                                                            {isAdmin && (
+                                                            {isSuperAdmin && (
                                                                 <div className="relative inline-block text-left">
                                                                     <button
                                                                         onClick={

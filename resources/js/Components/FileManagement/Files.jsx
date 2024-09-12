@@ -32,7 +32,7 @@ const FileTable = ({ searchTerm }) => {
             let currentPage = 1;
             let totalPages = 1;
             let allFilesData = [];
-    
+
             while (currentPage <= totalPages) {
                 const response = await fetch(
                     `/api/resources/resources?with[]=author&page=${currentPage}`
@@ -42,7 +42,7 @@ const FileTable = ({ searchTerm }) => {
                 }
                 const responseData = await response.json();
                 console.log("RESPONSEDATA", responseData);
-    
+
                 if (!Array.isArray(responseData.data?.data)) {
                     console.error(
                         "Expected an array of files, but received:",
@@ -51,7 +51,7 @@ const FileTable = ({ searchTerm }) => {
                     setLoading(false);
                     return;
                 }
-    
+
                 const filesData = responseData.data.data.map((file) => ({
                     ...file,
                     uploader: file.author.name, // Assuming the API provides an 'uploader' field with the uploader's name
@@ -60,20 +60,20 @@ const FileTable = ({ searchTerm }) => {
                             ? JSON.parse(file.metadata)
                             : file.metadata,
                 }));
-    
+
                 // Accumulate all files data across pages
                 allFilesData = [...allFilesData, ...filesData];
-    
+
                 // Determine the total number of pages
                 totalPages = responseData.data.last_page;
                 currentPage++;
             }
-    
+
             // Sort files by the `created_at` date in descending order (newest first)
             allFilesData.sort(
                 (a, b) => new Date(b.created_at) - new Date(a.created_at)
             );
-    
+
             setFiles(allFilesData);
             setLoading(false);
         } catch (error) {
@@ -81,7 +81,6 @@ const FileTable = ({ searchTerm }) => {
             setLoading(false);
         }
     };
-    
 
     useEffect(() => {
         fetchFiles();
@@ -176,8 +175,7 @@ const FileTable = ({ searchTerm }) => {
     //     }
     // };
 
-
-      const handleRename = async (index, newName) => {
+    const handleRename = async (index, newName) => {
         setIsSaving(true);
         const fileToRename = files[index];
         if (!fileToRename || !fileToRename.id) {
@@ -185,7 +183,6 @@ const FileTable = ({ searchTerm }) => {
             return;
         }
 
-        
         const updatedMetadata = {
             ...fileToRename.metadata,
             original_name: newName,
@@ -207,13 +204,15 @@ const FileTable = ({ searchTerm }) => {
         };
 
         try {
-            setIsSaving(true);  // Start the saving state
+            setIsSaving(true); // Start the saving state
 
             const response = await fetch(url, options);
             if (!response.ok) {
                 const responseBody = await response.text();
                 console.error("Failed to rename file:", responseBody);
-                throw new Error(`Failed to rename file: ${response.statusText}`);
+                throw new Error(
+                    `Failed to rename file: ${response.statusText}`
+                );
             }
 
             // Fetch the updated list of files after successful rename
@@ -232,7 +231,10 @@ const FileTable = ({ searchTerm }) => {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div className="bg-white p-8 rounded-lg shadow-lg">
                     <div className="flex items-center">
-                        <div className="loader spinner-border mr-4" role="status"></div>
+                        <div
+                            className="loader spinner-border mr-4"
+                            role="status"
+                        ></div>
                         <span>Saving...</span>
                     </div>
                 </div>
@@ -245,7 +247,6 @@ const FileTable = ({ searchTerm }) => {
             handleRename(index, editingName);
         }
     };
-    
 
     const handleDelete = async (fileId, index) => {
         const url = `/api/crud/resources/${fileId}`;
@@ -305,7 +306,7 @@ const FileTable = ({ searchTerm }) => {
                                 const metadata = item.metadata || {};
                                 const isEditing = editingIndex === index;
 
-                                    console.log("METADATA", metadata);
+                                console.log("METADATA", metadata);
 
                                 return (
                                     <tr key={index}>
@@ -315,26 +316,50 @@ const FileTable = ({ searchTerm }) => {
                                                     ref={inputRef}
                                                     className="flex items-center"
                                                 >
-                                <input
-                                    type="text"
-                                    value={editingName}
-                                    onChange={(e) => setEditingName(e.target.value)}
-                                    onBlur={() => handleRename(index, editingName)}
-                                    onKeyDown={(e) => handleKeyDown(e, index)}
-                                    className="text-sm text-neutral-800 text-opacity-80 mt-1 block w-full rounded-full p-2 border-2 border-stone-300 max-md:ml-4 overflow-hidden text-ellipsis"
-                                />
-                                                    
-                                                        <button
-                                                            onClick={() => handleRename(index, editingName)}
-                                                            className="ml-2 text-blue-500"
-                                                        >
-                                                            Save
-                                                        </button>
+                                                    <input
+                                                        type="text"
+                                                        value={editingName}
+                                                        onChange={(e) =>
+                                                            setEditingName(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        onBlur={() =>
+                                                            handleRename(
+                                                                index,
+                                                                editingName
+                                                            )
+                                                        }
+                                                        onKeyDown={(e) =>
+                                                            handleKeyDown(
+                                                                e,
+                                                                index
+                                                            )
+                                                        }
+                                                        className="text-sm text-neutral-800 text-opacity-80 mt-1 block w-full rounded-full p-2 border-2 border-stone-300 max-md:ml-4 overflow-hidden text-ellipsis"
+                                                    />
+
+                                                    <button
+                                                        onClick={() =>
+                                                            handleRename(
+                                                                index,
+                                                                editingName
+                                                            )
+                                                        }
+                                                        className="ml-2 text-blue-500"
+                                                    >
+                                                        Save
+                                                    </button>
                                                 </div>
                                             ) : (
                                                 <div
                                                     className="text-sm font-bold mt-1 block w-full rounded-md py-2 border-2 border-transparent text-neutral-800 text-opacity-80 overflow-hidden text-ellipsis"
-                                                    onDoubleClick={() => startEditing(index, metadata.original_name)}
+                                                    onDoubleClick={() =>
+                                                        startEditing(
+                                                            index,
+                                                            metadata.original_name
+                                                        )
+                                                    }
                                                 >
                                                     {metadata.original_name ||
                                                         "Unknown"}

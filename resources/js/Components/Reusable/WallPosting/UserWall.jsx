@@ -35,11 +35,11 @@ export function UserWall({ onLoad, hasMore, posts, userId }) {
                     return (
                         <div className="w-full" key={post.id}>
                             {/* Conditional Rendering for Announcement */}
-                            {post.type === "announcement" && (
+                            {/* {post.type === "announcement" && (
                                 <AnnouncementPostCard
                                     announce={post.announce}
                                 />
-                            )}
+                            )} */}
 
                             {/* Birthday Post For Profile */}
                             {/* {post.type === "birthday" && (

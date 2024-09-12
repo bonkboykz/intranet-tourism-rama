@@ -49,8 +49,12 @@ class UserController extends Controller
 
     public function show($id)
     {
+        $user = User::where('id', $id)->queryable()->firstOrFail();
+
+        $user->isSuperAdmin = $user->hasRole('superadmin');
+
         return response()->json([
-            'data' => User::where('id', $id)->queryable()->firstOrFail(),
+            'data' => $user
         ]);
     }
 
