@@ -1,4 +1,5 @@
 import { CommunityContext } from "@/Pages/CommunityContext";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { useContext } from "react";
 
 export function CommunityTitle({ post }) {
@@ -20,8 +21,16 @@ export function CommunityTitle({ post }) {
 }
 
 export function DepartmentTitle({ post }) {
-    const isAdmin = true;
-    // TODO: check roles, if not admin or superadmin, show community name without poster name
+    const { isAdmin } = useContext(DepartmentContext);
+
+    if (post.post_as === "member") {
+        return (
+            <div className="text-base font-semibold text-neutral-800">
+                {post.user.name}
+            </div>
+        );
+    }
+
     const title =
         post.department.name + (isAdmin ? ` (${post.user.name})` : "");
 

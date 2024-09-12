@@ -125,7 +125,10 @@ function ShareYourThoughts({
         formData.append("announced", isAnnouncement ? 1 : 0);
 
         if (postAs !== "Post as") {
-            formData.append("post_as", postAs);
+            formData.append(
+                "post_as",
+                postAs.includes("admin") ? "admin" : "member"
+            );
         }
 
         // Append content and attachments only if they exist
