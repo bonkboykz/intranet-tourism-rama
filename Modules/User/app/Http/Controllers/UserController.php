@@ -50,7 +50,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::where('id', $id)->firstOrFail();
+        $user = User::where('id', $id)->with('profile', 'roles')->firstOrFail();
 
         $user->isSuperAdmin = $user->hasRole('superadmin');
         $user->employmentPost = $user->employmentPost()->first();
@@ -58,7 +58,8 @@ class UserController extends Controller
             $user->employmentPost->department = $user->employmentPost->department()->first();
             $user->employmentPost->businessPost = $user->employmentPost->businessPost()->first();
         }
-
+        // with relations expanded: department, businessPost, businessUnit
+        $user->employmentPosts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get();
 
         return response()->json([
             'data' => $user
