@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
-import FullCalendar from "@fullcalendar/react";
+import React, { useEffect, useRef, useState } from "react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import searchIcon from "../../../public/assets/search.png";
-import printIcon from "../../../public/assets/PrintPDF.svg";
-import pencilIcon from "../../../public/assets/EditIcon.svg";
-import * as bootstrap from "bootstrap";
-import "./Calendar/index.css";
-import Example from "@/Layouts/DashboardLayoutNew";
-import PrintCalendar from "./Calendar/PrintCalendar";
-import { useCsrf } from "@/composables";
+import listPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import axios from "axios";
+import * as bootstrap from "bootstrap";
+
+import { useCsrf } from "@/composables";
+import Example from "@/Layouts/DashboardLayoutNew";
+
+import pencilIcon from "../../../public/assets/EditIcon.svg";
+import printIcon from "../../../public/assets/PrintPDF.svg";
+import searchIcon from "../../../public/assets/search.png";
+import PrintCalendar from "./Calendar/PrintCalendar";
+
+import "./Calendar/index.css";
 // import { CakeIcon } from '@heroicons/react/20/solid';
 
 function Calendar() {
@@ -44,8 +47,6 @@ function Calendar() {
     const [isUrlFieldVisible, setIsUrlFieldVisible] = useState(false);
     const [eventId, setEventId] = useState(null);
     const calendarRef = useRef(null);
-
-    const displayedEvents = showAllEvents ? filteredEvents : filteredEvents.slice(0, 5);
 
     const toggleShowAllEvents = () => {
         setShowAllEvents(!showAllEvents);
@@ -216,7 +217,6 @@ function Calendar() {
             console.error("Error fetching birthdays: ", error);
         }
     };
-
 
     const filterEvents = () => {
         if (searchTerm.trim() === "") {
@@ -436,8 +436,8 @@ function Calendar() {
                 },
             });
 
-            // if (response.ok) {
-            //     const updatedEvent = await response.json();
+            const updatedEvent = response.data;
+
             setEvents((prevEvents) =>
                 prevEvents.map((event) =>
                     event.id === eventId ? updatedEvent : event
@@ -548,9 +548,12 @@ function Calendar() {
                         month: "Month",
                         day: "Day",
                     }}
-                    events={displayedEvents}
+                    events={filteredEvents}
                     eventDidMount={(info) => {
-                        console.log("eventDidMount called for event:", info.event);
+                        console.log(
+                            "eventDidMount called for event:",
+                            info.event
+                        );
 
                         if (info.event.extendedProps.isBirthday) {
                             console.log(
@@ -593,13 +596,16 @@ function Calendar() {
                                 offset: "0,10",
                             });
                         } else {
-                            const formattedStartTime = new Date(info.event.start).toLocaleString("en-US", {
+                            const formattedStartTime = new Date(
+                                info.event.start
+                            ).toLocaleString("en-US", {
                                 hour: "numeric",
                                 minute: "numeric",
                                 hour12: true,
                             });
 
-                            const descContent = info.event.extendedProps.description
+                            const descContent = info.event.extendedProps
+                                .description
                                 ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
                                 : "";
 
@@ -626,10 +632,12 @@ function Calendar() {
                         }
                     }}
                     eventContent={(eventInfo) => {
-                        const isBirthday = eventInfo.event.extendedProps.isBirthday;
+                        const isBirthday =
+                            eventInfo.event.extendedProps.isBirthday;
 
                         if (isBirthday) {
-                            const names = eventInfo.event.extendedProps.names || [];
+                            const names =
+                                eventInfo.event.extendedProps.names || [];
                             return (
                                 <div
                                     style={{
@@ -638,30 +646,32 @@ function Calendar() {
                                         width: "100%",
                                     }}
                                 >
-                                <span
-                                    role="img"
-                                    aria-label="cake"
-                                    style={{
-                                        position: "absolute",
-                                        bottom: "0",
-                                        left: "5px",
-                                        fontSize: "1.8em",
-                                        cursor: "pointer",
-                                        zIndex: 1,
-                                    }}
-                                    title={names.join(", ")}
-                                >
-                                    🎂
-                                </span>
+                                    <span
+                                        role="img"
+                                        aria-label="cake"
+                                        style={{
+                                            position: "absolute",
+                                            bottom: "0",
+                                            left: "5px",
+                                            fontSize: "1.8em",
+                                            cursor: "pointer",
+                                            zIndex: 1,
+                                        }}
+                                        title={names.join(", ")}
+                                    >
+                                        🎂
+                                    </span>
                                 </div>
                             );
                         } else {
-                            const borderColor = eventInfo.event.backgroundColor || "gray";
+                            const borderColor =
+                                eventInfo.event.backgroundColor || "gray";
 
                             return (
                                 <div
                                     style={{
-                                        backgroundColor: eventInfo.backgroundColor,
+                                        backgroundColor:
+                                            eventInfo.backgroundColor,
                                         padding: "10px 15px",
                                         borderRadius: "2px",
                                         display: "flex",
@@ -686,8 +696,8 @@ function Calendar() {
                                         className="event-title"
                                         style={{ color: "white", flexGrow: 1 }}
                                     >
-                                    {eventInfo.event.title}
-                                </span>
+                                        {eventInfo.event.title}
+                                    </span>
                                     <img
                                         src={pencilIcon}
                                         alt="Edit"
@@ -703,20 +713,6 @@ function Calendar() {
                         }
                     }}
                 />
-
-                {filteredEvents.length > 5 && (
-                    <button
-                        onClick={() => setShowAllEvents(!showAllEvents)}
-                        className="show-more-button"
-                        style={{
-                            color: "blue",
-                            cursor: "pointer",
-                            marginTop: "10px",
-                        }}
-                    >
-                        {showAllEvents ? "Показать меньше" : "Показать больше"}
-                    </button>
-                )}
 
                 <div className="pb-10"></div>
 
