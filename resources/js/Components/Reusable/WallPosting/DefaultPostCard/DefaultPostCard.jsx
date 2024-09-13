@@ -101,6 +101,7 @@ export function DefaultPostCard({ post }) {
                         "accessibilities",
                         "likes",
                         "comments",
+                        "albums",
                     ],
                 },
             });
@@ -315,7 +316,7 @@ export function DefaultPostCard({ post }) {
 
                 <p className="taging my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
                     {/* {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""} */}
-                    {cachedPost.albums.map((album) => album.name).join(", ")}
+                    {cachedPost.albums?.map((album) => album.name).join(", ")}
                 </p>
 
                 <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">

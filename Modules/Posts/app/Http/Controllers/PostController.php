@@ -162,6 +162,7 @@ class PostController extends Controller
             return $comment;
         });
         $post->likes = collect($post->likes);
+        $post->albums = $post->albums()->get();
 
         return response()->json([
             'data' => $post,
@@ -220,6 +221,14 @@ class PostController extends Controller
             foreach ($accessibilities as $accessibility) {
                 $validatedAccessibilities[] = validator($accessibility, ...PostAccessibility::rules('createFromPost'))->validated();
             }
+        }
+
+
+        // add albums
+        if (request()->has('remove_albums')) {
+            $post->albums()->sync([]);
+        } else if (request()->has('albums')) {
+            $post->albums()->sync(request('albums'));
         }
 
         DB::beginTransaction();

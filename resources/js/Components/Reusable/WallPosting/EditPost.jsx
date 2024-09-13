@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
-import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
 
+import TaggedItem from "./TaggedItem";
 import { UserProfileAvatar } from "./UserProfileAvatar";
 
 function EditPost({
@@ -15,12 +16,14 @@ function EditPost({
 }) {
     const [content, setContent] = useState(post.content || "");
     const [attachments, setAttachments] = useState(post.attachments || []);
-    const [tags, setTags] = useState(post.tags || []);
+    const [albums, setAlbums] = useState(
+        [...(post.albums ?? [])].filter(Boolean)
+    );
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setContent(post.content || "");
-        setTags(post.tags || []);
+        // setAlbums(post.albums || []);
         setAttachments(post.attachments || []);
     }, [post]);
 
@@ -56,7 +59,13 @@ function EditPost({
                 formData.append("content", content);
             }
 
-            formData.append("tag", JSON.stringify(tags));
+            if (albums.length > 0) {
+                for (let [index, album] of albums.entries()) {
+                    formData.append(`albums[${index}]`, album.id);
+                }
+            } else if (albums.length === 0) {
+                formData.append("remove_albums", "");
+            }
 
             attachments.forEach((file, index) => {
                 if (file instanceof File) {
@@ -80,6 +89,34 @@ function EditPost({
 
         setLoading(false);
     };
+
+    const [allAlbums, setAllAlbums] = useState([]);
+
+    console.log("allAlbums", allAlbums, albums);
+
+    useEffect(() => {
+        axios.get("/api/album").then((response) => {
+            setAllAlbums(response.data.data);
+            // if (post.albums && post.albums.length > 0) {
+            //     console.log("setter", post.albums[0]);
+            //     setAlbums([post.albums[0]]);
+            // }
+        });
+    }, []);
+
+    // useEffect(() => {
+    //     if (albums.length > 0) {
+    //         setAllAlbums(
+    //             allAlbums.map((album) => {
+    //                 if (album.id === albums[0].id) {
+    //                     return { ...album, hidden: false };
+    //                 }
+
+    //                 return album;
+    //             })
+    //         );
+    //     }
+    // }, [albums.length]);
 
     return (
         <>
@@ -112,6 +149,42 @@ function EditPost({
                         rows="4"
                         placeholder="Edit caption"
                     />
+                    <div>
+                        <div className="tags-container mt-3">
+                            {allAlbums.map((allAlbum, index) => (
+                                <div
+                                    key={allAlbum.id}
+                                    className={cn(
+                                        "tag",
+                                        allAlbum.hidden && "none",
+                                        "cursor-pointer"
+                                    )}
+                                    onClick={() => {
+                                        setAlbums([allAlbum]);
+                                    }}
+                                >
+                                    {allAlbum.name}
+                                    <div>+</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div
+                            className="tagged-items-container"
+                            style={{ minHeight: "30px" }}
+                        >
+                            {albums.length > 0 ? (
+                                <TaggedItem
+                                    tag={albums[0]}
+                                    onRemove={() => setAlbums([])}
+                                />
+                            ) : (
+                                <div className="text-neutral-400 text-sm">
+                                    No tag selected.
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     <input
                         type="file"
                         onChange={handleFileChange}

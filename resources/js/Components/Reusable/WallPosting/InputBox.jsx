@@ -151,18 +151,11 @@ function ShareYourThoughts({
         //     formData.append("tag", formattedTags);
         // }
 
-        // Handle the single tag as a JSON array
         if (albums.length > 0) {
-            // const formattedTag = JSON.stringify([tag]); // Convert the tag to a JSON array
-            // formData.append("tag", formattedTag);
-            // formData.append("albums", JSON.stringify(albums));
-
             for (let [index, album] of albums.entries()) {
                 formData.append(`albums[${index}]`, album.id);
             }
         }
-
-        console.log(albums, Object.fromEntries(formData));
 
         // Handle mentions
         if (chosenPeople.length > 0) {
