@@ -3,6 +3,8 @@ import { Loader2 } from "lucide-react";
 
 import { DefaultPostCard } from "@/Components/Reusable/WallPosting/DefaultPostCard/DefaultPostCard.jsx";
 
+import { PollPostCard } from "./PollPostCard/PollPostCard";
+
 export function UserWall({ onLoad, hasMore, posts, userId }) {
     const filderedPosts = posts.filter((post) => {
         const isAuthor = post.user.id === userId;
@@ -29,6 +31,9 @@ export function UserWall({ onLoad, hasMore, posts, userId }) {
                 }
             >
                 {filderedPosts.map((post, index) => {
+                    if (post.type === "poll") {
+                        return <PollPostCard key={post.id} post={post} />;
+                    }
                     return <DefaultPostCard key={post.id} post={post} />;
                 })}
             </InfiniteScroll>

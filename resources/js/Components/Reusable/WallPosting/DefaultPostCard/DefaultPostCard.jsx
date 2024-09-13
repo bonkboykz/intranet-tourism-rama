@@ -6,6 +6,7 @@ import { Volume2 } from "lucide-react";
 
 import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import Comment from "../Comment";
 import { DeletePopup } from "../DeletePopup";
@@ -302,8 +303,6 @@ export function DefaultPostCard({ post }) {
         );
     };
 
-    console.log(cachedPost);
-
     const renderOtherPost = () => {
         return (
             <>
@@ -326,6 +325,11 @@ export function DefaultPostCard({ post }) {
             </>
         );
     };
+
+    const { hasRole } = usePermissions();
+
+    const canEdit =
+        cachedPost.user_id === loggedInUserId || hasRole("superadmin");
 
     if (isDeleted) {
         return null;
@@ -365,18 +369,22 @@ export function DefaultPostCard({ post }) {
                         <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
                             <CardImage post={cachedPost} />
                             <div className="flex items-center gap-2">
-                                <img
-                                    loading="lazy"
-                                    src="/assets/wallpost-dotbutton.svg"
-                                    alt="Options"
-                                    className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
-                                    onClick={() => setShowDetails(!showDetails)}
-                                />
+                                {canEdit && (
+                                    <img
+                                        loading="lazy"
+                                        src="/assets/wallpost-dotbutton.svg"
+                                        alt="Options"
+                                        className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
+                                        onClick={() =>
+                                            setShowDetails(!showDetails)
+                                        }
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
 
-                    {showDetails && (
+                    {showDetails && canEdit && (
                         <PostDetails
                             onEdit={() => {
                                 setShowDetails(false);

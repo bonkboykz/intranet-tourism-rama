@@ -38,7 +38,7 @@ function OutputData({
                 loggedInUserId,
             }}
         >
-            <Polls polls={polls} />
+            {/* <Polls polls={polls} /> */}
 
             {/* TODO: PersonalWall is used on communities page, which could trigger multiple loads */}
             {userId ? (

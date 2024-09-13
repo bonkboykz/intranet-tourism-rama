@@ -3,10 +3,14 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
+use Modules\Polls\Models\Option;
+use Modules\Polls\Models\Poll;
+use Modules\Polls\Models\Question;
+use Modules\Polls\Models\Response as PollResponse;
 use Modules\Posts\Models\PostViewHistory;
 use Illuminate\Support\Facades\DB;
-use Log;
 use Modules\Department\Models\Department;
 use Modules\Posts\Models\Post;
 use Modules\Posts\Models\PostAccessibility;
@@ -426,4 +430,165 @@ class PostController extends Controller
             'data' => $albums,
         ]);
     }
+
+    public function createPoll(Request $request)
+    {
+        // request body will have
+        // 1. question string
+        // 2. options array of strings
+        // 3. optional end_date
+        // 4. boolean multiple (default false)
+        // we need to create a post with type poll
+        // then create poll, question and options
+        // attach questions, options to poll
+        // attach poll to post
+
+        $user = Auth::user();
+        DB::beginTransaction();
+        try {
+            $post = Post::create([
+                'title' => 'Poll from ' . $user->name,
+                'description' => $request->question,
+                'type' => 'poll',
+                'user_id' => $user->id,
+            ]);
+
+            $output = new ConsoleOutput();
+            $output->writeln('PostController@createPoll');
+            $output->writeln($post->id);
+
+            $poll = Poll::create([
+                'title' => 'Poll from ' . $user->name,
+                'post_id' => $post->id,
+                'user_id' => $user->id,
+            ]);
+
+            $question = Question::create([
+                'poll_id' => $poll->id,
+                'question_text' => $request->question,
+                'question_type' => $request->multiple ? 'multiple' : 'single',
+            ]);
+
+            // create options from array of strings
+            foreach ($request->options as $option) {
+                Option::create([
+                    'question_id' => $question->id,
+                    'option_text' => $option,
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+
+        return response()->json([
+            'data' => $poll,
+        ]);
+    }
+
+    public function submitPollResponse(Request $request)
+    {
+        // request has
+        // 1. poll_id
+        // 2. array of option_ids
+        // 3. optional feedbackText string
+        // we create a response with user_id, poll_id, answers array of option_ids
+        $user = Auth::user();
+
+        DB::beginTransaction();
+        try {
+
+            $response = PollResponse::create([
+                'user_id' => $user->id,
+                'poll_id' => $request->poll_id,
+                'answers' => $request->option_ids,
+            ]);
+
+            if ($request->has('feedbackText')) {
+                $feedback = Feedback::create([
+                    'user_id' => $user->id,
+                    'poll_id' => $request->poll_id,
+                    'feedback_text' => $request->feedbackText,
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return response()->json([
+            'data' => $response,
+        ]);
+    }
+
+    public function haveAnsweredPoll(Post $post)
+    {
+        $poll = $post->poll;
+
+        $response = PollResponse::where('poll_id', $poll->id)->where('user_id', Auth::id())->first();
+
+
+        if ($response) {
+            return response()->json([
+                'data' => $response
+            ]);
+        }
+
+        return response()->json([
+            'data' => null,
+        ]);
+    }
+
+    public function calculatePollResults(Post $post)
+    {
+        $poll = $post->poll;
+
+        // calculate map of presentages per each option_id
+        $all_responses = $poll->responses;
+
+        $total_responses = $all_responses->count();
+
+        // get all options
+        if (!$poll->question) {
+            return response()->json([
+                'data' => null,
+            ]);
+        }
+
+        $options = $poll->question->options;
+
+        // get count of answers from all responses from json
+        $count_map = $options->map(function ($option) use ($all_responses) {
+            $count = $all_responses->filter(function ($response) use ($option) {
+                return in_array($option->id, $response->answers);
+            })->count();
+
+            return [
+                'option_id' => $option->id,
+                'count' => $count,
+            ];
+        });
+
+        // calculate percentages
+        $percentages_map = $count_map->map(function ($count) use ($total_responses) {
+            return [
+                'option_id' => $count['option_id'],
+                'percentage' => $total_responses > 0 ? ($count['count'] / $total_responses) * 100 : 0,
+            ];
+        });
+
+        return response()->json([
+            'data' => [
+                'total_responses' => $total_responses,
+                'percentages' => $percentages_map,
+                'count_map' => $count_map,
+            ]
+        ]);
+    }
+
 }

@@ -3,6 +3,8 @@ import { Loader2 } from "lucide-react";
 
 import { DefaultPostCard } from "@/Components/Reusable/WallPosting/DefaultPostCard/DefaultPostCard.jsx";
 
+import { PollPostCard } from "./PollPostCard/PollPostCard";
+
 export function PersonalWall({ posts, onLoad, hasMore }) {
     return (
         <InfiniteScroll
@@ -19,6 +21,10 @@ export function PersonalWall({ posts, onLoad, hasMore }) {
             }
         >
             {posts.map((post, index) => {
+                if (post.type === "poll") {
+                    return <PollPostCard key={post.id} post={post} />;
+                }
+
                 return <DefaultPostCard key={post.id} post={post} />;
             })}
         </InfiniteScroll>

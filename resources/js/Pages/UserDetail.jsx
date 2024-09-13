@@ -1,28 +1,31 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
-import PageTitle from "../Components/Reusable/PageTitle";
-import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
-import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
-import "./css/StaffDirectory.css";
-import { ProfileHeader, ProfileNav, Popup } from "@/Components/Profile";
+
+import { Popup, ProfileHeader, ProfileNav } from "@/Components/Profile";
 import {
     ProfileBio,
     ProfileIcons,
-    SearchInput,
     SearchButton,
+    SearchInput,
     Table,
 } from "@/Components/ProfileTabbar";
-import Example from "@/Layouts/DashboardLayoutNew";
+import { ProfileDepartment } from "@/Components/ProfileTabbar";
 import { ImageProfile, VideoProfile } from "@/Components/ProfileTabbar/Gallery";
 import {
-    ShareYourThoughts,
     Filter,
     OutputData,
+    ShareYourThoughts,
 } from "@/Components/Reusable/WallPosting";
-import "../Components/Profile/profile.css";
 import { useCsrf } from "@/composables";
-import { ProfileDepartment } from "@/Components/ProfileTabbar";
-import { OnlineUsersProvider, OnlineUsersContext } from "./OnlineUsersContext"; // Import the context
+import Example from "@/Layouts/DashboardLayoutNew";
+
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+import { OnlineUsersContext, OnlineUsersProvider } from "./OnlineUsersContext"; // Import the context
+
+import "./css/StaffDirectory.css";
+import "../Components/Profile/profile.css";
 
 function SaveNotification({ title, content, onClose }) {
     return (

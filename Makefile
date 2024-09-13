@@ -34,6 +34,9 @@ model:
 start_reverb:
 	php artisan reverb:start
 
+start_notifications:
+	php artisan queue:listen
+
 # Run tests
 test:
 	$(PHPUNIT)

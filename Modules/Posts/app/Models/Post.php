@@ -9,6 +9,7 @@ use Modules\Album\Models\Album;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
 use Modules\Department\Models\Department;
+use Modules\Polls\Models\Poll;
 use Modules\Resources\Models\Resource;
 use Modules\User\Models\User;
 
@@ -137,5 +138,10 @@ class Post extends Model implements AuditableContract
     public function albums()
     {
         return $this->belongsToMany(Album::class, 'album_post');
+    }
+
+    public function poll()
+    {
+        return $this->hasOne(Poll::class);
     }
 }

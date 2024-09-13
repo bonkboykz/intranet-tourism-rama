@@ -17,7 +17,7 @@ import { SendAs } from "./InputBox/SendAs";
 import { Event } from "./InputEvent";
 import { People } from "./InputPeople";
 // import { Tooltip } from "react-tooltip";
-import { Polls } from "./InputPolls";
+import InputPolls from "./InputPolls";
 import { WallContext } from "./WallContext";
 
 import "../css/InputBox.css";
@@ -683,7 +683,12 @@ function ShareYourThoughts({
                 />
             )}
             {showPollPopup && (
-                <Polls onClose={closePopup} onCreatePoll={onCreatePoll} />
+                <InputPolls
+                    onClose={closePopup}
+                    onCreatePoll={() => {
+                        window.location.reload();
+                    }}
+                />
             )}
             {showPeoplePopup && (
                 <People

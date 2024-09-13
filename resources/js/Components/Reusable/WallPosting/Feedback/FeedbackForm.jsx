@@ -1,3 +1,5 @@
+import { useRef, useState } from "react";
+
 export function FeedbackForm() {
     const [inputValue, setInputValue] = useState("");
     const textAreaRef = useRef(null);

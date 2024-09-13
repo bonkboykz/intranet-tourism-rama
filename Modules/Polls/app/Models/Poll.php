@@ -5,7 +5,9 @@ namespace Modules\Polls\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
-use Modules\User\Models\User;;
+use Modules\User\Models\User;
+use Illuminate\Support\Str;
+
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\Attachable;
@@ -18,11 +20,32 @@ class Poll extends Model implements AuditableContract
 
     protected $table = 'polls';
 
+    // Indicate that the primary key is a UUID
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+
     protected $fillable = [
         'user_id',
         'title',
-        'description'
+        'description',
+        'end_date',
+        'post_id',
     ];
+
+    /**
+     * Boot function to create a UUID when creating a new model instance.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
 
     public static function rules($scenario = 'create')
     {
@@ -54,5 +77,13 @@ class Poll extends Model implements AuditableContract
         return $this->belongsTo(User::class);
     }
 
+    public function question()
+    {
+        return $this->hasOne(Question::class);
+    }
 
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
 }

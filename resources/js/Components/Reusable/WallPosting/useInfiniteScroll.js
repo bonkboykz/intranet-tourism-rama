@@ -118,6 +118,10 @@ export function useInfiniteScroll({
                         "attachments",
                         "accessibilities",
                         "comments",
+                        "poll",
+                        "poll.question",
+                        "poll.question.options",
+                        "poll.responses",
                     ],
                     // TODO: return post type announcement first, then sort by updated_at
                     // sort: [{ updated_at: "desc" }],
@@ -131,7 +135,7 @@ export function useInfiniteScroll({
                         {
                             field: "type",
                             type: "like",
-                            value: ["post", "birthday"],
+                            value: ["post", "birthday", "poll"],
                         },
                         ...filter,
                     ].filter(Boolean),

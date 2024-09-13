@@ -12,7 +12,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Option extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi , HasUuids;
+    use Auditable, Authorizable, HasFactory, QueryableApi, HasUuids;
 
     protected $table = 'options';
 

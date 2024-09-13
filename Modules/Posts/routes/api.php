@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     ]);
 
     Route::prefix('posts')->group(function () {
+        Route::post('create_poll', [PostController::class, 'createPoll'])->name('post.createPoll');
         Route::post('{post}/like', [PostController::class, 'like'])->name('post.like');
         Route::post('{post}/unlike', [PostController::class, 'unlike'])->name('post.unlike');
         Route::post('{post}/comment', [PostController::class, 'comment'])->name('post.comment');
@@ -40,6 +41,9 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::get('{id}/likes', [PostController::class, 'likes'])->name('post.likes');
         // POST route to mark as viewed
         Route::post('{id}/markAsViewed', [PostController::class, 'markAsViewed'])->name('post.markAsViewed');
+        Route::post('{post}/haveAnsweredPoll', [PostController::class, 'haveAnsweredPoll'])->name('post.haveAnsweredPoll');
+        Route::post('{post}/submitPollResponse', [PostController::class, 'submitPollResponse'])->name('post.submitPollResponse');
+        Route::post('{post}/calculatePollResults', [PostController::class, 'calculatePollResults'])->name('post.calculatePollResults');
     });
 
 
