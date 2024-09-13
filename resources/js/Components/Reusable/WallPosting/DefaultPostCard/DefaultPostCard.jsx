@@ -301,6 +301,8 @@ export function DefaultPostCard({ post }) {
         );
     };
 
+    console.log(cachedPost);
+
     const renderOtherPost = () => {
         return (
             <>
@@ -311,8 +313,9 @@ export function DefaultPostCard({ post }) {
                     )}
                 </article>
 
-                <p className="taging mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
-                    {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""}
+                <p className="taging my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                    {/* {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""} */}
+                    {cachedPost.albums.map((album) => album.name).join(", ")}
                 </p>
 
                 <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">

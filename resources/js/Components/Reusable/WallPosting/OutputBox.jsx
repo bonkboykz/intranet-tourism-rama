@@ -1,10 +1,9 @@
 import React from "react";
 
-import { useInfiniteScroll } from "./useInfiniteScroll";
-import { useFilterPosts } from "./useFilterPosts";
-import { UserWall } from "./UserWall";
 import { PersonalWall } from "./PersonalWall";
 import { Polls } from "./Polls";
+import { useInfiniteScroll } from "./useInfiniteScroll";
+import { UserWall } from "./UserWall";
 import { WallContext } from "./WallContext";
 
 import "./index.css";
@@ -21,7 +20,7 @@ function OutputData({
     variant,
 }) {
     // TODO: return announcments
-    const { posts, loading, fetchData, hasMore } = useInfiniteScroll({
+    const { posts, fetchData, hasMore } = useInfiniteScroll({
         userId: userId,
         communityId,
         departmentId,
@@ -31,13 +30,6 @@ function OutputData({
             postType,
         },
     });
-
-    // const { someonesPosts, filteredUserPosts } = useFilterPosts({
-    //     postData: posts,
-    //     filterId,
-    //     filterType,
-    //     postType,
-    // });
 
     return (
         <WallContext.Provider

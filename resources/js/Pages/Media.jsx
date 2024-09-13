@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
-import PageTitle from "../Components/Reusable/PageTitle";
+import React, { useEffect, useState } from "react";
+import { router } from "@inertiajs/react";
+import axios from "axios";
+
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
 import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
 import Example from "../Layouts/DashboardLayoutNew";
+import { Gallery } from "./Media/Gallery";
+
 import "./css/StaffDirectory.css";
 import "../Components/Reusable/css/FileManagementSearchBar.css";
-import { router } from "@inertiajs/react";
-import { Gallery } from "./Media/Gallery";
 
 const Media = () => {
     // const [selectedMedia, setSelectedMedia] = useState('All');
@@ -15,51 +20,62 @@ const Media = () => {
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [tagOptions, setTagOptions] = useState([]);
 
+    const { hasRole } = usePermissions();
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchData = async () => {
+        setIsLoading(true);
+        const url = "/api/posts/posts";
+
+        try {
+            const response = await axios.get(url, {
+                params: {
+                    with: ["attachments"],
+                    ...(selectedTag !== "" && {
+                        filter: [
+                            {
+                                field: "albums",
+                                value: [selectedTag],
+                            },
+                        ],
+                    }),
+                },
+            });
+            const data = response.data.data.data;
+            // Filter out posts with type 'story'
+            // const filteredData = data.filter((post) => post.type !== "story");
+
+            setPosts(data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+
+        setIsLoading(false);
+    };
+
+    const fetchTags = async () => {
+        const url = "/api/album";
+
+        try {
+            const response = await axios.get(url);
+            const data = response.data.data;
+            setTagOptions(data);
+        } catch (error) {
+            console.error("Error fetching tags:", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            const url = "/api/posts/posts?with[]=attachments";
-            const options = {
-                method: "GET",
-                headers: { Accept: "application/json" },
-            };
-            try {
-                const response = await fetch(url, options);
-                const data = await response.json();
-                // Filter out posts with type 'story'
-                const filteredData = data.data.data.filter(
-                    (post) => post.type !== "story"
-                );
-
-                setPosts(filteredData);
-                // Extract unique tag values
-                const uniqueTags = [
-                    ...new Set(
-                        data.data.data.flatMap((post) => post.tag || [])
-                    ),
-                ];
-
-                setTagOptions(uniqueTags);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
+        fetchTags();
         fetchData();
     }, []);
 
     // console.log("DATA", posts);
 
     useEffect(() => {
-        if (selectedTag === "") {
-            setFilteredPosts(posts);
-        } else {
-            setFilteredPosts(
-                posts.filter(
-                    (post) => post.tag && post.tag.includes(selectedTag)
-                )
-            );
-        }
-    }, [selectedTag, posts]);
+        fetchData();
+    }, [selectedTag]);
 
     const handleTagChange = (event) => {
         setSelectedTag(event.target.value);
@@ -80,30 +96,33 @@ const Media = () => {
                                 className="flex justify-between gap-5 px-4 py-1 bg-white shadow-custom cursor-pointer rounded-2xl"
                             >
                                 <select
+                                    disabled={isLoading}
                                     value={selectedTag}
                                     onChange={handleTagChange}
                                 >
                                     <option value="">All</option>
                                     {tagOptions.map((tag, index) => (
-                                        <option key={index} value={tag}>
-                                            {tag}
+                                        <option key={index} value={tag.id}>
+                                            {tag.name}
                                         </option>
                                     ))}
                                 </select>
                             </div>
 
-                            <div className="ml-auto">
-                                {/* Manage Album Button */}
-                                <button
-                                    className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                                    onClick={handleManageAlbum}
-                                >
-                                    Manage Album
-                                </button>
-                            </div>
+                            {hasRole("superadmin") && (
+                                <div className="ml-auto">
+                                    {/* Manage Album Button */}
+                                    <button
+                                        className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                        onClick={handleManageAlbum}
+                                    >
+                                        Manage Album
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
-                        <Gallery filteredPosts={filteredPosts} />
+                        <Gallery filteredPosts={posts} />
                     </div>
                 </div>
             </main>

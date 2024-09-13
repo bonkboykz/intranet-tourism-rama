@@ -32,7 +32,7 @@ class PostController extends Controller
         //     // If filters are present, paginate the filtered query
         //     $data = $this->shouldPaginate($query);
         // }
-        $query = Post::queryable();
+        $query = Post::queryable()->with(['albums']);
         // If no filters are present, paginate using the predefined queryable method
         // Logic for filtering based on community and department membership
         $user = User::find(Auth::id());
@@ -119,20 +119,6 @@ class PostController extends Controller
                 return $post;
             }
 
-            // TODO: Uncomment if needed
-            // // attach department names
-            // $post->departmentsWithAccess = $post->accessibilities->map(function ($accessibility) {
-            //     $department = Department::find($accessibility->accessable_id);
-            //     return $department;
-            // });
-
-            // // attach communities
-            // $post->communitiesWithAccess = $post->accessibilities->map(function ($accessibility) {
-            //     $community = Community::find($accessibility->accessable_id);
-            //     return $community;
-            // });
-
-
             return $post;
         });
 
@@ -157,14 +143,6 @@ class PostController extends Controller
         ]);
     }
 
-
-
-    // public function show($id)
-    // {
-    //     return response()->json([
-    //         'data' => Post::where('id', $id)->queryable()->firstOrFail(),
-    //     ]);
-    // }
 
     public function show($id)
     {
@@ -194,9 +172,6 @@ class PostController extends Controller
 
     public function store(Post $post)
     {
-        $output = new ConsoleOutput();
-        $output->writeln('PostController@store');
-
         request()->merge(['user_id' => Auth::id()]);
         if (request()->has('accessibilities')) {
             $accessibilities = request('accessibilities');
@@ -207,12 +182,17 @@ class PostController extends Controller
             request()->merge(['visibility' => 'public']);
         }
 
+        // pass albums as an array of ids
         $validated = request()->validate(...Post::rules());
 
         DB::beginTransaction();
         try {
             $post->fill($validated)->save();
             $post->storeAttachments();
+            // add albums
+            if (request()->has('albums')) {
+                $post->albums()->attach(request('albums'));
+            }
 
             if (request()->has('accessibilities')) {
                 $post->accessibilities()->createMany($validatedAccessibilities);
@@ -416,6 +396,25 @@ class PostController extends Controller
 
         return response()->json([
             'data' => $stories,
+        ]);
+    }
+
+    public function getAlbums()
+    {
+        // json tag is array of strings which are album names, they could be on any type of post
+        // get unique string values from all posts' tag field
+        $albums = Post::all()->whereNotNull('tag') // Only consider posts where the 'tag' column is not null
+            ->pluck('tag')        // Extract the 'tag' JSON column
+            ->flatMap(function ($tags) {
+                return json_decode($tags, true); // Decode the JSON to an array
+            })
+            ->unique()            // Get only unique tags
+            ->values()
+            ->sort()           // Re-index the collection
+            ->toArray();
+
+        return response()->json([
+            'data' => $albums,
         ]);
     }
 }

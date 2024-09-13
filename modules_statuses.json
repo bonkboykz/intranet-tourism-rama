@@ -10,5 +10,6 @@
     "Resources": true,
     "Profile": true,
     "User": true,
-    "Permission": true
+    "Permission": true,
+    "Album": true
 }

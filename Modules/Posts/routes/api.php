@@ -41,4 +41,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         // POST route to mark as viewed
         Route::post('{id}/markAsViewed', [PostController::class, 'markAsViewed'])->name('post.markAsViewed');
     });
+
+
+    Route::get('albums', [PostController::class, 'getAlbums'])->name('post.getAlbums');
 });

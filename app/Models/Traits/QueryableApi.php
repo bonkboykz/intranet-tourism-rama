@@ -56,6 +56,11 @@ trait QueryableApi
                 } elseif ($filter['field'] == 'mentions') {
                     // Special case for filtering mentions JSON column
                     $query->whereJsonContains('mentions', $filter['value']);
+                } else if ($filter['field'] == 'albums') {
+                    // check if any of ids in the array is in the albums pivot table
+                    $query->whereHas('albums', function ($q) use ($filter) {
+                        $q->whereIn('album_id', $filter['value']);
+                    });
                 } else {
                     foreach ($filter as $filterBy => $value) {
                         if (is_array($value)) {

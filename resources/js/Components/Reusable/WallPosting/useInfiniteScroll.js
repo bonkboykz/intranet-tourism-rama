@@ -1,21 +1,15 @@
 import { useRef } from "react";
-import { useMemo } from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const postsPerScroll = 5;
 
-export function useInfiniteScroll(
-    options = {
-        userId,
-        communityId,
-        departmentId,
-        filter: {
-            filterId,
-            filterType,
-            postType,
-        },
-    }
-) {
+export function useInfiniteScroll({
+    userId,
+    communityId,
+    departmentId,
+    filter,
+}) {
     const [loading, setLoading] = useState(false);
     const [rawPosts, setRawPosts] = useState([]);
     const currentPage = useRef(1);
@@ -39,9 +33,9 @@ export function useInfiniteScroll(
         try {
             const filter = [];
 
-            if (options.filter) {
-                if (options.filter.postType) {
-                    if (options.filter.postType === "image") {
+            if (filter) {
+                if (filter.postType) {
+                    if (filter.postType === "image") {
                         // add filter that matches part of the attachment mime_type
                         filter.push({
                             field: "attachments.mime_type",
@@ -50,7 +44,7 @@ export function useInfiniteScroll(
                         });
                     }
 
-                    if (options.filter.postType === "video") {
+                    if (filter.postType === "video") {
                         // add filter that matches part of the attachment mime_type
                         filter.push({
                             field: "attachments.mime_type",
@@ -59,14 +53,14 @@ export function useInfiniteScroll(
                         });
                     }
 
-                    if (options.filter.postType === "mention") {
+                    if (filter.postType === "mention") {
                         filter.push({
                             field: "mentions",
                             value: userId,
                         });
                     }
 
-                    if (options.filter.postType === "file") {
+                    if (filter.postType === "file") {
                         filter.push({
                             field: "attachments.extension",
                             type: "like",
@@ -74,8 +68,7 @@ export function useInfiniteScroll(
                         });
                     }
 
-                    // TODO: add announcement filter
-                    if (options.filter.postType === "announcement") {
+                    if (filter.postType === "announcement") {
                         filter.push({
                             field: "announced",
                             type: "like",
@@ -84,7 +77,7 @@ export function useInfiniteScroll(
                     }
 
                     // TODO: add polls filter
-                    if (options.filter.postType === "poll") {
+                    if (filter.postType === "poll") {
                         filter.push({
                             field: "type",
                             type: "like",
@@ -94,27 +87,27 @@ export function useInfiniteScroll(
                 }
             }
 
-            if (options.userId) {
+            if (userId) {
                 filter.push({
                     field: "user_id",
                     type: "like",
-                    value: options.userId,
+                    value: userId,
                 });
             }
 
-            if (options.communityId) {
+            if (communityId) {
                 filter.push({
                     field: "community_id",
                     type: "like",
-                    value: options.communityId,
+                    value: communityId,
                 });
             }
 
-            if (options.departmentId) {
+            if (departmentId) {
                 filter.push({
                     field: "department_id",
                     type: "like",
-                    value: options.departmentId,
+                    value: departmentId,
                 });
             }
 
@@ -133,7 +126,7 @@ export function useInfiniteScroll(
                     perpage: postsPerScroll,
                     limit: postsPerScroll,
                     offset: (currentPage.current - 1) * postsPerScroll,
-                    user_id: options.userId,
+                    user_id: userId,
                     filter: [
                         {
                             field: "type",
@@ -171,7 +164,7 @@ export function useInfiniteScroll(
         totalPages.current = -1;
 
         fetchData();
-    }, [options.filter?.postType]);
+    }, [filter?.postType]);
 
     return {
         posts: rawPosts,

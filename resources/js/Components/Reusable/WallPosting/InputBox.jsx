@@ -43,7 +43,7 @@ function ShareYourThoughts({
     const [showEventPopup, setShowEventPopup] = useState(false);
     const [attachments, setAttachments] = useState([]);
     const [fileNames, setFileNames] = useState([]);
-    const [tag, setTag] = useState(""); // Single tag
+    const [albums, setAlbums] = useState([]); // Single tag
     const [mediaTagCount, setMediaTagCount] = useState(0);
     const [showReactionPicker, setShowReactionPicker] = useState(false);
     const [chosenPeople, setChosenPeople] = useState([]);
@@ -152,10 +152,17 @@ function ShareYourThoughts({
         // }
 
         // Handle the single tag as a JSON array
-        if (tag) {
-            const formattedTag = JSON.stringify([tag]); // Convert the tag to a JSON array
-            formData.append("tag", formattedTag);
+        if (albums.length > 0) {
+            // const formattedTag = JSON.stringify([tag]); // Convert the tag to a JSON array
+            // formData.append("tag", formattedTag);
+            // formData.append("albums", JSON.stringify(albums));
+
+            for (let [index, album] of albums.entries()) {
+                formData.append(`albums[${index}]`, album.id);
+            }
         }
+
+        console.log(albums, Object.fromEntries(formData));
 
         // Handle mentions
         if (chosenPeople.length > 0) {
@@ -214,7 +221,7 @@ function ShareYourThoughts({
             setAttachments([]);
             setFileNames([]);
             // setTag([]);
-            setTag(""); // Reset tag as it is a string
+            setAlbums([]); // Reset tag as it is a string
             setChosenPeople([]);
             setChosenEvent([]);
             if (!isComment) {
@@ -343,7 +350,7 @@ function ShareYourThoughts({
     };
 
     const handleSaveTags = () => {
-        setMediaTagCount(tag ? 1 : 0); // Set count to 1 if a tag is selected, otherwise 0
+        setMediaTagCount(albums.length); // Set count to 1 if a tag is selected, otherwise 0
         closePopup(); // Close the popup
     };
 
@@ -676,8 +683,8 @@ function ShareYourThoughts({
 
             {showMediaTagPopup && (
                 <TagInput
-                    tag={tag}
-                    setTag={setTag}
+                    tag={albums}
+                    setTag={setAlbums}
                     onClose={closePopup}
                     onSave={handleSaveTags}
                 />

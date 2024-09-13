@@ -3,8 +3,6 @@ import { router, usePage } from "@inertiajs/react";
 export const usePermissions = () => {
     const { auth } = usePage().props;
 
-    console.log("AUTH", auth);
-
     const hasPermission = (permission) => {
         if (auth.roles.includes("superadmin")) {
             return true;

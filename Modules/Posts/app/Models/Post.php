@@ -5,6 +5,7 @@ namespace Modules\Posts\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use Modules\Album\Models\Album;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
 use Modules\Department\Models\Department;
@@ -64,6 +65,7 @@ class Post extends Model implements AuditableContract
                     'community_id' => ['string'],
                     'announced' => ['boolean'],
                     'post_as' => ['string', 'nullable'],
+                    "albums" => ["array"],
                 ],
                 // [],
             ],
@@ -83,6 +85,7 @@ class Post extends Model implements AuditableContract
                     'community_id' => ['string'],
                     'announced' => ['boolean'],
                     'post_as' => ['string', 'nullable'],
+                    "albums" => ["array"],
                 ],
                 // [],
             ],
@@ -129,5 +132,10 @@ class Post extends Model implements AuditableContract
     public function attachments()
     {
         return $this->morphMany(Resource::class, 'attachable');
+    }
+
+    public function albums()
+    {
+        return $this->belongsToMany(Album::class, 'album_post');
     }
 }
