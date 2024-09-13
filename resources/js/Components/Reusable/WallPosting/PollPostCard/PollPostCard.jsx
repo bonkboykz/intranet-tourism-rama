@@ -1,14 +1,21 @@
 import { useState } from "react";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import axios from "axios";
 
 import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
+import Comment from "../Comment";
 import { CardHeader } from "../DefaultPostCard/CardHeader/CardHeader";
 import { CardImage } from "../DefaultPostCard/CardImage/CardImage";
+import { Comments } from "../DefaultPostCard/Comments/Comments";
+import { Likes } from "../DefaultPostCard/Likes/Likes";
 import { PostDetails } from "../DefaultPostCard/PostDetails/PostDetails";
+import { DeletePopup } from "../DeletePopup";
+import EditPost from "../EditPost";
+import LikesPopup from "../LikesPopup";
 import { WallContext } from "../WallContext";
 
 function PollOption({ option, onClick, selected, disabled }) {
@@ -81,6 +88,8 @@ export function PollPostCard({ post }) {
                         "comments",
                         "albums",
                         "poll",
+                        "poll.question",
+                        "poll.question.options",
                     ],
                 },
             });
@@ -124,23 +133,19 @@ export function PollPostCard({ post }) {
         }
     };
 
-    if (!post.poll) {
-        return null;
-    }
-
     const canEdit =
         cachedPost.user_id === loggedInUserId || hasRole("superadmin");
-
-    const poll = cachedPost.poll;
-
-    // console.log(poll);
 
     const [feedbackText, setFeedbackText] = useState("");
     const [chosenAnswers, setChosenAnswers] = useState([]);
 
-    const isSingleChoice = poll.question?.question_type === "single";
+    const poll = cachedPost.poll;
+
+    const isSingleChoice = poll?.question?.question_type === "single";
 
     const noMoreOptions = isSingleChoice && chosenAnswers.length >= 1;
+
+    console.log("cachedPost", cachedPost);
 
     const onClick = (option) => {
         if (chosenAnswers.includes(option.id)) {
@@ -191,8 +196,6 @@ export function PollPostCard({ post }) {
 
     const [results, setResults] = useState({});
 
-    console.log(previousResponse, results);
-
     const fetchResults = async () => {
         setLoading(true);
         try {
@@ -203,8 +206,6 @@ export function PollPostCard({ post }) {
             if (![200, 201, 204].includes(response.status)) {
                 throw new Error("Failed to calculate poll results");
             }
-
-            // console.log(response);
 
             const responseData = response.data.data;
 
@@ -232,8 +233,6 @@ export function PollPostCard({ post }) {
 
             const previousResponse = response.data.data;
 
-            console.log("have answered", response);
-
             setPreviousResponse(previousResponse);
         } catch (e) {
             console.error(e);
@@ -245,6 +244,10 @@ export function PollPostCard({ post }) {
     useEffect(() => {
         fetchAnswered();
     }, []);
+
+    if (!post.poll) {
+        return null;
+    }
 
     const renderPollResults = () => {
         const answers = previousResponse?.answers ?? [];
@@ -310,49 +313,165 @@ export function PollPostCard({ post }) {
         );
     };
 
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(`/api/posts/posts/${post.id}`);
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to delete post");
+            }
+
+            setShowDeletePopup(false);
+            refetchPost();
+        } catch (error) {
+            console.error("Error deleting post:", error);
+        }
+    };
+
+    const [showCommentsModal, setShowCommentsModal] = useState(false);
+
+    const [showLikesPopup, setShowLikesPopup] = useState(false);
+
+    console.log(post);
+
     return (
-        <article
-            className={cn(
-                // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
-                "w-full lg:w-full md:w-[610px] sm:w-[610px]",
-                "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative"
-            )}
-        >
-            <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
-                <div className="flex gap-1 mt-2"></div>
-                <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
-                    <CardHeader post={cachedPost} />
-                    <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
-                        <CardImage post={cachedPost} />
-                        <div className="flex items-center gap-2">
-                            {canEdit && (
-                                <img
-                                    loading="lazy"
-                                    src="/assets/wallpost-dotbutton.svg"
-                                    alt="Options"
-                                    className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
-                                    onClick={() => setShowDetails(!showDetails)}
-                                />
-                            )}
+        <>
+            <article
+                className={cn(
+                    // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
+                    "w-full lg:w-full md:w-[610px] sm:w-[610px]",
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative"
+                )}
+            >
+                <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
+                    <div className="flex gap-1 mt-2"></div>
+                    <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
+                        <CardHeader post={cachedPost} />
+                        <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
+                            <CardImage post={cachedPost} />
+                            <div className="flex items-center gap-2">
+                                {canEdit && (
+                                    <img
+                                        loading="lazy"
+                                        src="/assets/wallpost-dotbutton.svg"
+                                        alt="Options"
+                                        className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
+                                        onClick={() =>
+                                            setShowDetails(!showDetails)
+                                        }
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {showDetails && canEdit && (
-                    <PostDetails
-                        onEdit={() => {
-                            setShowDetails(false);
-                            setShowModal(true);
-                        }}
-                        onDelete={() => setShowDeletePopup(true)}
-                        onAnnouncement={() => handleAnnouncement(cachedPost)}
+                    {showDetails && canEdit && (
+                        <PostDetails
+                            onEdit={() => {
+                                setShowDetails(false);
+                                setShowModal(true);
+                            }}
+                            onDelete={() => setShowDeletePopup(true)}
+                            onAnnouncement={() =>
+                                handleAnnouncement(cachedPost)
+                            }
+                        />
+                    )}
+                </header>
+
+                <div>{poll.question?.question_text}</div>
+
+                {previousResponse ? renderPollResults() : renderPoll()}
+
+                {showModal &&
+                    createPortal(
+                        <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div
+                                className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
+                                onClick={() => setShowModal(false)}
+                            ></div>
+                            <div className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]">
+                                <EditPost
+                                    post={cachedPost}
+                                    loggedInUserId={loggedInUserId}
+                                    onClose={() => setShowModal(false)}
+                                    onClosePopup={() => {}}
+                                    refetchPost={refetchPost}
+                                />
+                            </div>
+                        </div>,
+                        document.body
+                    )}
+
+                <div className="flex items-center gap-4 mt-2">
+                    <div className="flex items-center gap-2">
+                        <Likes
+                            likes={
+                                Array.isArray(cachedPost.likes)
+                                    ? cachedPost.likes
+                                    : []
+                            }
+                            loggedInUserId={loggedInUserId}
+                            postId={post.id}
+                            onLike={refetchPost}
+                            onUnlike={refetchPost}
+                            onLikesClick={() => {
+                                setShowLikesPopup(true);
+                            }}
+                        />
+                    </div>
+                    <Comments
+                        comments={
+                            Array.isArray(cachedPost.comments)
+                                ? cachedPost.comments
+                                : []
+                        }
+                        variant={variant}
+                        onCommentsOpen={() => setShowCommentsModal(true)}
                     />
+                </div>
+            </article>
+            {showCommentsModal &&
+                createPortal(
+                    <Comment
+                        post={cachedPost}
+                        onClose={() => setShowCommentsModal(false)}
+                        loggedInUserId={loggedInUserId}
+                        PostLikesCount={cachedPost.likes?.lenght || 0}
+                        currentUser={{
+                            id: loggedInUserId,
+                            name: cachedPost.user.name,
+                            profile: {
+                                image: cachedPost.userProfile?.profile?.image,
+                            },
+                        }}
+                    />,
+                    document.body
                 )}
-            </header>
 
-            <div>{poll.question?.question_text}</div>
+            {showDeletePopup &&
+                createPortal(
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div
+                            className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
+                            onClick={() => setShowDeletePopup(false)}
+                        ></div>
+                        <DeletePopup
+                            onClose={() => setShowDeletePopup(false)}
+                            onDelete={handleDelete}
+                        />
+                    </div>,
+                    document.body
+                )}
 
-            {previousResponse ? renderPollResults() : renderPoll()}
-        </article>
+            {showLikesPopup &&
+                createPortal(
+                    <LikesPopup
+                        onClose={() => setShowLikesPopup(false)}
+                        postId={cachedPost.id}
+                    />,
+                    document.body
+                )}
+        </>
     );
 }

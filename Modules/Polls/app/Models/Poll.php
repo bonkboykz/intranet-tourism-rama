@@ -5,6 +5,7 @@ namespace Modules\Polls\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use Modules\Crud\Models\Post;
 use Modules\User\Models\User;
 use Illuminate\Support\Str;
 
@@ -85,5 +86,10 @@ class Poll extends Model implements AuditableContract
     public function responses()
     {
         return $this->hasMany(Response::class);
+    }
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
     }
 }

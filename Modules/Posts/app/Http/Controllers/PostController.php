@@ -168,6 +168,14 @@ class PostController extends Controller
         $post->likes = collect($post->likes);
         $post->albums = $post->albums()->get();
 
+        $poll = Poll::where('post_id', $post->id)->first();
+
+        if ($poll) {
+            $post->poll = $poll;
+            $post->poll->question = $poll->question;
+            $post->poll->question->options = $poll->question->options;
+        }
+
         return response()->json([
             'data' => $post,
         ]);
@@ -530,6 +538,12 @@ class PostController extends Controller
     {
         $poll = $post->poll;
 
+        if (!$poll) {
+            return response()->json([
+                'data' => null,
+            ]);
+        }
+
         $response = PollResponse::where('poll_id', $poll->id)->where('user_id', Auth::id())->first();
 
 
@@ -547,6 +561,12 @@ class PostController extends Controller
     public function calculatePollResults(Post $post)
     {
         $poll = $post->poll;
+
+        if (!$poll) {
+            return response()->json([
+                'data' => null,
+            ]);
+        }
 
         // calculate map of presentages per each option_id
         $all_responses = $poll->responses;

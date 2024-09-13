@@ -142,6 +142,6 @@ class Post extends Model implements AuditableContract
 
     public function poll()
     {
-        return $this->hasOne(Poll::class);
+        return $this->hasOne(related: Poll::class);
     }
 }

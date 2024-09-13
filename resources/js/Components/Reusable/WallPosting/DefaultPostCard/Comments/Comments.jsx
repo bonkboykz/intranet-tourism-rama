@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import Comment from "../../Comment";
 
 export function Comments({ comments, variant, onCommentsOpen }) {
