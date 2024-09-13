@@ -640,6 +640,7 @@ function Calendar() {
                                 eventInfo.event.extendedProps.names || [];
                             return (
                                 <div
+                                    key={eventInfo.event.id}
                                     style={{
                                         position: "relative",
                                         height: "100%",
@@ -669,6 +670,7 @@ function Calendar() {
 
                             return (
                                 <div
+                                    key={eventInfo.event.id}
                                     style={{
                                         backgroundColor:
                                             eventInfo.backgroundColor,

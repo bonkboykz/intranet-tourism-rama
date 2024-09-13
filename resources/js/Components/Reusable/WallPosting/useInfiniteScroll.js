@@ -31,13 +31,13 @@ export function useInfiniteScroll({
 
         setLoading(true);
         try {
-            const filter = [];
+            const newFilter = [];
 
             if (filter) {
                 if (filter.postType) {
                     if (filter.postType === "image") {
                         // add filter that matches part of the attachment mime_type
-                        filter.push({
+                        newFilter.push({
                             field: "attachments.mime_type",
                             type: "like",
                             value: "image/%",
@@ -46,7 +46,7 @@ export function useInfiniteScroll({
 
                     if (filter.postType === "video") {
                         // add filter that matches part of the attachment mime_type
-                        filter.push({
+                        newFilter.push({
                             field: "attachments.mime_type",
                             type: "like",
                             value: "video/%",
@@ -54,14 +54,14 @@ export function useInfiniteScroll({
                     }
 
                     if (filter.postType === "mention") {
-                        filter.push({
+                        newFilter.push({
                             field: "mentions",
                             value: userId,
                         });
                     }
 
                     if (filter.postType === "file") {
-                        filter.push({
+                        newFilter.push({
                             field: "attachments.extension",
                             type: "like",
                             value: ["pdf", "doc", "docx", "xls", "xlsx"],
@@ -69,16 +69,15 @@ export function useInfiniteScroll({
                     }
 
                     if (filter.postType === "announcement") {
-                        filter.push({
+                        newFilter.push({
                             field: "announced",
                             type: "like",
                             value: "true",
                         });
                     }
 
-                    // TODO: add polls filter
                     if (filter.postType === "poll") {
-                        filter.push({
+                        newFilter.push({
                             field: "type",
                             type: "like",
                             value: "poll",
@@ -88,7 +87,7 @@ export function useInfiniteScroll({
             }
 
             if (userId) {
-                filter.push({
+                newFilter.push({
                     field: "user_id",
                     type: "like",
                     value: userId,
@@ -96,7 +95,7 @@ export function useInfiniteScroll({
             }
 
             if (communityId) {
-                filter.push({
+                newFilter.push({
                     field: "community_id",
                     type: "like",
                     value: communityId,
@@ -104,7 +103,7 @@ export function useInfiniteScroll({
             }
 
             if (departmentId) {
-                filter.push({
+                newFilter.push({
                     field: "department_id",
                     type: "like",
                     value: departmentId,
@@ -137,7 +136,7 @@ export function useInfiniteScroll({
                             type: "like",
                             value: ["post", "birthday", "poll"],
                         },
-                        ...filter,
+                        ...newFilter,
                     ].filter(Boolean),
                 },
             });

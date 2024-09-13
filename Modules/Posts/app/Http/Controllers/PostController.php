@@ -595,12 +595,30 @@ class PostController extends Controller
         });
 
         // calculate percentages
-        $percentages_map = $count_map->map(function ($count) use ($total_responses) {
-            return [
-                'option_id' => $count['option_id'],
-                'percentage' => $total_responses > 0 ? ($count['count'] / $total_responses) * 100 : 0,
-            ];
-        });
+        // $percentages_map = $count_map->map(function ($count) use ($total_responses) {
+        //     return [
+        //         'option_id' => $count['option_id'],
+        //         'percentage' => $total_responses > 0 ? ($count['count'] / $total_responses) * 100 : 0,
+        //     ];
+        // });
+        // calculate percentages based on total responses so if user puts 1, 1 on two options it should have 50 50 percents
+        $total_count_of_votes = $count_map->sum('count');
+
+        if (!$total_count_of_votes) {
+            $percentages_map = $count_map->map(function ($count) {
+                return [
+                    'option_id' => $count['option_id'],
+                    'percentage' => 0,
+                ];
+            });
+        } else {
+            $percentages_map = $count_map->map(function ($count) use ($total_count_of_votes) {
+                return [
+                    'option_id' => $count['option_id'],
+                    'percentage' => $total_count_of_votes > 0 ? ($count['count'] / $total_count_of_votes) * 100 : 0,
+                ];
+            });
+        }
 
         return response()->json([
             'data' => [

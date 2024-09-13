@@ -59,7 +59,7 @@ function PollOptionAnswered({ option, selected, percentage }) {
                 </button>
 
                 <div className="flex gap-2">
-                    <div>{percentage}%</div>
+                    <div>{percentage.toFixed(2)}%</div>
                 </div>
             </div>
         </div>

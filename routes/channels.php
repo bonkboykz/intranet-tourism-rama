@@ -10,3 +10,4 @@ Broadcast::channel('users.{id}', function ($user, $id) {
 Broadcast::channel('online', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];
 });
+

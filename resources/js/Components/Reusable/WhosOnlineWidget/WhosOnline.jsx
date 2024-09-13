@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
-import UserAvatar from "./UserAvatar";
-import "../css/WhosOnline.css";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+
 import dummyProfilePic from "../../../../../public/assets/dummyProfilePic.png";
 import arrowRight from "../../../../../public/assets/viewAllArrow.png";
-import "@fontsource/nunito-sans"; // Defaults to weight 400
+import UserAvatar from "./UserAvatar";
+
+import "../css/WhosOnline.css";
 import "@fontsource/nunito-sans/400.css"; // Specify weight
 import "@fontsource/nunito-sans/400-italic.css"; // Specify weight and style
-import { createPortal } from "react-dom";
+
+import "@fontsource/nunito-sans"; // Defaults to weight 400
 
 const Tooltip = ({ item, position }) => {
     const tooltipStyles = {
@@ -87,7 +90,7 @@ const WhosOnline = () => {
                         fontFamily: "Nunito Sans",
                     }}
                 >
-                    Who's Online
+                    Who&apos;s Online
                 </h2>
                 <span
                     className="online-count"

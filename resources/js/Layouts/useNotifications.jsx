@@ -1,8 +1,9 @@
-import { usePage } from "@inertiajs/react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { useState } from "react";
 import { createContext } from "react";
+import { usePage } from "@inertiajs/react";
+import axios from "axios";
 
 export const NotificationsContext = createContext({
     notifications: [],
