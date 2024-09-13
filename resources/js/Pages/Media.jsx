@@ -99,6 +99,7 @@ const Media = () => {
                                     disabled={isLoading}
                                     value={selectedTag}
                                     onChange={handleTagChange}
+                                    className="border-none outline-none w-full"
                                 >
                                     <option value="">All</option>
                                     {tagOptions.map((tag, index) => (
