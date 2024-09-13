@@ -72,4 +72,9 @@ class Department extends Model implements AuditableContract
         return $this->belongsToMany(User::class, 'department_admins');
     }
 
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'employment_posts')
+            ->withPivot('position');
+    }
 }

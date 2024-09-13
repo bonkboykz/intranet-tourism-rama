@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
@@ -85,7 +85,7 @@ function CommunityMembers({ communityID, loggedInID }) {
 
     if (isLoading) {
         return (
-            <div className="loading-screen">
+            <div className="loading-screen flex w-full justify-center items-center">
                 <Loader2 className="w-12 h-10 animate-spin" />
             </div>
         );

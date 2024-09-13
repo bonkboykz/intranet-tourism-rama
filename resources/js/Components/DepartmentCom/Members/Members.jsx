@@ -1,40 +1,25 @@
 import { useState } from "react";
 import axios from "axios";
 
-import AddMemberPopup from "../AddMemberPopup";
+import AddMemberPopup from "@/Components/Reusable/AddMemberPopup";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import { MemberCard } from "./MemberCard";
 
-export function Members({ members, communityID, onRefetch, loggedInID }) {
+export const Members = ({
+    members,
+    onRefetch,
+    departmentID,
+    showInvite,
+    setShowInvite,
+}) => {
     const [activePopupId, setActivePopupId] = useState(null);
     const closePopup = () => {
         setActivePopupId(null);
     };
 
-    const handleRemove = async (id) => {
-        const url = `/api/communities/communities/${communityID}/delete-member`;
-
-        try {
-            const response = await axios.post(url, {
-                user_id: String(id),
-            });
-
-            if (![200, 201, 204].includes(response.status)) {
-                console.error("Failed to delete member:", response.statusText);
-                throw new Error("Failed to delete member.");
-            }
-
-            console.log("Member deleted successfully.");
-
-            if (id === loggedInID) {
-                window.location.reload();
-            } else {
-                onRefetch();
-            }
-        } catch (error) {
-            console.error("Error deleting member:", error);
-        }
-
-        closePopup();
+    const handleNewMemberAdded = () => {
+        onRefetch();
     };
 
     const handleAddMember = (newMemberData) => {
@@ -50,19 +35,32 @@ export function Members({ members, communityID, onRefetch, loggedInID }) {
         handleNewMemberAdded(newMember);
     };
 
-    const [showInvite, setShowInvite] = useState(false);
+    const handleRemove = async (id) => {
+        const url = `/api/department/employment_posts/${id}`;
 
-    const handleNewMemberAdded = () => {
-        onRefetch();
+        try {
+            const response = await axios.delete(url);
+
+            if (response.ok) {
+                console.log("Member deleted successfully.");
+                await onRefetch();
+            } else {
+                console.error("Failed to delete member:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error deleting member:", error);
+        }
+
+        closePopup();
     };
 
     const handleAssign = async (user_id) => {
         try {
             const rolesResponse = await axios.post(
-                `/api/communities/communities/${communityID}/invite-community-admin`,
+                `/api/department/departments/${departmentID}/invite-department-admin`,
                 {
                     user_id: user_id,
-                    community_id: communityID,
+                    department_id: departmentID,
                 }
             );
 
@@ -95,6 +93,7 @@ export function Members({ members, communityID, onRefetch, loggedInID }) {
                             </span>
                         </h2>
                     </div>
+
                     {members.map((member, index) => (
                         <MemberCard
                             key={index}
@@ -106,30 +105,25 @@ export function Members({ members, communityID, onRefetch, loggedInID }) {
                                 "/assets/dummyStaffPlaceHolder.jpg"
                             }
                             name={member.name}
-                            titles={
-                                member.business_post_titles
-                                    ? member.business_post_titles
-                                    : "No Title Avialable"
-                            }
+                            title={member.business_post_title}
                             isActive={member.is_active}
                             activePopupId={activePopupId}
                             setActivePopupId={setActivePopupId}
                             onAssign={() => handleAssign(member.user_id)}
-                            onRemove={() => handleRemove(member.user_id)}
+                            onRemove={handleRemove}
                             closePopup={closePopup}
                         />
                     ))}
                 </section>
             </div>
-
             {showInvite && (
                 <AddMemberPopup
                     isAddMemberPopupOpen={showInvite}
                     setIsAddMemberPopupOpen={setShowInvite}
-                    departmentId={communityID}
+                    departmentId={departmentID}
                     onNewMemberAdded={handleAddMember}
                 />
             )}
         </>
     );
-}
+};

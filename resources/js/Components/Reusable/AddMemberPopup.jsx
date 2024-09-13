@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import PhoneInput from "react-phone-input-2";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-import defaultImage from "../../../../public/assets/dummyStaffPlaceHolder.jpg";
+
 import { useCsrf } from "@/composables";
+
+import defaultImage from "../../../../public/assets/dummyStaffPlaceHolder.jpg";
+
+import "react-phone-input-2/lib/style.css";
 import "./AddMemberPopup.css";
 
 const ConfirmationPopup = ({ selectedPerson, onConfirm, onCancel }) => {
@@ -50,7 +53,7 @@ const ConfirmationPopup = ({ selectedPerson, onConfirm, onCancel }) => {
     );
 };
 
-const SearchPopup = ({
+const AddMemberPopup = ({
     isAddMemberPopupOpen,
     setIsAddMemberPopupOpen,
     departmentId,
@@ -87,6 +90,7 @@ const SearchPopup = ({
 
     let debounceTimeout;
 
+    // TODO: use a custom hook for debouncing
     useEffect(() => {
         clearTimeout(debounceTimeout);
 
@@ -877,4 +881,4 @@ const SearchPopup = ({
     );
 };
 
-export default SearchPopup;
+export default AddMemberPopup;

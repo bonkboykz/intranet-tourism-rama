@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
-import PageTitle from "../Components/Reusable/PageTitle";
-import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
-import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
-import Adminwall from "../Components/Adminwall";
-import EditDepartments from "../Components/Reusable/Departments/EditDepartments";
-import "./css/StaffDirectory.css";
-import Example from "@/Layouts/DashboardLayoutNew";
+
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
-import { DepartmentContext } from "./DepartmentContext";
+import Example from "@/Layouts/DashboardLayoutNew";
 import useUserData from "@/Utils/hooks/useUserData";
+
+import DepartmentWall from "../Components/DepartmentWall";
+import EditDepartments from "../Components/Reusable/Departments/EditDepartments";
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+import { DepartmentContext } from "./DepartmentContext";
+
+import "./css/StaffDirectory.css";
 
 const DepartmentInner = () => {
     const { id } = usePage().props;
@@ -75,7 +78,7 @@ const DepartmentInner = () => {
             <Example>
                 <main className="relative lg:w-full ml-4 mr-4 xl:pl-96 xl:pr-24 sm:pr-44 2xl:pl-80 lg:ml-10 lg:mr-24 bottom-10">
                     <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 max-w-full lg:max-w-[900px] mx-auto ">
-                        <Adminwall
+                        <DepartmentWall
                             departmentID={getDepartmentIdFromQuery()}
                             departmentHeader={departmentData?.name}
                             departmentDescription={departmentData?.description}

@@ -3,11 +3,14 @@
 namespace Modules\Department\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Modules\Department\Helpers\DepartmentPermissionsHelper;
 use Modules\Department\Models\Department;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Modules\Department\Models\EmploymentPost;
+use Modules\User\Models\User;
 
 class DepartmentController extends Controller
 {
@@ -94,10 +97,82 @@ class DepartmentController extends Controller
     }
 
 
-    public function getAdmins(Department $community)
+    public function getAdmins(Department $department)
     {
+        $data = $department->admins;
+
+        // merge with profile information
+        $data->load('profile');
+
+        // attach businessPost title
+        $data->map(function ($item) use ($department) {
+            $employmentPost = EmploymentPost::where('user_id', $item->id)->where('department_id', $department->id)->first();
+
+            if ($employmentPost) {
+                $item['employment_post_id'] = $employmentPost->id;
+                $item['business_post_title'] = $employmentPost->businessPost->title;
+            } else {
+                $item['employment_post_id'] = null;
+                $item['business_post_title'] = null;
+            }
+            return $item;
+        });
+
         return response()->json([
-            'data' => $community->admins,
+            'data' => $department->admins,
+        ]);
+    }
+
+    public function inviteDepartmentAdmin(Request $request)
+    {
+        $user = User::findOrFail(auth()->id());
+        if (!DepartmentPermissionsHelper::checkSpecificPermission($user, 'add remove an admin from the same department', $request->department_id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate the request to ensure user and community are valid
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'department_id' => 'required|exists:departments,id',
+        ]);
+
+        // Fetch the user and the department
+        $user = User::findOrFail($request->user_id);
+        $department = Department::findOrFail($request->department_id);
+
+        // Assign the user the department-specific permissions
+        DepartmentPermissionsHelper::assignDepartmentAdminPermissions($user, $department);
+
+
+        return response()->json([
+            'message' => 'User has been successfully invited as a department admin.',
+        ]);
+    }
+
+    // revoke department admin
+    public function revokeDepartmentAdmin(Request $request)
+    {
+        $user = User::findOrFail(auth()->id());
+
+        if (!DepartmentPermissionsHelper::checkSpecificPermission($user, 'add remove an admin from the same department', $request->department_id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validate the request to ensure user and department are valid
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'department_id' => 'required|exists:departments,id',
+        ]);
+
+        // Fetch the user and the department
+        $user = User::findOrFail($request->user_id);
+        $department = Department::findOrFail($request->department_id);
+
+        // Revoke the user's department-specific permissions
+        DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($user, $department);
+
+        return response()->json([
+            'message' => 'User has been successfully revoked as a department admin.',
         ]);
     }
 }

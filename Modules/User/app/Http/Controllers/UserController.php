@@ -45,6 +45,15 @@ class UserController extends Controller
             }
         }
 
+        // attach employment_posts if empty
+        $data->each(function ($user) {
+            if ($user->employment_posts == null) {
+                $user->employment_posts = [];
+            } else if ($user->employment_posts->isEmpty()) {
+                $user->employment_posts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get() ?? [];
+            }
+        });
+
         return response()->json(['data' => $data]);
     }
 
@@ -59,7 +68,8 @@ class UserController extends Controller
             $user->employmentPost->businessPost = $user->employmentPost->businessPost()->first();
         }
         // with relations expanded: department, businessPost, businessUnit
-        $user->employmentPosts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get();
+        $user->employment_posts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get() ?? [];
+        $user->employmentPosts = $user->employment_posts;
 
         return response()->json([
             'data' => $user

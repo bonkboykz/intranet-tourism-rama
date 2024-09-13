@@ -50,7 +50,7 @@ export function Admins({ admins, communityID, onRefetch }) {
             </header>
 
             {admins.map((admin, index) => {
-                console.log("admin", admin);
+                console.log(admin);
 
                 return (
                     <MemberCard

@@ -1,17 +1,16 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import DpMembers from "../Components/DepartmentCom/DepartmentMembers";
+import { useEffect, useState } from "react";
+
 import {
-    ShareYourThoughts,
     Filter,
     OutputData,
+    ShareYourThoughts,
 } from "@/Components/Reusable/WallPosting";
-import { SearchInput, SearchButton, Table } from "../Components/ProfileTabbar";
-import {
-    ImageProfile,
-    VideoProfile,
-} from "../Components/ProfileTabbar/Gallery";
-import EditDepartments from "../Components/Reusable/Departments/EditDepartments"; // Import EditDepartments
+
+import DepartmentMembers from "./DepartmentCom/DepartmentMembers";
+import { SearchButton, SearchInput, Table } from "./ProfileTabbar";
+import { ImageProfile, VideoProfile } from "./ProfileTabbar/Gallery";
+import EditDepartments from "./Reusable/Departments/EditDepartments"; // Import EditDepartments
 import { WallContext } from "./Reusable/WallPosting/WallContext";
 
 function HeaderSection({
@@ -241,7 +240,10 @@ function Navigation({ userId, departmentID, departmentName }) {
                 {activeTab === "Members" && (
                     <div className="flex justify-center w-full mt-4">
                         <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
-                            <DpMembers />
+                            <DepartmentMembers
+                                departmentID={departmentID}
+                                loggedInID={userId}
+                            />
                         </div>
                     </div>
                 )}
