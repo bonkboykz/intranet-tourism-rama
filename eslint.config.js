@@ -53,6 +53,7 @@ export default [
             "react/react-in-jsx-scope": "off",
             "no-unused-vars": "warn",
             "react/prop-types": "off",
+            "no-useless-escape": "off",
         },
     },
 ];

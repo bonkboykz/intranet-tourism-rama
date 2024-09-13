@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useCsrf } from "@/composables";
-import { Loader2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
+
+import { useCsrf } from "@/composables";
+
 import { UserProfileAvatar } from "./UserProfileAvatar";
 
 function EditPost({
@@ -14,7 +16,6 @@ function EditPost({
     const [content, setContent] = useState(post.content || "");
     const [attachments, setAttachments] = useState(post.attachments || []);
     const [tags, setTags] = useState(post.tags || []);
-    const csrfToken = useCsrf();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -46,7 +47,8 @@ function EditPost({
             const formData = new FormData();
             formData.append("_method", "PUT");
             formData.append("user_id", loggedInUserId);
-            formData.append("type", "post");
+
+            formData.append("type", post.type);
             formData.append("visibility", post.visibility);
 
             // Check if content is not empty or just whitespace before adding to FormData

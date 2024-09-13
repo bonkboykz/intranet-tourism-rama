@@ -1,25 +1,25 @@
 import { useContext, useState } from "react";
+import { useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import axios from "axios";
+import { Volume2 } from "lucide-react";
 
+import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
 
-import MentionedName from "../MentionedName";
-import { cn } from "@/Utils/cn";
-import { WallContext } from "../WallContext";
-import { Likes } from "./Likes/Likes";
-import { Comments } from "./Comments/Comments";
-import { PostDetails } from "./PostDetails/PostDetails";
-import PostAttachments from "../PostAttachments";
-import { createPortal } from "react-dom";
-import EditPost from "../EditPost";
-import { UserProfileAvatar } from "../UserProfileAvatar";
 import Comment from "../Comment";
-import { useLayoutEffect } from "react";
 import { DeletePopup } from "../DeletePopup";
+import EditPost from "../EditPost";
 import LikesPopup from "../LikesPopup";
+import MentionedName from "../MentionedName";
+import PostAttachments from "../PostAttachments";
+import { UserProfileAvatar } from "../UserProfileAvatar";
+import { WallContext } from "../WallContext";
 import { CardHeader } from "./CardHeader/CardHeader";
 import { CardImage } from "./CardImage/CardImage";
-import { Volume2 } from "lucide-react";
+import { Comments } from "./Comments/Comments";
+import { Likes } from "./Likes/Likes";
+import { PostDetails } from "./PostDetails/PostDetails";
 
 const renderContentWithTags = (content, mentions) => {
     const mentionData = mentions ? JSON.parse(mentions) : [];
@@ -106,7 +106,7 @@ export function DefaultPostCard({ post }) {
             });
 
             const userProfileData = await axios.get(
-                `/api/users/users/${post.user_id}?with[]=profile`,
+                `/api/users/users/${post.user_id}`,
                 {
                     params: {
                         with: ["profile"],
@@ -157,8 +157,8 @@ export function DefaultPostCard({ post }) {
             //     console.log("LLLL", comment.pivot.comment_id);
             // });
 
-            if (!postToDelete) {
-                console.error(`Post with ID ${postIdToDelete} not found.`);
+            if (!post.id) {
+                console.error(`Post with ID ${post.id} not found.`);
                 return;
             }
 
@@ -168,18 +168,11 @@ export function DefaultPostCard({ post }) {
                 postToDelete.accessibilities.length > 0
             ) {
                 for (const accessibility of postToDelete.accessibilities) {
-                    const response = await fetch(
-                        `/api/posts/post_accessibilities/${accessibility.id}`,
-                        {
-                            method: "DELETE",
-                            headers: {
-                                Accept: "application/json",
-                                "X-CSRF-Token": csrfToken,
-                            },
-                        }
+                    const response = await axios.delete(
+                        `/api/posts/post_accessibilities/${accessibility.id}`
                     );
 
-                    if (!response.ok) {
+                    if (![200, 201, 204].includes(response.status)) {
                         console.error(
                             `Failed to delete accessibility with ID ${accessibility.id}.`
                         );
@@ -191,31 +184,17 @@ export function DefaultPostCard({ post }) {
             // If the post has comments, delete them first
             if (postToDelete.comments && postToDelete.comments.length > 0) {
                 for (const comment of postToDelete.comments) {
-                    const response = await fetch(
-                        `/api/posts/post_comment/${comment.pivot.id}`,
-                        {
-                            method: "DELETE",
-                            headers: {
-                                Accept: "application/json",
-                                "X-CSRF-Token": csrfToken,
-                            },
-                        }
+                    const response = await axios.delete(
+                        `/api/posts/post_comment/${comment.pivot.id}`
                     );
 
-                    if (response.ok) {
+                    if ([200, 201, 204].includes(response.status)) {
                         // console.error(`Failed to delete comment with ID ${comment.pivot.id}.`);
-                        const response = await fetch(
-                            `/api/posts/posts/${comment.pivot.comment_id}`,
-                            {
-                                method: "DELETE",
-                                headers: {
-                                    Accept: "application/json",
-                                    "X-CSRF-Token": csrfToken,
-                                },
-                            }
+                        const response = await axios.delete(
+                            `/api/posts/posts/${comment.pivot.comment_id}`
                         );
 
-                        if (!response.ok) {
+                        if (![200, 201, 204].includes(response.status)) {
                             console.error(
                                 `Failed to delete comment with ID ${comment.pivot.comment_id}.`
                             );
@@ -234,15 +213,10 @@ export function DefaultPostCard({ post }) {
             if ([200, 204].includes(postResponse.status)) {
                 setIsDeleted(true);
             } else {
-                console.error(
-                    `Failed to delete post with ID ${postIdToDelete}.`
-                );
+                console.error(`Failed to delete post with ID ${post.id}.`);
             }
         } catch (error) {
-            console.error(
-                `Error deleting post with ID ${postIdToDelete}:`,
-                error
-            );
+            console.error(`Error deleting post with ID ${post.id}:`, error);
         } finally {
             setShowDetails(false);
             setShowDeletePopup(false);
@@ -251,23 +225,102 @@ export function DefaultPostCard({ post }) {
 
     const handleAnnouncement = async (post) => {
         try {
-            const newType =
-                post.type === "announcement" ? "post" : "announcement";
             const response = await axios.put(`/api/posts/posts/${post.id}`, {
-                type: newType,
+                announced: true,
                 user_id: String(post.user.id),
                 visibility: "public",
             });
 
-            if (response.ok) {
-                setShowDetails(false);
-                refetchPost();
-            } else {
-                console.error("Failed to update post type");
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to announce post");
             }
+
+            setShowDetails(false);
+            refetchPost();
         } catch (error) {
-            console.error("Error updating post type:", error);
+            console.error("Error announcing post:", error);
         }
+    };
+
+    const renderBirhdayPost = () => {
+        return (
+            <>
+                {!cachedPost.attachments ||
+                cachedPost.attachments.length === 0 ? (
+                    <>
+                        <div>{cachedPost.content}</div>
+                        <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                            {cachedPost.mentions
+                                ? JSON.parse(cachedPost.mentions)
+                                      .map((mention) => mention.name)
+                                      .join(", ")
+                                : ""}
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                            {cachedPost.mentions
+                                ? JSON.parse(cachedPost.mentions)
+                                      .map((mention) => mention.name)
+                                      .join(", ")
+                                : ""}
+                        </p>
+                        <div className="relative flex flex-wrap gap-2 mt-4">
+                            {cachedPost.attachments.map((attachment, idx) => (
+                                <div key={idx} className="relative w-full">
+                                    <img
+                                        src={`/storage/${attachment.path}`}
+                                        alt={`Attachment ${idx + 1}`}
+                                        className="rounded-xl w-full h-auto object-cover"
+                                        style={{ maxHeight: "300px" }}
+                                    />
+                                    {idx ===
+                                        Math.floor(
+                                            cachedPost.attachments.length / 2
+                                        ) && (
+                                        <div className="absolute inset-0 flex justify-center items-center p-4">
+                                            <span
+                                                className="text-5xl font-black text-center text-white text-opacity-90 bg-black bg-opacity-50 rounded-lg"
+                                                style={{
+                                                    maxWidth: "90%",
+                                                    overflowWrap: "break-word",
+                                                    wordWrap: "break-word",
+                                                }}
+                                            >
+                                                {cachedPost.content}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </>
+        );
+    };
+
+    const renderOtherPost = () => {
+        return (
+            <>
+                <article className="post-content">
+                    {renderContentWithTags(
+                        cachedPost.content,
+                        cachedPost.mentions
+                    )}
+                </article>
+
+                <p className="taging mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                    {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""}
+                </p>
+
+                <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                    {cachedPost.event?.replace(/[\[\]"]/g, "") || ""}
+                </p>
+                <PostAttachments attachments={post.attachments} />
+            </>
+        );
     };
 
     if (isDeleted) {
@@ -299,6 +352,8 @@ export function DefaultPostCard({ post }) {
                         </div>
                     </div>
                 )}
+
+                {cachedPost.type === "birthday"}
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
@@ -331,21 +386,10 @@ export function DefaultPostCard({ post }) {
                     )}
                 </header>
 
-                <article className="post-content">
-                    {renderContentWithTags(
-                        cachedPost.content,
-                        cachedPost.mentions
-                    )}
-                </article>
+                {cachedPost.type === "birthday"
+                    ? renderBirhdayPost()
+                    : renderOtherPost()}
 
-                <p className="taging mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
-                    {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""}
-                </p>
-
-                <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
-                    {cachedPost.event?.replace(/[\[\]"]/g, "") || ""}
-                </p>
-                <PostAttachments attachments={post.attachments} />
                 <div className="flex items-center gap-4 mt-2">
                     <div className="flex items-center gap-2">
                         <Likes

@@ -1,7 +1,7 @@
-import { BirthdayPostCard } from "./BirthdayPostCard";
-import {DefaultPostCard} from "@/Components/Reusable/WallPosting/DefaultPostCard/DefaultPostCard.jsx";
 import InfiniteScroll from "react-infinite-scroller";
-import {Loader2} from "lucide-react";
+import { Loader2 } from "lucide-react";
+
+import { DefaultPostCard } from "@/Components/Reusable/WallPosting/DefaultPostCard/DefaultPostCard.jsx";
 
 export function PersonalWall({ posts, onLoad, hasMore }) {
     return (
@@ -19,17 +19,6 @@ export function PersonalWall({ posts, onLoad, hasMore }) {
             }
         >
             {posts.map((post, index) => {
-                if (post.type === "birthday") {
-                    return (
-                        <BirthdayPostCard
-                            key={post.id}
-                            post={post}
-                            index={index}
-                            // сюда нужно чуть позже передать остальные props
-                        />
-                    );
-                }
-
                 return <DefaultPostCard key={post.id} post={post} />;
             })}
         </InfiniteScroll>
