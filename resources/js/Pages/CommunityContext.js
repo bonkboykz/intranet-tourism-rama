@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
 export const CommunityContext = createContext({
-    is_member: false,
+    isMember: false,
     role: "anon",
 });

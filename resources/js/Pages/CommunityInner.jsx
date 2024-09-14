@@ -80,7 +80,7 @@ const CommunityInner = () => {
             return;
         }
 
-        if (communityData.is_member) {
+        if (communityData.isMember) {
             return;
         }
 
@@ -100,15 +100,12 @@ const CommunityInner = () => {
     return (
         <CommunityContext.Provider
             value={{
-                is_member: communityData?.is_member,
-                role: userData?.isSuperAdmin
-                    ? "superadmin"
-                    : communityData?.role,
+                isMember: communityData?.is_member,
+                role: communityData?.role,
                 type: communityData?.type,
                 communityID: communityData?.id,
                 isJoinRequestPending: communityData?.is_join_request_pending,
-                isAdmin:
-                    communityData?.role === "admin" || userData?.isSuperAdmin,
+                isAdmin: ["admin", "superadmin"].includes(communityData?.role),
             }}
         >
             <Example>

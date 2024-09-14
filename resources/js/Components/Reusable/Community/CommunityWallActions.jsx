@@ -8,7 +8,7 @@ export function CommunityWallActions({
     handleJoinOrExit,
     handleAddMember,
 }) {
-    const { role, is_member, type, communityID, isJoinRequestPending } =
+    const { role, isMember, type, communityID, isJoinRequestPending } =
         useContext(CommunityContext);
 
     const createJoinRequest = async () => {
@@ -50,7 +50,7 @@ export function CommunityWallActions({
         );
     }
 
-    if (is_member) {
+    if (isMember) {
         return (
             <button
                 className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"

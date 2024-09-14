@@ -1,11 +1,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useContext } from "react";
 
 import {
     Filter,
     OutputData,
     ShareYourThoughts,
 } from "@/Components/Reusable/WallPosting";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
 
 import DepartmentMembers from "./DepartmentCom/DepartmentMembers";
 import { SearchButton, SearchInput, Table } from "./ProfileTabbar";
@@ -71,6 +73,8 @@ function HeaderSection({
         banner = departmentBanner;
     }
 
+    const { isAdmin } = useContext(DepartmentContext);
+
     return (
         <header className="flex overflow-hidden relative flex-col px-11 py-9 h-[291.67px] max-md:h-[calc(66vw)] text-white max-md:px-5 w-full rounded-t-xl max-md:-mt-12">
             <img
@@ -111,27 +115,30 @@ function HeaderSection({
                 className="mt-6 aspect-square w-[30px]"
                 alt="Section Icon"
             />
-            <div className="absolute inset-x-0 bottom-0 flex items-center justify-start gap-4 py-4 px-11 max-md:px-5">
-                {isEditing ? (
-                    <button
-                        className="flex items-center px-4 py-2 text-white bg-blue-500 rounded-md"
-                        onClick={handleSaveClick}
-                    >
-                        Save
-                    </button>
-                ) : (
-                    <button
-                        className="flex items-center justify-center w-8 h-8 px-1 py-1 mb-4 text-white bg-blue-500 rounded-full"
-                        onClick={handleEditClick}
-                    >
-                        <img
-                            src="/assets/pencil.svg"
-                            alt="Edit Icon"
-                            className="w-4 h-4 "
-                        />
-                    </button>
-                )}
-            </div>
+
+            {isAdmin && (
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-start gap-4 py-4 px-11 max-md:px-5">
+                    {isEditing ? (
+                        <button
+                            className="flex items-center px-4 py-2 text-white bg-blue-500 rounded-md"
+                            onClick={handleSaveClick}
+                        >
+                            Save
+                        </button>
+                    ) : (
+                        <button
+                            className="flex items-center justify-center w-8 h-8 px-1 py-1 mb-4 text-white bg-blue-500 rounded-full"
+                            onClick={handleEditClick}
+                        >
+                            <img
+                                src="/assets/pencil.svg"
+                                alt="Edit Icon"
+                                className="w-4 h-4 "
+                            />
+                        </button>
+                    )}
+                </div>
+            )}
         </header>
     );
 }
@@ -198,6 +205,10 @@ function Navigation({ userId, departmentID, departmentName }) {
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
+
+    const { isMember } = useContext(DepartmentContext);
+
+    console.log(isMember);
 
     return (
         <div className="flex flex-col">
@@ -278,19 +289,21 @@ function Navigation({ userId, departmentID, departmentName }) {
                 {activeTab === "Post" && (
                     <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
                         <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
-                            <ShareYourThoughts
-                                userId={userId}
-                                onCreatePoll={handleCreatePoll}
-                                includeAccessibilities={true}
-                                filterType="Community"
-                                filterId={departmentID}
-                                birthdaysToday={
-                                    birthdaysToday.length > 0
-                                        ? birthdaysToday
-                                        : null
-                                }
-                                departmentId={departmentID}
-                            />
+                            {isMember && (
+                                <ShareYourThoughts
+                                    userId={userId}
+                                    onCreatePoll={handleCreatePoll}
+                                    includeAccessibilities={true}
+                                    filterType="Community"
+                                    filterId={departmentID}
+                                    birthdaysToday={
+                                        birthdaysToday.length > 0
+                                            ? birthdaysToday
+                                            : null
+                                    }
+                                    departmentId={departmentID}
+                                />
+                            )}
                             <Filter />
                             <br />
                             <OutputData

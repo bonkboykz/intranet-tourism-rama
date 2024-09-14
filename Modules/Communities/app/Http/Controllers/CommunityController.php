@@ -74,7 +74,13 @@ class CommunityController extends Controller
         $is_member = $data->members()->where('user_id', Auth::id())->exists();
         $is_admin = $data->admins()->where('user_id', Auth::id())->exists();
 
-        if ($is_admin) {
+        $user = User::findOrFail(auth()->id());
+        $is_superadmin = $user->hasRole('superadmin');
+
+        if ($is_superadmin) {
+            $data['is_member'] = true;
+            $data['role'] = "superadmin";
+        } else if ($is_admin) {
             $data['is_member'] = true;
             $data['role'] = "admin";
         } else if ($is_member) {

@@ -23,12 +23,26 @@ class DepartmentController extends Controller
 
     public function show($id)
     {
-        $department_member = EmploymentPost::where('user_id', Auth::id())->where('department_id', $id);
-
         $data = Department::where('id', $id)->queryable()->firstOrFail();
 
-        $data['is_member'] = $department_member->exists();
-        // $data['role'] = $department_member->value('role');
+        $is_member = $data->employmentPosts()->where('user_id', Auth::id())->exists();
+        $is_admin = $data->admins()->where('user_id', Auth::id())->exists();
+
+        $user = User::findOrFail(auth()->id());
+        $is_superadmin = $user->hasRole('superadmin');
+
+        if ($is_superadmin) {
+            $data['is_member'] = true;
+            $data['role'] = "superadmin";
+        } else if ($is_admin) {
+            $data['is_member'] = true;
+            $data['role'] = "admin";
+        } else if ($is_member) {
+            $data["is_member"] = true;
+            $data["role"] = "member";
+        } else {
+            $data['is_member'] = false;
+        }
 
         return response()->json([
             'data' => $data

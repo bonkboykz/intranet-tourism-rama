@@ -41,7 +41,7 @@ export const Members = ({
         try {
             const response = await axios.delete(url);
 
-            if (response.ok) {
+            if ([200, 201, 204].includes(response.status)) {
                 console.log("Member deleted successfully.");
                 await onRefetch();
             } else {
