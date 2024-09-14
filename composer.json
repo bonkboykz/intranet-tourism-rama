@@ -23,6 +23,7 @@
         "nwidart/laravel-modules": "^11.0",
         "owen-it/laravel-auditing": "^13.6",
         "predis/predis": "^2.2",
+        "sentry/sentry-laravel": "^4.8",
         "socialiteproviders/microsoft-azure": "^5.2",
         "spatie/laravel-permission": "^6.9",
         "tightenco/ziggy": "^2.2"

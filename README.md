@@ -138,3 +138,9 @@ make storage_link
 3. post_max_size = 1024M
 4. upload_max_filesize = 1024M
 5. sudo service php8.3-fpm restart
+
+### Sentry
+
+```
+php artisan sentry:publish --dsn=https://606ee5aaf4f4903535aa74fb16ed8ef4@o4505386622910464.ingest.us.sentry.io/4507952806821888
+```

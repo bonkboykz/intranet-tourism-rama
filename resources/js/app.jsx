@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
+import * as Sentry from "@sentry/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 
 import "../css/app.css";
@@ -19,6 +20,10 @@ createInertiaApp({
         ),
 
     setup({ el, App, props }) {
+        Sentry.init({
+            dsn: import.meta.env.VITE_SENTRY_DSN,
+        });
+
         const root = createRoot(el);
         root.render(<App {...props} />);
     },
