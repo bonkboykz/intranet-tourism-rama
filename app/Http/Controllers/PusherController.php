@@ -21,9 +21,12 @@ class PusherController extends Controller
         $user = User::find(auth()->user()->id);
         $socket_id = $request['socket_id'];
         $channel_name = $request['channel_name'];
-        $key = Config::get('broadcasting.connections.reverb.key');
-        $secret = config('broadcasting.connections.reverb.secret');
-        $app_id = config('broadcasting.connections.reverb.app_id');
+        // $key = Config::get('broadcasting.connections.reverb.key');
+        // $secret = config('broadcasting.connections.reverb.secret');
+        // $app_id = config('broadcasting.connections.reverb.app_id');
+        $key = env('PUSHER_APP_KEY');
+        $secret = env('PUSHER_APP_SECRET');
+        $app_id = env('PUSHER_APP_ID');
 
         if ($user) {
 
