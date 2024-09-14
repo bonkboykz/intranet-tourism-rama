@@ -269,6 +269,15 @@ export function PollPostCard({ post }) {
                         />
                     ))}
                 </div>
+
+                <div
+                    className="absolute right-[1rem] bottom-[1rem] text-[#FF5437]"
+                    style={{
+                        fontSize: 22,
+                    }}
+                >
+                    Total votes: {results.total_count_of_votes}
+                </div>
             </>
         );
     };
@@ -403,7 +412,7 @@ export function PollPostCard({ post }) {
                         document.body
                     )}
 
-                <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-4 mt-4">
                     <div className="flex items-center gap-2">
                         <Likes
                             likes={

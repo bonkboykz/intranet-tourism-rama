@@ -625,6 +625,7 @@ class PostController extends Controller
                 'total_responses' => $total_responses,
                 'percentages' => $percentages_map,
                 'count_map' => $count_map,
+                'total_count_of_votes' => $total_count_of_votes
             ]
         ]);
     }
