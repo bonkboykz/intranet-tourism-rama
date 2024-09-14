@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { createPortal } from "react-dom";
 
-import dummyProfilePic from "../../../../../public/assets/dummyProfilePic.png";
+import { useWhosOnline } from "@/Layouts/useWhosOnline";
+
 import arrowRight from "../../../../../public/assets/viewAllArrow.png";
 import UserAvatar from "./UserAvatar";
 
@@ -34,38 +35,13 @@ const Tooltip = ({ item, position }) => {
 };
 
 const WhosOnline = () => {
-    const [onlineUsers, setOnlineUsers] = useState([]);
     const [tooltip, setTooltip] = useState({
         visible: false,
         user: null,
         position: {},
     });
 
-    useEffect(() => {
-        window.Echo.join("online")
-            .here((users) => {
-                setOnlineUsers(
-                    users.map((user) => ({ ...user, avatar: dummyProfilePic }))
-                );
-            })
-            .joining((user) => {
-                setOnlineUsers((prevOnlineUsers) => [
-                    ...prevOnlineUsers,
-                    { ...user, avatar: dummyProfilePic },
-                ]);
-            })
-            .leaving((user) => {
-                setOnlineUsers((prevOnlineUsers) =>
-                    prevOnlineUsers.filter(
-                        (onlineUser) => onlineUser.id !== user.id
-                    )
-                );
-            });
-
-        return () => {
-            window.Echo.leave("online");
-        };
-    }, []);
+    const { onlineUsers } = useWhosOnline();
 
     const handleMouseEnter = (event, user) => {
         const rect = event.currentTarget.getBoundingClientRect();
