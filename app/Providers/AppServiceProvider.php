@@ -11,6 +11,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Communities\Models\Community;
 use Modules\Department\Models\Department;
 use Modules\Posts\Models\Post;
+use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (env('APP_ENV') !== 'local') {
+            URL::forceScheme('https');
+        }
+
         $this->registerMacros();
         $this->relationMapping();
 
