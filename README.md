@@ -73,7 +73,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 4 Copy .env.example to .env and updated the configurations (mainly the database configuration and email credentials, also do not forget to also change APP_URL as it is used in some of the files)
 5 In your terminal run php artisan key:generate
 6 Run php artisan migrate --seed to create the database tables and seed the roles and users tables
-7 Run php artisan storage:link to create the storage symlink (if you are using Vagrant with Homestead for development, remember to ssh into your virtual machine and run the command from there).
+7 Run php artisan storage:link to create the storage symlink
 8.php artisan serve
 9.npm run dev
 10.php artisan queue:listen

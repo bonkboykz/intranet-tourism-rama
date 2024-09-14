@@ -1,8 +1,13 @@
 providers = ["...", "php"]
 
+[phases.setup]
+nixPkgs = ['...', 'php82Packages.gd']
+
 [phases.build]
 cmds = [
     '...',
-    "echo \"<<<<<<<<<<<<< CHANGING THE PHP INI >>>>>>>>>>>>>>\"",
+    "php artisan optimize",
+    "php artisan migrate",
+    "php artisan storage:link",
     "./setup_limits.sh",
 ]
