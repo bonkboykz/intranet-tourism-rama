@@ -4,6 +4,5 @@ providers = ["...", "php"]
 cmds = [
     '...',
     "echo \"<<<<<<<<<<<<< CHANGING THE PHP INI >>>>>>>>>>>>>>\"",
-    "PHP_INI_PATH=$(php -i | grep '/php.ini' | awk '{print $6}')",
     "./setup_limits.sh",
 ]
