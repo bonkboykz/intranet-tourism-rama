@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 
-class FileManagement extends Controller
+class FileManagementController extends Controller
 {
     public function index()
     {

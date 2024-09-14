@@ -6,7 +6,7 @@ use App\Http\Controllers\communityPost;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentOrdering;
 use App\Http\Controllers\departments;
-use App\Http\Controllers\FileManagement;
+use App\Http\Controllers\FileManagementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PusherController;
@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/departmentInner', [departments::class, 'renderinner'])->name('DepartmentInner');
     Route::get('/communityInner', [Community::class, 'renderinner'])->name('CommunityInner');
     Route::get('/communityPost', [communityPost::class, 'index'])->name('communityPosts');
-    Route::get('/file-management', [FileManagement::class, 'index'])->name('FileManagement');
+    Route::get('/file-management', [FileManagementController::class, 'index'])->name('FileManagement');
     Route::get('/onlinelist', [DashboardController::class, 'onlinelist'])->name('onlinelist');
     Route::get('/link', [LinkController::class, 'index'])->name('link');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
