@@ -145,8 +145,6 @@ export function PollPostCard({ post }) {
 
     const noMoreOptions = isSingleChoice && chosenAnswers.length >= 1;
 
-    console.log("cachedPost", cachedPost);
-
     const onClick = (option) => {
         if (chosenAnswers.includes(option.id)) {
             setChosenAnswers(chosenAnswers.filter((x) => x !== option.id));
@@ -340,8 +338,6 @@ export function PollPostCard({ post }) {
     const [showCommentsModal, setShowCommentsModal] = useState(false);
 
     const [showLikesPopup, setShowLikesPopup] = useState(false);
-
-    console.log(post);
 
     return (
         <>

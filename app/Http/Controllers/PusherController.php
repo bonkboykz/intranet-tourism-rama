@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Modules\User\Models\User;
 use Pusher\Pusher;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -18,26 +19,22 @@ class PusherController extends Controller
     public function pusherAuth(Request $request)
     {
 
-        $user = User::find(auth()->user()->id);
-        $socket_id = $request['socket_id'];
-        $channel_name = $request['channel_name'];
-        // $key = Config::get('broadcasting.connections.reverb.key');
-        // $secret = config('broadcasting.connections.reverb.secret');
-        // $app_id = config('broadcasting.connections.reverb.app_id');
-        $key = env('PUSHER_APP_KEY');
-        $secret = env('PUSHER_APP_SECRET');
-        $app_id = env('PUSHER_APP_ID');
+        if (Auth::check()) {
+            $user = Auth::user();
+            $socket_id = $request->input('socket_id');
+            $channel_name = $request->input('channel_name');
 
-        if ($user) {
+            $pusher = new Pusher(
+                config('broadcasting.connections.pusher.key'),
+                config('broadcasting.connections.pusher.secret'),
+                config('broadcasting.connections.pusher.app_id'),
+                config('broadcasting.connections.pusher.options')
+            );
 
-            $pusher = new Pusher($key, $secret, $app_id);
             $auth = $pusher->socketAuth($channel_name, $socket_id);
             return response($auth, 200);
-
         } else {
-            header('', true, 403);
-            echo "Forbidden";
-            return;
+            return response('Forbidden', 403);
         }
     }
 }
