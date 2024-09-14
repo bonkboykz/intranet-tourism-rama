@@ -630,4 +630,47 @@ class PostController extends Controller
         ]);
     }
 
+    public function getUserPolls(Request $request, User $user)
+    {
+        $posts = Post::where('user_id', '=', $user->id)
+            ->where('type', 'poll')
+            ->with(['poll', 'poll.question', 'poll.question.options'])
+            ->get();
+
+        // attach user profile
+        $posts->map(function ($post) {
+            $post->user = User::find($post->user_id);
+            $post->userProfile = $post->user->profile;
+            return $post;
+        });
+
+
+        return response()->json([
+            'data' => $posts,
+        ]);
+    }
+
+    function getPollFeedback(Post $post)
+    {
+        $feedbacks = Feedback::where('poll_id', $post->poll->id)->get();
+        $feedbacks->map(function ($response) {
+            $response->user = User::find($response->user_id);
+            $response->userProfile = $response->user->profile;
+
+            // attach employmentPost if present
+            $response->userEmploymentPost = $response->user->employmentPost;
+
+            // attach department if present
+            if ($response->userEmploymentPost) {
+                $response->userDepartment = $response->userEmploymentPost->department;
+            }
+
+            return $response;
+        });
+
+        return response()->json([
+            'data' => $feedbacks
+        ]);
+    }
+
 }

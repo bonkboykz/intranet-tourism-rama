@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import { usePage } from "@inertiajs/react";
-import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
 import { useMemo } from "react";
 import { createPortal } from "react-dom";
+import { usePage } from "@inertiajs/react";
+import axios from "axios";
 
-import StoryViewer from "./StoryViewer";
+import CreateImageStory from "./CreateImageStory";
+import Popup from "./CreateStoryPopup";
 import { PersonalStory } from "./Story/PersonalStory";
 import { UserStory } from "./Story/UserStory";
-import Popup from "./CreateStoryPopup";
-import CreateImageStory from "./CreateImageStory";
+import StoryViewer from "./StoryViewer";
 
 import "./styles.css";
 

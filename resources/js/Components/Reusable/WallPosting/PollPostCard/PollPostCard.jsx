@@ -339,6 +339,10 @@ export function PollPostCard({ post }) {
 
     const [showLikesPopup, setShowLikesPopup] = useState(false);
 
+    const isExpired = poll?.end_date
+        ? new Date(poll?.end_date) < new Date()
+        : false;
+
     return (
         <>
             <article
@@ -386,7 +390,9 @@ export function PollPostCard({ post }) {
 
                 <div>{poll.question?.question_text}</div>
 
-                {previousResponse ? renderPollResults() : renderPoll()}
+                {previousResponse || isExpired
+                    ? renderPollResults()
+                    : renderPoll()}
 
                 {showModal &&
                     createPortal(

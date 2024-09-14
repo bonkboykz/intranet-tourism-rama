@@ -48,4 +48,6 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     Route::get('albums', [PostController::class, 'getAlbums'])->name('post.getAlbums');
+    Route::get('users/{user}/polls', [PostController::class, 'getUserPolls'])->name('post.getUserPolls');
+    Route::get('{post}/poll_feedback', [PostController::class, 'getPollFeedback'])->name('post.getPollFeedback');
 });

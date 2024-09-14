@@ -1,14 +1,13 @@
 import React from "react";
 import { useState } from "react";
 
-import { usePermissions } from "@/Utils/hooks/usePermissions";
-
 import Header from "../Components/DashboardHeaderNew";
 import Sidebar from "../Components/SideNavBarNew";
 import {
     NotificationsContext,
     useSetupNotifications,
 } from "./useNotifications";
+import { UserContext, useSetupUser } from "./useUser";
 import { useSetupWhosOnline, WhosOnlineContext } from "./useWhosOnline";
 
 import "../Components/Reusable/css/FileManagementSearchBar.css";
@@ -25,32 +24,41 @@ const Example = ({ children }) => {
 
     const { onlineUsers } = useSetupWhosOnline();
 
+    const { user, userData } = useSetupUser();
+
     return (
-        <WhosOnlineContext.Provider
+        <UserContext.Provider
             value={{
-                onlineUsers,
+                user,
+                userData,
             }}
         >
-            <NotificationsContext.Provider
+            <WhosOnlineContext.Provider
                 value={{
-                    notifications,
-                    hasNewNotifications,
-                    setHasNewNotifications,
-                    fetchNotifications,
+                    onlineUsers,
                 }}
             >
-                <div>
-                    <Sidebar
-                        sidebarOpen={sidebarOpen}
-                        setSidebarOpen={setSidebarOpen}
-                    />
-                    <div className="lg:pl-20 pt-16">
-                        <Header setSidebarOpen={setSidebarOpen} />
-                        <main>{children}</main>
+                <NotificationsContext.Provider
+                    value={{
+                        notifications,
+                        hasNewNotifications,
+                        setHasNewNotifications,
+                        fetchNotifications,
+                    }}
+                >
+                    <div>
+                        <Sidebar
+                            sidebarOpen={sidebarOpen}
+                            setSidebarOpen={setSidebarOpen}
+                        />
+                        <div className="lg:pl-20 pt-16">
+                            <Header setSidebarOpen={setSidebarOpen} />
+                            <main>{children}</main>
+                        </div>
                     </div>
-                </div>
-            </NotificationsContext.Provider>
-        </WhosOnlineContext.Provider>
+                </NotificationsContext.Provider>
+            </WhosOnlineContext.Provider>
+        </UserContext.Provider>
     );
 };
 

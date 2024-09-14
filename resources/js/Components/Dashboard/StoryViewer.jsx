@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
-import Stories from "react-insta-stories";
-import DeleteIcon from "../../../../public/assets/DeleteRedButton.svg";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Stories from "react-insta-stories";
+import axios from "axios";
+
+import DeleteIcon from "../../../../public/assets/DeleteRedButton.svg";
 
 const StoryViewer = ({ stories, onClose, user, onViewed, onDelete }) => {
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
@@ -128,11 +130,11 @@ const StoryViewer = ({ stories, onClose, user, onViewed, onDelete }) => {
                                     !user.src // check if src variable is empty
                                         ? `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${user.fullName}` // if src is empty = src equals to this path
                                         : user.src ===
-                                          "/assets/dummyStaffPlaceHolder.jpg" //if user.src is not empty, check id user.src is equal to this path
-                                        ? user.src // if it is equal to the path, then src = user.src
-                                        : user.src.startsWith("avatar/") // if not equal, then check if user.src starts with user/
-                                        ? `/storage/${user.src}` // if yes, then src = storage/{user.src}
-                                        : `${user.src}` // If no then then src =
+                                            "/assets/dummyStaffPlaceHolder.jpg" //if user.src is not empty, check id user.src is equal to this path
+                                          ? user.src // if it is equal to the path, then src = user.src
+                                          : user.src.startsWith("avatar/") // if not equal, then check if user.src starts with user/
+                                            ? `/storage/${user.src}` // if yes, then src = storage/{user.src}
+                                            : `${user.src}` // If no then then src =
                                 }
                                 alt={user.alt}
                                 style={{

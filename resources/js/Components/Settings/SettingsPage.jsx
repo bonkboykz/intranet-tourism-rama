@@ -19,8 +19,6 @@
 // import { ChevronLeftIcon, ChevronRightIcon, ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid'
 // import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
-
-
 // const Pautan = () => {
 //     const [apps, setApps] = useState([]); // Initialize apps as an array
 //     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -257,56 +255,79 @@
 //     );
 //   };
 
-
-
-
-import LogoUploader from "./BasicSettings";
-import ThemeComponent from "./Themes";
-import { CoreFeatures, SizeLimit, Media, CoverPhotos, MailSettings } from "./AdvanceSettings";
-import Departments from "./Departments";
-import Requests from "./Requests";
-import { AuditSearch, AuditCalendar, AuditTrailTable } from "./AuditTrail";
-import Feedback from "./Feedback";
-import Roles from "./Roles";
-import Permissions from "./Permissions";
 import AddTitles from "./AddTitles";
 import AddUnits from "./AddUnits";
+import {
+    CoreFeatures,
+    CoverPhotos,
+    MailSettings,
+    Media,
+    SizeLimit,
+} from "./AdvanceSettings";
+import { AuditCalendar, AuditSearch, AuditTrailTable } from "./AuditTrail";
+import LogoUploader from "./BasicSettings";
+import Departments from "./Departments";
+import Permissions from "./Permissions";
+import Feedback from "./Polls/Feedback";
+import { Polls } from "./Polls/Polls";
+import Requests from "./Requests";
+import Roles from "./Roles";
+import ThemeComponent from "./Themes";
 
 const SettingsPage = ({ currentPage }) => {
-  const handleSave = (selectedImage) => {
-    console.log('Selected image:', selectedImage);
-  };
+    const handleSave = (selectedImage) => {
+        console.log("Selected image:", selectedImage);
+    };
 
-  return (
-    <div>
-      <h1 className="hidden">{currentPage}</h1>
-      {currentPage === 'Basic Settings' && <LogoUploader onSave={handleSave} />}
-      {currentPage === 'Themes' && <ThemeComponent onSave={handleSave} />}
-      {currentPage === 'Advance Settings' && (
-        <>
-          <CoreFeatures onSave={handleSave} />
-          <SizeLimit onSave={handleSave} />
-          <Media onSave={handleSave} />
-          <CoverPhotos onSave={handleSave} />
-          <MailSettings onSave={handleSave} />
-        </>
-      )}
-      {/* {currentPage === 'Departments' && <Departments onSave={handleSave} />}
+    return (
+        <div>
+            <h1 className="hidden">{currentPage}</h1>
+            {currentPage === "Basic Settings" && (
+                <LogoUploader onSave={handleSave} />
+            )}
+            {currentPage === "Themes" && <ThemeComponent onSave={handleSave} />}
+            {currentPage === "Advance Settings" && (
+                <>
+                    <CoreFeatures onSave={handleSave} />
+                    <SizeLimit onSave={handleSave} />
+                    <Media onSave={handleSave} />
+                    <CoverPhotos onSave={handleSave} />
+                    <MailSettings onSave={handleSave} />
+                </>
+            )}
+            {/* {currentPage === 'Departments' && <Departments onSave={handleSave} />}
       {currentPage === 'Media' && <div></div>} */}
-      {currentPage === 'Requests' && <Requests/>}
-      {currentPage === 'Audit Trail' &&
-        <>
-          <AuditSearch onSave={handleSave} />
-          <AuditTrailTable onSave={handleSave} />
-        </>}
-      {currentPage === 'Feedback' && <Feedback/>}
-      {currentPage === 'Birthday Template' && <div></div>}
-      {currentPage === 'Business Titles' && <AddTitles/>}
-      {currentPage === 'Business Units' && <AddUnits/>}
-      {currentPage === 'Roles' && <Roles/>}
-      {currentPage === 'Permissions' && <Permissions/>}
-    </div>
-  );
+            {currentPage === "Requests" && <Requests />}
+            {currentPage === "Audit Trail" && (
+                <>
+                    <AuditSearch onSave={handleSave} />
+                    <AuditTrailTable onSave={handleSave} />
+                </>
+            )}
+            {currentPage === "Feedback" && <Polls />}
+            {/* {currentPage === "Birthday Template" && <div></div>} */}
+            {currentPage === "Business Titles" && <AddTitles />}
+            {currentPage === "Business Units" && <AddUnits />}
+            {currentPage === "Roles" && <Roles />}
+            {currentPage === "Permissions" && <Permissions />}
+        </div>
+    );
 };
 
-export { SettingsPage, LogoUploader, ThemeComponent, CoreFeatures, SizeLimit, Media, CoverPhotos, MailSettings, Departments, Requests, AuditSearch, AuditCalendar, AuditTrailTable, Roles, Permissions };
+export {
+    AuditCalendar,
+    AuditSearch,
+    AuditTrailTable,
+    CoreFeatures,
+    CoverPhotos,
+    Departments,
+    LogoUploader,
+    MailSettings,
+    Media,
+    Permissions,
+    Requests,
+    Roles,
+    SettingsPage,
+    SizeLimit,
+    ThemeComponent,
+};

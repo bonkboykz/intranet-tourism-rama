@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 
 export function useUserData() {
     const {
