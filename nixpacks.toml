@@ -1,7 +1,7 @@
 providers = ["...", "php"]
 
 [phases.setup]
-nixPkgs = ['...', 'php82Packages.gd']
+nixPkgs = ['...', 'php82Extensions.gd']
 
 [phases.build]
 cmds = [
