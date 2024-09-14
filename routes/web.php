@@ -6,7 +6,7 @@ use App\Http\Controllers\communityPost;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentOrdering;
 use App\Http\Controllers\departments;
-use App\Http\Controllers\fileManagement;
+use App\Http\Controllers\FileManagement;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PusherController;

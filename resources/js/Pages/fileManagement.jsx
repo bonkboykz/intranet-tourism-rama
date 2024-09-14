@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import PageTitle from "../Components/Reusable/PageTitle";
-import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
-import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
-import SearchFile from "../Components/Reusable/FileManagementSearchBar";
+import { usePage } from "@inertiajs/react";
+
 import { FileTable } from "@/Components/FileManagement";
+import Example from "@/Layouts/DashboardLayoutNew";
+
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import SearchFile from "../Components/Reusable/FileManagementSearchBar";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+
 import "./css/StaffDirectory.css";
 import "../Components/Reusable/css/FileManagementSearchBar.css";
-import Example from "@/Layouts/DashboardLayoutNew";
-import { usePage } from "@inertiajs/react";
 
 const FileManage = ({ requiredData, onFileUploaded }) => {
     const { id } = usePage().props; // Retrieve the user_id from the Inertia view
