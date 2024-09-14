@@ -261,6 +261,9 @@ function Navigation({ userId, communityID, departmentName, type }) {
             if (response.ok) {
                 console.log("Member added successfully");
                 setHasJoined(true);
+
+                // TODO: refactor this hack
+                window.location.reload();
             } else {
                 throw new Error("Failed to add member");
             }
@@ -291,6 +294,7 @@ function Navigation({ userId, communityID, departmentName, type }) {
             });
             if (response.ok) {
                 console.log("Member removed successfully");
+                // TODO: refactor this hack
                 window.location.reload();
             } else {
                 throw new Error("Failed to remove member");
@@ -375,6 +379,9 @@ function Navigation({ userId, communityID, departmentName, type }) {
             console.log("All selected members added successfully");
             setIsAddMemberPopupOpen(false);
             setSelectedUsers([]);
+
+            // TODO: refactor this hack
+            window.location.reload();
         } catch (error) {
             console.error("Error adding members:", error);
         }

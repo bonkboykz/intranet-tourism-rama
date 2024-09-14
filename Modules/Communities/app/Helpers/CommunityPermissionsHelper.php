@@ -77,6 +77,23 @@ class CommunityPermissionsHelper
         }
     }
 
+    public static function checkPermission(User $user, string $permission)
+    {
+        $output = new ConsoleOutput();
+        $output->writeln($user->email);
+        // if user is superadmin, return true
+        if ($user->hasRole('superadmin')) {
+            return true;
+        }
+
+        // if user has the specific permission, return true
+        if ($user->can($permission, 'web')) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static function checkSpecificPermission(User $user, string $permission, string $community_id)
     {
         $output = new ConsoleOutput();
@@ -97,7 +114,7 @@ class CommunityPermissionsHelper
         }
 
         // if user has the specific permission, return true
-        if ($user->hasPermissionTo($specificPermission, 'web')) {
+        if ($user->can($specificPermission, 'web')) {
             return true;
         }
 

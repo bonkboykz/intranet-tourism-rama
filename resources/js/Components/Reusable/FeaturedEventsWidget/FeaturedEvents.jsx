@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
-import EventItem from "./EventItem";
-import "../css/FeaturedEvents.css";
+import React, { useEffect, useState } from "react";
+
 import arrowRight from "../../../../../public/assets/viewAllArrow.png";
+import EventItem from "./EventItem";
+
+import "../css/FeaturedEvents.css";
 
 const FeaturedEvents = () => {
     const [featuredEvents, setFeaturedEvents] = useState([]);

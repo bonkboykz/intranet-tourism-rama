@@ -5,7 +5,6 @@ namespace Modules\Communities\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Request as AppRequest;
 use Illuminate\Http\Request;
-use Modules\Communities\Helpers\CommunityPermissionHelper;
 use Modules\Communities\Helpers\CommunityPermissionsHelper;
 use Modules\User\Models\User;
 use Auth;
@@ -17,19 +16,74 @@ class CommunityController extends Controller
 {
     public function index()
     {
+        $query = Community::queryable();
+
+        $user = User::findOrFail(auth()->id());
+
+        if (!CommunityPermissionsHelper::checkPermission($user, 'view all groups')) {
+            $query->where(function ($query) {
+                // if community is private then limit to communities user is a member of
+                $query->where(function ($query) {
+                    $query->where('type', 'public') // Public community
+                        ->orWhereHas('members', function ($query) {
+                            $query->where('user_id', Auth::id()); // Private community, user is a member
+                        })
+                        ->orWhereHas('admins', function ($query) {
+                            $query->where('user_id', Auth::id()); // Private community, user is an admin
+                        });
+                });
+            });
+        }
+
+        // remove soft deleted communities
+        $query->whereNull('deleted_at');
+
+
+
+        $output = new ConsoleOutput();
+
+        $output->writeln(CommunityPermissionsHelper::checkPermission($user, 'view all groups') ? "true" : "false");
+
+        function replaceBindings($sql, $bindings)
+        {
+            foreach ($bindings as $binding) {
+                $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+                $sql = preg_replace('/\?/', $value, $sql, 1);
+            }
+            return $sql;
+        }
+
+        $sql = $query->toSql(); // Get the raw SQL query
+        $bindings = $query->getBindings(); // Get the query bindings (parameters)
+        // Show the full SQL query with bindings replaced
+        $fullSql = replaceBindings($sql, $bindings);
+
+        $output->writeln($fullSql);
+
+        $data = $this->shouldPaginate($query);
+
         return response()->json([
-            'data' => Community::queryable()->paginate(),
+            'data' => $data
         ]);
     }
 
     public function show($id)
     {
-        $community_member = CommunityMember::where('user_id', Auth::id())->where('community_id', $id);
-
         $data = Community::where('id', $id)->queryable()->firstOrFail();
 
-        $data['is_member'] = $community_member->exists();
-        $data['role'] = $community_member->value('role');
+        $is_member = $data->members()->where('user_id', Auth::id())->exists();
+        $is_admin = $data->admins()->where('user_id', Auth::id())->exists();
+
+        if ($is_admin) {
+            $data['is_member'] = true;
+            $data['role'] = "admin";
+        } else if ($is_member) {
+            $data["is_member"] = true;
+            $data["role"] = "member";
+        } else {
+            $data['is_member'] = false;
+        }
+
 
         // check if user have sent a request to join
         $data['is_join_request_pending'] = AppRequest::where('user_id', Auth::id())

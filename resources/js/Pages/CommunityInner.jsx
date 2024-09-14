@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { usePage } from "@inertiajs/react";
-import PageTitle from "../Components/Reusable/PageTitle";
-import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
-import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
-import CommunityWall from "../Components/Reusable/Community/CommunityWall";
-import "./css/StaffDirectory.css";
-import Example from "@/Layouts/DashboardLayoutNew";
-import EditCommunity from "@/Components/Reusable/Community/EditCommunity";
+import React, { useEffect, useState } from "react";
+import { router, usePage } from "@inertiajs/react";
+import axios from "axios";
 import { set } from "date-fns";
-import { CommunityContext } from "./CommunityContext";
 import { Loader2 } from "lucide-react";
+
+import EditCommunity from "@/Components/Reusable/Community/EditCommunity";
+import Example from "@/Layouts/DashboardLayoutNew";
 import useUserData from "@/Utils/hooks/useUserData";
+
+import CommunityWall from "../Components/Reusable/Community/CommunityWall";
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+import { CommunityContext } from "./CommunityContext";
+
+import "./css/StaffDirectory.css";
 
 const CommunityInner = () => {
     const { id } = usePage().props;
@@ -32,14 +36,13 @@ const CommunityInner = () => {
 
     const fetchDepartmentData = async (communityId) => {
         try {
-            const response = await fetch(
+            const response = await axios.get(
                 `/api/communities/communities/${communityId}`
             );
-            const result = await response.json();
-            if (result.data) {
-                setCommunityData(result.data);
-                setType(result.data.type);
-            }
+            const result = response.data.data;
+
+            setCommunityData(result);
+            setType(result.type);
         } catch (error) {
             console.error("Error fetching community data:", error);
         } finally {
@@ -64,6 +67,26 @@ const CommunityInner = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (!communityData) {
+            return;
+        }
+
+        if (communityData.type === "public") {
+            return;
+        }
+
+        if (userData?.isSuperAdmin) {
+            return;
+        }
+
+        if (communityData.is_member) {
+            return;
+        }
+
+        router.replace("/community");
+    }, [communityData]);
+
     // console.log("DEPARTMENT DATA", communityData);
 
     if (!communityData) {
@@ -78,7 +101,9 @@ const CommunityInner = () => {
         <CommunityContext.Provider
             value={{
                 is_member: communityData?.is_member,
-                role: communityData?.role,
+                role: userData?.isSuperAdmin
+                    ? "superadmin"
+                    : communityData?.role,
                 type: communityData?.type,
                 communityID: communityData?.id,
                 isJoinRequestPending: communityData?.is_join_request_pending,
