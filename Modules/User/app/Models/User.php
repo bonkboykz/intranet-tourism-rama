@@ -57,6 +57,12 @@ class User extends Authenticatable implements AuditableContract
     public static function rules($scenario = 'create')
     {
         $rules = [
+            'default' => [
+                [
+                    'name' => 'string',
+                    'email' => 'email',
+                ],
+            ],
             'create' => [
                 [
                     'name' => ['string', 'required'],
@@ -76,6 +82,16 @@ class User extends Authenticatable implements AuditableContract
                     // 'remember_token' => ['string'],
                 ],
                 // [],
+            ],
+            'register' => [
+                [
+                    'name' => ['required', 'string', 'max:255'],
+                    'email' => ['required', 'string', 'email', 'unique:users', 'max:255'],
+                    'password' => ['required', 'confirmed'],
+                ],
+                [
+                    'email.unique' => 'Emel telah berdaftar. Sila set semula kata laluan sekiranya anda terlupa kata laluan',
+                ],
             ],
         ];
 
