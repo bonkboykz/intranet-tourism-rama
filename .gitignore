@@ -1,5 +1,7 @@
 # Laravel
 .env
+.local.env
+.production.env
 vendor/
 node_modules/
 public/storage

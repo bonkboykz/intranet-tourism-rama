@@ -16,10 +16,18 @@ CREATE TABLE IF NOT EXISTS new_users_data_offiria (
     active_status VARCHAR(255)
 );
 
+-- If on client machine, comment out this line --
 COPY new_users_data_offiria(user_id, name, username, email, image_file_name, title, gred, division, unit, lokasi, work_phone, ordering, taraf_jawatan, active_status)
 FROM '<absolute_path>/seed/new_user_data.csv'
 DELIMITER ','
 CSV HEADER;
+
+-- If on client machine, use this in psql --
+-- \copy new_users_data_offiria(user_id, name, username, email, image_file_name, title, gred, division, unit, lokasi, work_phone, ordering, taraf_jawatan, active_status)
+-- FROM '<absolute_path>/seed/new_user_data.csv'
+-- DELIMITER ','
+-- CSV HEADER;
+
 
 CREATE TABLE IF NOT EXISTS updated_staff_data (
     id SERIAL PRIMARY KEY,
@@ -31,10 +39,18 @@ CREATE TABLE IF NOT EXISTS updated_staff_data (
     active_status VARCHAR(255)
 );
 
+-- If on client machine, comment out this line --
 COPY updated_staff_data(url, image_name, user_id, user_name, work_phone, active_status)
 FROM '<absolute_path>/seed/UpdatedListAvatarExtract.csv'
 DELIMITER ','
 CSV HEADER;
+
+-- If on client machine, use this in psql --
+-- \copy updated_staff_data(url, image_name, user_id, user_name, work_phone, active_status)
+-- FROM '<absolute_path>/seed/UpdatedListAvatarExtract.csv'
+-- DELIMITER ','
+-- CSV HEADER;
+
 
 INSERT INTO users (id, email, password, name, username, is_active)
 SELECT
@@ -311,6 +327,3 @@ update profiles set staff_image = '2587.jpg' where user_id = 1229;
 
 --delete from model_has_roles where model_id = 1;
 
-
---INSERT superadmin role--
-INSERT INTO roles (name, description) VALUES ('superadmin', 'Super Admin Role');
