@@ -8,7 +8,7 @@ cmds = [
     '...',
     # TODO: When modules clean up done, uncomment below
     # "php artisan optimize",
-    "php artisan migrate",
+    # "php artisan migrate",
     "php artisan storage:link",
     "./setup_limits.sh",
 ]
