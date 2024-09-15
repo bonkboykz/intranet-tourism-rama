@@ -6,6 +6,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
+import { format } from "date-fns";
 
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
@@ -225,8 +226,25 @@ function Calendar() {
                 calendarRef.current.getApi().gotoDate(new Date());
             }
         } else {
-            const filtered = events.filter((event) =>
-                event.title.toLowerCase().includes(searchTerm.toLowerCase())
+            const filtered = events.filter(
+                (event) =>
+                    event.title
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    event.start
+                        ?.toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    event.end
+                        ?.toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    (event.start &&
+                        format(new Date(event.start), "yyyy MM dd")
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())) ||
+                    (event.end &&
+                        format(new Date(event.end), "yyyy MM dd")
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase()))
             );
             setFilteredEvents(filtered);
 
