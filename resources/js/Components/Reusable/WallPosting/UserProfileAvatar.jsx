@@ -7,10 +7,10 @@ export function UserProfileAvatar({ post }) {
                     post.community.banner
                         ? post.community.banner ===
                           "/assets/dummyStaffPlaceHolder.jpg"
-                            ? post.community.image
-                            : post.community.image.startsWith("avatar/")
-                            ? `/storage/${post.community.banner}`
-                            : `/avatar/${post.community.banner}`
+                            ? post.community.banner
+                            : post.community.banner.startsWith("avatar/")
+                              ? `/storage/${post.community.banner}`
+                              : `/avatar/${post.community.banner}`
                         : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                               post.community.name
                           )}&rounded=true`
@@ -29,10 +29,10 @@ export function UserProfileAvatar({ post }) {
                     post.department.banner
                         ? post.department.banner ===
                           "/assets/dummyStaffPlaceHolder.jpg"
-                            ? post.department.image
-                            : post.department.image.startsWith("avatar/")
-                            ? `/storage/${post.department.banner}`
-                            : `/avatar/${post.department.banner}`
+                            ? post.department.banner
+                            : post.department.banner.startsWith("avatar/")
+                              ? `/storage/${post.department.banner}`
+                              : `/avatar/${post.department.banner}`
                         : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                               post.department.name
                           )}&rounded=true`
@@ -52,8 +52,8 @@ export function UserProfileAvatar({ post }) {
                       "/assets/dummyStaffPlaceHolder.jpg"
                         ? post.userProfile.profile.image
                         : post.userProfile.profile.image.startsWith("avatar/")
-                        ? `/storage/${post.userProfile.profile.image}`
-                        : `/avatar/${post.userProfile.profile.image}`
+                          ? `/storage/${post.userProfile.profile.image}`
+                          : `/avatar/${post.userProfile.profile.image}`
                     : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                           post.user.name
                       )}&rounded=true`
