@@ -309,6 +309,15 @@ function ShareYourThoughts({
         fileInput.onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
+            // const maxSize = 10485760; // 10MB
+            // 2MB
+            const maxSize = 2097152;
+
+            if (file.size > maxSize) {
+                alert("File size should not exceed 10MB");
+                return;
+            }
+
             handleFileUpload(file);
         };
         fileInput.click();
