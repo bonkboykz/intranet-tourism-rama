@@ -102,6 +102,8 @@ function ShareYourThoughts({
         setMentionQuery("");
     };
 
+    const isComment = variant === "comment";
+
     const handleClickSend = async () => {
         // Prevent triggering multiple times
         if (isSending) return;
@@ -394,14 +396,12 @@ function ShareYourThoughts({
             <div
                 className={cn(
                     `flex flex-col gap-0 justify-between px-8 pt-5 pb-2 rounded-2xl shadow-sm max-md:flex-wrap max-md:px-5 max-w-full`,
-                    variant === "comment"
-                        ? "comment-box-container"
-                        : "input-box-container",
+                    isComment ? "comment-box-container" : "input-box-container",
                     "relative"
                 )}
             >
                 <div className="flex flex-col w-full">
-                    {variant === "comment" && (
+                    {isComment && (
                         <textarea
                             ref={textAreaRef}
                             value={inputValue}
@@ -410,7 +410,7 @@ function ShareYourThoughts({
                             className="self-center mt-1 h-8 px-2 mb-12 text-sm border-none appearance-none resize-none input-no-outline w-full"
                         />
                     )}
-                    {variant !== "comment" && (
+                    {!isComment && (
                         <textarea
                             ref={textAreaRef}
                             value={inputValue}
@@ -444,34 +444,33 @@ function ShareYourThoughts({
                     )}
                     <div className=" ">
                         <div className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-4 items-center">
-                            {variant === "comment" && (
+                            <button
+                                className="tooltip"
+                                onClick={toggleReactionPicker}
+                            >
+                                <img
+                                    loading="lazy"
+                                    src={Emoji}
+                                    alt="Emoji Icon"
+                                    className="w-[16px] h-[16px]"
+                                />
+                                <span className="tooltiptext">
+                                    React 😀🤣😤
+                                </span>
+                            </button>
+                            {showReactionPicker && (
+                                <div
+                                    ref={emojiPickerRef}
+                                    className="emoji-picker-container "
+                                >
+                                    <Picker
+                                        onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
+                                    />
+                                </div>
+                            )}
+
+                            {isComment && (
                                 <>
-                                    <button
-                                        className="tooltip"
-                                        onClick={toggleReactionPicker}
-                                    >
-                                        <img
-                                            loading="lazy"
-                                            src={Emoji}
-                                            alt="Emoji Icon"
-                                            className="w-[16px] h-[16px]"
-                                        />
-                                        <span className="tooltiptext">
-                                            React 😀🤣😤
-                                        </span>
-                                    </button>
-                                    {showReactionPicker && (
-                                        <div
-                                            ref={emojiPickerRef}
-                                            className="emoji-picker-container "
-                                        >
-                                            <Picker
-                                                onEmojiClick={
-                                                    handleReactionClick
-                                                } // Ensure this correctly triggers the handler
-                                            />
-                                        </div>
-                                    )}
                                     <div className="flex flex-row w-full justify-between items-center mt-1">
                                         <div>
                                             {/* <button
@@ -511,7 +510,7 @@ function ShareYourThoughts({
                                     </div>
                                 </>
                             )}
-                            {variant !== "comment" && (
+                            {!isComment && (
                                 <>
                                     <div className="flex w-full max-md:flex-col lg:flex-row max-md:gap-4 lg: justify-between">
                                         <div className="flex w-full flex-row justify-between lg:w-2/3 max-md:py mr-4">
