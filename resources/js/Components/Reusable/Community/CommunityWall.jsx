@@ -670,25 +670,26 @@ function Adminsection({
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const [departmentData, setDepartmentData] = useState(null);
 
-    useEffect(() => {
-        // Fetch the department data here
-        const fetchDepartmentData = async () => {
-            try {
-                const response = await fetch(
-                    `/api/communities/communities/${communityID}`
-                ); // Use departmentID
+    // Fetch the department data here
+    const fetchDepartmentData = async () => {
+        try {
+            const response = await fetch(
+                `/api/communities/communities/${communityID}`
+            ); // Use departmentID
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch department data");
-                }
-
-                const department = await response.json();
-                setDepartmentData(department.data);
-            } catch (error) {
-                console.error("Error fetching department data:", error);
+            if (!response.ok) {
+                throw new Error("Failed to fetch department data");
             }
-        };
 
+            const department = await response.json();
+
+            setDepartmentData(department.data);
+        } catch (error) {
+            console.error("Error fetching department data:", error);
+        }
+    };
+
+    useEffect(() => {
         fetchDepartmentData();
     }, [communityID]);
 
@@ -711,7 +712,12 @@ function Adminsection({
 
     useEffect(() => {
         // Fetch the latest department data if required
+        fetchDepartmentData();
     }, [isEditPopupOpen]);
+
+    if (!departmentData) {
+        return null;
+    }
 
     return (
         <div className="w-[875px]">
