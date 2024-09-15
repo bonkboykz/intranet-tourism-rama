@@ -19,7 +19,6 @@ function OutputData({
     postType,
     variant,
 }) {
-    // TODO: return announcments
     const { posts, fetchData, hasMore } = useInfiniteScroll({
         userId: userId,
         communityId,

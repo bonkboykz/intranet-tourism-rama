@@ -133,8 +133,7 @@ export function PollPostCard({ post }) {
         }
     };
 
-    const canEdit =
-        cachedPost.user_id === loggedInUserId || hasRole("superadmin");
+    const canEdit = post.user_id === loggedInUserId || hasRole("superadmin");
 
     const [feedbackText, setFeedbackText] = useState("");
     const [chosenAnswers, setChosenAnswers] = useState([]);
@@ -479,7 +478,7 @@ export function PollPostCard({ post }) {
                 createPortal(
                     <LikesPopup
                         onClose={() => setShowLikesPopup(false)}
-                        postId={cachedPost.id}
+                        postId={post.id}
                     />,
                     document.body
                 )}
