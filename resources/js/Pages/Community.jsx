@@ -63,7 +63,7 @@ const Community = () => {
             }));
 
             setDepartmentsList(
-                updatedDepartments.sort((a, b) => a.name.localeCompare(b.name))
+                updatedDepartments.sort((a, b) => a.name?.localeCompare(b.name))
             );
         } catch (error) {
             console.error("Error fetching departments:", error);
@@ -79,7 +79,7 @@ const Community = () => {
     const handleNewDepartment = (newDepartment) => {
         setDepartmentsList((prevList) =>
             [...prevList, { ...newDepartment, isArchived: false }].sort(
-                (a, b) => a.name.localeCompare(b.name)
+                (a, b) => a.name?.localeCompare(b.name)
             )
         );
     };
