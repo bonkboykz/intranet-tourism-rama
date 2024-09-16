@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
+import { toast } from "react-toastify";
 import axios from "axios";
+import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
 
@@ -90,9 +92,10 @@ function Card({
 
     const handleImageChange = (file) => {
         const reader = new FileReader();
-        reader.onload = () => {
+        reader.onload = async () => {
             setImageSrc(reader.result);
-            setImageBase64(""); // Reset the base64 string when a new image is selected
+            const base64 = await blobToBase64(file);
+            setImageBase64(base64); // Reset the base64 string when a new image is selected
             setCroppedImage(""); // Reset the cropped image when a new image is selected
         };
         reader.readAsDataURL(file);
@@ -128,17 +131,9 @@ function Card({
             data.description = communityDescription;
         }
 
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-            body: JSON.stringify(data),
-        };
-
         try {
+            console.log("Creating community:", data);
+
             const response = await axios.post(
                 "/api/communities/communities",
                 data
@@ -157,6 +152,11 @@ function Card({
             window.location.reload();
         } catch (error) {
             console.error("Error creating community:", error.message);
+
+            toast.error("Failed to create community", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
         }
     };
 

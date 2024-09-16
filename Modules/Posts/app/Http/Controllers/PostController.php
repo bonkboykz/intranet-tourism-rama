@@ -644,6 +644,8 @@ class PostController extends Controller
         // Apply eager loading for attachments
         $query->with('attachments');
 
+
+        // TODO: check for users ability to see the media
         // Apply filters for image and video MIME types
         $query->whereHas('attachments', function ($query) {
             $query->where(function ($query) {
@@ -665,6 +667,30 @@ class PostController extends Controller
                     $query->where('name', 'superadmin'); // User is superadmin
                 });
         });
+
+        $user = Auth::user();
+
+        if (!$user->hasRole('superadmin')) {
+            $query->where(function ($query) use ($user) {
+                $query->where(function ($query) use ($user) {
+                    $query->whereNull('community_id')
+                        ->orWhereHas('community', function ($query) use ($user) {
+                            $query->where('type', 'public')
+                                ->orWhereHas('members', function ($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                });
+                        });
+                })
+                    ->where(function ($query) use ($user) {
+                        $query->whereNull('department_id')
+                            ->orWhereHas('department', function ($query) use ($user) {
+                                $query->whereHas('employmentPosts', function ($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                });
+                            });
+                    });
+            });
+        }
 
         $posts = $query->get();
 
