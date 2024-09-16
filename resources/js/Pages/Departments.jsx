@@ -198,6 +198,7 @@ const Departments = () => {
                 <hr className="file-directory-underline" />
                 <div>
                     <FeaturedEvents />
+                    <WhosOnline />
                 </div>
             </aside>
             {isDeleteModalOpen && (

@@ -137,7 +137,7 @@ const Media = () => {
 
                 <div>
                     <FeaturedEvents />
-                    {/* <WhosOnline /> */}
+                    <WhosOnline />
                 </div>
             </aside>
         </Example>
