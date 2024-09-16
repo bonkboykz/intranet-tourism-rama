@@ -2,6 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    // broadcasting service provider
+    App\Providers\TelescopeServiceProvider::class,
     Illuminate\Broadcasting\BroadcastServiceProvider::class,
 ];

@@ -27,126 +27,70 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        // // Check if the 'filter' parameter is present
-        // if ($request->has('filter')) {
-        //     // Apply the necessary filters to the query
-        //     if (in_array('birthday', $request->input('filter'))) {
-        //         $query->where('type', 'birthday');
-        //     }
+        $query = Post::queryable()->with(['albums', 'comments', 'user.profile', 'community', 'department', 'attachments']);
 
-        //     // If filters are present, paginate the filtered query
-        //     $data = $this->shouldPaginate($query);
-        // }
-        $query = Post::queryable()->with(['albums']);
-        // If no filters are present, paginate using the predefined queryable method
-        // Logic for filtering based on community and department membership
-        $user = User::find(Auth::id());
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Apply filter if user is not superadmin
         if (!$user->hasRole('superadmin')) {
-            $query->where(function ($query) {
-                // Filter by community if it exists
-                $query->where(function ($query) {
-                    // Either community_id is null, or the community is public, or the user is a member of a private community
-                    $query->whereNull('community_id') // No community, pass
-                        ->orWhereHas('community', function ($query) {
-                            $query->where('type', 'public') // Public community
-                                ->orWhereHas('members', function ($query) {
-                                    $query->where('user_id', Auth::id()); // Private community, user is a member
+            $query->where(function ($query) use ($user) {
+                $query->where(function ($query) use ($user) {
+                    $query->whereNull('community_id')
+                        ->orWhereHas('community', function ($query) use ($user) {
+                            $query->where('type', 'public')
+                                ->orWhereHas('members', function ($query) use ($user) {
+                                    $query->where('user_id', $user->id);
                                 });
                         });
-                });
-
-                // Filter by department if it exists
-                $query->where(function ($query) {
-                    // Either department_id is null, or the user is employed in the department
-                    $query->whereNull('department_id') // No department, pass
-                        ->orWhereHas('department', function ($query) {
-                            $query->whereHas('employmentPosts', function ($query) {
-                                $query->where('user_id', Auth::id()); // User is employed in the department
+                })
+                    ->where(function ($query) use ($user) {
+                        $query->whereNull('department_id')
+                            ->orWhereHas('department', function ($query) use ($user) {
+                                $query->whereHas('employmentPosts', function ($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                });
                             });
-                        });
-                });
+                    });
             });
         }
 
+        // Sort posts by announcement status and updated_at
         $query->orderByRaw("CASE WHEN announced = true THEN 0 ELSE 1 END")
-            ->orderBy('updated_at', 'desc'); // Sort by created_at for all posts
+            ->orderBy('updated_at', 'desc');
 
+        // Paginate the results
         $data = $this->shouldPaginate($query);
 
-        // $output = new ConsoleOutput();
-
-        // function replaceBindings($sql, $bindings)
-        // {
-        //     foreach ($bindings as $binding) {
-        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
-        //         $sql = preg_replace('/\?/', $value, $sql, 1);
-        //     }
-        //     return $sql;
-        // }
-
-        // $sql = $query->toSql(); // Get the raw SQL query
-        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
-        // // Show the full SQL query with bindings replaced
-        // $fullSql = replaceBindings($sql, $bindings);
-
-        // $output->writeln($fullSql);
-
-        // Load the comments relationship with pivot data for all posts
-        // sorted by updated_at in descending order
+        // Load additional relationships
         $data->load([
             'comments' => function ($query) {
                 $query->withPivot('id', 'comment_id');
             }
         ]);
 
-        // attach likes
+        // Map additional data to the posts
         $data->map(function ($post) {
+            // Attach likes
             $post->likes = collect($post->likes);
-            return $post;
-        });
 
-        // attach user profile
-        $data->map(function ($post) {
-            $post->user = User::find($post->user_id);
-            $post->userProfile = $post->user->profile;
-            return $post;
-        });
-
-        // attach tags
-        $data->map(function ($post) {
+            // Attach tags
             $post->tags = collect($post->tags);
-            return $post;
-        });
 
-        $data->map(function ($post) {
-            // if post has accessibilities
-            if ($post->accessibilities->isEmpty()) {
-                return $post;
+            // Attach accessibilities if available
+            if (!$post->accessibilities->isEmpty()) {
+                $post->accessibilities = $post->accessibilities;
             }
 
             return $post;
         });
 
-        // attach community if present
-        $data->map(function ($post) {
-            if ($post->community_id) {
-                $post->community = Community::find($post->community_id);
-            }
-            return $post;
-        });
-
-        // attach department if present
-        $data->map(function ($post) {
-            if ($post->department_id) {
-                $post->department = Department::find($post->department_id);
-            }
-            return $post;
-        });
-
+        // Return the response
         return response()->json([
             'data' => $data,
         ]);
     }
+
 
 
     public function show($id)

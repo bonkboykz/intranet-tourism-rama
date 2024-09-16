@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\Posts\Models\Post;
 
-class NewPollCreatedNotification extends Notification
+class NewPollCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

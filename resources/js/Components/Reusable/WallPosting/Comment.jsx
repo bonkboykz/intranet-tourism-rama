@@ -323,15 +323,15 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                         <header className="flex items-center">
                             <img
                                 src={
-                                    post.userProfile.profile?.image
-                                        ? post.userProfile.profile.image ===
+                                    post.user.profile?.image
+                                        ? post.user.profile.image ===
                                           "/assets/dummyStaffPlaceHolder.jpg"
-                                            ? post.userProfile.profile.image
-                                            : post.userProfile.profile.image.startsWith(
+                                            ? post.user.profile.image
+                                            : post.user.profile.image.startsWith(
                                                     "avatar/"
                                                 )
-                                              ? `/storage/${post.userProfile.profile.image}`
-                                              : `/avatar/${post.userProfile.profile.image}`
+                                              ? `/storage/${post.user.profile.image}`
+                                              : `/avatar/${post.user.profile.image}`
                                         : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                                               post.user.name
                                           )}&rounded=true`

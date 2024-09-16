@@ -309,12 +309,11 @@ function ShareYourThoughts({
         fileInput.onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
-            // const maxSize = 10485760; // 10MB
-            // 2MB
-            const maxSize = 2097152;
+            // 20MB
+            const maxSize = 20971520;
 
             if (file.size > maxSize) {
-                alert("File size should not exceed 10MB");
+                alert("File size should not exceed 20MB");
                 return;
             }
 
@@ -429,7 +428,7 @@ function ShareYourThoughts({
                         />
                     )}
                     {fileNames.length > 0 && (
-                        <div className="file-names-container py-2 w-auto flex flex-col gap-2">
+                        <div className="file-names-container py-2 w-auto flex flex-col gap-2 mr-[40px]">
                             {fileNames.map((name, index) => (
                                 <div
                                     className="file-name inline-flex rounded-lg border-2 bg-gray-100 py-1 px-4 justify-between items-center overflow-hidden whitespace-nowrap text-ellipsis"

@@ -142,8 +142,8 @@ export function InputPolls({ onClose, onCreatePoll }) {
                                 post={{
                                     user: {
                                         name: userData.name,
+                                        profile: userData,
                                     },
-                                    userProfile: userData,
                                 }}
                             />
                         </div>

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -25,6 +26,10 @@ return Application::configure(basePath: dirname(__DIR__))
     // ->withSchedule(function (Schedule $schedule) {
     //     $schedule->job(DepartmentWishBirthday::class)->dailyAt('07:00');
     // })
+    ->withSchedule(function (Schedule $schedule) {
+        // Schedule::command('telescope:prune')->daily();
+        $schedule->command('telescope:prune')->daily();
+    })
     // ->withBroadcasting(
     //     __DIR__ . '/../routes/channels.php',
     //     ['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum']],

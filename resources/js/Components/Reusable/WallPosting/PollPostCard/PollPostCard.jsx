@@ -81,7 +81,7 @@ export function PollPostCard({ post }) {
             } = await axios.get(`/api/posts/posts/${post.id}`, {
                 params: {
                     with: [
-                        "user",
+                        "user.profile",
                         "attachments",
                         "accessibilities",
                         "likes",
@@ -94,15 +94,15 @@ export function PollPostCard({ post }) {
                 },
             });
 
-            const userProfileData = await axios.get(
-                `/api/users/users/${post.user_id}`,
-                {
-                    params: {
-                        with: ["profile"],
-                    },
-                }
-            );
-            updatedPost.userProfile = userProfileData.data;
+            // const userProfileData = await axios.get(
+            //     `/api/users/users/${post.user_id}`,
+            //     {
+            //         params: {
+            //             with: ["profile"],
+            //         },
+            //     }
+            // );
+            // updatedPost.userProfile = userProfileData.data;
 
             updatedPost.attachments = Array.isArray(updatedPost.attachments)
                 ? updatedPost.attachments
