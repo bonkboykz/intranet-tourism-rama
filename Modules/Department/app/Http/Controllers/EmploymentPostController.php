@@ -13,33 +13,27 @@ class EmploymentPostController extends Controller
 
         if ($request->has('department_id')) {
             $departmentId = $request->get('department_id');
-            $members = EmploymentPost::where('employment_posts.department_id', $departmentId)
-                ->join('users', 'employment_posts.user_id', '=', 'users.id')
-                ->join('profiles', 'users.id', '=', 'profiles.user_id')
-                ->join('business_posts', 'employment_posts.business_post_id', '=', 'business_posts.id')
-                ->join('business_grades', 'employment_posts.business_grade_id', '=', 'business_grades.id')
-                ->select(
-                    'users.id as user_id',
-                    'employment_posts.id as employment_post_id',
-                    'employment_posts.order',
-                    'business_posts.title as business_post_title',
-                    'business_grades.code as business_grade',
-                    'users.is_active',
-                    'profiles.bio as name',
-                    'profiles.staff_image',
-                    'employment_posts.work_phone',
-                    'profiles.phone_no',
-                )
+
+            $members = EmploymentPost::where('department_id', $departmentId)
+                ->with(['user.profile', 'businessPost', 'businessGrade']) // Use relationships
                 ->get()
-                ->map(function ($member) {
-                    if (is_null($member->image)) {
-                        $member->image = '/assets/dummyStaffPlaceHolder.jpg';
-                    }
-                    return $member;
+                ->map(function ($employmentPost) {
+                    return [
+                        'user_id' => $employmentPost->user->id,
+                        'employment_post_id' => $employmentPost->id,
+                        'order' => $employmentPost->order,
+                        'business_post_title' => $employmentPost->businessPost->title,
+                        'business_grade' => $employmentPost->businessGrade->code,
+                        'is_active' => $employmentPost->user->is_active,
+                        'name' => $employmentPost->user->profile->bio,
+                        'staff_image' => $employmentPost->user->profile->staff_image ?? '/assets/dummyStaffPlaceHolder.jpg',
+                        'work_phone' => $employmentPost->work_phone,
+                        'phone_no' => $employmentPost->user->profile->phone_no,
+                    ];
                 });
 
             return response()->json([
-                'members' => $members,
+                'data' => $members,
             ]);
         }
 
