@@ -64,4 +64,13 @@ class NewPollCreatedNotification extends Notification
             'details' => []
         ]);
     }
+
+    public function toDatabase($notifiable)
+    {
+        return [
+            'message' => 'New poll created.',
+            'post_id' => $this->post->id,
+            'details' => []
+        ];
+    }
 }
