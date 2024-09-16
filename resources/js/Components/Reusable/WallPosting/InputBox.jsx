@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useContext } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Picker from "emoji-picker-react";
-import { Loader2 } from "lucide-react";
+import { CircleXIcon, Loader2 } from "lucide-react";
 
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
@@ -314,16 +315,19 @@ function ShareYourThoughts({
 
             for (const file of e.target.files) {
                 // 20MB
-                const maxSize = 20971520;
+                // const maxSize = 20971520;
 
-                if (file.size > maxSize) {
+                if (file.size > 0) {
                     areAllUnderLimit = false;
                     break;
                 }
             }
 
             if (!areAllUnderLimit) {
-                alert("File size should be less than 20MB");
+                toast.error("File size should be less than 20MB", {
+                    icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                    theme: "colored",
+                });
 
                 return;
             }
