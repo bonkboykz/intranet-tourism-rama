@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import PostAttachments from "./PostAttachments";
-import { ShareYourThoughts } from "@/Components/Reusable/WallPosting";
-import { formatDistanceToNow } from "date-fns";
+import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
-import { useCsrf } from "@/composables";
-import MentionedName from "./MentionedName";
-import LikesPopup from "./LikesPopup";
-import { formatTimeAgo } from "@/Utils/format";
 import axios from "axios";
+import { formatDistanceToNow } from "date-fns";
+
+import { ShareYourThoughts } from "@/Components/Reusable/WallPosting";
+import { useCsrf } from "@/composables";
+import { formatTimeAgo } from "@/Utils/format";
+
+import LikesPopup from "./LikesPopup";
+import MentionedName from "./MentionedName";
+import PostAttachments from "./PostAttachments";
 
 const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
     const [isCommentPopupOpen, setIsCommentPopupOpen] = useState(null);
@@ -326,10 +328,10 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                           "/assets/dummyStaffPlaceHolder.jpg"
                                             ? post.userProfile.profile.image
                                             : post.userProfile.profile.image.startsWith(
-                                                  "avatar/"
-                                              )
-                                            ? `/storage/${post.userProfile.profile.image}`
-                                            : `/avatar/${post.userProfile.profile.image}`
+                                                    "avatar/"
+                                                )
+                                              ? `/storage/${post.userProfile.profile.image}`
+                                              : `/avatar/${post.userProfile.profile.image}`
                                         : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                                               post.user.name
                                           )}&rounded=true`
@@ -384,10 +386,10 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                                       "/assets/dummyStaffPlaceHolder.jpg"
                                                         ? user.profileImage
                                                         : user.profileImage.startsWith(
-                                                              "avatar/"
-                                                          )
-                                                        ? `/storage/${user.profileImage}`
-                                                        : `/avatar/${user.profileImage}`
+                                                                "avatar/"
+                                                            )
+                                                          ? `/storage/${user.profileImage}`
+                                                          : `/avatar/${user.profileImage}`
                                                     : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                                                           user.name ||
                                                               "Commenter"
@@ -502,10 +504,10 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                   "/assets/dummyStaffPlaceHolder.jpg"
                                     ? currentUser.profile.image
                                     : currentUser.profile.image.startsWith(
-                                          "avatar/"
-                                      )
-                                    ? `/storage/${currentUser.profile.image}`
-                                    : `/avatar/${currentUser.profile.image}`
+                                            "avatar/"
+                                        )
+                                      ? `/storage/${currentUser.profile.image}`
+                                      : `/avatar/${currentUser.profile.image}`
                                 : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                                       currentUser.name
                                   )}&rounded=true`

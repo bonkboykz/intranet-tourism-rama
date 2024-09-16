@@ -285,6 +285,8 @@ class PostController extends Controller
         try {
             if ($post->type == 'comment') {
                 PostComment::where('comment_id', $post->id)->delete();
+            } else if ($post->type === 'poll') {
+                Poll::where('post_id', $post->id)->delete();
             }
             $post->delete();
             DB::commit();

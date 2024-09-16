@@ -319,6 +319,8 @@ export function PollPostCard({ post }) {
         );
     };
 
+    const [isDeleted, setIsDeleted] = useState(false);
+
     const handleDelete = async () => {
         try {
             const response = await axios.delete(`/api/posts/posts/${post.id}`);
@@ -328,7 +330,8 @@ export function PollPostCard({ post }) {
             }
 
             setShowDeletePopup(false);
-            refetchPost();
+
+            setIsDeleted(true);
         } catch (error) {
             console.error("Error deleting post:", error);
         }
@@ -341,6 +344,10 @@ export function PollPostCard({ post }) {
     const isExpired = poll?.end_date
         ? new Date(poll?.end_date) < new Date()
         : false;
+
+    if (isDeleted) {
+        return null;
+    }
 
     return (
         <>
