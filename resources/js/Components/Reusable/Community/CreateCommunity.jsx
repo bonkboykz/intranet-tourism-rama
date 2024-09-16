@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
+import axios from "axios";
 
 import { useCsrf } from "@/composables";
 
@@ -138,19 +139,20 @@ function Card({
         };
 
         try {
-            const response = await fetch(
+            const response = await axios.post(
                 "/api/communities/communities",
-                options
+                data
             );
-            const text = await response.text();
+            // const text = await response.text();
+            const responseData = response.data;
 
-            if (!response.ok) {
-                console.error("Server response not OK:", text);
+            if (![200, 201, 204].includes(response.status)) {
+                // console.error("Server response not OK:", text);
                 throw new Error("Failed to create community");
             }
 
-            const responseData = text ? JSON.parse(text) : {};
-            console.log("Community created:", responseData.data);
+            // const responseData = text ? JSON.parse(text) : {};
+            // console.log("Community created:", responseData.data);
             onCreate(responseData.data);
             window.location.reload();
         } catch (error) {

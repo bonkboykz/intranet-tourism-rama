@@ -80,7 +80,7 @@ const CommunityInner = () => {
             return;
         }
 
-        if (communityData.isMember) {
+        if (communityData.is_member) {
             return;
         }
 
