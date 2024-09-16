@@ -637,4 +637,41 @@ class PostController extends Controller
         ]);
     }
 
+    public function getPublicMedia()
+    {
+        $query = Post::query();
+
+        // Apply eager loading for attachments
+        $query->with('attachments');
+
+        // Apply filters for image and video MIME types
+        $query->whereHas('attachments', function ($query) {
+            $query->where(function ($query) {
+                $query->where('mime_type', 'like', 'image/%')
+                    ->orWhere('mime_type', 'like', 'video/%');
+            });
+        });
+
+        if (request()->has('album_id')) {
+            $query->whereHas('albums', function ($query) {
+                $query->where('albums.id', request('album_id'));
+            });
+        }
+
+        // Filter by either user is superadmin or post has albums
+        $query->where(function ($query) {
+            $query->whereHas('albums') // Posts with albums
+                ->orWhereHas('user.roles', function ($query) {
+                    $query->where('name', 'superadmin'); // User is superadmin
+                });
+        });
+
+        $posts = $query->get();
+
+        // Return the result as JSON
+        return response()->json([
+            'data' => $posts
+        ]);
+    }
+
 }

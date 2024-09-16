@@ -26,23 +26,17 @@ const Media = () => {
 
     const fetchData = async () => {
         setIsLoading(true);
-        const url = "/api/posts/posts";
+        const url = "/api/posts/public_media";
 
         try {
             const response = await axios.get(url, {
                 params: {
-                    with: ["attachments"],
                     ...(selectedTag !== "" && {
-                        filter: [
-                            {
-                                field: "albums",
-                                value: [selectedTag],
-                            },
-                        ],
+                        album_id: selectedTag,
                     }),
                 },
             });
-            const data = response.data.data.data;
+            const data = response.data.data;
             // Filter out posts with type 'story'
             // const filteredData = data.filter((post) => post.type !== "story");
 
