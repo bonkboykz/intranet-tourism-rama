@@ -645,7 +645,6 @@ class PostController extends Controller
         $query->with('attachments');
 
 
-        // TODO: check for users ability to see the media
         // Apply filters for image and video MIME types
         $query->whereHas('attachments', function ($query) {
             $query->where(function ($query) {
@@ -699,5 +698,4 @@ class PostController extends Controller
             'data' => $posts
         ]);
     }
-
 }

@@ -26,3 +26,6 @@ Route::apiResources([
     'resource_access' => ResourceAccessController::class,
 
 ]);
+
+
+Route::get('public-resources', [ResourceController::class, 'getPublicResources']);

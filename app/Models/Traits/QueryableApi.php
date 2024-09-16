@@ -53,6 +53,22 @@ trait QueryableApi
                             $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
                         }
                     }
+                } else if ($filter['field'] == 'metadata') {
+                    if (isset($filter['subfield']) && in_array($filter['subfield'], ['original_name', 'mime_type', 'extension'])) {
+                        if (!empty($filter['type']) && $filter['type'] == 'like') {
+                            // Handle "like" for JSON field subfield
+                            $query->where('metadata->' . $filter['subfield'], 'like', '%' . $filter['value'] . '%');
+                        } elseif (!empty($filter['type']) && $filter['type'] == 'not_like') {
+                            // Handle "not like" for JSON field subfield
+                            $query->where('metadata->' . $filter['subfield'], 'not like', '%' . $filter['value'] . '%');
+                        } elseif (!empty($filter['type']) && $filter['type'] == 'in') {
+                            // Handle "in" for JSON field subfield
+                            $query->whereIn('metadata->' . $filter['subfield'], (array) $filter['value']);
+                        } elseif (!empty($filter['type']) && $filter['type'] == 'not_in') {
+                            // Handle "not in" for JSON field subfield
+                            $query->whereNotIn('metadata->' . $filter['subfield'], (array) $filter['value']);
+                        }
+                    }
                 } elseif ($filter['field'] == 'mentions') {
                     // Special case for filtering mentions JSON column
                     $query->whereJsonContains('mentions', $filter['value']);

@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Bars3Icon,
-    MagnifyingGlassIcon,
     ChevronDownIcon,
+    MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import { usePage } from "@inertiajs/react";
-import NotificationPopup from "./NotificationPopup";
-import BirthdayNotificationPopup from "../Components/BirthdayNotificationPopup";
 import axios from "axios";
+
 import { useNotifications } from "@/Layouts/useNotifications";
+
+import BirthdayNotificationPopup from "../Components/BirthdayNotificationPopup";
+import NotificationPopup from "./NotificationPopup";
 
 export default function Header({ setSidebarOpen }) {
     const { props } = usePage();
@@ -72,8 +74,8 @@ export default function Header({ setSidebarOpen }) {
         return userData.profileImage === "/assets/dummyStaffPlaceHolder.jpg"
             ? userData.profileImage
             : userData.profileImage.startsWith("avatar/")
-            ? `/storage/${userData.profileImage}`
-            : `/avatar/${userData.profileImage}`;
+              ? `/storage/${userData.profileImage}`
+              : `/avatar/${userData.profileImage}`;
     };
 
     const checkBirthday = (birthday) => {
@@ -152,8 +154,6 @@ export default function Header({ setSidebarOpen }) {
     }, [isNotificationPopupVisible]);
 
     const { hasNewNotifications, setHasNewNotifications } = useNotifications();
-
-    console.log("Has new notifications:", hasNewNotifications);
 
     return (
         <div className="fixed w-full lg:pr-16 top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">

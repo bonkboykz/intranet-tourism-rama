@@ -51,7 +51,7 @@ const FileManage = ({ requiredData, onFileUploaded }) => {
 
                 <div>
                     <FeaturedEvents />
-                    {/* <WhosOnline /> */}
+                    <WhosOnline />
                 </div>
             </aside>
         </Example>

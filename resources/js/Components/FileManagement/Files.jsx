@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { useDebounce } from "@uidotdev/usehooks";
+import axios from "axios";
+import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
 
-import Pagination from "../Paginator";
 import PopupContent from "../Reusable/PopupContent";
 
 const excludedExtensions = [
@@ -16,9 +19,11 @@ const excludedExtensions = [
     "mp4",
 ];
 
-const FileTable = ({ searchTerm }) => {
+const itemsPerPage = 8;
+
+const FileTable = ({ searchTerm: currentSearchTerm }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const [totalPages, setTotalPages] = useState(1);
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingIndex, setEditingIndex] = useState(null);
@@ -29,59 +34,105 @@ const FileTable = ({ searchTerm }) => {
     const csrfToken = useCsrf();
     const inputRef = useRef(null);
 
+    const searchTerm = useDebounce(currentSearchTerm, 500);
+
+    useEffect(() => {
+        setCurrentPage(1);
+        setTotalPages(1);
+
+        fetchFiles();
+    }, [searchTerm]);
+
+    useEffect(() => {
+        fetchFiles();
+    }, [currentPage]);
+
     const fetchFiles = async () => {
+        setLoading(true);
         try {
-            let currentPage = 1;
-            let totalPages = 1;
-            let allFilesData = [];
+            const newFilter = [];
 
-            while (currentPage <= totalPages) {
-                const response = await fetch(
-                    `/api/resources/resources?with[]=author&page=${currentPage}`
-                );
-                if (!response.ok) {
-                    throw new Error("Failed to fetch files");
-                }
-                const responseData = await response.json();
-                console.log("RESPONSEDATA", responseData);
-
-                if (!Array.isArray(responseData.data?.data)) {
-                    console.error(
-                        "Expected an array of files, but received:",
-                        responseData.data?.data
-                    );
-                    setLoading(false);
-                    return;
-                }
-
-                const filesData = responseData.data.data.map((file) => ({
-                    ...file,
-                    uploader: file.author.name, // Assuming the API provides an 'uploader' field with the uploader's name
-                    metadata:
-                        typeof file.metadata === "string"
-                            ? JSON.parse(file.metadata)
-                            : file.metadata,
-                }));
-
-                // Accumulate all files data across pages
-                allFilesData = [...allFilesData, ...filesData];
-
-                // Determine the total number of pages
-                totalPages = responseData.data.last_page;
-                currentPage++;
+            if (searchTerm !== "") {
+                newFilter.push({
+                    field: "metadata",
+                    subfield: "extension",
+                    type: "like",
+                    value: searchTerm,
+                });
+                newFilter.push({
+                    field: "metadata",
+                    subfield: "original_name",
+                    type: "like",
+                    value: searchTerm,
+                });
+                newFilter.push({
+                    field: "metadata",
+                    subfield: "mime_type",
+                    operator: "like",
+                    value: searchTerm,
+                });
             }
 
-            // Sort files by the `created_at` date in descending order (newest first)
-            allFilesData.sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
+            console.log("FILTER", searchTerm, newFilter);
 
-            setFiles(allFilesData);
-            setLoading(false);
+            const response = await axios.get(
+                `/api/resources/public-resources`,
+                {
+                    params: {
+                        page: currentPage,
+                        perpage: itemsPerPage,
+                        filter: [
+                            {
+                                field: "metadata",
+                                subfield: "extension",
+                                type: "not_in",
+                                value: excludedExtensions,
+                            },
+                            ...newFilter,
+                        ].filter(Boolean),
+                    },
+                }
+            );
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to fetch files");
+            }
+            const {
+                data: { last_page, data },
+            } = response.data;
+            console.log("RESPONSEDATA", data);
+
+            const filesData = data.map((file) => ({
+                ...file,
+                uploader: file.author.name, // Assuming the API provides an 'uploader' field with the uploader's name
+                metadata:
+                    typeof file.metadata === "string"
+                        ? JSON.parse(file.metadata)
+                        : file.metadata,
+            }));
+
+            console.log("FILES", filesData);
+
+            // Accumulate all files data across pages
+            // allFilesData = [...allFilesData, ...filesData];
+
+            // Determine the total number of pages
+            // totalPages = responseData.data.last_page;
+            // currentPage++;
+
+            setTotalPages(last_page);
+
+            // Sort files by the `created_at` date in descending order (newest first)
+
+            setFiles(filesData);
         } catch (error) {
             console.error("Error fetching files:", error);
-            setLoading(false);
+            toast.error("Failed to fetch files", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
         }
+
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -105,77 +156,24 @@ const FileTable = ({ searchTerm }) => {
         return <div>Loading...</div>;
     }
 
-    const filteredFiles = files.filter((file) => {
-        const metadata = file.metadata || {};
-        const fileExtension = metadata.extension
-            ? metadata.extension.toLowerCase()
-            : "";
-        const fileName = metadata.original_name
-            ? metadata.original_name.toLowerCase()
-            : "";
+    // const filteredFiles = files.filter((file) => {
+    //     const metadata = file.metadata || {};
+    //     const fileExtension = metadata.extension
+    //         ? metadata.extension.toLowerCase()
+    //         : "";
+    //     const fileName = metadata.original_name
+    //         ? metadata.original_name.toLowerCase()
+    //         : "";
 
-        const isExcluded = excludedExtensions.includes(fileExtension);
+    //     const isExcluded = excludedExtensions.includes(fileExtension);
 
-        return !isExcluded && fileName.includes(searchTerm.toLowerCase());
-    });
+    //     return !isExcluded && fileName.includes(searchTerm.toLowerCase());
+    // });
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredFiles.slice(indexOfFirstItem, indexOfLastItem);
-
-    // const handleRename = async (index, newName) => {
-    //     const fileToRename = files[index];
-    //     if (!fileToRename || !fileToRename.id) {
-    //         console.error("File ID is missing.");
-    //         return;
-    //     }
-
-    //     console.log("FILE ID", fileToRename.id);
-
-    //     // Create updated metadata object with the new name
-    //     const updatedMetadata = {
-    //         ...fileToRename.metadata,
-    //         original_name: newName,
-    //     };
-
-    //     // Convert updatedMetadata to a JSON string
-    //     const metadataString = JSON.stringify(updatedMetadata);
-
-    //     // Create payload with the metadata as a JSON string
-    //     const payload = {
-    //         metadata: metadataString, // Ensure this is a string
-    //     };
-
-    //     // Prepare API request
-    //     const url = `/api/resources/resources/${fileToRename.id}`;
-    //     const options = {
-    //         method: "PUT",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             Accept: "application/json",
-    //             "X-CSRF-Token": csrfToken,
-    //         },
-    //         body: JSON.stringify(payload),
-    //     };
-
-    //     try {
-    //         const response = await fetch(url, options);
-    //         if (!response.ok) {
-    //             const responseBody = await response.text();
-    //             console.error("Failed to rename file:", responseBody);
-    //             throw new Error(
-    //                 `Failed to rename file: ${response.statusText}`
-    //             );
-    //         }
-
-    //         console.log("File renamed successfully.");
-    //         await fetchFiles(); // Refresh file list after renaming
-    //     } catch (error) {
-    //         console.error("Error renaming file:", error);
-    //     } finally {
-    //         setEditingIndex(null); // Clear editing state
-    //     }
-    // };
+    // const currentItems = filteredFiles.slice(indexOfFirstItem, indexOfLastItem);
+    // const currentItems = files;
 
     const handleRename = async (index, newName) => {
         setIsSaving(true);
@@ -308,10 +306,12 @@ const FileTable = ({ searchTerm }) => {
                                 const metadata = item.metadata || {};
                                 const isEditing = editingIndex === index;
 
-                                console.log("METADATA", metadata);
+                                {
+                                    /* console.log("METADATA", metadata); */
+                                }
 
                                 return (
-                                    <tr key={index}>
+                                    <tr key={item.id}>
                                         <td className="border-b border-r border-neutral-300 whitespace-nowrap px-3 py-2 text-sm text-neutral-800 sm:pl-1 text-left overflow-hidden text-ellipsis">
                                             {isEditing ? (
                                                 <div
@@ -399,7 +399,7 @@ const FileTable = ({ searchTerm }) => {
                 <div className="mt-8 flex justify-center">
                     <Pagination
                         currentPage={currentPage}
-                        totalItems={filteredFiles.length}
+                        totalPages={totalPages}
                         itemsPerPage={itemsPerPage}
                         paginate={setCurrentPage}
                         // onPageChange={setCurrentPage}
@@ -407,6 +407,43 @@ const FileTable = ({ searchTerm }) => {
                 </div>
             </div>
         </div>
+    );
+};
+
+const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
+    return (
+        <>
+            <div className="py-3 flex w-full justify-center">
+                {hasNextButton && (
+                    <button
+                        disabled={!hasNextButton.prev_page_url}
+                        onClick={() => paginate((pv) => pv - 1)}
+                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.prev_page_url ? "text-blue-500" : "text-black-500"}`}
+                    >
+                        PREV
+                    </button>
+                )}
+
+                {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => paginate(i + 1)}
+                        className={`px-4 py-2 mx-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-200 text-blue-500" : "bg-white text-blue-500"}`}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+                {hasNextButton && (
+                    <button
+                        disabled={!hasNextButton.next_page_url}
+                        onClick={() => paginate((pv) => pv + 1)}
+                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.next_page_url ? "text-blue-500" : "text-black-500"}`}
+                    >
+                        NEXT
+                    </button>
+                )}
+            </div>
+        </>
     );
 };
 
