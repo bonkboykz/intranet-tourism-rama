@@ -306,18 +306,31 @@ function ShareYourThoughts({
         const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = accept;
+        fileInput.multiple = true;
         fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            // 20MB
-            const maxSize = 20971520;
+            // const file = e.target.files[0];
 
-            if (file.size > maxSize) {
-                alert("File size should not exceed 20MB");
+            let areAllUnderLimit = true;
+
+            for (const file of e.target.files) {
+                // 20MB
+                const maxSize = 20971520;
+
+                if (file.size > maxSize) {
+                    areAllUnderLimit = false;
+                    break;
+                }
+            }
+
+            if (!areAllUnderLimit) {
+                alert("File size should be less than 20MB");
+
                 return;
             }
 
-            handleFileUpload(file);
+            for (const file of e.target.files) {
+                handleFileUpload(file);
+            }
         };
         fileInput.click();
     };
