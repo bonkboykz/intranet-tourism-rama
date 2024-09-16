@@ -534,7 +534,20 @@ function Calendar() {
                             />
                         </button>
                         <button
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => {
+                                setEventData({
+                                    title: "",
+                                    venue: "",
+                                    startDate: format(new Date(), "yyyy-MM-dd"),
+                                    endDate: format(new Date(), "yyyy-MM-dd"),
+                                    startTime: "",
+                                    endTime: "",
+                                    description: "",
+                                    color: "purple",
+                                });
+
+                                setIsModalOpen(true);
+                            }}
                             className="flex items-center text-white bg-blue-500 hover:bg-blue-700 mt-2 px-3.5 py-3.5 rounded-full"
                         >
                             <img
