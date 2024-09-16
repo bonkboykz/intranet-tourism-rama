@@ -4,6 +4,8 @@ import { createPortal } from "react-dom";
 import axios from "axios";
 import { Volume2 } from "lucide-react";
 
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
@@ -328,8 +330,14 @@ export function DefaultPostCard({ post }) {
 
     const { hasRole } = usePermissions();
 
+    const { isAdmin: isCommunityAdmin } = useContext(CommunityContext);
+    const { isAdmin: isDepartmentAdmin } = useContext(DepartmentContext);
+
     const canEdit =
-        cachedPost.user_id === loggedInUserId || hasRole("superadmin");
+        cachedPost.user_id === loggedInUserId ||
+        hasRole("superadmin") ||
+        isCommunityAdmin ||
+        isDepartmentAdmin;
 
     if (isDeleted) {
         return null;
@@ -361,7 +369,6 @@ export function DefaultPostCard({ post }) {
                     </div>
                 )}
 
-                {cachedPost.type === "birthday"}
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">

@@ -16,6 +16,7 @@ import {
     OutputData,
     ShareYourThoughts,
 } from "@/Components/Reusable/WallPosting";
+import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
 
@@ -405,230 +406,244 @@ function UserDetailContent() {
     };
 
     return (
-        <Example>
-            <main className="xl:pl-96 w-full">
-                <div className="px-1 py-10 sm:px-1 lg:px-8 lg:py-6 sm:mr-0 md:mr-7 lg:mr-9 mr-9">
-                    <div>
-                        <div className="profile-header w-full bg-white h-[485px] max-md:h-[385px] shadow-custom rounded-lg ml-8">
-                            <ProfileHeader
-                                backgroundImage={profileData.backgroundImage}
-                                profileImage={profileData.profileImage}
-                                name={profileData.name}
-                                username={profileData.username}
-                                status={profileData.status}
-                                onEditBanner={() => setIsPopupOpen(true)}
-                                rounded={true}
-                                userId={user.id}
-                                profileId={profileData.profile?.id}
-                                tag={tag}
-                            />
-                            <ProfileNav
-                                activeTab={activeTab}
-                                setActiveTab={setActiveTab}
-                            />
-                            {activeTab === "activities" && (
-                                <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 flex flex-col items-center ">
-                                    {/* <ShareYourThoughts userId={user.id} postType={'post'} onCreatePoll={handleCreatePoll} /> */}
-                                    <Filter
-                                        className="mr-10"
-                                        onFilterChange={handleFilterChange}
-                                    />
-                                    <div className="mb-20"></div>
-                                    <OutputData
-                                        polls={polls}
-                                        showUserPosts={true}
-                                        userId={user.id}
-                                        postType={filterType}
-                                    />
-                                </div>
-                            )}
-                            {activeTab === "bio" && (
-                                <>
-                                    <section className="flex flex-col w-full gap-2 px-8 py-4 mt-6 bg-white rounded-lg shadow-custom max-md:flex-wrap max-md:px-5 max-md:max-w-full">
-                                        <div className="flex items-center justify-between">
-                                            <div className="separator text-xl font-semibold mt-2 pl-4 justify-center">
-                                                Bio Information
-                                            </div>
-                                            <ProfileIcons
-                                                icon1={profileData.icon1}
-                                                icon2={profileData.icon2}
-                                                user_id={profileData.id}
-                                                user_name={profileData.name}
-                                                user_title={employmentPostTitle}
-                                                onEdit={() => handleEditBio()}
-                                                isFirstIcon
-                                            />
-                                        </div>
-                                        <div className="flex-auto my-auto max-md:max-w-full">
-                                            <div className="flex gap-5 flex-col md:flex-row max-md:gap-0">
-                                                <ProfileBio
-                                                    formData={formData}
-                                                    isEditing={isEditingBio}
-                                                    onFormDataChange={
-                                                        setFormData
+        <WallContext.Provider
+            value={{ loggedInUserId: user.id, variant: "user-details" }}
+        >
+            <Example>
+                <main className="xl:pl-96 w-full">
+                    <div className="px-1 py-10 sm:px-1 lg:px-8 lg:py-6 sm:mr-0 md:mr-7 lg:mr-9 mr-9">
+                        <div>
+                            <div className="profile-header w-full bg-white h-[485px] max-md:h-[385px] shadow-custom rounded-lg ml-8">
+                                <ProfileHeader
+                                    backgroundImage={
+                                        profileData.backgroundImage
+                                    }
+                                    profileImage={profileData.profileImage}
+                                    name={profileData.name}
+                                    username={profileData.username}
+                                    status={profileData.status}
+                                    onEditBanner={() => setIsPopupOpen(true)}
+                                    rounded={true}
+                                    userId={user.id}
+                                    profileId={profileData.profile?.id}
+                                    tag={tag}
+                                />
+                                <ProfileNav
+                                    activeTab={activeTab}
+                                    setActiveTab={setActiveTab}
+                                />
+                                {activeTab === "activities" && (
+                                    <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 flex flex-col items-center ">
+                                        {/* <ShareYourThoughts userId={user.id} postType={'post'} onCreatePoll={handleCreatePoll} /> */}
+                                        <Filter
+                                            className="mr-10"
+                                            onFilterChange={handleFilterChange}
+                                        />
+                                        <div className="mb-20"></div>
+                                        <OutputData
+                                            polls={polls}
+                                            showUserPosts={true}
+                                            userId={user.id}
+                                            postType={filterType}
+                                        />
+                                    </div>
+                                )}
+                                {activeTab === "bio" && (
+                                    <>
+                                        <section className="flex flex-col w-full gap-2 px-8 py-4 mt-6 bg-white rounded-lg shadow-custom max-md:flex-wrap max-md:px-5 max-md:max-w-full">
+                                            <div className="flex items-center justify-between">
+                                                <div className="separator text-xl font-semibold mt-2 pl-4 justify-center">
+                                                    Bio Information
+                                                </div>
+                                                <ProfileIcons
+                                                    icon1={profileData.icon1}
+                                                    icon2={profileData.icon2}
+                                                    user_id={profileData.id}
+                                                    user_name={profileData.name}
+                                                    user_title={
+                                                        employmentPostTitle
                                                     }
-                                                    onPhotoChange={
-                                                        handlePhotoChange
+                                                    onEdit={() =>
+                                                        handleEditBio()
                                                     }
-                                                    originalFormData={
-                                                        originalFormData
-                                                    }
-                                                    onEditBio={handleEditBio}
-                                                    onCancelBio={
-                                                        handleCancelBio
-                                                    }
-                                                    onSaveBio={handleSaveBio}
-                                                    userId={user.id} // Pass userId as a prop
+                                                    isFirstIcon
                                                 />
                                             </div>
-                                        </div>
-                                    </section>
-                                    <div className="separator"></div>
-                                    {formData.employmentPosts &&
-                                        formData.employmentPosts.length > 0 &&
-                                        formData.employmentPosts.map(
-                                            (employmentPost, index) => (
-                                                <section
-                                                    key={index}
-                                                    className="flex flex-col w-full gap-2 px-8 py-4 mt-3 bg-white rounded-lg shadow-custom max-md:flex-wrap max-md:px-5 max-md:max-w-full"
-                                                >
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="separator text-xl font-semibold mt-2 pl-4 justify-center">{`Department ${
-                                                            index + 1
-                                                        } Information`}</div>
-                                                        <ProfileIcons
-                                                            icon1={
-                                                                profileData.icon1
-                                                            }
-                                                            onEdit={() =>
-                                                                handleEditDepartment(
-                                                                    index
-                                                                )
-                                                            }
-                                                            isFirstIcon
-                                                        />
-                                                    </div>
-                                                    <div className="flex-auto my-auto max-md:max-w-full">
-                                                        <div className="flex gap-5 flex-col md:flex-row max-md:gap-0">
-                                                            <ProfileDepartment
-                                                                department={
-                                                                    employmentPost
-                                                                        .department
-                                                                        ?.name ||
-                                                                    ""
+                                            <div className="flex-auto my-auto max-md:max-w-full">
+                                                <div className="flex gap-5 flex-col md:flex-row max-md:gap-0">
+                                                    <ProfileBio
+                                                        formData={formData}
+                                                        isEditing={isEditingBio}
+                                                        onFormDataChange={
+                                                            setFormData
+                                                        }
+                                                        onPhotoChange={
+                                                            handlePhotoChange
+                                                        }
+                                                        originalFormData={
+                                                            originalFormData
+                                                        }
+                                                        onEditBio={
+                                                            handleEditBio
+                                                        }
+                                                        onCancelBio={
+                                                            handleCancelBio
+                                                        }
+                                                        onSaveBio={
+                                                            handleSaveBio
+                                                        }
+                                                        userId={user.id} // Pass userId as a prop
+                                                    />
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <div className="separator"></div>
+                                        {formData.employmentPosts &&
+                                            formData.employmentPosts.length >
+                                                0 &&
+                                            formData.employmentPosts.map(
+                                                (employmentPost, index) => (
+                                                    <section
+                                                        key={index}
+                                                        className="flex flex-col w-full gap-2 px-8 py-4 mt-3 bg-white rounded-lg shadow-custom max-md:flex-wrap max-md:px-5 max-md:max-w-full"
+                                                    >
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="separator text-xl font-semibold mt-2 pl-4 justify-center">{`Department ${
+                                                                index + 1
+                                                            } Information`}</div>
+                                                            <ProfileIcons
+                                                                icon1={
+                                                                    profileData.icon1
                                                                 }
-                                                                departmentId={
-                                                                    employmentPost.department_id
-                                                                }
-                                                                unit={
-                                                                    employmentPost
-                                                                        .business_unit
-                                                                        ?.name ||
-                                                                    ""
-                                                                }
-                                                                jobtitle={
-                                                                    employmentPost
-                                                                        .business_post
-                                                                        ?.title ||
-                                                                    ""
-                                                                }
-                                                                position={
-                                                                    employmentPost.position ||
-                                                                    "N/A"
-                                                                }
-                                                                grade={
-                                                                    employmentPost
-                                                                        .business_grade
-                                                                        ?.code ||
-                                                                    ""
-                                                                }
-                                                                location={
-                                                                    employmentPost.location ||
-                                                                    "N/A"
-                                                                }
-                                                                phone={
-                                                                    employmentPost.work_phone ||
-                                                                    "N/A"
-                                                                }
-                                                                isEditing={
-                                                                    isEditingDepartments[
-                                                                        index
-                                                                    ]
-                                                                }
-                                                                onFormDataChange={(
-                                                                    newData
-                                                                ) =>
-                                                                    handleFormDataChange(
-                                                                        newData,
+                                                                onEdit={() =>
+                                                                    handleEditDepartment(
                                                                         index
                                                                     )
                                                                 }
-                                                                originalFormData={
-                                                                    originalFormData
-                                                                }
+                                                                isFirstIcon
                                                             />
                                                         </div>
-                                                        {isEditingDepartments[
-                                                            index
-                                                        ] && (
-                                                            <div className="flex justify-end mt-4 pb-3">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        handleCancelDepartment(
+                                                        <div className="flex-auto my-auto max-md:max-w-full">
+                                                            <div className="flex gap-5 flex-col md:flex-row max-md:gap-0">
+                                                                <ProfileDepartment
+                                                                    department={
+                                                                        employmentPost
+                                                                            .department
+                                                                            ?.name ||
+                                                                        ""
+                                                                    }
+                                                                    departmentId={
+                                                                        employmentPost.department_id
+                                                                    }
+                                                                    unit={
+                                                                        employmentPost
+                                                                            .business_unit
+                                                                            ?.name ||
+                                                                        ""
+                                                                    }
+                                                                    jobtitle={
+                                                                        employmentPost
+                                                                            .business_post
+                                                                            ?.title ||
+                                                                        ""
+                                                                    }
+                                                                    position={
+                                                                        employmentPost.position ||
+                                                                        "N/A"
+                                                                    }
+                                                                    grade={
+                                                                        employmentPost
+                                                                            .business_grade
+                                                                            ?.code ||
+                                                                        ""
+                                                                    }
+                                                                    location={
+                                                                        employmentPost.location ||
+                                                                        "N/A"
+                                                                    }
+                                                                    phone={
+                                                                        employmentPost.work_phone ||
+                                                                        "N/A"
+                                                                    }
+                                                                    isEditing={
+                                                                        isEditingDepartments[
+                                                                            index
+                                                                        ]
+                                                                    }
+                                                                    onFormDataChange={(
+                                                                        newData
+                                                                    ) =>
+                                                                        handleFormDataChange(
+                                                                            newData,
                                                                             index
                                                                         )
                                                                     }
-                                                                    className="bg-white text-gray-400 border border-gray-400 hover:bg-gray-400 hover:text-white px-4 py-2 rounded-full"
-                                                                >
-                                                                    Cancel
-                                                                </button>
-                                                                <button
-                                                                    onClick={() =>
-                                                                        handleSaveDepartment(
-                                                                            index
-                                                                        )
+                                                                    originalFormData={
+                                                                        originalFormData
                                                                     }
-                                                                    className="ml-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
-                                                                >
-                                                                    Save
-                                                                </button>
+                                                                />
                                                             </div>
-                                                        )}
-                                                    </div>
-                                                </section>
-                                            )
-                                        )}
-                                </>
-                            )}
+                                                            {isEditingDepartments[
+                                                                index
+                                                            ] && (
+                                                                <div className="flex justify-end mt-4 pb-3">
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            handleCancelDepartment(
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                        className="bg-white text-gray-400 border border-gray-400 hover:bg-gray-400 hover:text-white px-4 py-2 rounded-full"
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            handleSaveDepartment(
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                        className="ml-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
+                                                                    >
+                                                                        Save
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </section>
+                                                )
+                                            )}
+                                    </>
+                                )}
 
-                            {activeTab === "gallery" && (
-                                <section>
-                                    <ImageProfile
-                                        selectedItem="All"
-                                        userId={user.id}
-                                    />
-                                    <VideoProfile
-                                        selectedItem="All"
-                                        userId={user.id}
-                                    />
-                                </section>
-                            )}
-                            {activeTab === "files" && (
-                                <div>
-                                    <div className="flex gap-4 whitespace-nowrap">
-                                        <SearchInput />
-                                        <SearchButton />
+                                {activeTab === "gallery" && (
+                                    <section>
+                                        <ImageProfile
+                                            selectedItem="All"
+                                            userId={user.id}
+                                        />
+                                        <VideoProfile
+                                            selectedItem="All"
+                                            userId={user.id}
+                                        />
+                                    </section>
+                                )}
+                                {activeTab === "files" && (
+                                    <div>
+                                        <div className="flex gap-4 whitespace-nowrap">
+                                            <SearchInput />
+                                            <SearchButton />
+                                        </div>
+                                        <Table userId={user.id} />
                                     </div>
-                                    <Table userId={user.id} />
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            </main>
-            <aside className="fixed bottom-0 left-20 top-16 hidden w-1/4 max-w-sm overflow-y-auto px-4 py-6 sm:px-6 lg:px-8 xl:block">
-                <style>
-                    {`
+                </main>
+                <aside className="fixed bottom-0 left-20 top-16 hidden w-1/4 max-w-sm overflow-y-auto px-4 py-6 sm:px-6 lg:px-8 xl:block">
+                    <style>
+                        {`
                 aside::-webkit-scrollbar {
                     width: 0px !important;
                     background: transparent !important;
@@ -638,36 +653,37 @@ function UserDetailContent() {
                     -ms-overflow-style: none;  /* IE and Edge */
                 }
             `}
-                </style>
-                <div className="file-directory-header">
-                    <PageTitle title="My Profile" />
-                </div>
-                <hr className="file-directory-underline" />
-                <div>
-                    <FeaturedEvents />
-                    {/* <WhosOnline /> */}
-                </div>
-            </aside>
-            {isSaveNotificationOpen && (
-                <SaveNotification
-                    title="Changes saved successfully"
-                    onClose={closeSaveNotification}
-                />
-            )}
-            {isPopupOpen && (
-                <Popup
-                    title="Edit Banner Photo"
-                    onClose={() => setIsPopupOpen(false)}
-                    onSave={handleSaveBio}
-                    profileData={profileData}
-                    id={user.id}
-                    formData={formData}
-                    csrfToken={csrfToken}
-                    authToken={authToken}
-                    setFormData={setFormData}
-                />
-            )}
-        </Example>
+                    </style>
+                    <div className="file-directory-header">
+                        <PageTitle title="My Profile" />
+                    </div>
+                    <hr className="file-directory-underline" />
+                    <div>
+                        <FeaturedEvents />
+                        {/* <WhosOnline /> */}
+                    </div>
+                </aside>
+                {isSaveNotificationOpen && (
+                    <SaveNotification
+                        title="Changes saved successfully"
+                        onClose={closeSaveNotification}
+                    />
+                )}
+                {isPopupOpen && (
+                    <Popup
+                        title="Edit Banner Photo"
+                        onClose={() => setIsPopupOpen(false)}
+                        onSave={handleSaveBio}
+                        profileData={profileData}
+                        id={user.id}
+                        formData={formData}
+                        csrfToken={csrfToken}
+                        authToken={authToken}
+                        setFormData={setFormData}
+                    />
+                )}
+            </Example>
+        </WallContext.Provider>
     );
 }
 

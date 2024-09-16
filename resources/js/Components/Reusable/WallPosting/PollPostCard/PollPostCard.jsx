@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
@@ -71,7 +73,6 @@ export function PollPostCard({ post }) {
     const [showDetails, setShowDetails] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-    const { hasRole } = usePermissions();
     const { variant, loggedInUserId } = useContext(WallContext);
 
     const refetchPost = async () => {
@@ -133,7 +134,16 @@ export function PollPostCard({ post }) {
         }
     };
 
-    const canEdit = post.user_id === loggedInUserId || hasRole("superadmin");
+    const { hasRole } = usePermissions();
+
+    const { isAdmin: isCommunityAdmin } = useContext(CommunityContext);
+    const { isAdmin: isDepartmentAdmin } = useContext(DepartmentContext);
+
+    const canEdit =
+        cachedPost.user_id === loggedInUserId ||
+        hasRole("superadmin") ||
+        isCommunityAdmin ||
+        isDepartmentAdmin;
 
     const [feedbackText, setFeedbackText] = useState("");
     const [chosenAnswers, setChosenAnswers] = useState([]);

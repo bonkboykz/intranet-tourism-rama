@@ -1,23 +1,18 @@
 import React from "react";
 
 import { PersonalWall } from "./PersonalWall";
-import { Polls } from "./Polls";
 import { useInfiniteScroll } from "./useInfiniteScroll";
 import { UserWall } from "./UserWall";
-import { WallContext } from "./WallContext";
 
 import "./index.css";
 
 function OutputData({
-    polls,
     filterType,
     filterId,
     communityId,
     departmentId,
     userId,
-    loggedInUserId,
     postType,
-    variant,
 }) {
     const { posts, fetchData, hasMore } = useInfiniteScroll({
         userId: userId,
@@ -31,12 +26,7 @@ function OutputData({
     });
 
     return (
-        <WallContext.Provider
-            value={{
-                variant,
-                loggedInUserId,
-            }}
-        >
+        <>
             {/* <Polls polls={polls} /> */}
 
             {/* TODO: PersonalWall is used on communities page, which could trigger multiple loads */}
@@ -54,7 +44,7 @@ function OutputData({
                     hasMore={hasMore}
                 />
             )}
-        </WallContext.Provider>
+        </>
     );
 }
 

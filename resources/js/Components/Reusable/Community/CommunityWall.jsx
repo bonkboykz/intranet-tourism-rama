@@ -80,7 +80,7 @@ function HeaderSection({
         banner = departmentBanner || "/assets/defaultCommunity.png";
     }
 
-    const { role } = useContext(CommunityContext);
+    const { isAdmin } = useContext(CommunityContext);
 
     return (
         <header className="flex overflow-hidden relative flex-col px-11 py-9 w-[875px] h-[291.67px] text-white max-md:px-5 w-full rounded-t-xl max-md:-mt-12">
@@ -115,7 +115,7 @@ function HeaderSection({
                 className="mt-6 aspect-square w-[30px]"
                 alt="Section Icon"
             />
-            {["admin", "superadmin"].includes(role) && (
+            {isAdmin && (
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-start gap-4 py-4 px-11 max-md:px-5">
                     {isEditing ? (
                         <button
@@ -142,7 +142,7 @@ function HeaderSection({
     );
 }
 
-function Navigation({ userId, communityID, departmentName, type }) {
+function Navigation({ communityID, departmentName, type }) {
     const [activeTab, setActiveTab] = useState("Post");
     const [polls, setPolls] = useState([]);
     const [hasJoined, setHasJoined] = useState(false);
@@ -435,11 +435,13 @@ function Navigation({ userId, communityID, departmentName, type }) {
 
     const [filterType, setFilterType] = useState(null);
 
+    const { userId } = useContext(CommunityContext);
+
     return (
         <WallContext.Provider
             value={{
                 variant: "community",
-                loggedInUserId: id,
+                loggedInUserId: userId,
             }}
         >
             <div className="flex flex-col">
@@ -663,7 +665,6 @@ function Adminsection({
     communityID,
     departmentHeader,
     departmentDescription,
-    userId,
     type,
     departmentBanner,
 }) {
@@ -730,7 +731,6 @@ function Adminsection({
             />
             <Navigation
                 communityID={communityID}
-                userId={userId}
                 departmentName={departmentHeader}
                 type={type}
             />
@@ -753,7 +753,6 @@ export default function CommunityWall({
     departmentDescription,
     departmentBanner,
     type,
-    userId,
 }) {
     return (
         <div className="flex flex-wrap mx-auto my-20 text-black justify-left max-w-7xl gap-y-10">
@@ -763,7 +762,6 @@ export default function CommunityWall({
                 departmentDescription={departmentDescription}
                 departmentBanner={departmentBanner}
                 type={type}
-                userId={userId}
             />
         </div>
     );

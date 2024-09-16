@@ -211,112 +211,116 @@ function Navigation({ userId, departmentID, departmentName }) {
     console.log(isMember);
 
     return (
-        <div className="flex flex-col">
-            <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Post" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Post")}
-                >
-                    Post
-                </div>
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Gallery" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Gallery")}
-                >
-                    Gallery
-                </div>
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Files" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Files")}
-                >
-                    Files
-                </div>
-                <div
-                    className={`cursor-pointer ${
-                        activeTab === "Members" ? "text-blue-500" : ""
-                    }`}
-                    onClick={() => handleTabClick("Members")}
-                >
-                    Members
-                </div>
-            </nav>
-
-            <div className="relative">
-                {activeTab === "Members" && (
-                    <div className="flex justify-center w-full mt-4">
-                        <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
-                            <DepartmentMembers
-                                departmentID={departmentID}
-                                loggedInID={userId}
-                            />
-                        </div>
+        <WallContext.Provider
+            value={{ variant: "department", loggedInUserId: userId }}
+        >
+            <div className="flex flex-col">
+                <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Post" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Post")}
+                    >
+                        Post
                     </div>
-                )}
-
-                {activeTab === "Files" && (
-                    <div>
-                        <div className="flex gap-4 ml-12 whitespace-nowrap">
-                            <SearchInput />
-                            <SearchButton />
-                        </div>
-                        <Table departmentID={departmentID} />
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Gallery" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Gallery")}
+                    >
+                        Gallery
                     </div>
-                )}
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Files" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Files")}
+                    >
+                        Files
+                    </div>
+                    <div
+                        className={`cursor-pointer ${
+                            activeTab === "Members" ? "text-blue-500" : ""
+                        }`}
+                        onClick={() => handleTabClick("Members")}
+                    >
+                        Members
+                    </div>
+                </nav>
 
-                {activeTab === "Gallery" && (
-                    <section>
-                        <ImageProfile
-                            selectedItem="All"
-                            accessableType="Department"
-                            accessableId={departmentID}
-                            filterBy="department"
-                        />
-                        <VideoProfile
-                            selectedItem="All"
-                            accessableType="Department"
-                            accessableId={departmentID}
-                            filterBy="department"
-                        />
-                    </section>
-                )}
-
-                {activeTab === "Post" && (
-                    <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
-                        <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
-                            {isMember && (
-                                <ShareYourThoughts
-                                    userId={userId}
-                                    onCreatePoll={handleCreatePoll}
-                                    includeAccessibilities={true}
-                                    filterType="Community"
-                                    filterId={departmentID}
-                                    birthdaysToday={
-                                        birthdaysToday.length > 0
-                                            ? birthdaysToday
-                                            : null
-                                    }
-                                    departmentId={departmentID}
+                <div className="relative">
+                    {activeTab === "Members" && (
+                        <div className="flex justify-center w-full mt-4">
+                            <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
+                                <DepartmentMembers
+                                    departmentID={departmentID}
+                                    loggedInID={userId}
                                 />
-                            )}
-                            <Filter />
-                            <br />
-                            <OutputData
-                                polls={polls}
-                                departmentId={departmentID}
-                                departmentName={departmentName}
-                                variant="department"
-                            />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+
+                    {activeTab === "Files" && (
+                        <div>
+                            <div className="flex gap-4 ml-12 whitespace-nowrap">
+                                <SearchInput />
+                                <SearchButton />
+                            </div>
+                            <Table departmentID={departmentID} />
+                        </div>
+                    )}
+
+                    {activeTab === "Gallery" && (
+                        <section>
+                            <ImageProfile
+                                selectedItem="All"
+                                accessableType="Department"
+                                accessableId={departmentID}
+                                filterBy="department"
+                            />
+                            <VideoProfile
+                                selectedItem="All"
+                                accessableType="Department"
+                                accessableId={departmentID}
+                                filterBy="department"
+                            />
+                        </section>
+                    )}
+
+                    {activeTab === "Post" && (
+                        <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
+                            <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
+                                {isMember && (
+                                    <ShareYourThoughts
+                                        userId={userId}
+                                        onCreatePoll={handleCreatePoll}
+                                        includeAccessibilities={true}
+                                        filterType="Community"
+                                        filterId={departmentID}
+                                        birthdaysToday={
+                                            birthdaysToday.length > 0
+                                                ? birthdaysToday
+                                                : null
+                                        }
+                                        departmentId={departmentID}
+                                    />
+                                )}
+                                <Filter />
+                                <br />
+                                <OutputData
+                                    polls={polls}
+                                    departmentId={departmentID}
+                                    departmentName={departmentName}
+                                    variant="department"
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </WallContext.Provider>
     );
 }
 

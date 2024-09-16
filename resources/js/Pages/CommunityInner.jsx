@@ -24,7 +24,11 @@ const CommunityInner = () => {
     const [type, setType] = useState(null);
 
     const {
-        props: { auth },
+        props: {
+            auth: {
+                user: { id: userId },
+            },
+        },
     } = usePage();
 
     const userData = useUserData();
@@ -100,6 +104,7 @@ const CommunityInner = () => {
     return (
         <CommunityContext.Provider
             value={{
+                userId: userId,
                 isMember: communityData?.is_member,
                 role: communityData?.role,
                 type: communityData?.type,
@@ -132,7 +137,7 @@ const CommunityInner = () => {
                                         ? communityData.banner
                                         : "/assets/defaultCommunity.png"
                                 }
-                                userId={id}
+                                userId={userId}
                                 type={type}
                                 onEditClick={handleEditClick}
                             />
