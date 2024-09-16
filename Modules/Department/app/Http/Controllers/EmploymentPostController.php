@@ -3,8 +3,10 @@
 namespace Modules\Department\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Department\Models\Department;
 use Modules\Department\Models\EmploymentPost;
 use Illuminate\Http\Request;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class EmploymentPostController extends Controller
 {

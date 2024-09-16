@@ -41,6 +41,8 @@ function DepartmentMembers({ departmentID, loggedInID }) {
         setIsLoading(true);
         const membersUrl = `/api/department/employment_posts?department_id=${departmentID}`;
 
+        console.log(membersUrl);
+
         try {
             const response = await axios.get(membersUrl);
 
@@ -48,7 +50,7 @@ function DepartmentMembers({ departmentID, loggedInID }) {
                 throw new Error("Failed to fetch members");
             }
 
-            const membersData = response.data.members;
+            const membersData = response.data.data;
 
             const fetchedMembers = membersData || [];
             fetchedMembers.sort((a, b) => a.order - b.order);
