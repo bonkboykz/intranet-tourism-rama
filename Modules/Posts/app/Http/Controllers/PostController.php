@@ -3,6 +3,7 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\NewPollCreatedNotification;
 use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
 use Modules\Polls\Models\Option;
@@ -488,10 +489,27 @@ class PostController extends Controller
             }
 
             DB::commit();
+
+            // find all superadmins
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
+
+            // Notify all superusers with a reference to the request
+            $superusers->get()->each(function ($superuser) use ($post) {
+                $output = new ConsoleOutput();
+                $output->writeln($superuser->name);
+
+                $superuser->notify(new NewPollCreatedNotification($post));
+            });
+
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
+
+
+
 
 
         return response()->json([

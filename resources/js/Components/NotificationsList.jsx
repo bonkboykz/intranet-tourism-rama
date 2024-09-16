@@ -1,8 +1,9 @@
-import { formatTimeAgo } from "@/Utils/format";
-import { getProfileImage } from "@/Utils/getProfileImage";
-import axios from "axios";
 import React from "react";
 import { useState } from "react";
+import axios from "axios";
+
+import { formatTimeAgo } from "@/Utils/format";
+import { getProfileImage } from "@/Utils/getProfileImage";
 
 function NotificationsList({ activeTab, notifications }) {
     const [readMap, setReadmap] = useState({});
