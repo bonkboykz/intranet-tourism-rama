@@ -315,9 +315,9 @@ function ShareYourThoughts({
 
             for (const file of e.target.files) {
                 // 20MB
-                // const maxSize = 20971520;
+                const maxSize = 20971520;
 
-                if (file.size > 0) {
+                if (file.size > maxSize) {
                     areAllUnderLimit = false;
                     break;
                 }
