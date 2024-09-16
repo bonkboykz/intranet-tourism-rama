@@ -1,8 +1,8 @@
-import { useWindowSize } from "@uidotdev/usehooks";
 import { useState } from "react";
 import { useMemo } from "react";
 import { useLayoutEffect } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 import "react-photo-view/dist/react-photo-view.css";
 
@@ -14,11 +14,7 @@ export function VideoComponent({
 }) {
     const [transformPosition, setTransformPosition] = useState({ x: 0, y: 0 });
 
-    useLayoutEffect(() => {
-        if (!isVisible) {
-            return;
-        }
-
+    const calc = () => {
         const videoElements = document.querySelectorAll(
             ".PhotoView-Portal video"
         );
@@ -34,6 +30,21 @@ export function VideoComponent({
         const y = (windowHeight - videoHeight) / 2;
 
         setTransformPosition({ x, y });
+    };
+
+    useLayoutEffect(() => {
+        if (!isVisible) {
+            return;
+        }
+        calc();
+
+        const timer = setTimeout(() => {
+            calc();
+        }, 100);
+
+        return () => {
+            clearTimeout(timer);
+        };
     }, [isVisible, index]);
 
     let elementWidth = screenWidth < 600 ? screenWidth : 600;
