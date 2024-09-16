@@ -115,6 +115,10 @@ class CommunityController extends Controller
             'role' => 'admin',
         ]);
 
+        $user = User::findOrFail(auth()->id());
+
+        CommunityPermissionsHelper::assignCommunityAdminPermissions($user, $new_community);
+
         return response()->noContent();
     }
 
@@ -128,6 +132,9 @@ class CommunityController extends Controller
 
     public function destroy(Community $community)
     {
+        $user = User::findOrFail(auth()->id());
+        CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
+
         $community->delete();
 
         return response()->noContent();
