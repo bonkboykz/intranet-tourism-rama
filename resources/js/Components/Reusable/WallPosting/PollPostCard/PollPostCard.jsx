@@ -213,10 +213,6 @@ export function PollPostCard({ post }) {
         setLoading(false);
     };
 
-    useEffect(() => {
-        fetchResults();
-    }, [previousResponse]);
-
     const fetchAnswered = async () => {
         setLoadingAnswered(true);
         try {
@@ -239,8 +235,13 @@ export function PollPostCard({ post }) {
     };
 
     useEffect(() => {
+        fetchResults();
         fetchAnswered();
     }, []);
+
+    useEffect(() => {
+        fetchResults();
+    }, [previousResponse]);
 
     if (!post.poll) {
         return null;
@@ -257,14 +258,15 @@ export function PollPostCard({ post }) {
         return (
             <>
                 <div className="flex flex-col gap-1 max-h-50 overflow-y-auto">
-                    {poll.question?.options?.map((option, index) => (
-                        <PollOptionAnswered
-                            key={index}
-                            selected={answers.includes(option.id)}
-                            option={option.option_text}
-                            percentage={percentagesMap[option.id] ?? 0}
-                        />
-                    ))}
+                    {percentagesMap &&
+                        poll.question?.options?.map((option, index) => (
+                            <PollOptionAnswered
+                                key={index}
+                                selected={answers.includes(option.id)}
+                                option={option.option_text}
+                                percentage={percentagesMap[option.id] ?? 0}
+                            />
+                        ))}
                 </div>
 
                 <div
