@@ -10,6 +10,7 @@ import {
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 
 import DepartmentMembers from "./DepartmentCom/DepartmentMembers";
+import { FileTable } from "./FileManagement";
 import { SearchButton, SearchInput, Table } from "./ProfileTabbar";
 import { ImageProfile, VideoProfile } from "./ProfileTabbar/Gallery";
 import EditDepartments from "./Reusable/Departments/EditDepartments"; // Import EditDepartments
@@ -210,6 +211,8 @@ function Navigation({ userId, departmentID, departmentName }) {
 
     console.log(isMember);
 
+    const [searchTerm, setSearchTerm] = useState("");
+
     return (
         <WallContext.Provider
             value={{ variant: "department", loggedInUserId: userId }}
@@ -265,10 +268,16 @@ function Navigation({ userId, departmentID, departmentName }) {
                     {activeTab === "Files" && (
                         <div>
                             <div className="flex gap-4 ml-12 whitespace-nowrap">
-                                <SearchInput />
+                                <SearchInput
+                                    onSearch={setSearchTerm}
+                                    searchTerm={searchTerm}
+                                />
                                 <SearchButton />
                             </div>
-                            <Table departmentID={departmentID} />
+                            <FileTable
+                                departmentId={departmentID}
+                                searchTerm={searchTerm}
+                            />
                         </div>
                     )}
 

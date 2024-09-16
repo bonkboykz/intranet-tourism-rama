@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import { useDebounce } from "@uidotdev/usehooks";
 import axios from "axios";
 import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
+import { useUser } from "@/Layouts/useUser";
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import PopupContent from "../Reusable/PopupContent";
 
@@ -21,7 +26,11 @@ const excludedExtensions = [
 
 const itemsPerPage = 8;
 
-const FileTable = ({ searchTerm: currentSearchTerm }) => {
+const FileTable = ({
+    searchTerm: currentSearchTerm,
+    communityId,
+    departmentId,
+}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [files, setFiles] = useState([]);
@@ -73,7 +82,23 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
                 });
             }
 
-            console.log("FILTER", searchTerm, newFilter);
+            if (communityId) {
+                newFilter.push({
+                    field: "attachable.community_id",
+                    type: "like",
+                    value: communityId,
+                });
+            }
+
+            if (departmentId) {
+                newFilter.push({
+                    field: "attachable.department_id",
+                    type: "like",
+                    value: departmentId,
+                });
+            }
+
+            console.log(newFilter);
 
             const response = await axios.get(
                 `/api/resources/public-resources`,
@@ -152,6 +177,12 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
         };
     }, []);
 
+    const { hasRole } = usePermissions();
+    const { isAdmin: isCommunityAdmin } = useContext(CommunityContext);
+    const { isAdmin: isDepartmentAdmin } = useContext(DepartmentContext);
+
+    const { user } = useUser();
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -192,7 +223,7 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
             metadata: JSON.stringify(updatedMetadata),
         };
 
-        const url = `/api/resources/resources/${fileToRename.id}`;
+        const url = `/api/resources/resources/${fileToRename.id}/rename`;
         const options = {
             method: "PUT",
             headers: {
@@ -200,7 +231,9 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
                 Accept: "application/json",
                 "X-CSRF-Token": csrfToken,
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({
+                original_name: newName,
+            }),
         };
 
         try {
@@ -218,6 +251,10 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
             // Fetch the updated list of files after successful rename
             await fetchFiles();
             console.log("File renamed successfully.");
+
+            toast.success("File renamed successfully", {
+                theme: "colored",
+            });
         } catch (error) {
             console.error("Error renaming file:", error);
         } finally {
@@ -306,9 +343,11 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
                                 const metadata = item.metadata || {};
                                 const isEditing = editingIndex === index;
 
-                                {
-                                    /* console.log("METADATA", metadata); */
-                                }
+                                const canEdit =
+                                    hasRole("superadmin") ||
+                                    isCommunityAdmin ||
+                                    isDepartmentAdmin ||
+                                    item.author.id === user.id;
 
                                 return (
                                     <tr key={item.id}>
@@ -356,12 +395,16 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
                                             ) : (
                                                 <div
                                                     className="text-sm font-bold mt-1 block w-full rounded-md py-2 border-2 border-transparent text-neutral-800 text-opacity-80 overflow-hidden text-ellipsis"
-                                                    onDoubleClick={() =>
+                                                    onDoubleClick={() => {
+                                                        if (!canEdit) {
+                                                            return;
+                                                        }
+
                                                         startEditing(
                                                             index,
                                                             metadata.original_name
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                 >
                                                     {metadata.original_name ||
                                                         "Unknown"}
@@ -379,6 +422,7 @@ const FileTable = ({ searchTerm: currentSearchTerm }) => {
                                         <td className="relative mt-6 flex">
                                             <PopupContent
                                                 file={item}
+                                                canEdit={canEdit}
                                                 onRename={() =>
                                                     startEditing(
                                                         indexOfFirstItem +

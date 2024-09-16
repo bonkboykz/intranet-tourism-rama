@@ -445,10 +445,10 @@ const AddMemberPopup = ({
                 role: title,
                 status: "Online",
                 imageUrl:
-                    selectedPerson.profile.staff_image ||
+                    selectedPerson.profile?.staff_image ||
                     "/assets/dummyStaffPlaceHolder.jpg",
                 workNo: workPhoneNumber || "",
-                phoneNo: selectedPerson.profile.phone_no,
+                phoneNo: selectedPerson.profile?.phone_no,
                 isDeactivated: selectedPerson.is_active,
                 order: order,
             };

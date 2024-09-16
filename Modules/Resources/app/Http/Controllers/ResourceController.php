@@ -19,8 +19,10 @@ class ResourceController extends Controller
 
     public function show($id)
     {
+        $resource = Resource::findOrFail($id);
+
         return response()->json([
-            'data' => Resource::where('id', $id)->queryable()->firstOrFail(),
+            'data' => $resource,
         ]);
     }
 
@@ -36,6 +38,26 @@ class ResourceController extends Controller
     {
         $validated = request()->validate(...Resource::rules('update'));
         $resource->update($validated);
+
+        return response()->noContent();
+    }
+
+    public function renameResource(Resource $resource)
+    {
+        $validated = request()->validate([
+            'original_name' => ['required', 'string'],
+        ]);
+
+        if (is_string($resource->metadata)) {
+            $resource->metadata = json_decode($resource->metadata, true);
+        }
+        // update json metadata with original name leaving everything else intact in the metadata field
+        $resource->metadata = array_merge(
+            $resource->metadata,
+            ['original_name' => $validated['original_name']]
+        );
+
+        $resource->save();
 
         return response()->noContent();
     }
@@ -57,7 +79,23 @@ class ResourceController extends Controller
         // Eager load the author and attachable relationships (for standalone and attached resources)
         $query->with(relations: ['author', 'attachable']);
 
-        if (!$user->hasRole('superadmin')) {
+        $is_community = false;
+        $is_department = false;
+
+        if (request()->has('filter')) {
+            $filters = request('filter');
+            foreach ($filters as $filter) {
+                if ($filter['field'] == 'attachable.community_id') {
+                    $is_community = true;
+                }
+                if ($filter['field'] == 'attachable.department_id') {
+                    $is_department = true;
+                }
+            }
+        }
+
+
+        if (!$user->hasRole('superadmin') && !$is_community && !$is_department) {
             $query->where(function ($query) use ($user) {
                 // User's own files (where they are the author)
                 $query->where('user_id', $user->id) // User's own files
@@ -65,20 +103,19 @@ class ResourceController extends Controller
                         // Resources attached to posts with type 'files'
                         $query->where('attachable_type', "posts") // Attached to posts
                             ->whereHas('attachable', function ($query) use ($user) {
-                            $query->where('type', 'files') // Only posts of type 'files'
+                            $query->where(function ($query) use ($user) {
+                                // Check if the post belongs to no community or a public community, or the user is a member of the private community
+                                $query->whereNull('community_id')
+                                    ->orWhereHas('community', function ($query) use ($user) {
+                                    $query->where('type', 'public')
+                                        ->orWhereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id); // User is a member of the private community
+                                        });
+                                });
+                            })
                                 ->where(function ($query) use ($user) {
-                                    // Access to posts with no community or public community
-                                    $query->whereNull('community_id') // No community
-                                        ->orWhereHas('community', function ($query) use ($user) {
-                                        $query->where('type', 'public') // Public community
-                                            ->orWhereHas('members', function ($query) use ($user) {
-                                                $query->where('user_id', $user->id); // Private community, user is a member
-                                            });
-                                    });
-                                })
-                                ->where(function ($query) use ($user) {
-                                    // Access to posts with no department or where user is employed in the department
-                                    $query->whereNull('department_id') // No department
+                                    // Check if the post belongs to no department or if the user is employed in the department
+                                    $query->whereNull('department_id')
                                         ->orWhereHas('department', function ($query) use ($user) {
                                         $query->whereHas('employmentPosts', function ($query) use ($user) {
                                             $query->where('user_id', $user->id); // User is employed in the department
@@ -89,6 +126,7 @@ class ResourceController extends Controller
                     });
             });
         }
+
         // order by created at desc
         $query->orderBy('created_at', 'desc');
 

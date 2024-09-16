@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { usePage } from "@inertiajs/react";
 import { add, set } from "date-fns";
 
+import { FileTable } from "@/Components/FileManagement";
 import {
     Filter,
     OutputData,
@@ -437,6 +438,8 @@ function Navigation({ communityID, departmentName, type }) {
 
     const { userId } = useContext(CommunityContext);
 
+    const [fileSearchTerm, setFileSearchTerm] = useState("");
+
     return (
         <WallContext.Provider
             value={{
@@ -502,10 +505,16 @@ function Navigation({ communityID, departmentName, type }) {
                     {activeTab === "Files" && (
                         <div>
                             <div className="flex gap-4 ml-12 whitespace-nowrap">
-                                <SearchInput />
+                                <SearchInput
+                                    onSearch={setFileSearchTerm}
+                                    searchTerm={fileSearchTerm}
+                                />
                                 <SearchButton />
                             </div>
-                            <Table communityId={communityID} />
+                            <FileTable
+                                communityId={communityID}
+                                searchTerm={fileSearchTerm}
+                            />
                         </div>
                     )}
 

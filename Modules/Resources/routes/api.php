@@ -29,3 +29,4 @@ Route::apiResources([
 
 
 Route::get('public-resources', [ResourceController::class, 'getPublicResources']);
+Route::put('/resources/{resource}/rename', [ResourceController::class, 'renameResource']);

@@ -30,6 +30,7 @@ class UserController extends Controller
             $search = $request->input('search');
             $modelBuilder->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
 
+            $modelBuilder->with(['profile', 'roles']);
             // Skip pagination if search is present and disabledPagination is set
             if (array_key_exists('disabledPagination', $query)) {
                 $data = $modelBuilder->get();
