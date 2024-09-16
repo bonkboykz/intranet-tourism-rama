@@ -160,7 +160,7 @@ const CommunityInner = () => {
                     <hr className="file-directory-underline" />
                     <div>
                         <FeaturedEvents />
-                        {/* <WhosOnline /> */}
+                        <WhosOnline />
                     </div>
                 </aside>
 
