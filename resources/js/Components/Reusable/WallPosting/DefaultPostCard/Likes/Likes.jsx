@@ -1,9 +1,10 @@
-import axios from "axios";
 import { useMemo } from "react";
 import { useState } from "react";
+import axios from "axios";
+
+import LikesPopup from "../../LikesPopup";
 
 import "./Likes.css";
-import LikesPopup from "../../LikesPopup";
 
 export function Likes({
     likes,

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Comment from "../../Comment";
 
-export function Comments({ comments, variant, onCommentsOpen }) {
+export function Comments({ comments, onCommentsOpen }) {
     const commentsCount = comments.length;
 
     return (
@@ -13,7 +13,7 @@ export function Comments({ comments, variant, onCommentsOpen }) {
                 className="w-6 h-6 cursor-pointer"
                 onClick={onCommentsOpen}
             />
-            {variant && commentsCount > 0 && (
+            {commentsCount > 0 && (
                 <span className="text-sm font-medium">{commentsCount}</span>
             )}
         </>
