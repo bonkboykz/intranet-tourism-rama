@@ -21,6 +21,10 @@ export function VideoComponent({
 
         const videoElement = videoElements[index];
 
+        if (!videoElement) {
+            return;
+        }
+
         const videoWidth = videoElement.clientWidth;
         const videoHeight = videoElement.clientHeight;
         const windowWidth = window.innerWidth;
@@ -36,7 +40,6 @@ export function VideoComponent({
         if (!isVisible) {
             return;
         }
-        calc();
 
         const timer = setTimeout(() => {
             calc();
