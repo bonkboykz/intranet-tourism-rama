@@ -45,6 +45,7 @@ const StaffDirectory = () => {
                 id: department.id,
                 name: department.name,
                 isMember: department.is_member,
+                role: department.role,
             }));
 
             setDepartments((prevDepartments) => {

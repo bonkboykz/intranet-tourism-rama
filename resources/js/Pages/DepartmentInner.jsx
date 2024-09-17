@@ -69,6 +69,7 @@ const DepartmentInner = () => {
     return (
         <DepartmentContext.Provider
             value={{
+                user: userData.user,
                 isMember: departmentData?.is_member,
                 departmentID: departmentData?.id,
                 isAdmin: ["admin", "superadmin"].includes(departmentData?.role),

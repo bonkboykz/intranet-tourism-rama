@@ -229,24 +229,26 @@ const DepartmentDropdown = ({
                     ))}
                 </ul>
             )}
-            {selectedDepartment.id && (
-                <div className="relative flex flex-row items-center justify-between w-full max-md:mt-4 max-md:flex-row max-md:justify-between lg:ml-0">
-                    <button
-                        className="flex items-center justify-center text-sm font-bold px-6 py-2.5 bg-red-500 text-white rounded-full hover:bg-red-700"
-                        onClick={toggleAddMemberPopup}
-                    >
-                        <img
-                            src="/assets/plus.svg"
-                            alt="Plus icon"
-                            className="w-3 h-3 mr-2"
+            {selectedDepartment.id &&
+                selectedDepartment.isMember &&
+                ["admin", "superadmin"].includes(selectedDepartment.role) && (
+                    <div className="relative flex flex-row items-center justify-between w-full max-md:mt-4 max-md:flex-row max-md:justify-between lg:ml-0">
+                        <button
+                            className="flex items-center justify-center text-sm font-bold px-6 py-2.5 bg-red-500 text-white rounded-full hover:bg-red-700"
+                            onClick={toggleAddMemberPopup}
+                        >
+                            <img
+                                src="/assets/plus.svg"
+                                alt="Plus icon"
+                                className="w-3 h-3 mr-2"
+                            />
+                            Member
+                        </button>
+                        <ThreeDotButton
+                            selectedDepartmentId={selectedDepartment.id}
                         />
-                        Member
-                    </button>
-                    <ThreeDotButton
-                        selectedDepartmentId={selectedDepartment.id}
-                    />
-                </div>
-            )}
+                    </div>
+                )}
             {isAddMemberPopupOpen && (
                 <SearchPopup
                     isAddMemberPopupOpen={isAddMemberPopupOpen}

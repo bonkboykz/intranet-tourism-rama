@@ -1,6 +1,16 @@
+import { useContext } from "react";
 import { useState } from "react";
 
-export const PopupMenu = ({ onRemove, onAssign, closePopup }) => {
+import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
+export const PopupMenu = ({
+    onRemove,
+    onAssign,
+    closePopup,
+    canAssignAdmin,
+    canRemoveMember,
+}) => {
     const [showPopup, setShowPopup] = useState(false);
 
     const handleRemoveClick = (event) => {
@@ -19,6 +29,7 @@ export const PopupMenu = ({ onRemove, onAssign, closePopup }) => {
         setShowPopup(false);
     };
 
+    // cha
     const handleConfirmRemove = (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -30,28 +41,32 @@ export const PopupMenu = ({ onRemove, onAssign, closePopup }) => {
     return (
         <div className="relative">
             <div className="absolute right-0 z-50 bg-white border shadow-lg w-[190px] rounded-xl -mt-3">
-                <button
-                    onClick={handleAssign}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:rounded-t-xl"
-                >
-                    <img
-                        src="/assets/personIcon.svg"
-                        alt="Assign"
-                        className="w-6 h-6 mr-2"
-                    />
-                    Assign as Admin
-                </button>
-                <button
-                    onClick={handleRemoveClick}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:rounded-b-xl"
-                >
-                    <img
-                        src="/assets/🦆 icon _image_.svg"
-                        alt="Remove"
-                        className="w-6 h-6 mr-2"
-                    />
-                    Remove
-                </button>
+                {canAssignAdmin && (
+                    <button
+                        onClick={handleAssign}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:rounded-t-xl"
+                    >
+                        <img
+                            src="/assets/personIcon.svg"
+                            alt="Assign"
+                            className="w-6 h-6 mr-2"
+                        />
+                        Assign as Admin
+                    </button>
+                )}
+                {canRemoveMember && (
+                    <button
+                        onClick={handleRemoveClick}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:rounded-b-xl"
+                    >
+                        <img
+                            src="/assets/🦆 icon _image_.svg"
+                            alt="Remove"
+                            className="w-6 h-6 mr-2"
+                        />
+                        Remove
+                    </button>
+                )}
             </div>
 
             {showPopup && (
