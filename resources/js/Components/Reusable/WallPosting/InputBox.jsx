@@ -407,10 +407,10 @@ function ShareYourThoughts({
         setShowReactionPicker(!showReactionPicker);
     };
 
-    const { hasPermission } = usePermissions();
+    const { hasPermission, hasRole } = usePermissions();
 
     const canSetAnnouncement =
-        (!communityId && !departmentId) ||
+        (!communityId && !departmentId && hasRole("superadmin")) ||
         (communityId &&
             hasPermission(`set unset post as announcement ${communityId}`)) ||
         (departmentId &&
