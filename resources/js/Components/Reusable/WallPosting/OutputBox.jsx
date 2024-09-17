@@ -7,6 +7,7 @@ import { UserWall } from "./UserWall";
 import "./index.css";
 
 function OutputData({
+    loggedInUserId,
     filterType,
     filterId,
     communityId,
@@ -18,6 +19,7 @@ function OutputData({
         userId: userId,
         communityId,
         departmentId,
+        loggedInUserId,
         filter: {
             filterId,
             filterType,

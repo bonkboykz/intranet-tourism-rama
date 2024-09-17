@@ -9,6 +9,7 @@ export function useInfiniteScroll({
     communityId,
     departmentId,
     filter,
+    loggedInUserId,
 }) {
     const [loading, setLoading] = useState(false);
     const [rawPosts, setRawPosts] = useState([]);
@@ -56,7 +57,7 @@ export function useInfiniteScroll({
                     if (filter.postType === "mention") {
                         newFilter.push({
                             field: "mentions",
-                            value: userId,
+                            value: userId ?? loggedInUserId,
                         });
                     }
 
@@ -85,6 +86,8 @@ export function useInfiniteScroll({
                     }
                 }
             }
+
+            console.log("NEW FILTER", newFilter);
 
             if (userId) {
                 newFilter.push({
