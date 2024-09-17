@@ -26,7 +26,7 @@ class EventController extends Controller
         if ($request->has('search')) {
             $search = $request->input('search');
             $modelBuilder->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($search) . '%']);
-            $modelBuilder->select('id', 'title');
+            $modelBuilder->select('id', 'title', 'start_at', 'end_at');
         }
 
 
