@@ -81,6 +81,7 @@ class ResourceController extends Controller
 
         $is_community = false;
         $is_department = false;
+        $is_user = false;
 
         if (request()->has('filter')) {
             $filters = request('filter');
@@ -91,11 +92,14 @@ class ResourceController extends Controller
                 if ($filter['field'] == 'attachable.department_id') {
                     $is_department = true;
                 }
+                if ($filter['field'] == 'attachable.user_id') {
+                    $is_user = true;
+                }
             }
         }
 
 
-        if (!$user->hasRole('superadmin') && !$is_community && !$is_department) {
+        if (!$user->hasRole('superadmin') && !$is_community && !$is_department && !$is_user) {
             $query->where(function ($query) use ($user) {
                 // User's own files (where they are the author)
                 $query->where('user_id', $user->id) // User's own files

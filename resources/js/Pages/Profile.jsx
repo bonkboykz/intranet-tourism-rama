@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
+import { FileTable } from "@/Components/FileManagement";
 import { Popup, ProfileHeader, ProfileNav } from "@/Components/Profile";
 import {
     ProfileBio,
@@ -377,6 +378,8 @@ function ProfileContent() {
         setFilterType(filter);
     };
 
+    const [fileSearchTerm, setFileSearchTerm] = useState("");
+
     return (
         <WallContext.Provider
             value={{ loggedInUserId: id, variant: "profile" }}
@@ -601,10 +604,16 @@ function ProfileContent() {
                             {activeTab === "files" && (
                                 <div>
                                     <div className="flex gap-4 whitespace-nowrap">
-                                        <SearchInput />
+                                        <SearchInput
+                                            onSearch={setFileSearchTerm}
+                                            searchTerm={fileSearchTerm}
+                                        />
                                         <SearchButton />
                                     </div>
-                                    <Table userId={id} />
+                                    <FileTable
+                                        userId={id}
+                                        searchTerm={fileSearchTerm}
+                                    />
                                 </div>
                             )}
                         </div>
@@ -629,7 +638,7 @@ function ProfileContent() {
                     <hr className="file-directory-underline" />
                     <div>
                         <FeaturedEvents />
-                        {/* <WhosOnline /> */}
+                        <WhosOnline />
                     </div>
                 </aside>
                 {isSaveNotificationOpen && (

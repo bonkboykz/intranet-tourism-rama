@@ -31,6 +31,7 @@ const FileTable = ({
     searchTerm: currentSearchTerm,
     communityId,
     departmentId,
+    userId,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -96,6 +97,14 @@ const FileTable = ({
                     field: "attachable.department_id",
                     type: "like",
                     value: departmentId,
+                });
+            }
+
+            if (userId) {
+                newFilter.push({
+                    field: "user_id",
+                    type: "like",
+                    value: userId,
                 });
             }
 

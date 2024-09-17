@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 
+import { FileTable } from "@/Components/FileManagement";
 import { Popup, ProfileHeader, ProfileNav } from "@/Components/Profile";
 import {
     ProfileBio,
@@ -405,6 +406,8 @@ function UserDetailContent() {
         setFilterType(filter);
     };
 
+    const [fileSearchTerm, setFileSearchTerm] = useState("");
+
     return (
         <WallContext.Provider
             value={{ loggedInUserId: user.id, variant: "user-details" }}
@@ -631,10 +634,16 @@ function UserDetailContent() {
                                 {activeTab === "files" && (
                                     <div>
                                         <div className="flex gap-4 whitespace-nowrap">
-                                            <SearchInput />
+                                            <SearchInput
+                                                onSearch={setFileSearchTerm}
+                                                searchTerm={fileSearchTerm}
+                                            />
                                             <SearchButton />
                                         </div>
-                                        <Table userId={user.id} />
+                                        <FileTable
+                                            userId={user.id}
+                                            searchTerm={fileSearchTerm}
+                                        />
                                     </div>
                                 )}
                             </div>
