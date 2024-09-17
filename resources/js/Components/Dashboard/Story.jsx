@@ -120,11 +120,16 @@ const StoryNew = ({ userId }) => {
     };
 
     const handlePlusButtonClick = () => {
+        // remove value from input field to allow selecting the same file again
+        fileInputRef.current.value = "";
+
         fileInputRef.current.click();
     };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+
+        console.log(file);
         if (file) {
             setSelectedFile(file);
             setIsPopupOpen(true);
@@ -134,7 +139,9 @@ const StoryNew = ({ userId }) => {
     const handleGoBack = () => {
         setSelectedFile(null);
         setIsPopupOpen(false);
-        handlePlusButtonClick();
+        setTimeout(() => {
+            handlePlusButtonClick();
+        }, 0);
     };
 
     const handleCloseViewer = () => {
