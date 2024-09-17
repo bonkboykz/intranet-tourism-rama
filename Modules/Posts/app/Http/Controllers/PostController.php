@@ -659,11 +659,14 @@ class PostController extends Controller
             });
         }
 
-        // Filter by either user is superadmin or post has albums
+        // Filter by either user is superadmin or post has albums, our user is author
         $query->where(function ($query) {
             $query->whereHas('albums') // Posts with albums
                 ->orWhereHas('user.roles', function ($query) {
                     $query->where('name', 'superadmin'); // User is superadmin
+                })
+                ->orWhereHas('user', function ($query) {
+                    $query->where('id', Auth::id()); // User is author
                 });
         });
 
