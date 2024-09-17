@@ -39,7 +39,13 @@ class AuthenticatedSessionController extends Controller
 
         broadcast(new OnlineUsers($user));
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $route = route('dashboard', absolute: false);
+
+        if (app()->environment('production')) {
+            $route = secure_url($route);
+        }
+
+        return redirect()->intended($route);
     }
 
     /**
