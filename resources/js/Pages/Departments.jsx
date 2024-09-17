@@ -39,7 +39,9 @@ const Departments = () => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
+
             const data = await response.json();
+
             const departmentData = data.data.data.map((department) => ({
                 id: department.id,
                 name: department.name,
@@ -47,6 +49,7 @@ const Departments = () => {
                 imageUrl: department.banner
                     ? `/storage/${department.banner}`
                     : "assets/departmentsDefault.jpg",
+                isMember: department.is_member,
             }));
 
             console.log("Department data:", departmentData);
@@ -177,6 +180,7 @@ const Departments = () => {
                                     }
                                     departmentID={department.id}
                                     onDeleteClick={handleDeleteClick}
+                                    isMember={department.isMember}
                                 />
                             ))
                         )}

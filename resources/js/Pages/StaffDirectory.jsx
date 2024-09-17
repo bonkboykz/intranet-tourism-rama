@@ -44,6 +44,7 @@ const StaffDirectory = () => {
             const departmentData = data.data.data.map((department) => ({
                 id: department.id,
                 name: department.name,
+                isMember: department.is_member,
             }));
 
             setDepartments((prevDepartments) => {

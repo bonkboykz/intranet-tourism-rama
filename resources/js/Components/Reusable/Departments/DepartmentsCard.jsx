@@ -1,10 +1,18 @@
 // DepartmentsCard.jsx
 import React, { useRef } from "react";
-import "./css/DepartmentsCard.css";
-import defaultImage from "../../../../../public/assets/dummyStaffImage.png";
-import deleteIcon from "../../../../../public/assets/deleteicon.svg";
 
-const DepartmentsCard = ({ name, imageUrl, onDeleteClick, departmentID }) => {
+import deleteIcon from "../../../../../public/assets/deleteicon.svg";
+import defaultImage from "../../../../../public/assets/dummyStaffImage.png";
+
+import "./css/DepartmentsCard.css";
+
+const DepartmentsCard = ({
+    name,
+    imageUrl,
+    onDeleteClick,
+    departmentID,
+    isMember = false,
+}) => {
     const threeDotButtonRef = useRef(null);
 
     return (
@@ -30,16 +38,18 @@ const DepartmentsCard = ({ name, imageUrl, onDeleteClick, departmentID }) => {
             <div className="card-body">
                 <h3 className="staff-member-name">{name}</h3>
             </div>
-            <div className="card-footer items-center justify-center">
-                <a href={`/departmentInner?departmentId=${departmentID}`}>
-                    <button
-                        className="justify-center text-blue-500 font-semibold px-5 rounded-3xl border border-blue-500 bg-transparent hover:bg-blue-700 hover:text-white"
-                        aria-label="Visit"
-                    >
-                        Visit
-                    </button>
-                </a>
-            </div>
+            {isMember && (
+                <div className="card-footer items-center justify-center">
+                    <a href={`/departmentInner?departmentId=${departmentID}`}>
+                        <button
+                            className="justify-center text-blue-500 font-semibold px-5 rounded-3xl border border-blue-500 bg-transparent hover:bg-blue-700 hover:text-white"
+                            aria-label="Visit"
+                        >
+                            Visit
+                        </button>
+                    </a>
+                </div>
+            )}
         </div>
     );
 };
