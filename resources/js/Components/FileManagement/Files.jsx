@@ -22,6 +22,7 @@ const excludedExtensions = [
     "tiff",
     "webp",
     "mp4",
+    "mov",
 ];
 
 const itemsPerPage = 8;
