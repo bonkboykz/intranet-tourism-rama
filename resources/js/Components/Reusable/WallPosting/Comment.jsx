@@ -481,7 +481,7 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                                     >
                                                         <img
                                                             className="w-6 h-6 mr-2"
-                                                            src="/assets/DeleteIcon.svg"
+                                                            src="/assets/deleteicon.svg"
                                                             alt="Delete"
                                                         />
                                                         Delete

@@ -305,7 +305,7 @@ function ShareYourThoughtsDepart() {
                                 >
                                     <img
                                         className="w-6 h-6"
-                                        src="/assets/DeleteIcon.svg"
+                                        src="/assets/deleteicon.svg"
                                         alt="Delete"
                                     />
                                     Delete
