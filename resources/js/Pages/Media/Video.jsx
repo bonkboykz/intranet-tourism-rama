@@ -41,12 +41,17 @@ export function VideoComponent({
             return;
         }
 
-        const timer = setTimeout(() => {
+        const timer1 = setTimeout(() => {
+            calc();
+        }, 0);
+
+        const timer2 = setTimeout(() => {
             calc();
         }, 100);
 
         return () => {
-            clearTimeout(timer);
+            clearTimeout(timer1);
+            clearTimeout(timer2);
         };
     }, [isVisible, index]);
 
