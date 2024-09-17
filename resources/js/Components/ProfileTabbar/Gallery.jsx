@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { toast } from "react-toastify";
 import { useWindowSize } from "@uidotdev/usehooks";
+import { CircleXIcon } from "lucide-react";
 
 import { VideoGallery } from "@/Pages/Media/Video";
 
@@ -25,20 +27,31 @@ const ImageProfile = ({
 }) => {
     const [images, setImages] = useState([]);
 
-    useEffect(() => {
-        let apiUrl = "/api/resources/resources?";
+    const fetchData = async () => {
+        try {
+            let currentPage = 1;
+            let totalPage = 1;
 
-        if (filterBy === "user") {
-            apiUrl += `with[]=attachable.accessibilities`;
-        } else if (filterBy === "department") {
-            apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
-        } else if (filterBy === "community") {
-            apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
-        }
+            const allImages = [];
 
-        fetch(apiUrl)
-            .then((response) => response.json())
-            .then((data) => {
+            while (currentPage <= totalPage) {
+                let apiUrl = `/api/resources/resources?page=${currentPage}`;
+
+                if (filterBy === "user") {
+                    apiUrl = apiUrl;
+                } else if (filterBy === "department") {
+                    apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
+                } else if (filterBy === "community") {
+                    apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
+                }
+
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await response.json();
+
                 const imagePaths = data.data.data
                     .filter((item) => {
                         const fileExtension = item.path
@@ -65,9 +78,25 @@ const ImageProfile = ({
                         category: item.attachable_type, // Adjust as per your condition
                         type: item.attachable?.type,
                     }));
-                setImages(imagePaths);
-            })
-            .catch((error) => console.error("Error fetching images:", error));
+
+                totalPage = data.data.last_page;
+                currentPage++;
+
+                allImages.push(...imagePaths);
+            }
+
+            setImages(allImages);
+        } catch (e) {
+            console.error("Error fetching images:", e);
+            toast.error("Error fetching images:", {
+                theme: "colored",
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+            });
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
     }, [userId, accessableType, accessableId, filterBy]);
 
     const filteredImages =
@@ -122,20 +151,31 @@ const VideoProfile = ({
 }) => {
     const [videos, setVideos] = useState([]);
 
-    useEffect(() => {
-        let apiUrl = "/api/resources/resources?";
+    const fetchData = async () => {
+        try {
+            let currentPage = 1;
+            let totalPage = 1;
 
-        if (filterBy === "user") {
-            apiUrl = apiUrl;
-        } else if (filterBy === "department") {
-            apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
-        } else if (filterBy === "community") {
-            apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
-        }
+            const allVideos = [];
 
-        fetch(apiUrl)
-            .then((response) => response.json())
-            .then((data) => {
+            while (currentPage <= totalPage) {
+                let apiUrl = `/api/resources/resources?page=${currentPage}`;
+
+                if (filterBy === "user") {
+                    apiUrl = apiUrl;
+                } else if (filterBy === "department") {
+                    apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
+                } else if (filterBy === "community") {
+                    apiUrl += `scopes[0][accessfor]=posts&scopes[0][accessableBy][]=${accessableType}&scopes[0][accessableBy][]=${accessableId}&with[]=attachable.accessibilities`;
+                }
+
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await response.json();
+
                 const videoPaths = data.data.data
                     .filter((item) => {
                         const fileExtension = item.path
@@ -159,9 +199,25 @@ const VideoProfile = ({
                         alt: `Description ${item.id}`,
                         category: item.attachable_type,
                     }));
-                setVideos(videoPaths);
-            })
-            .catch((error) => console.error("Error fetching images:", error));
+
+                totalPage = data.data.last_page;
+                currentPage++;
+
+                allVideos.push(...videoPaths);
+            }
+
+            setVideos(allVideos);
+        } catch (e) {
+            console.error("Error fetching images:", e);
+            toast.error("Error fetching images:", {
+                theme: "colored",
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+            });
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
     }, [userId, accessableType, accessableId, filterBy]);
 
     // Filter videos based on selectedItem

@@ -1,7 +1,6 @@
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import { useWindowSize } from "@uidotdev/usehooks";
 
-import { VideoComponent, VideoGallery } from "./Video";
+import { VideoGallery } from "./Video";
 
 import "react-photo-view/dist/react-photo-view.css";
 

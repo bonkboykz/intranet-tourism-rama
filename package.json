@@ -72,6 +72,7 @@
         "react-konva": "^18.2.10",
         "react-modal": "^3.16.1",
         "react-phone-input-2": "^2.15.1",
+        "react-photo-album": "^3.0.2",
         "react-photo-view": "^1.2.6",
         "react-player": "^2.16.0",
         "react-router-dom": "^6.24.0",
@@ -81,6 +82,7 @@
         "socket.io-client": "^4.7.5",
         "tailwind-merge": "^2.5.2",
         "tailwindcss-animate": "^1.0.7",
-        "use-debounce": "^10.0.3"
+        "use-debounce": "^10.0.3",
+        "yet-another-react-lightbox": "^3.21.5"
     }
 }
