@@ -39,3 +39,10 @@ public/build
 seed/*.csv
 
 .DS_Store
+
+
+# Playwright
+playwright-report/
+playwright-video/
+playwright-trace/
+test-results/
