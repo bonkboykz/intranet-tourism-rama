@@ -12,6 +12,9 @@ export const NotificationsContext = createContext({
 });
 
 export function useSetupNotifications() {
+    // TODO: When optimizing return to this
+    // const { notifications: initialNotifications = [] } = usePage().props;
+
     const [notifications, setNotifications] = useState([]);
     const [hasNewNotifications, setHasNewNotifications] = useState(false);
 
@@ -26,9 +29,9 @@ export function useSetupNotifications() {
             const response = await axios.get("/api/notifications/recent");
 
             if ([200, 201, 204].includes(response.status)) {
-                const {
-                    data: { data },
-                } = response.data;
+                // const {
+                //     data: { data },
+                // } = response.data;
 
                 // console.log(response.data.data);
 

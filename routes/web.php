@@ -62,9 +62,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/staffDirectory', [StaffDirectoryController::class, 'index'])->name('staffDirectory');
     Route::get('/ordering', [OrderingController::class, 'index'])->name('ordering');
     Route::get('/orderingDepartments', [DepartmentOrdering::class, 'index'])->name('orderingDepartments');
-    // Route::get('/notification', [NotificationController::class, 'index'])->name('notification');
-    // Route::get('/notipopup', [NotificationController::class, 'testing'])->name('Noti-popup-test');
-    // Route::get('/notification-unread', [NotificationController::class, 'index_unread'])->name('notification-unread');
+    Route::get('/profile/notifications', [NotificationController::class, 'index'])->name('notification');
+    Route::get('/profile/unread-notifications', [NotificationController::class, 'index_unread'])->name('notification-unread');
     Route::get('/community', [Community::class, 'index'])->name('Community');
 
     Route::get('/departments', [departments::class, 'index'])->name('Departments');
@@ -80,7 +79,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/album', [MediaController::class, 'indexalbum'])->name('Album');
 
     // TODO: Separate to modules later
-    Route::get('/api/notifications', [NotificationController::class, 'index'])->name('notification');
+    Route::get('/api/notifications', [NotificationController::class, 'apiIndex'])->name('notification');
     Route::get('/api/notifications/recent', [NotificationController::class, 'getRecentNotifications'])->name('recentNotifications');
     Route::post('/api/markAsRead/{notificationId}', [NotificationController::class, 'markAsRead'])->name('markAsRead');
 

@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { usePage } from "@inertiajs/react";
+
+import { useNotifications } from "@/Layouts/useNotifications";
+
 import NotificationsList from "./NotificationsList";
 
 import "./NotificationPopup.css";
-import { usePage } from "@inertiajs/react";
-import { useNotifications } from "@/Layouts/useNotifications";
 
 const NotificationPopup = () => {
     const [activeTab, setActiveTab] = useState("all");
@@ -104,15 +106,14 @@ const NotificationPopup = () => {
                 </li>
             </ul>
             <br />
-            {/* Notification list rendering... */}
             <NotificationsList
                 notifications={notifications}
                 activeTab={activeTab}
             />
             <div
-                onClick={() =>
-                    (window.location.href = "../profile/notification")
-                }
+                onClick={() => {
+                    window.location.href = "/profile/notifications";
+                }}
                 className="flex flex-row font-bold bg-slaute-400 h-10 px-2 w-full gap-2 cursor-pointer hover:bg-slate-200 rounded-lg items-center"
             >
                 VIEW ALL

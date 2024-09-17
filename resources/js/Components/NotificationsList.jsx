@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
+import { useMemo } from "react";
 import axios from "axios";
 
 import { formatTimeAgo } from "@/Utils/format";
 import { getProfileImage } from "@/Utils/getProfileImage";
 
-function NotificationsList({ activeTab, notifications }) {
+function NotificationsList({ activeTab, notifications, shouldSlice }) {
     const [readMap, setReadmap] = useState({});
 
     const markAsRead = async (id) => {
@@ -18,13 +19,25 @@ function NotificationsList({ activeTab, notifications }) {
         }
     };
 
-    // Filter notifications based on the active tab
-    const filteredNotifications =
-        activeTab === "all"
-            ? notifications.slice(0, 4) // Only display the first 4 notifications for 'all' tab
-            : notifications
-                  .slice(0, 6)
-                  .filter((notification) => !notification.read_at);
+    const filteredNotifications = useMemo(() => {
+        if (!shouldSlice && activeTab === "alll") {
+            return notifications;
+        }
+
+        if (!shouldSlice && activeTab !== "all") {
+            return notifications.filter(
+                (notification) => !notification.read_at
+            );
+        }
+
+        if (activeTab === "all") {
+            return notifications.slice(0, 4);
+        }
+
+        return notifications
+            .filter((notification) => !notification.read_at)
+            .slice(0, 6);
+    }, [activeTab, notifications.length, shouldSlice]);
 
     return (
         <div className="notification-list px-2 ">

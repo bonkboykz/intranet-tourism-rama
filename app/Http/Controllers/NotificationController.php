@@ -7,12 +7,28 @@ use Illuminate\Support\Facades\Auth;
 use Modules\User\Models\User;
 // use Illuminate\Http\Request;
 
-// use Inertia\Inertia;
+use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
-    // Fetch all notifications for the authenticated user
     public function index()
+    {
+        $user = User::find(auth()->id());
+        $notifications = $user->notifications()->latest()->get();
+
+        return Inertia::render('AllNotificationsPage', ['id' => auth()->id(), 'notifications' => $notifications]);
+    }
+
+    public function index_unread()
+    {
+        $user = User::find(auth()->id());
+        $notifications = $user->notifications()->latest()->get();
+
+        return Inertia::render('UnreadNotificationsPage', ['id' => auth()->id(), 'notifications' => $notifications]);
+    }
+
+    // Fetch all notifications for the authenticated user
+    public function apiIndex()
     {
         $user = User::find(auth()->id());
         $notifications = $user->notifications()->latest()->get();
@@ -44,11 +60,6 @@ class NotificationController extends Controller
 
         return response()->json(data: ['status' => 'read']);
     }
-
-    // public function index()
-    // {
-    //     return Inertia::render('Notification', ['id' => auth()->id()]);
-    // }
 
     // public function index_unread()
     // {
