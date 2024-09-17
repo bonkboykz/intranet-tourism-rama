@@ -20,6 +20,7 @@ class EmploymentPostController extends Controller
                 ->with(['user.profile', 'businessPost', 'businessGrade']) // Use relationships
                 ->get()
                 ->map(function ($employmentPost) {
+                    $profile = $employmentPost->user->profile; // Get the profile if it exists
                     return [
                         'user_id' => $employmentPost->user->id,
                         'employment_post_id' => $employmentPost->id,
@@ -27,12 +28,13 @@ class EmploymentPostController extends Controller
                         'business_post_title' => $employmentPost->businessPost->title,
                         'business_grade' => $employmentPost->businessGrade->code,
                         'is_active' => $employmentPost->user->is_active,
-                        'name' => $employmentPost->user->profile->bio,
-                        'staff_image' => $employmentPost->user->profile->staff_image ?? '/assets/dummyStaffPlaceHolder.jpg',
+                        'name' => $profile ? $profile->bio : 'N/A', // Check if profile exists
+                        'staff_image' => $profile && $profile->staff_image ? $profile->staff_image : '/assets/dummyStaffPlaceHolder.jpg',
                         'work_phone' => $employmentPost->work_phone,
-                        'phone_no' => $employmentPost->user->profile->phone_no,
+                        'phone_no' => $profile ? $profile->phone_no : 'N/A', // Check if profile exists
                     ];
                 });
+
 
             return response()->json([
                 'data' => $members,
