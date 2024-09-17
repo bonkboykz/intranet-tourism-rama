@@ -35,8 +35,18 @@ export function useSetupWhosOnline() {
     useEffect(() => {
         window.Echo.join("online")
             .here((users) => {
+                const dedupedUsers = users.filter(
+                    (user) =>
+                        !onlineUsers.find(
+                            (onlineUser) => onlineUser.id === user.id
+                        )
+                );
+
                 setOnlineUsers(
-                    users.map((user) => ({ ...user, avatar: dummyProfilePic }))
+                    dedupedUsers.map((user) => ({
+                        ...user,
+                        avatar: dummyProfilePic,
+                    }))
                 );
             })
             .joining((user) => {
