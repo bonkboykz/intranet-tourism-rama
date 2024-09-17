@@ -1,7 +1,8 @@
-import { VideoGallery } from "@/Pages/Media/Video";
-import { useWindowSize } from "@uidotdev/usehooks";
 import React, { useEffect, useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { useWindowSize } from "@uidotdev/usehooks";
+
+import { VideoGallery } from "@/Pages/Media/Video";
 
 import "react-photo-view/dist/react-photo-view.css";
 

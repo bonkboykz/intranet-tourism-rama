@@ -598,6 +598,7 @@ function ProfileContent() {
                                     <VideoProfile
                                         selectedItem="All"
                                         userId={id}
+                                        filterBy="user"
                                     />
                                 </section>
                             )}

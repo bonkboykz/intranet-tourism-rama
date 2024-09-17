@@ -624,10 +624,12 @@ function UserDetailContent() {
                                         <ImageProfile
                                             selectedItem="All"
                                             userId={user.id}
+                                            filterBy="user"
                                         />
                                         <VideoProfile
                                             selectedItem="All"
                                             userId={user.id}
+                                            filterBy="user"
                                         />
                                     </section>
                                 )}
