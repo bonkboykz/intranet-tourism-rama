@@ -5,8 +5,16 @@ import axios from "axios";
 
 import DeleteIcon from "../../../../public/assets/DeleteRedButton.svg";
 
-const StoryViewer = ({ stories, onClose, user, onViewed, onDelete }) => {
-    const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+const StoryViewer = ({
+    setCurrentStoryIndex,
+    currentStoryIndex = 0,
+    stories,
+    onClose,
+    user,
+    onViewed,
+    onDelete,
+    onAllStoriesEnd,
+}) => {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -33,7 +41,7 @@ const StoryViewer = ({ stories, onClose, user, onViewed, onDelete }) => {
     };
 
     const handleAllStoriesEnd = () => {
-        onClose();
+        onAllStoriesEnd();
     };
 
     const API_URL = "/api/posts/posts";

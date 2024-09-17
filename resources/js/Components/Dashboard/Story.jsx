@@ -103,7 +103,7 @@ const StoryNew = ({ userId }) => {
         fetchAvatars();
     }, [userStories]);
 
-    const handleAvatarClick = (avatar) => {
+    const handleAvatarClick = (avatar, groupIndex) => {
         const avatarStories = userStories.filter(
             (story) => story.userId === avatar.id
         );
@@ -117,6 +117,7 @@ const StoryNew = ({ userId }) => {
         setSelectedStory(avatarStories);
         setSelectedUser(avatar);
         setShowStoryViewer(true);
+        setCurrentGroupIndex(groupIndex); // Set current group index when opening viewer
     };
 
     const handlePlusButtonClick = () => {
@@ -148,6 +149,8 @@ const StoryNew = ({ userId }) => {
         setShowStoryViewer(false);
         setSelectedStory(null);
         setSelectedUser(null);
+        setCurrentGroupIndex(null);
+        setCurrentStoryIndex(1);
     };
 
     const handlePostStory = async () => {
@@ -167,6 +170,8 @@ const StoryNew = ({ userId }) => {
     }, [userStories]);
 
     const markStoryAsViewed = async (story) => {
+        console.log(story);
+
         setViewedMap({
             ...viewedMap,
             [story.postId]: true,
@@ -262,6 +267,41 @@ const StoryNew = ({ userId }) => {
         fullName: "",
     };
 
+    const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+
+    const [currentGroupIndex, setCurrentGroupIndex] = useState(null); // Track the current story group index
+
+    const handleNextGroup = () => {
+        if (currentGroupIndex === null) return;
+
+        // If the user is currently viewing their personal stories
+        if (currentGroupIndex === 0) {
+            // Check if there are other users' stories available
+            if (otherUsersGroupedStories.length > 0) {
+                setCurrentStoryIndex(0);
+                // Move to the first group in otherUsersGroupedStories
+                setSelectedStory(otherUsersGroupedStories[0].stories);
+                setSelectedUser(otherUsersGroupedStories[0].avatar);
+                setCurrentGroupIndex(1); // Update index to 1 to reflect the first group in otherUsersGroupedStories
+            } else {
+                handleCloseViewer(); // No more stories, close the viewer
+            }
+        } else {
+            // Handle moving between groups in otherUsersGroupedStories
+            const nextGroupIndex = currentGroupIndex + 1;
+
+            if (nextGroupIndex <= otherUsersGroupedStories.length) {
+                setCurrentStoryIndex(0);
+                const nextGroup = otherUsersGroupedStories[nextGroupIndex - 1];
+                setSelectedStory(nextGroup.stories); // Update to the next group's stories
+                setSelectedUser(nextGroup.avatar); // Update to the next group's avatar
+                setCurrentGroupIndex(nextGroupIndex); // Update index
+            } else {
+                handleCloseViewer(); // If no more groups, close the viewer
+            }
+        }
+    };
+
     return (
         <div
             style={{
@@ -276,7 +316,7 @@ const StoryNew = ({ userId }) => {
             <PersonalStory
                 stories={userGroupedStories.stories}
                 avatar={userAvatar}
-                handleAvatarClick={handleAvatarClick}
+                handleAvatarClick={() => handleAvatarClick(userAvatar, 0)}
                 handlePlusButtonClick={handlePlusButtonClick}
                 handleFileChange={handleFileChange}
                 fileInputRef={fileInputRef}
@@ -291,7 +331,9 @@ const StoryNew = ({ userId }) => {
                             key={index}
                             allStoriesViewed={group.allViewed}
                             avatar={group.avatar}
-                            handleAvatarClick={handleAvatarClick}
+                            handleAvatarClick={(avatar) =>
+                                handleAvatarClick(avatar, index + 1)
+                            }
                             stories={group.stories}
                         />
                     );
@@ -299,6 +341,8 @@ const StoryNew = ({ userId }) => {
             </div>
             {showStoryViewer && selectedStory && (
                 <StoryViewer
+                    currentStoryIndex={currentStoryIndex}
+                    setCurrentStoryIndex={setCurrentStoryIndex}
                     stories={selectedStory}
                     onClose={handleCloseViewer}
                     user={selectedUser}
@@ -310,6 +354,7 @@ const StoryNew = ({ userId }) => {
 
                         fetchStories();
                     }}
+                    onAllStoriesEnd={handleNextGroup}
                 />
             )}
             {isPopupOpen &&
