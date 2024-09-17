@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import Example from "../Layouts/DashboardLayoutNew";
-import PageTitle from "../Components/Reusable/PageTitle";
-import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
-import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+import React, { useEffect, useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { usePage } from "@inertiajs/react";
+
 import { useCsrf } from "@/composables";
+
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+import Example from "../Layouts/DashboardLayoutNew";
 
 const Ordering = () => {
     const [isNotificationVisible, setIsNotificationVisible] = useState(false);
@@ -32,7 +34,7 @@ const Ordering = () => {
             }
             const data = await response.json();
 
-            const members = data.members.map((member) => ({
+            const members = data.data.map((member) => ({
                 id: member.user_id,
                 employment_id: member.employment_post_id,
                 name: member.name,
