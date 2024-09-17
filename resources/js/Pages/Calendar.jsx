@@ -268,7 +268,10 @@ function Calendar() {
             title: "",
             venue: "",
             startDate: formatDate(selectedDate),
-            endDate: formatDate(selectedDate),
+            endDate:
+                selectedDate < new Date()
+                    ? format(new Date(), "yyyy-MM-dd")
+                    : formatDate(selectedDate),
             startTime: "",
             endTime: "",
             color: "purple",
