@@ -10,3 +10,4 @@ Feature: Auto-generated QR Code
     Given a user has a QR code
     When another user scans the QR code
     Then they should be redirected to the correct profile page
+
