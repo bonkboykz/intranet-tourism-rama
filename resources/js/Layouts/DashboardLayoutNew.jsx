@@ -8,6 +8,7 @@ import {
     NotificationsContext,
     useSetupNotifications,
 } from "./useNotifications";
+import { SettingsContext, useSetupSettings } from "./useSettings";
 import { UserContext, useSetupUser } from "./useUser";
 import { useSetupWhosOnline, WhosOnlineContext } from "./useWhosOnline";
 
@@ -28,40 +29,49 @@ const Example = ({ children }) => {
 
     const { user, userData } = useSetupUser();
 
+    const { settings, fetchSettings } = useSetupSettings();
+
     return (
-        <UserContext.Provider
+        <SettingsContext.Provider
             value={{
-                user,
-                userData,
+                settings,
+                fetchSettings,
             }}
         >
-            <WhosOnlineContext.Provider
+            <UserContext.Provider
                 value={{
-                    onlineUsers,
+                    user,
+                    userData,
                 }}
             >
-                <NotificationsContext.Provider
+                <WhosOnlineContext.Provider
                     value={{
-                        notifications,
-                        hasNewNotifications,
-                        setHasNewNotifications,
-                        fetchNotifications,
+                        onlineUsers,
                     }}
                 >
-                    <div>
-                        <ToastContainer />
-                        <Sidebar
-                            sidebarOpen={sidebarOpen}
-                            setSidebarOpen={setSidebarOpen}
-                        />
-                        <div className="lg:pl-20 pt-16">
-                            <Header setSidebarOpen={setSidebarOpen} />
-                            <main>{children}</main>
+                    <NotificationsContext.Provider
+                        value={{
+                            notifications,
+                            hasNewNotifications,
+                            setHasNewNotifications,
+                            fetchNotifications,
+                        }}
+                    >
+                        <div>
+                            <ToastContainer />
+                            <Sidebar
+                                sidebarOpen={sidebarOpen}
+                                setSidebarOpen={setSidebarOpen}
+                            />
+                            <div className="lg:pl-20 pt-16">
+                                <Header setSidebarOpen={setSidebarOpen} />
+                                <main>{children}</main>
+                            </div>
                         </div>
-                    </div>
-                </NotificationsContext.Provider>
-            </WhosOnlineContext.Provider>
-        </UserContext.Provider>
+                    </NotificationsContext.Provider>
+                </WhosOnlineContext.Provider>
+            </UserContext.Provider>
+        </SettingsContext.Provider>
     );
 };
 

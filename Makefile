@@ -37,6 +37,9 @@ start_reverb:
 start_notifications:
 	php artisan queue:listen
 
+seed_settings:
+	php artisan db:seed --class=SettingsSeeder
+
 # Run tests
 test:
 	$(PHPUNIT)

@@ -1,41 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+
 import "./index.css";
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
     });
 };
 
 const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
+    return date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
     });
 };
 
 const PrintCalendar = ({ events, refetchEvents }) => {
     // Sort events by the start date (oldest first)
-    const sortedEvents = events.sort((a, b) => new Date(a.start) - new Date(b.start));
+    const sortedEvents = events.sort(
+        (a, b) => new Date(a.start) - new Date(b.start)
+    );
 
     useEffect(() => {
         // Run the refetchEvents function after the print dialog is closed
         const handleAfterPrint = () => {
             refetchEvents();
             window.location.reload();
-
         };
 
-        window.addEventListener('afterprint', handleAfterPrint);
+        window.addEventListener("afterprint", handleAfterPrint);
 
         // Clean up the event listener when the component is unmounted
         return () => {
-            window.removeEventListener('afterprint', handleAfterPrint);
+            window.removeEventListener("afterprint", handleAfterPrint);
         };
     }, [refetchEvents]);
 
@@ -58,15 +60,18 @@ const PrintCalendar = ({ events, refetchEvents }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedEvents.map(event => (
+                    {sortedEvents.map((event) => (
                         <tr key={event.id}>
-                            <td className='w-56'>
-                                {formatDate(event.start)} - {formatDate(event.end)}
+                            <td className="w-56">
+                                {formatDate(event.start)} -{" "}
+                                {formatDate(event.end)}
                             </td>
                             <td>{event.title}</td>
                             <td>{event.venue}</td>
                             <td>{event.userName}</td>
-                            <td>{event.description ? event.description : "N/A"}</td>
+                            <td>
+                                {event.description ? event.description : "N/A"}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
