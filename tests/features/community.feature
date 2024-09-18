@@ -92,6 +92,48 @@ Scenario: Logged-in member creates a poll with any title
   Then the post "This is an announcement" should be visible in the group's post list
     And the post should be marked as an announcement
 
+Scenario: Logged-in member uploads a video
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the video upload icon (camera icon)
+    And the user selects the video file "video700kb.mov" 
+    And the user clicks on the "Publish" button (arrow icon)
+  Then the video "video700kb.mov" should be visible in the group's post list
 
+  Scenario: Logged-in member uploads a video and adds text
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the post input field with placeholder "Share Your Thoughts..."
+    And the user writes "This is a test post with a video"
+    And the user clicks on the video upload icon (camera icon)
+    And the user selects the video file "video700kb.mov" 
+    And the user clicks on the "Publish" button (arrow icon)
+  Then the post "This is a test post with a video" should be visible in the group's post list
+    And the video "video700kb.mov" should be visible in the post
 
-    
+Scenario: Logged-in member uploads a single image
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the image upload icon (image icon)
+    And the user selects the image file "image1.png" 
+    And the user clicks on the "Publish" button (arrow icon)
+  Then the image "image1.png" should be visible in the group's post list
+
+    Scenario: Logged-in member uploads multiple images
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the image upload icon (image icon)
+    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png" 
+    And the user clicks on the "Publish" button (arrow icon)
+  Then five instances of the image "image1.png" should be visible in the group's post list
+
+  Scenario: Logged-in member uploads multiple images and adds text
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the post input field with placeholder "Share Your Thoughts..."
+    And the user writes "This is a test post with multiple images"
+    And the user clicks on the image upload icon (image icon)
+    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png" 
+    And the user clicks on the "Publish" button (arrow icon)
+  Then the post "This is a test post with multiple images" should be visible in the group's post list
+    And five instances of the image "image1.png"(5) should be visible in the post
