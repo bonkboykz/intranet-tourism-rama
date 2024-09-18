@@ -1,22 +1,5 @@
 Feature: Community Management (Group)
 
-  Scenario: View Community Groups
-    Given the user is logged in
-    When the user navigates to the communities page
-    Then the user should see a list of all community groups
-
-  Scenario: Admin adds a new community group
-    Given the user is logged in as an admin
-    When the admin adds a new community group
-    Then the group should appear in the list of communities
-
-  Scenario: Member posts in a community group
-    Given the user is a community member
-    When the member posts in the community group
-    Then the post should be visible to the group
-
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
 
  Scenario: Logged-in member navigates to community page and views groups
     Given the user is logged in
@@ -181,3 +164,99 @@ Scenario: Logged-in member views uploaded files in the gallery
     And the user is on the "testmember" community group page
   When the user clicks on the "Files" tab
   Then the files list should display the document "testdoc.xlsx"
+
+Scenario: Logged-in member navigates to the Members tab
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the "Members" tab
+  Then the members list should be displayed
+
+
+Scenario: Logged-in member searches for a specific member
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the user clicks on the "Members" tab
+  When the user clicks on the search input field with placeholder "Search member"
+    And the user types "test member"
+  Then the search results should display the "test member" account
+
+  Scenario: Logged-in member removes self from the community group
+  Given the user is logged in
+    And the user is on the "Members" tab of the "testmember" community group page
+  When the user clicks on the search input field with placeholder "Search member"
+    And the user types "test member"
+    And the search results display the "test member" account
+    And the user clicks on the three dots (options menu) next to the "test member" account
+    And the user selects the "Remove" or "Leave group" option
+    And the user confirms the action
+  Then the user should be removed from the "testmember" community group
+    And the user should no longer see the "testmember" community group in their list of groups
+
+
+    Scenario: Logged-in member applies filters in the group page
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the "Filters" button
+  Then the filters options should be displayed
+    And the user should see options for filtering members
+
+    Scenario: Logged-in member applies "Photos" filter
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the filters options are displayed
+  When the user clicks on the "Photos" filter
+  Then only photos should be displayed in the search results
+
+  Scenario: Logged-in member applies "Videos" filter
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the filters options are displayed
+  When the user clicks on the "Videos" filter
+  Then only videos should be displayed in the search results
+
+  Scenario: Logged-in member applies "Polls" filter
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the filters options are displayed
+  When the user clicks on the "Polls" filter
+  Then only polls should be displayed in the search results
+
+  Scenario: Logged-in member applies "Announcements" filter
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the filters options are displayed
+  When the user clicks on the "Announcements" filter
+  Then only announcements should be displayed in the search results
+
+  Scenario: Logged-in member applies "Files" filter
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the filters options are displayed
+  When the user clicks on the "Files" filter
+  Then only files should be displayed in the search results
+
+  Scenario: Logged-in member applies "Mentions" filter
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+    And the filters options are displayed
+  When the user clicks on the "Mentions" filter
+  Then only mentions should be displayed in the search results
+
+  Scenario: Logged-in member invites another user to the community
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the "Invite" button
+    And the user types "test" in the search input field
+    And the user selects the "test" account from the search results
+    And the user clicks on the "Send Invite" button
+  Then the "test" account should receive an invitation to join the community
+
+  Scenario: Verify that the invited member appears in the Members tab
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the "Members" tab
+    And the user types "test" in the search input field
+  Then the search results should display the "test" account
+
+
+  
