@@ -11,8 +11,6 @@ export function CommunityWallActions({
     const { role, isMember, type, communityID, isJoinRequestPending } =
         useContext(CommunityContext);
 
-    console.log("role", role);
-
     const createJoinRequest = async () => {
         try {
             const response = await axios.post(`/api/createJoinGroupRequest`, {

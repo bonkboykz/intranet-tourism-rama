@@ -40,27 +40,50 @@ class CommunityController extends Controller
 
 
 
-        $output = new ConsoleOutput();
+        // $output = new ConsoleOutput();
 
-        $output->writeln(CommunityPermissionsHelper::checkPermission($user, 'view all groups') ? "true" : "false");
+        // $output->writeln(CommunityPermissionsHelper::checkPermission($user, 'view all groups') ? "true" : "false");
 
-        function replaceBindings($sql, $bindings)
-        {
-            foreach ($bindings as $binding) {
-                $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
-                $sql = preg_replace('/\?/', $value, $sql, 1);
-            }
-            return $sql;
-        }
+        // function replaceBindings($sql, $bindings)
+        // {
+        //     foreach ($bindings as $binding) {
+        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+        //         $sql = preg_replace('/\?/', $value, $sql, 1);
+        //     }
+        //     return $sql;
+        // }
 
-        $sql = $query->toSql(); // Get the raw SQL query
-        $bindings = $query->getBindings(); // Get the query bindings (parameters)
-        // Show the full SQL query with bindings replaced
-        $fullSql = replaceBindings($sql, $bindings);
+        // $sql = $query->toSql(); // Get the raw SQL query
+        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
+        // // Show the full SQL query with bindings replaced
+        // $fullSql = replaceBindings($sql, $bindings);
 
-        $output->writeln($fullSql);
+        // $output->writeln($fullSql);
 
         $data = $this->shouldPaginate($query);
+
+        $data->map(function ($item) use ($user) {
+            $is_member = $item->members()->where('user_id', Auth::id())->exists();
+            $is_admin = $item->admins()->where('user_id', Auth::id())->exists();
+
+            $is_superadmin = $user->hasRole('superadmin');
+
+            if ($is_superadmin) {
+                $item['is_member'] = true;
+                $item['role'] = "superadmin";
+            } else if ($is_admin) {
+                $item['is_member'] = true;
+                $item['role'] = "admin";
+            } else if ($is_member) {
+                $item["is_member"] = true;
+                $item["role"] = "member";
+            } else {
+                $item['is_member'] = false;
+            }
+
+            return $item;
+        });
+
 
         return response()->json([
             'data' => $data

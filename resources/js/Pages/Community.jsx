@@ -57,6 +57,8 @@ const Community = () => {
                     imageUrl:
                         community.banner || "/assets/defaultCommunity.png", // Use banner if available
                     isArchived: false, // Initialize with not archived
+                    isMember: community.is_member,
+                    role: community.role,
                 }));
 
                 // Retrieve archived state from localStorage
@@ -201,6 +203,8 @@ const Community = () => {
                                         handleArchiveToggle(department.id)
                                     }
                                     onDelete={() => handleDelete(department.id)}
+                                    isMember={department.isMember}
+                                    role={department.role}
                                 />
                             ))
                         )}

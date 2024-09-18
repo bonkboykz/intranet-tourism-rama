@@ -14,6 +14,7 @@ const CommunityCard = ({
     isArchived,
     onArchiveToggle,
     onDelete,
+    role,
 }) => {
     const isPrivate = type === "private"; // Add a fallback check
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -35,13 +36,15 @@ const CommunityCard = ({
                     alt={name}
                     className="staff-member-image"
                 />
-                <button className="status-button" onClick={togglePopup}>
-                    <img
-                        src="/assets/threedots.svg"
-                        alt="Menu"
-                        className="h-5 w-[50px]"
-                    />
-                </button>
+                {["superadmin", "admin"].includes(role) && (
+                    <button className="status-button" onClick={togglePopup}>
+                        <img
+                            src="/assets/threedots.svg"
+                            alt="Menu"
+                            className="h-5 w-[50px]"
+                        />
+                    </button>
+                )}
                 {isPopupOpen && (
                     <PopupMenu
                         selectedDepartmentId={communityID}
