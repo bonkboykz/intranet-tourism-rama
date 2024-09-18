@@ -86,7 +86,9 @@ const DepartmentDropdown = ({ departments, onSelectDepartment }) => {
                         >
                             &times;
                         </button>
-                        <CreateCommunity onCancel={toggleCreateCommunity} />
+                        <CreateCommunity
+                            onCancel={() => setIsCreateCommunityOpen(false)}
+                        />
                     </div>
                 </div>
             )}

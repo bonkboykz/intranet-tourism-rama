@@ -231,6 +231,7 @@ const Community = () => {
                         <CreateCommunity
                             id={id}
                             onCreate={handleNewDepartment}
+                            onCancel={() => setIsCreateCommunityOpen(false)}
                         />
                     </div>
                 </div>
