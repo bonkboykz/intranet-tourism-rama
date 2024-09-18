@@ -182,5 +182,46 @@ test.describe("Community Management", () => {
     });
 
 
+    // Scenario: Logged-in member creates a poll with any title
+    test("Logged-in member creates a poll with any title", async ({ page }) => {
+        // Шаг 1: Войти как участник
+        await loginAs(page, "member");
+
+        // Шаг 2: Перейти на страницу группы "testmember"
+        await page.goto(`${baseUrl}/communityInner?communityId=26`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Проверить, что мы находимся на странице группы "testmember"
+        await expect(page).toHaveURL(/\/communityInner\?communityId=26/);
+
+        // Шаг 3: Нажать на кнопку "Create Poll"
+        const createPollButton = page.locator("img[alt=\"Poll Icon\"]");
+        await createPollButton.click();
+
+        // Шаг 4: Ввести заголовок опроса
+        const pollTitleInput = page.locator("textarea[placeholder='Type something...']");
+        await pollTitleInput.fill("Test Poll Title");
+
+        // Шаг 5: Ввести опции опроса
+        const option1Input = page.locator("input[value=\"Option 1\"]");
+        const option2Input = page.locator("input[value=\"Option 2\"]");
+        await option1Input.fill("Option 1");
+        await option2Input.fill("Option 2");
+
+        // Шаг 6: Нажать на кнопку "Create Poll" для завершения создания опроса
+        const submitPollButton = page.locator("button:text('Post poll')");
+        await submitPollButton.click();
+
+        // Шаг 7: Подождать обновления страницы после создания опроса
+        await page.waitForLoadState('networkidle');
+
+        // Шаг 8: Проверить, что опрос с заголовком "Test Poll Title" отображается в списке опросов
+        const newPoll = page.locator("article:has-text('Test Poll Title')");
+        await expect(newPoll).toBeVisible();
+
+        // Логирование успешного выполнения теста
+        console.log(`Test passed: Poll "Test Poll Title" successfully created and visible.`);
+    });
+
 
 });
