@@ -78,7 +78,7 @@ const Departments = () => {
         try {
             // First, check if there are employment posts associated with the department
             const checkPostsResponse = await fetch(
-                `/api/department/employment_posts/${currentDepartmentId}`,
+                `/api/department/employment_posts?department_id=${currentDepartmentId}`,
                 {
                     method: "GET",
                     headers: {
