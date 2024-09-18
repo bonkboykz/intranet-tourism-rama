@@ -137,3 +137,47 @@ Scenario: Logged-in member uploads a single image
     And the user clicks on the "Publish" button (arrow icon)
   Then the post "This is a test post with multiple images" should be visible in the group's post list
     And five instances of the image "image1.png"(5) should be visible in the post
+
+    Scenario: Logged-in member downloads a document
+  Given the user is logged in
+  When the user navigates to the "testmember" community group page
+    And the user navigates to the post containing the document "testdoc.xlsx"
+    And the user clicks on the download link or button for "testdoc.xlsx"
+  Then the document "testdoc.xlsx" should start downloading to the user's computer
+    And a confirmation message or download indicator should be visible
+
+Scenario: Logged-in member creates a post with an album tag
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the post input field with placeholder "Share Your Thoughts..."
+    And the user writes "This is a test post with an album tag"
+    And the user clicks on the "Album Tag" button
+    And the user selects an album tag from the list
+    And the user clicks on the "Publish" button 
+  Then the post "This is a test post with an album tag" should be visible in the group's post list
+    And the selected album tag should be visible in the post
+
+    Scenario: Logged-in member creates a post with an album tag
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the post input field with placeholder "Share Your Thoughts..."
+    And the user writes "This is a test post with an album tag"
+    And the user clicks on the "event tag" button
+    And the user selects an album tag from the list
+    And the user clicks on the "Publish" button 
+  Then the post "This is a test post with an event tag" should be visible in the group's post list
+    And the selected event tag should be visible in the post
+
+
+Scenario: Logged-in member views uploaded files in the gallery
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the "Gallery" tab
+  Then the gallery should display the file "image1.png"
+    And the gallery should display the file "video700kb.mov"
+
+    Scenario: Logged-in member views uploaded document in the files tab
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the "Files" tab
+  Then the files list should display the document "testdoc.xlsx"
