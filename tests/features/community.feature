@@ -376,4 +376,6 @@ Scenario: Super admin unarchives the "testmember" community group
     And the super admin confirms the action
   Then the "testmember" community group should be deleted
     And the group should no longer be visible in the communities list
-  
+
+
+  обычный мембер заходит в лругие группы
