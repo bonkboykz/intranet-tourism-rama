@@ -47,8 +47,37 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       And the "testmember" community group page should be displayed
 
 
+      Scenario: Logged-in member writes and publishes a post
+    Given the user is logged in
+      And the user is on the "testmember" community group page
+    When the user writes "This is a test post" in the post input field
+      And the user clicks on the "Publish" button
+    Then the post "This is a test post" should be visible in the group's post list
 
 
+ Scenario: Logged-in member writes and publishes a post with an emoji
+    Given the user is logged in
+      And the user is on the "testmember" community group page
+    When the user writes "This is a test post with an emoji 😊" in the post input field
+      And the user clicks on the "Publish" button
+    Then the post "This is a test post with an emoji 😊" should be visible in the group's post list
 
 
+Scenario: Logged-in member creates a poll with any title
+    Given the user is logged in
+      And the user is on the "testmember" community group page
+    When the user clicks on the "Create Poll" button
+      And the user enters "Test Poll Title" as the poll title
+      And the user enters "Option 1" and "Option 2" as the poll options
+      And the user clicks on the "Create Poll" button
+    Then the poll "Test Poll Title" should be visible in the group's poll list
+    
 
+ Scenario: Logged-in member adds an additional option to an existing poll
+    Given the user is logged in
+      And the user is on the "testmember" community group page
+      And the poll "Test Poll Title" exists
+    When the user clicks on the "Add Option" button for the poll "Test Poll Title"
+      And the user enters "Option 3" as the new poll option
+      And the user clicks on the "Save Option" button
+    Then the poll "Test Poll Title" should have the options "Option 1", "Option 2", and "Option 3"
