@@ -60,4 +60,46 @@ test.describe("Community Management", () => {
         console.log("Test passed: Group 'testmember' created and found in the list.");
     });
 
+    // Scenario: Member logs in, navigates to community page, and visits a specific group
+    test("Member logs in, navigates to community page, and visits 'jij' group", async ({ page }) => {
+        await loginAs(page, "member");
+
+        // Переход на страницу сообщества
+        await page.goto(`${baseUrl}/community`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Убедиться, что на странице сообщества
+        await expect(page).toHaveURL(`${baseUrl}/community`);
+
+        // Ждем, пока появятся карточки сообществ
+        const communityItems = page.locator(".staff-member-card");
+        await page.waitForSelector(".staff-member-card");
+
+        const count = await communityItems.count();
+        expect(count).toBeGreaterThan(0);
+
+        // Ищем ссылку внутри карточки с текстом 'jij'
+        const jijGroupLink = page.locator(".staff-member-card:has-text('jij') a");
+        await expect(jijGroupLink).toBeVisible();
+
+        // Ожидаем переход на страницу после клика по 'jij'
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: "networkidle" }),
+            jijGroupLink.click(),
+        ]);
+
+        // Проверка, что мы перешли на страницу с communityId (динамическая часть URL)
+        await expect(page).toHaveURL(/\/communityInner\?communityId=\d+/);
+
+        // Проверка, что заголовок с текстом 'jij' отображается на новой странице
+        const groupHeader = page.locator("h1:has-text('jij')");
+        await expect(groupHeader).toBeVisible();
+
+        console.log("Test passed: Successfully navigated to 'jij' community group page.");
+    });
+
+
+
+
+
 });
