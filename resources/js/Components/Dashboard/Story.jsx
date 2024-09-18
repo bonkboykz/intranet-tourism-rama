@@ -130,7 +130,7 @@ const StoryNew = ({ userId }) => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
 
-        console.log(file);
+        // console.log(file);
         if (file) {
             setSelectedFile(file);
             setIsPopupOpen(true);
@@ -150,7 +150,7 @@ const StoryNew = ({ userId }) => {
         setSelectedStory(null);
         setSelectedUser(null);
         setCurrentGroupIndex(null);
-        setCurrentStoryIndex(1);
+        setCurrentStoryIndex(0);
     };
 
     const handlePostStory = async () => {
@@ -170,7 +170,7 @@ const StoryNew = ({ userId }) => {
     }, [userStories]);
 
     const markStoryAsViewed = async (story) => {
-        console.log(story);
+        // console.log(story);
 
         setViewedMap({
             ...viewedMap,
