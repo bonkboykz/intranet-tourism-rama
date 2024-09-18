@@ -337,6 +337,8 @@ function Card({
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const csrfToken = useCsrf();
 
+    const [wasCropped, setWasCropped] = useState(false);
+
     // const fetchUser = async () => {
     //     try {
     //         const response = await fetch(
@@ -386,16 +388,23 @@ function Card({
                 croppedAreaPixels
             );
             setCroppedImage(croppedImageBlob);
+            setWasCropped(true);
         },
         [imageSrc]
     );
 
+    const isDefaultImage = imageSrc === imgSrc;
+
     const handleSubmit = async () => {
         const formData = new FormData();
         formData.append("name", departmentName);
-        if (croppedImage && imageSrc !== imgSrc) {
+
+        if (!wasCropped && !isDefaultImage) {
+            formData.append("banner", imageFile);
+        } else if (croppedImage && !isDefaultImage) {
             formData.append("banner", croppedImage);
         }
+
         formData.append("description", departmentDescription);
         formData.append("type", selectedType);
 
@@ -445,7 +454,7 @@ function Card({
                     zoom={zoom}
                     setZoom={setZoom}
                     onCropComplete={onCropComplete}
-                    cropDisabled={imageSrc === imgSrc}
+                    cropDisabled={isDefaultImage}
                 />
                 <input
                     type="text"
