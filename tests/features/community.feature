@@ -83,7 +83,7 @@ Scenario: Logged-in member uploads a video
     And the user clicks on the "Publish" button (arrow icon)
   Then the video "video700kb.mov" should be visible in the group's post list
 
-  Scenario: Logged-in member uploads a video and adds text
+      Scenario: Logged-in member uploads a video and adds text
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the post input field with placeholder "Share Your Thoughts..."
