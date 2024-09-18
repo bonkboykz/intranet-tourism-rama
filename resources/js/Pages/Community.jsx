@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
+import axios from "axios";
 
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { toastError } from "@/Utils/toast";
 
 import CommunityCard from "../Components/Reusable/Community/CommunityCard";
 import CommunityDropdown from "../Components/Reusable/Community/CommunityDropdown";
@@ -102,6 +104,26 @@ const Community = () => {
 
     const handleDelete = async (departmentId) => {
         try {
+            const resMembers = await axios.get(
+                `/api/communities/communities/${departmentId}/members`
+            );
+
+            if (resMembers.data.data.length > 0) {
+                toastError("Cannot delete community with members");
+
+                return;
+            }
+
+            const resAdmins = await axios.get(
+                `/api/communities/communities/${departmentId}/admins`
+            );
+
+            if (resAdmins.data.data.length > 0) {
+                toastError("Cannot delete community with admins");
+
+                return;
+            }
+
             const url = `/api/communities/communities/${departmentId}`;
             const options = {
                 method: "DELETE",

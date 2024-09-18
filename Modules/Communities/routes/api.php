@@ -27,3 +27,4 @@ Route::post('communities/{community}/delete-member', [CommunityController::class
 Route::post('communities/{community}/invite-community-admin', [CommunityController::class, 'inviteCommunityAdmin'])->name('community.inviteCommunityAdmin');
 Route::post('communities/{community}/revoke-community-admin', [CommunityController::class, 'revokeCommunityAdmin'])->name('community.revokeCommunityAdmin');
 Route::get('communities/{community}/admins', [CommunityController::class, 'getAdmins'])->name('community.getAdmins');
+Route::get('communities/{community}/members', [CommunityController::class, 'getMembers'])->name('community.getMembers');

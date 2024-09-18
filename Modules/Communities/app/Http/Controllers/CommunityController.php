@@ -200,6 +200,13 @@ class CommunityController extends Controller
         ]);
     }
 
+    public function getMembers(Community $community)
+    {
+        return response()->json([
+            'data' => $community->members
+        ]);
+    }
+
 
     // invie community admin
     public function inviteCommunityAdmin(Request $request)
