@@ -30,7 +30,9 @@ export function useUserData() {
             const { data } = response.data;
             setUserData({
                 ...data,
-                profileImage: data.profile?.image,
+                profileImage: data.profile?.image
+                    ? `/storage/${data.profile.image}`
+                    : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${data.name}&rounded=true`,
             });
         } catch (error) {
             console.error("Error fetching user data:", error);
