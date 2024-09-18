@@ -144,3 +144,5 @@ make storage_link
 ```
 php artisan sentry:publish --dsn=https://606ee5aaf4f4903535aa74fb16ed8ef4@o4505386622910464.ingest.us.sentry.io/4507952806821888
 ```
+
+# Some additional info
