@@ -27,6 +27,35 @@ test.describe("Authorization", () => {
         await page.waitForURL(`${baseUrl}/dashboard`);
     });
 
+    test("User fails authentication", async ({ page }) => {
+        // Navigate to the login page
+        await page.goto(`${baseUrl}/login`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Ensure the Azure login button and email/password inputs are visible
+        const azureButton = page.locator("text=Login with Azure AD");
+        const emailInput = page.locator("input[name='email']");
+        const passwordInput = page.locator("input[name='password']");
+
+        await expect(azureButton).toBeVisible();
+        await expect(emailInput).toBeVisible();
+        await expect(passwordInput).toBeVisible();
+
+        // Enter incorrect email and password
+        await emailInput.fill("wrongemail@mail.com");
+        await passwordInput.fill("wrongpassword");
+
+        // Click the login button
+        const submitButton = page.locator("text=Log in");
+        await submitButton.click();
+
+        // Wait for any potential page navigation or responses
+        await page.waitForTimeout(1000); // Adjust the timeout if necessary to wait for any error to appear
+
+        // Verify that the user is still on the login page (the URL should remain /login)
+        await expect(page).toHaveURL(`${baseUrl}/login`);
+    });
+
     // // Scenario: Verify access as Superadmin
     // test("Superadmin should have access to all pages", async ({ page }) => {
     //     // Log in as a superadmin
