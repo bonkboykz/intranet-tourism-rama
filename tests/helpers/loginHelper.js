@@ -1,31 +1,45 @@
-// Helper function to login based on role
+import {expect} from "@playwright/test";
+
 export async function loginAs(page, role) {
     const baseUrl = "https://intranet-tourism-rama-production.up.railway.app";
 
     const credentials = {
-        user: { username: "user123", password: "userpassword" },
-        superadmin: {
-            username: "superadmin123",
-            password: "superadminpassword",
-        },
-        communityAdmin: {
-            username: "communityAdmin123",
-            password: "adminpassword",
-        },
-        departmentAdmin: {
-            username: "departmentAdmin123",
-            password: "adminpassword",
-        },
+        user: { username: "test@mail.com", password: "123456" },
+        superadmin: { username: "superadmin123", password: "superadminpassword" },
+        communityAdmin: { username: "communityAdmin123", password: "adminpassword" },
+        departmentAdmin: { username: "departmentAdmin123", password: "adminpassword" },
         member: { username: "member123", password: "memberpassword" },
     };
 
-    const { username, password } = credentials[role];
-    await page.goto(`${baseUrl}/login`);
-    await page.fill("#username", username);
-    await page.fill("#password", password);
-    await page.click("button[type=submit]");
-    await page.waitForURL(`${baseUrl}/dashboard`);
+    const userCredentials = credentials[role];
+    if (!userCredentials) {
+        throw new Error(`Role “${role}” is not found in the credentials list.`);
+    }
+
+    const { username, password } = userCredentials;
+
+    try {
+        await page.goto(`${baseUrl}/login`);
+
+        const emailInput = page.locator("input[name='email']");
+        const passwordInput = page.locator("input[name='password']");
+
+        await expect(emailInput).toBeVisible();
+        await expect(passwordInput).toBeVisible();
+
+        await emailInput.fill("test@mail.com");
+        await passwordInput.fill("123456");
+
+        const submitButton = page.locator("text=Log in");
+
+        await submitButton.click();
+
+        await page.waitForURL(`${baseUrl}/dashboard`);
+    } catch (error) {
+        throw new Error(`Error logging in for a role "${role}": ${error.message}`);
+    }
 }
+
 
 // Helper to simulate invite to community or department
 export async function inviteUserToCommunityOrDepartment(

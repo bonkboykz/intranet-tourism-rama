@@ -24,18 +24,18 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     Then the community page should be displayed
       And the user should see a list of community groups
 
- 
-  Scenario: Logged-in member creates a public group and sees it in the list
-    Given the user is logged in
-    When the user navigates to the community page
-      And the user clicks on the "+community" button
-      And the user enters "testmember" as the group name
-      And the user enters "testmember description" as the group description
-      And the user selects "public" as the group type
-      And the user clicks on the "Create" button
-    Then the "testmember" community group should be created
-      And the user should see the new "testmember" community group in the list of community groups
-      
+
+      Scenario: Logged-in member creates a public group and sees it in the list
+        Given the user is logged in
+        When the user navigates to the community page
+          And the user clicks on the "+community" button
+          And the user enters "testmember" as the group name
+          And the user enters "testmember description" as the group description
+          And the user selects "public" as the group type
+          And the user clicks on the "Create" button
+        Then the "testmember" community group should be created
+          And the user should see the new "testmember" community group in the list of community groups
+
 
       Scenario: Member logs in, navigates to community page, and visits a specific group
     Given the user is logged in
@@ -71,7 +71,7 @@ Scenario: Logged-in member creates a poll with any title
       And the user enters "Option 1" and "Option 2" as the poll options
       And the user clicks on the "Create Poll" button
     Then the poll "Test Poll Title" should be visible in the group's poll list
-    
+
 
  Scenario: Logged-in member adds an additional option to an existing poll
     Given the user is logged in
@@ -96,7 +96,7 @@ Scenario: Logged-in member uploads a video
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the video upload icon (camera icon)
-    And the user selects the video file "video700kb.mov" 
+    And the user selects the video file "video700kb.mov"
     And the user clicks on the "Publish" button (arrow icon)
   Then the video "video700kb.mov" should be visible in the group's post list
 
@@ -106,7 +106,7 @@ Scenario: Logged-in member uploads a video
   When the user clicks on the post input field with placeholder "Share Your Thoughts..."
     And the user writes "This is a test post with a video"
     And the user clicks on the video upload icon (camera icon)
-    And the user selects the video file "video700kb.mov" 
+    And the user selects the video file "video700kb.mov"
     And the user clicks on the "Publish" button (arrow icon)
   Then the post "This is a test post with a video" should be visible in the group's post list
     And the video "video700kb.mov" should be visible in the post
@@ -115,7 +115,7 @@ Scenario: Logged-in member uploads a single image
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the image upload icon (image icon)
-    And the user selects the image file "image1.png" 
+    And the user selects the image file "image1.png"
     And the user clicks on the "Publish" button (arrow icon)
   Then the image "image1.png" should be visible in the group's post list
 
@@ -123,7 +123,7 @@ Scenario: Logged-in member uploads a single image
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the image upload icon (image icon)
-    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png" 
+    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png"
     And the user clicks on the "Publish" button (arrow icon)
   Then five instances of the image "image1.png" should be visible in the group's post list
 
@@ -133,7 +133,7 @@ Scenario: Logged-in member uploads a single image
   When the user clicks on the post input field with placeholder "Share Your Thoughts..."
     And the user writes "This is a test post with multiple images"
     And the user clicks on the image upload icon (image icon)
-    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png" 
+    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png"
     And the user clicks on the "Publish" button (arrow icon)
   Then the post "This is a test post with multiple images" should be visible in the group's post list
     And five instances of the image "image1.png"(5) should be visible in the post
