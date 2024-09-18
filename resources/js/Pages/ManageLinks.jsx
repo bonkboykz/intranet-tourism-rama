@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import React, { useEffect,useState } from 'react';
+import { DragDropContext, Draggable,Droppable } from '@hello-pangea/dnd';
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid';
-import '../Components/Settings/ManageLinks.css';
+
 import { useCsrf } from "@/composables";
 import Example from '@/Layouts/DashboardLayoutNew'; // Assuming Example is a layout component
+
+import '../Components/Settings/ManageLinks.css';
 import 'tailwindcss/tailwind.css';
 
 
@@ -21,12 +23,12 @@ const Pautan = () => {
   const [urlError, setUrlError] = useState('');
   const csrfToken = useCsrf();
 
-  
+
   const fetchData = async () => {
     let allApps = [];
     let currentPage = 1;
     let lastPage = 1;
-    
+
     try {
       while (currentPage <= lastPage) {
         const response = await fetch(`${API_URL}?page=${currentPage}`, {
@@ -49,7 +51,7 @@ const Pautan = () => {
       console.error('Error fetching data:', error);
     }
   };
-  
+
   useEffect(() => {
     fetchData();
   }, [csrfToken]);
@@ -206,7 +208,7 @@ const Pautan = () => {
     } else {
       setUrlError('');
     }
-  
+
     // const { isNameDuplicate, isUrlDuplicate } = isDuplicateApp(newAppName, newAppUrl, apps);
     // if (newAppName && isNameDuplicate) {
     //   alert('App name already exists.');
@@ -215,13 +217,13 @@ const Pautan = () => {
     //   alert('App URL already exists.');
     //   return;
     // }
-  
+
     const updatedApp = {};
     if (newAppName) updatedApp.label = newAppName;
     if (newAppUrl) updatedApp.url = newAppUrl;
-  
+
     const updateUrl = urlTemplate.replace('{id}', currentApp.id);
-  
+
     fetch(updateUrl, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', "X-CSRF-Token": csrfToken },

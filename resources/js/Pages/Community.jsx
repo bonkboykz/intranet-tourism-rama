@@ -33,37 +33,51 @@ const Community = () => {
         try {
             setIsLoading(true);
 
-            const url = "/api/communities/communities";
-            const response = await fetch(url, {
-                method: "GET",
-                headers: { Accept: "application/json" },
-            });
+            let currentPage = 1;
+            let totalPages = 1;
 
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
+            const allCommunities = [];
+
+            while (currentPage <= totalPages) {
+                const url = `/api/communities/communities?page=${currentPage}`;
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: { Accept: "application/json" },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                const data = await response.json();
+                const departmentData = data.data.data.map((community) => ({
+                    id: community.id,
+                    name: community.name,
+                    type: community.type,
+                    imageUrl:
+                        community.banner || "/assets/defaultCommunity.png", // Use banner if available
+                    isArchived: false, // Initialize with not archived
+                }));
+
+                // Retrieve archived state from localStorage
+                const archivedState =
+                    JSON.parse(localStorage.getItem("archivedCommunities")) ||
+                    {};
+
+                // Update the archived state based on localStorage data
+                const updatedDepartments = departmentData.map((department) => ({
+                    ...department,
+                    isArchived: archivedState[department.id] || false,
+                }));
+
+                allCommunities.push(...updatedDepartments);
+
+                totalPages = data.data.last_page;
+                currentPage++;
             }
 
-            const data = await response.json();
-            const departmentData = data.data.data.map((community) => ({
-                id: community.id,
-                name: community.name,
-                type: community.type,
-                imageUrl: community.banner || "/assets/defaultCommunity.png", // Use banner if available
-                isArchived: false, // Initialize with not archived
-            }));
-
-            // Retrieve archived state from localStorage
-            const archivedState =
-                JSON.parse(localStorage.getItem("archivedCommunities")) || {};
-
-            // Update the archived state based on localStorage data
-            const updatedDepartments = departmentData.map((department) => ({
-                ...department,
-                isArchived: archivedState[department.id] || false,
-            }));
-
             setDepartmentsList(
-                updatedDepartments.sort((a, b) => a.name?.localeCompare(b.name))
+                allCommunities.sort((a, b) => a.name?.localeCompare(b.name))
             );
         } catch (error) {
             console.error("Error fetching departments:", error);
