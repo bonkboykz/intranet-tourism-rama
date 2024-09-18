@@ -275,4 +275,53 @@ test.describe("Community Management", () => {
         console.log('Test passed: Poll "Test Poll Title" now contains "Option 1", "Option 2", and "Option 3".');
     });
 
+    // Scenario: Logged-in member sets a post as an announcement
+    test("Logged-in member sets a post as an announcement", async ({ page }) => {
+        // Шаг 1: Войти как участник
+        await loginAs(page, "member");
+
+        // Шаг 2: Перейти на страницу группы "testmember"
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Проверить, что мы на странице группы "testmember"
+        await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+
+        // Шаг 3: Написать пост
+        const postContent = "This is an announcement"; // Объявляем переменную с содержимым поста
+        const postInput = page.locator("textarea[placeholder='Share Your Thoughts...']");
+        await postInput.fill(postContent);
+
+        // Шаг 5: Установить переключатель "Set as Announcement?" в положение ON
+        const announcementToggle = page.locator('.switch');
+        const isChecked = await announcementToggle.isChecked(); // Проверяем текущее состояние
+
+        if (!isChecked) {
+            await announcementToggle.click(); // Кликаем, чтобы включить, если не включен
+        }
+
+        // Шаг 6: Нажать на кнопку "Publish" (значок стрелки)
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
+
+        // Шаг 7: Подождать обновления страницы после публикации поста
+        await page.waitForLoadState('networkidle');
+
+
+        // Шаг 8: Проверить, что пост с текстом "This is an announcement" отображается в списке постов
+        const newPost = page.locator(`article:has-text("${postContent}")`).last();
+        await expect(newPost).toBeVisible();
+
+        // Шаг 9: Проверить, что пост помечен как объявление
+
+        // Мы можем уточнить локатор, проверяя внутри конкретного поста наличие метки "Announcement"
+        const announcementLabel = newPost.locator('text=Announcement');
+        await expect(announcementLabel).toBeVisible();
+
+        // Логирование успешного выполнения теста
+        console.log(`Test passed: Post "${postContent}" is visible and marked as an announcement.`);
+    });
+
+
+
 });
