@@ -33,7 +33,7 @@ function PollOption({ option, onRemove, onChange }) {
 function AddOptionButton({ label, onClick }) {
     return (
         <div
-            className="flex flex-auto gap-3 py-1.5 bg-gray-100 rounded-3xl pr-5 cursor-pointer"
+            className="addoptionbutton flex flex-auto gap-3 py-1.5 bg-gray-100 rounded-3xl pr-5 cursor-pointer"
             onClick={onClick}
         >
             <div className="flex justify-center items-center px-2.5 text-xl font-bold ml-1 text-center text-white bg-blue-500 rounded-3xl h-[30px] w-[30px]">

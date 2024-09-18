@@ -224,4 +224,55 @@ test.describe("Community Management", () => {
     });
 
 
+    // Scenario: Logged-in member adds an additional option to an existing poll
+    test("Logged-in member creates a poll and adds an additional option", async ({ page }) => {
+        // Шаг 1: Войти как участник
+        await loginAs(page, "member");
+
+        // Шаг 2: Перейти на страницу группы "testmember"
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Шаг 3: Нажать на кнопку "Create Poll"
+        const createPollButton = page.locator('img[alt="Poll Icon"]');
+        await createPollButton.click();
+
+        // Шаг 4: Ввести заголовок опроса
+        const pollTitleInput = page.locator("textarea[placeholder='Type something...']");
+        await pollTitleInput.fill("Test Poll Title");
+
+        // Шаг 5: Ввести опции опроса
+        const option1Input = page.locator("input[value='Option 1']");
+        await option1Input.fill("Option 1");
+
+        const option2Input = page.locator("input[value='Option 2']");
+        await option2Input.fill("Option 2");
+
+        // Шаг 6: Нажать на кнопку "Add Option"
+        const addOptionButton = page.locator('.my-auto:has-text("Add option")')
+        await addOptionButton.click();
+
+        // Шаг 7: Ввести новый вариант "Option 3"
+        const newOptionInput = page.locator("input[value='Option 3']");
+        await newOptionInput.fill("Option 3");
+
+        // Шаг 8: Нажать на кнопку "Post poll"
+        const saveOptionButton = page.locator('button:text("Post poll")');
+        await saveOptionButton.click();
+
+        // Шаг 9: Подождать обновления страницы после сохранения опции
+        await page.waitForLoadState('networkidle');
+
+        // Шаг 10: Проверить, что опрос содержит опции "Option 1", "Option 2" и "Option 3"
+        const option1 = page.locator("article:has-text('Option 1')");
+        const option2 = page.locator("article:has-text('Option 2')");
+        const option3 = page.locator("article:has-text('Option 3')");
+
+        await expect(option1).toBeVisible();
+        await expect(option2).toBeVisible();
+        await expect(option3).toBeVisible();
+
+        console.log('Test passed: Poll "Test Poll Title" now contains "Option 1", "Option 2", and "Option 3".');
+    });
+
 });
