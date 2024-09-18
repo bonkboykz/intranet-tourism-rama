@@ -436,7 +436,7 @@ function Navigation({ communityID, departmentName, type }) {
 
     const [filterType, setFilterType] = useState(null);
 
-    const { userId } = useContext(CommunityContext);
+    const { userId, isMember } = useContext(CommunityContext);
 
     const [fileSearchTerm, setFileSearchTerm] = useState("");
 
@@ -539,14 +539,16 @@ function Navigation({ communityID, departmentName, type }) {
                         <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
                             {/* TODO: if not a member -> don't show */}
                             <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
-                                <ShareYourThoughts
-                                    userId={userId}
-                                    onCreatePoll={handleCreatePoll}
-                                    includeAccessibilities={true}
-                                    communityId={communityID}
-                                    filterType="Department"
-                                    filterId={communityID}
-                                />
+                                {isMember && (
+                                    <ShareYourThoughts
+                                        userId={userId}
+                                        onCreatePoll={handleCreatePoll}
+                                        includeAccessibilities={true}
+                                        communityId={communityID}
+                                        filterType="Department"
+                                        filterId={communityID}
+                                    />
+                                )}
                                 <Filter
                                     onFilterChange={(filter) =>
                                         setFilterType(filter)

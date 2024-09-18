@@ -11,6 +11,8 @@ export function CommunityWallActions({
     const { role, isMember, type, communityID, isJoinRequestPending } =
         useContext(CommunityContext);
 
+    console.log("role", role);
+
     const createJoinRequest = async () => {
         try {
             const response = await axios.post(`/api/createJoinGroupRequest`, {
@@ -26,6 +28,17 @@ export function CommunityWallActions({
         }
     };
 
+    if (["superadmin", "admin"].includes(role)) {
+        return (
+            <button
+                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"
+                onClick={handleAddMember}
+            >
+                Invite
+            </button>
+        );
+    }
+
     if (type === "public") {
         return (
             <button
@@ -35,17 +48,6 @@ export function CommunityWallActions({
                 onClick={handleJoinOrExit}
             >
                 {hasJoined ? "Exit Group" : "Join"}
-            </button>
-        );
-    }
-
-    if (["superadmin", "admin"].includes(role)) {
-        return (
-            <button
-                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"
-                onClick={handleAddMember}
-            >
-                Invite
             </button>
         );
     }
