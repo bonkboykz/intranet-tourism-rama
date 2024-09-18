@@ -50,6 +50,7 @@ const Departments = () => {
                     ? `/storage/${department.banner}`
                     : "assets/departmentsDefault.jpg",
                 isMember: department.is_member,
+                role: department.role,
             }));
 
             console.log("Department data:", departmentData);
@@ -181,6 +182,7 @@ const Departments = () => {
                                     departmentID={department.id}
                                     onDeleteClick={handleDeleteClick}
                                     isMember={department.isMember}
+                                    role={department.role}
                                 />
                             ))
                         )}

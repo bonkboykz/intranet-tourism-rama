@@ -12,6 +12,7 @@ const DepartmentsCard = ({
     onDeleteClick,
     departmentID,
     isMember = false,
+    role,
 }) => {
     const threeDotButtonRef = useRef(null);
 
@@ -23,17 +24,19 @@ const DepartmentsCard = ({
                     alt={`${name} Banner`}
                     className="staff-member-image"
                 />
-                <button
-                    className="status-button"
-                    onClick={() => onDeleteClick(departmentID)}
-                    ref={threeDotButtonRef}
-                >
-                    <img
-                        style={{ width: "40px" }}
-                        src={deleteIcon}
-                        alt="Delete Button"
-                    />
-                </button>
+                {role === "superadmin" && (
+                    <button
+                        className="status-button"
+                        onClick={() => onDeleteClick(departmentID)}
+                        ref={threeDotButtonRef}
+                    >
+                        <img
+                            style={{ width: "40px" }}
+                            src={deleteIcon}
+                            alt="Delete Button"
+                        />
+                    </button>
+                )}
             </div>
             <div className="card-body">
                 <h3 className="staff-member-name">{name}</h3>
