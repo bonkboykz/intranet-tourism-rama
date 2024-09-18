@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import dropDownDownArrow from "../../../../public/assets/dropdownDownArrow.png";
 import dropDownUpArrow from "../../../../public/assets/dropdownUpArrow.png";
 import dummyStaffPlaceHolder from "../../../../public/assets/dummyStaffPlaceHolder.jpg";
@@ -14,94 +16,63 @@ const DepartmentDropdown = ({
     staffMembers,
     onNewMemberAdded,
 }) => {
+    const { hasRole } = usePermissions();
+
+    const isSuperAdmin = hasRole("superadmin");
+
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedDepartment, setSelectedDepartment] = useState(() => {
-        const savedDepartment = localStorage.getItem("selectedDepartment");
-        return savedDepartment
-            ? JSON.parse(savedDepartment)
-            : { id: "", name: "" };
-    });
+    const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [isAddMemberPopupOpen, setIsAddMemberPopupOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(selectedDepartment.name || "");
+    const [searchTerm, setSearchTerm] = useState("");
     const dropdownRef = useRef(null);
 
-    // const people = [
-    //     {
-    //         name: "Aisha Binti SOmething shas as dasd asd",
-    //         position: "Pengarah Kanan",
-    //         avatar: dummyStaffPlaceHolder,
-    //     },
-    //     {
-    //         name: "Ben Tan",
-    //         position: "Timbalan Pengarah Kanan",
-    //         avatar: dummyStaffPlaceHolder,
-    //     },
-    //     {
-    //         name: "Nick",
-    //         position: "Setiausaha Pejabat",
-    //         avatar: dummyStaffPlaceHolder,
-    //     },
-    //     {
-    //         name: "Sarah",
-    //         position: "Setiausaha Pejabat",
-    //         avatar: dummyStaffPlaceHolder,
-    //     },
-    //     {
-    //         name: "Thomas",
-    //         position: "Timbalan Pengarah Kanan",
-    //         avatar: dummyStaffPlaceHolder,
-    //     },
-    //     { name: "Zack", position: "Pegawai", avatar: dummyStaffPlaceHolder },
-    //     { name: "Zara", position: "Pegawai", avatar: dummyStaffPlaceHolder },
-    // ];
-
     const handleSelect = (department) => {
-        // Simulate fetching department members and details (replace with real fetch logic)
-        const departmentDetails = {
-            ...department,
-            members: [
-                {
-                    name: "Aisha Binti SOmething shas as dasd asd",
-                    position: "Pengarah Kanan",
-                    avatar: dummyStaffPlaceHolder,
-                },
-                {
-                    name: "Ben Tan",
-                    position: "Timbalan Pengarah Kanan",
-                    avatar: dummyStaffPlaceHolder,
-                },
-                {
-                    name: "Nick",
-                    position: "Setiausaha Pejabat",
-                    avatar: dummyStaffPlaceHolder,
-                },
-                {
-                    name: "Sarah",
-                    position: "Setiausaha Pejabat",
-                    avatar: dummyStaffPlaceHolder,
-                },
-                {
-                    name: "Thomas",
-                    position: "Timbalan Pengarah Kanan",
-                    avatar: dummyStaffPlaceHolder,
-                },
-                {
-                    name: "Zack",
-                    position: "Pegawai",
-                    avatar: dummyStaffPlaceHolder,
-                },
-                {
-                    name: "Zara",
-                    position: "Pegawai",
-                    avatar: dummyStaffPlaceHolder,
-                },
-            ],
-        };
-        setSelectedDepartment(departmentDetails);
-        localStorage.setItem(
-            "selectedDepartment",
-            JSON.stringify(departmentDetails)
-        ); // Persist selection in localStorage
+        // // Simulate fetching department members and details (replace with real fetch logic)
+        // const departmentDetails = {
+        //     ...department,
+        //     members: [
+        //         {
+        //             name: "Aisha Binti SOmething shas as dasd asd",
+        //             position: "Pengarah Kanan",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //         {
+        //             name: "Ben Tan",
+        //             position: "Timbalan Pengarah Kanan",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //         {
+        //             name: "Nick",
+        //             position: "Setiausaha Pejabat",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //         {
+        //             name: "Sarah",
+        //             position: "Setiausaha Pejabat",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //         {
+        //             name: "Thomas",
+        //             position: "Timbalan Pengarah Kanan",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //         {
+        //             name: "Zack",
+        //             position: "Pegawai",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //         {
+        //             name: "Zara",
+        //             position: "Pegawai",
+        //             avatar: dummyStaffPlaceHolder,
+        //         },
+        //     ],
+        // };
+        setSelectedDepartment(department);
+        // localStorage.setItem(
+        //     "selectedDepartment",
+        //     JSON.stringify(departmentDetails)
+        // ); // Persist selection in localStorage
         onSelectDepartment(department.id);
         setIsOpen(false);
         setSearchTerm(department.name);
@@ -140,24 +111,24 @@ const DepartmentDropdown = ({
             }
         }
     };
-    const handleRefreshOrBack = () => {
-        // Rehydrate the department info from localStorage (if present)
-        const savedDepartment = localStorage.getItem("selectedDepartment");
-        if (savedDepartment) {
-            const departmentDetails = JSON.parse(savedDepartment);
-            setSelectedDepartment(departmentDetails);
-            setSearchTerm(departmentDetails.name);
-        }
-    };
+    // const handleRefreshOrBack = () => {
+    //     // Rehydrate the department info from localStorage (if present)
+    //     const savedDepartment = localStorage.getItem("selectedDepartment");
+    //     if (savedDepartment) {
+    //         const departmentDetails = JSON.parse(savedDepartment);
+    //         setSelectedDepartment(departmentDetails);
+    //         setSearchTerm(departmentDetails.name);
+    //     }
+    // };
 
-    useEffect(() => {
-        // Add event listener to handle refresh or back
-        window.addEventListener("popstate", handleRefreshOrBack);
+    // useEffect(() => {
+    //     // Add event listener to handle refresh or back
+    //     window.addEventListener("popstate", handleRefreshOrBack);
 
-        return () => {
-            window.removeEventListener("popstate", handleRefreshOrBack);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener("popstate", handleRefreshOrBack);
+    //     };
+    // }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -170,20 +141,46 @@ const DepartmentDropdown = ({
         };
     }, [isOpen]);
 
-    // Restore the department name in the search term on component mount
+    // // Restore the department name in the search term on component mount
+    // useEffect(() => {
+    //     // Check localStorage on component mount to restore selected department and staff
+    //     const savedDepartment = localStorage.getItem("selectedDepartment");
+    //     if (savedDepartment) {
+    //         const departmentDetails = JSON.parse(savedDepartment);
+    //         setSelectedDepartment(departmentDetails);
+    //         setSearchTerm(departmentDetails.name);
+    //     }
+    // }, []);
+
     useEffect(() => {
-        // Check localStorage on component mount to restore selected department and staff
-        const savedDepartment = localStorage.getItem("selectedDepartment");
-        if (savedDepartment) {
-            const departmentDetails = JSON.parse(savedDepartment);
-            setSelectedDepartment(departmentDetails);
-            setSearchTerm(departmentDetails.name);
+        if (isSuperAdmin) {
+            setSelectedDepartment({
+                id: "",
+                name: "",
+            });
+            setSearchTerm("");
+
+            return;
         }
-    }, []);
+
+        const firstDepartmentWhereUser = departments?.find(
+            (department) => department.isMember === true
+        );
+
+        if (firstDepartmentWhereUser) {
+            onSelectDepartment(firstDepartmentWhereUser.id);
+            setSelectedDepartment(firstDepartmentWhereUser);
+            setSearchTerm(firstDepartmentWhereUser.name);
+        }
+    }, [departments]);
 
     const filteredDepartments = departments.filter((dept) =>
         dept.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    if (!selectedDepartment) {
+        return null;
+    }
 
     return (
         <div
@@ -254,7 +251,7 @@ const DepartmentDropdown = ({
                     isAddMemberPopupOpen={isAddMemberPopupOpen}
                     setIsAddMemberPopupOpen={setIsAddMemberPopupOpen}
                     departmentId={selectedDepartment.id}
-                    people={selectedDepartment.members}
+                    people={staffMembers}
                     onNewMemberAdded={onNewMemberAdded}
                 />
             )}

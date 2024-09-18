@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import { useCsrf } from "@/composables";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import Header from "../Components/DashboardHeader";
 import DeactivateModal from "../Components/Reusable/DeactivateModal";
