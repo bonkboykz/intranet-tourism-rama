@@ -9,6 +9,7 @@ import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import useUserData from "@/Utils/hooks/useUserData";
 
 import Comment from "../Comment";
 import { DeletePopup } from "../DeletePopup";
@@ -339,6 +340,8 @@ export function DefaultPostCard({ post }) {
         isCommunityAdmin ||
         isDepartmentAdmin;
 
+    const userData = useUserData();
+
     if (isDeleted) {
         return null;
     }
@@ -467,9 +470,9 @@ export function DefaultPostCard({ post }) {
                         PostLikesCount={cachedPost.likes?.lenght || 0}
                         currentUser={{
                             id: loggedInUserId,
-                            name: cachedPost.user.name,
+                            name: userData?.name,
                             profile: {
-                                image: cachedPost.userProfile?.profile?.image,
+                                image: userData?.profile?.image,
                             },
                         }}
                     />,
