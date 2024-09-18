@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { cn } from "@/Utils/cn";
+
 import DOC from "../../../../../public/assets/Docs.svg";
 import Excel from "../../../../../public/assets/ExcellIcon.svg";
 import PDF from "../../../../../public/assets/PDFIcon.svg";
@@ -201,11 +203,15 @@ function PostAttachments({ attachments }) {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex justify-center mt-4 overflow-x-auto w-full">
+                            <div className="flex justify-start mt-4 overflow-x-scroll w-full">
                                 {imagesAndVideos.map((attachment, index) => (
                                     <div
                                         key={index}
-                                        className={`cursor-pointer mx-1 ${currentMediaIndex === index ? "border-2 border-blue-500" : ""}`}
+                                        className={cn(
+                                            `cursor-pointer mx-1 min-w-20 max-w-20 h-20`,
+                                            currentMediaIndex === index &&
+                                                "border-2 border-blue-500"
+                                        )}
                                         onClick={() =>
                                             setCurrentMediaIndex(index)
                                         }
@@ -216,10 +222,10 @@ function PostAttachments({ attachments }) {
                                             <img
                                                 src={`/storage/${attachment.path}`}
                                                 alt="Thumbnail"
-                                                className="w-20 h-20 object-cover rounded-lg"
+                                                className="w-full h-full object-cover rounded-lg"
                                             />
                                         ) : (
-                                            <video className="w-20 h-20 object-cover rounded-lg">
+                                            <video className="w-full h-full object-cover rounded-lg">
                                                 <source
                                                     src={`/storage/${attachment.path}`}
                                                 />
