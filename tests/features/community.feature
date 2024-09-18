@@ -45,3 +45,10 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     When the user clicks on the community group named "testmember"
     Then the user should be redirected to the "testmember" community group page
       And the "testmember" community group page should be displayed
+
+
+
+
+
+
+
