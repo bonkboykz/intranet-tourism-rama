@@ -14,3 +14,17 @@ Feature: Community Management (Group)
     Given the user is a community member
     When the member posts in the community group
     Then the post should be visible to the group
+
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+  Scenario: Member logs in, navigates to community page, and views groups
+        Given the user is on the login page
+        When the user enters their email as "testmember@mail.com"
+          And the user enters their password as "123"
+          And the user clicks on the "Login" button
+        Then the user should be redirected to the homepage
+        When the user navigates to the community page
+        Then the community page should be displayed
+          And the user should see a list of community groups 
+
