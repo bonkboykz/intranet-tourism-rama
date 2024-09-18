@@ -9,7 +9,7 @@ class SettingsSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('settings')->insert([
+        DB::table('settings')->upsert([
             [
                 'group' => 'UI',
                 'key' => 'logo',
@@ -87,6 +87,6 @@ class SettingsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ]
-        ]);
+        ], 'key');
     }
 }
