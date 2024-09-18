@@ -138,6 +138,48 @@ test.describe("Community Management", () => {
         console.log("Test passed: User joined the group, wrote, and published a post successfully.");
     });
 
+    // Scenario: Logged-in member writes and publishes a post with an emoji
+    test("Logged-in member writes and publishes a post with an emoji via Emoji Picker", async ({ page }) => {
+        // Шаг 1: Войти как участник
+        await loginAs(page, "member");
+
+        // Шаг 2: Перейти на страницу группы "testmember"
+        await page.goto(`${baseUrl}/communityInner?communityId=26`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Проверить, что мы находимся на странице группы "testmember"
+        await expect(page).toHaveURL(/\/communityInner\?communityId=26/);
+
+        // Шаг 3: Ввести текст в поле для поста
+        const postInput = page.locator("textarea[placeholder='Share Your Thoughts...']");
+        const postContent = "This is a test post with an emoji";
+        await postInput.fill(postContent);
+
+        // Шаг 4: Открыть меню с эмодзи
+        const emojiButton = page.locator('img[alt="Emoji Icon"]');
+        await emojiButton.click();
+
+        // Шаг 5: Выбрать эмодзи (например, "grinning face" 😀)
+        const grinningEmoji = page.locator('img[alt="grinning"]'); // Локатор для эмодзи "grinning"
+        await grinningEmoji.click();
+
+        // Убедимся, что эмодзи добавлено в поле для поста
+        await expect(postInput).toHaveValue(`${postContent}😀`);
+
+        // Шаг 6: Нажать на кнопку "Publish"
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
+
+        // Шаг 7: Подождать обновления страницы после публикации поста
+        await page.waitForLoadState('networkidle');
+
+        // Шаг 8: Проверить, что пост с эмодзи отобразился в списке постов
+        const newPost = page.locator(`.post-content:has-text("${postContent}😀")`);
+        await expect(newPost).toBeVisible();
+
+        // Логирование успешного выполнения теста
+        console.log(`Test passed: User successfully published a post with an emoji: "${postContent}😀".`);
+    });
 
 
 

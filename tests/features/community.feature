@@ -7,7 +7,7 @@ Feature: Community Management (Group)
     Then the community page should be displayed
       And the user should see a list of community groups
 
- 
+
   Scenario: Logged-in member creates a public group and sees it in the list
     Given the user is logged in
     When the user navigates to the community page
@@ -18,7 +18,7 @@ Feature: Community Management (Group)
       And the user clicks on the "Create" button
     Then the "testmember" community group should be created
       And the user should see the new "testmember" community group in the list of community groups
-      
+
 
       Scenario: Member logs in, navigates to community page, and visits a specific group
     Given the user is logged in
@@ -41,9 +41,9 @@ Feature: Community Management (Group)
  Scenario: Logged-in member writes and publishes a post with an emoji
     Given the user is logged in
       And the user is on the "testmember" community group page
-    When the user writes "This is a test post with an emoji 😊" in the post input field
+    When the user writes "This is a test post with an emoji 😀" in the post input field
       And the user clicks on the "Publish" button
-    Then the post "This is a test post with an emoji 😊" should be visible in the group's post list
+    Then the post "This is a test post with an emoji 😀" should be visible in the group's post list
 
 
 Scenario: Logged-in member creates a poll with any title
@@ -54,7 +54,7 @@ Scenario: Logged-in member creates a poll with any title
       And the user enters "Option 1" and "Option 2" as the poll options
       And the user clicks on the "Create Poll" button
     Then the poll "Test Poll Title" should be visible in the group's poll list
-    
+
 
  Scenario: Logged-in member adds an additional option to an existing poll
     Given the user is logged in
@@ -79,7 +79,7 @@ Scenario: Logged-in member uploads a video
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the video upload icon (camera icon)
-    And the user selects the video file "video700kb.mov" 
+    And the user selects the video file "video700kb.mov"
     And the user clicks on the "Publish" button (arrow icon)
   Then the video "video700kb.mov" should be visible in the group's post list
 
@@ -89,7 +89,7 @@ Scenario: Logged-in member uploads a video
   When the user clicks on the post input field with placeholder "Share Your Thoughts..."
     And the user writes "This is a test post with a video"
     And the user clicks on the video upload icon (camera icon)
-    And the user selects the video file "video700kb.mov" 
+    And the user selects the video file "video700kb.mov"
     And the user clicks on the "Publish" button (arrow icon)
   Then the post "This is a test post with a video" should be visible in the group's post list
     And the video "video700kb.mov" should be visible in the post
@@ -98,7 +98,7 @@ Scenario: Logged-in member uploads a single image
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the image upload icon (image icon)
-    And the user selects the image file "image1.png" 
+    And the user selects the image file "image1.png"
     And the user clicks on the "Publish" button (arrow icon)
   Then the image "image1.png" should be visible in the group's post list
 
@@ -106,7 +106,7 @@ Scenario: Logged-in member uploads a single image
   Given the user is logged in
     And the user is on the "testmember" community group page
   When the user clicks on the image upload icon (image icon)
-    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png" 
+    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png"
     And the user clicks on the "Publish" button (arrow icon)
   Then five instances of the image "image1.png" should be visible in the group's post list
 
@@ -116,7 +116,7 @@ Scenario: Logged-in member uploads a single image
   When the user clicks on the post input field with placeholder "Share Your Thoughts..."
     And the user writes "This is a test post with multiple images"
     And the user clicks on the image upload icon (image icon)
-    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png" 
+    And the user selects the image files "image1.png", "image1.png", "image1.png", "image1.png", "image1.png"
     And the user clicks on the "Publish" button (arrow icon)
   Then the post "This is a test post with multiple images" should be visible in the group's post list
     And five instances of the image "image1.png"(5) should be visible in the post
@@ -136,7 +136,7 @@ Scenario: Logged-in member creates a post with an album tag
     And the user writes "This is a test post with an album tag"
     And the user clicks on the "Album Tag" button
     And the user selects an album tag from the list
-    And the user clicks on the "Publish" button 
+    And the user clicks on the "Publish" button
   Then the post "This is a test post with an album tag" should be visible in the group's post list
     And the selected album tag should be visible in the post
 
@@ -147,7 +147,7 @@ Scenario: Logged-in member creates a post with an album tag
     And the user writes "This is a test post with an album tag"
     And the user clicks on the "event tag" button
     And the user selects an album tag from the list
-    And the user clicks on the "Publish" button 
+    And the user clicks on the "Publish" button
   Then the post "This is a test post with an event tag" should be visible in the group's post list
     And the selected event tag should be visible in the post
 
@@ -291,20 +291,20 @@ Scenario: Super admin views all posts in the "testmember" community
     And the super admin is on the "testmember" community group page
   When the super admin clicks on the "Members" tab
   Then the super admin should see a search input field with a placeholder "Search member"
-  
+
   When the super admin types "testmember" in the search input field
   Then the search results should display the "testmember" account
-  
+
   When the super admin clicks on the three dots (options menu) next to the "testmember" account
     And the super admin selects the "Assign to admin" option
     And the super admin confirms the action
   Then the "testmember" account should have admin privileges
-  
+
   When the super admin clicks on the three dots (options menu) next to the "testmember" account
     And the super admin selects the "demote to member" option
     And the super admin confirms the action
   Then the "testmember" account should no longer have admin privileges
-  
+
   When the super admin clicks on the three dots (options menu) next to the "testmember" account
     And the super admin selects the "Remove" option
     And the super admin confirms the action
@@ -316,10 +316,10 @@ Scenario: Super admin views all posts in the "testmember" community
     And the super admin is on the "Communities" page
   When the super admin clicks on the "testmember" community group
   Then the super admin should be taken to the "testmember" community group page
-  
+
   When the super admin clicks on the "Settings" button
   Then the super admin should see the group settings options
-  
+
   When the super admin sees the "Archive" option
     And the super admin selects the "Archive" option
     And the super admin confirms the action
@@ -339,7 +339,7 @@ Scenario: Super admin views all posts in the "testmember" community
     And the super admin is on the "Communities" page
   When the super admin clicks on the "Filters" button
   Then the filter options should be displayed
-  
+
   When the super admin selects the "Private" filter
   Then only private groups should be displayed in the search results
 
@@ -348,7 +348,7 @@ Scenario: Super admin views all posts in the "testmember" community
     And the super admin is on the "Communities" page
   When the super admin clicks on the "Filters" button
   Then the filter options should be displayed
-  
+
   When the super admin selects the "Archived" filter
   Then only archived groups should be displayed in the search results
 
@@ -368,10 +368,10 @@ Scenario: Super admin unarchives the "testmember" community group
     And the super admin is on the "Communities" page
   When the super admin clicks on the "testmember" community group
   Then the super admin should be taken to the "testmember" community group page
-  
+
   When the super admin clicks on the "Settings" button
   Then the super admin should see the group settings options
-  
+
   When the super admin selects the "Delete" option
     And the super admin confirms the action
   Then the "testmember" community group should be deleted
