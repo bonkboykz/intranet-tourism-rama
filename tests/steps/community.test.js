@@ -323,5 +323,54 @@ test.describe("Community Management", () => {
     });
 
 
+    // Scenario: Logged-in member uploads a video
+    test("Logged-in member uploads a video and automatically clicks SEND", async ({ page }) => {
+            // Step 1: Log in as a member
+            await loginAs(page, "member");
+
+    // Step 2: Go to the "testmember" group page
+            await page.goto(`${baseUrl}/communityInner?communityId=37`);
+            await page.waitForLoadState("domcontentloaded");
+
+    // Verify that we are on the "testmember" group page
+            await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+
+    // Step 3: Click the video upload icon (camera icon)
+            const videoUploadIcon = page.locator('img[alt="Video Icon"]'); // Locator for the video upload icon
+            await videoUploadIcon.click();
+
+    // Step 4: Intercept the file chooser dialog
+            const [fileChooser] = await Promise.all([
+                page.waitForEvent('filechooser'), // Wait for the file chooser dialog to open
+                videoUploadIcon.click()           // Click the video upload icon
+            ]);
+
+    // Step 5: After the user selects the file, wait for it to be added
+     await fileChooser.setFiles('tests/assets/video700kb.mov');  // Select file via fileChooser
+
+    // Wait a bit for the file to be added
+            await page.waitForTimeout(3000); // 3-second delay
+
+    // Step 6: Click the "Publish" button (arrow icon)
+            const publishButton = page.locator('img[alt="SEND"]');
+            await publishButton.click();
+
+    // Step 7: Wait for the page to refresh and the video to appear in the post list
+            await page.waitForLoadState('networkidle');
+
+    // Step 8: Verify that the uploaded video is visible in the post list
+            const allVideos = await page.locator('video').all();
+            const latestVideo = allVideos[allVideos.length - 1];
+            await expect(latestVideo).toBeVisible();
+
+    // Log success
+            console.log('Test passed: Latest video is visible in the group\'s post list.');
+
+    });
+
+
+
+
+
 
 });
