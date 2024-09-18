@@ -406,6 +406,8 @@ class PostController extends Controller
                 'description' => $request->question,
                 'type' => 'poll',
                 'user_id' => $user->id,
+                'community_id' => $request->community_id,
+                'department_id' => $request->department_id
             ]);
 
             $output = new ConsoleOutput();

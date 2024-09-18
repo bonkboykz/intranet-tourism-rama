@@ -46,7 +46,12 @@ function AddOptionButton({ label, onClick }) {
     );
 }
 
-export function InputPolls({ onClose, onCreatePoll }) {
+export function InputPolls({
+    communityId,
+    departmentId,
+    onClose,
+    onCreatePoll,
+}) {
     const [inputValue, setInputValue] = useState("");
     const textAreaRef = useRef(null);
 
@@ -100,6 +105,14 @@ export function InputPolls({ onClose, onCreatePoll }) {
         formData.append("multiple", data.remember);
         if (includeEndDate) {
             formData.append("end_date", endDate);
+        }
+
+        if (communityId) {
+            formData.append("community_id", communityId);
+        }
+
+        if (departmentId) {
+            formData.append("department_id", departmentId);
         }
 
         try {

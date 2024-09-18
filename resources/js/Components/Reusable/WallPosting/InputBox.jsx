@@ -708,6 +708,8 @@ function ShareYourThoughts({
             )}
             {showPollPopup && (
                 <InputPolls
+                    communityId={communityId}
+                    departmentId={departmentId}
                     onClose={closePopup}
                     onCreatePoll={() => {
                         window.location.reload();

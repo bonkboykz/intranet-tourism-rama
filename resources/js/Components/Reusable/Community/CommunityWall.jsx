@@ -143,7 +143,8 @@ function HeaderSection({
     );
 }
 
-function Navigation({ communityID, departmentName, type }) {
+function Navigation({ departmentName, type }) {
+    const { communityID } = useContext(CommunityContext);
     const [activeTab, setActiveTab] = useState("Post");
     const [polls, setPolls] = useState([]);
     const [hasJoined, setHasJoined] = useState(false);
