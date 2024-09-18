@@ -81,3 +81,17 @@ Scenario: Logged-in member creates a poll with any title
       And the user enters "Option 3" as the new poll option
       And the user clicks on the "Save Option" button
     Then the poll "Test Poll Title" should have the options "Option 1", "Option 2", and "Option 3"
+
+    Scenario: Logged-in member sets a post as an announcement
+  Given the user is logged in
+    And the user is on the "testmember" community group page
+  When the user clicks on the post input field with placeholder "Share Your Thoughts..."
+    And the user writes "This is an announcement"
+    And the user toggles the "Set as Announcement?" switch to ON
+    And the user clicks on the "Publish" button (arrow icon)
+  Then the post "This is an announcement" should be visible in the group's post list
+    And the post should be marked as an announcement
+
+
+
+    
