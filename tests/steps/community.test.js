@@ -98,6 +98,45 @@ test.describe("Community Management", () => {
         console.log("Test passed: Successfully navigated to 'jij' community group page.");
     });
 
+    // Scenario: Logged-in member joins the group, writes, and publishes a post
+    test("Logged-in member joins the group, writes, and publishes a post", async ({ page }) => {
+        // Шаг 1: Войти как участник
+        await loginAs(page, "member");
+
+        // Шаг 2: Перейти на страницу группы "testmember"
+        await page.goto(`${baseUrl}/communityInner?communityId=26`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Проверить, что мы находимся на странице группы "testmember"
+        await expect(page).toHaveURL(/\/communityInner\?communityId=26/);
+
+        // Найти кнопку "Join" и нажать на нее
+        const joinButton = page.locator("button:text('Join')");
+
+        // Нажать на кнопку и ждать, пока страница обновится
+        await Promise.all([
+            page.waitForLoadState('networkidle'), // Ждем завершения сетевых запросов после нажатия
+            joinButton.click(), // Клик по кнопке "Join"
+        ]);
+
+        // Шаг 3: Ввести текст в поле для поста после присоединения к группе
+        const postInput = page.locator("textarea[placeholder='Share Your Thoughts...']"); // Локатор поля ввода поста
+        await postInput.fill("This is a test post2"); // Вводим текст поста
+
+        // Шаг 4: Нажать на кнопку "Publish"
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click(); // Нажать на кнопку
+
+        // Шаг 5: Подождать обновления страницы после публикации поста
+        await page.waitForLoadState('networkidle'); // Ждем завершения всех сетевых запросов
+
+        // Шаг 6: Проверить, что пост отобразился в списке постов
+        const newPost = page.locator(".post-content:has-text('This is a test post')"); // Локатор для нового поста
+        await expect(newPost).toBeVisible(); // Убедиться, что новый пост виден
+
+        // Логирование успешного выполнения теста
+        console.log("Test passed: User joined the group, wrote, and published a post successfully.");
+    });
 
 
 
