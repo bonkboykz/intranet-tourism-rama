@@ -231,6 +231,7 @@ import Cropper from "react-easy-crop";
 import { usePage } from "@inertiajs/react";
 
 import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
 
 import getCroppedImg from "./cropImageDepartment";
 
@@ -242,7 +243,7 @@ function Header({ title }) {
     );
 }
 
-function Avatar({ src, alt, onImageChange }) {
+function Avatar({ src, alt, onImageChange, isRepositionDisabled }) {
     const [previewSrc, setPreviewSrc] = useState(src);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -292,6 +293,10 @@ function Avatar({ src, alt, onImageChange }) {
     }, [croppedAreaPixels, previewSrc, onImageChange]);
 
     const handleRepositionClick = async () => {
+        if (isRepositionDisabled) {
+            return;
+        }
+
         setCropping(true);
         // Re-fetch the original image from the server
         try {
@@ -344,7 +349,10 @@ function Avatar({ src, alt, onImageChange }) {
                             />
                             <button
                                 onClick={handleRepositionClick}
-                                className="mt-2 px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+                                className={cn(
+                                    `mt-2 px-4 py-2 text-white font-bold bg-blue-500 rounded-full`,
+                                    !isRepositionDisabled && "hover:bg-blue-700"
+                                )}
                             >
                                 Reposition Image
                             </button>
@@ -491,6 +499,7 @@ function Card({
                     src={imageSrc}
                     alt={imgAlt}
                     onImageChange={handleImageChange}
+                    isRepositionDisabled={imageSrc === imgSrc}
                 />
                 <input
                     type="text"
