@@ -1,20 +1,27 @@
+const getDepartmentOrCommunityBannerUrl = (group) => {
+    if (!group.banner) {
+        return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
+            group.name
+        )}&rounded=true`;
+    }
+
+    if (group.banner.includes("assets/departmentsDefault.jpg")) {
+        return group.banner;
+    }
+
+    if (group.banner.startsWith("avatar/")) {
+        return `/storage/${group.banner}`;
+    }
+
+    return group.banner;
+};
+
 export function UserProfileAvatar({ post }) {
     if (post.community) {
         return (
             <img
                 loading="lazy"
-                src={
-                    post.community.banner
-                        ? post.community.banner ===
-                          "/assets/dummyStaffPlaceHolder.jpg"
-                            ? post.community.banner
-                            : post.community.banner.startsWith("avatar/")
-                              ? `/storage/${post.community.banner}`
-                              : `/avatar/${post.community.banner}`
-                        : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
-                              post.community.name
-                          )}&rounded=true`
-                }
+                src={getDepartmentOrCommunityBannerUrl(post.community)}
                 alt={post.community.name}
                 className="shrink-0 aspect-square w-[53px] rounded-image"
             />
@@ -25,18 +32,7 @@ export function UserProfileAvatar({ post }) {
         return (
             <img
                 loading="lazy"
-                src={
-                    post.department.banner
-                        ? post.department.banner ===
-                          "/assets/dummyStaffPlaceHolder.jpg"
-                            ? post.department.banner
-                            : post.department.banner.startsWith("avatar/")
-                              ? `/storage/${post.department.banner}`
-                              : `/avatar/${post.department.banner}`
-                        : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
-                              post.department.name
-                          )}&rounded=true`
-                }
+                src={getDepartmentOrCommunityBannerUrl(post.department)}
                 alt={post.department.name}
                 className="shrink-0 aspect-square w-[53px] rounded-image"
             />

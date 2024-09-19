@@ -7,6 +7,7 @@ import { add, format, startOfDay } from "date-fns";
 import { cn } from "@/Utils/cn";
 import useUserData from "@/Utils/hooks/useUserData";
 
+import { SendAs } from "./InputBox/SendAs";
 import { UserProfileAvatar } from "./UserProfileAvatar";
 
 function PollOption({ option, onRemove, onChange }) {
@@ -117,6 +118,13 @@ export function InputPolls({
             formData.append("department_id", departmentId);
         }
 
+        if (postAs !== "Post as") {
+            formData.append(
+                "post_as",
+                postAs.includes("admin") ? "admin" : "member"
+            );
+        }
+
         try {
             const response = await axios.post(
                 `/api/posts/posts/create_poll`,
@@ -133,6 +141,8 @@ export function InputPolls({
 
     const [includeEndDate, setIncludeEndDate] = useState(false);
     const [endDate, setEndDate] = useState(new Date());
+
+    const [postAs, setPostAs] = useState("Post as");
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
@@ -238,6 +248,14 @@ export function InputPolls({
                                 )}
                             />
                         )}
+                    </div>
+                    <div>
+                        <SendAs
+                            postAs={postAs}
+                            onChange={(newPostAs) => setPostAs(newPostAs)}
+                            communityId={communityId}
+                            departmentId={departmentId}
+                        />
                     </div>
                     <button
                         className="w-full py-2 mt-4 text-white bg-blue-500 rounded-3xl"

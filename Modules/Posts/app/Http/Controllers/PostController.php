@@ -407,7 +407,8 @@ class PostController extends Controller
                 'type' => 'poll',
                 'user_id' => $user->id,
                 'community_id' => $request->community_id,
-                'department_id' => $request->department_id
+                'department_id' => $request->department_id,
+                'post_as' => $request->post_as,
             ]);
 
             $output = new ConsoleOutput();
