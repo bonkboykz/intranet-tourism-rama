@@ -180,6 +180,19 @@ class DepartmentController extends Controller
         $user = User::findOrFail($request->user_id);
         $department = Department::findOrFail($request->department_id);
 
+        // check if the user is already an admin in other department
+        $is_user_admin_in_any_other_department = Department::query()
+            ->with('admins')
+            ->whereHas('admins', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })->where('id', '!=', $department->id)->exists();
+
+        if ($is_user_admin_in_any_other_department) {
+            return response()->json([
+                'message' => 'User is already an admin in another department.',
+            ], 400);
+        }
+
         // Assign the user the department-specific permissions
         DepartmentPermissionsHelper::assignDepartmentAdminPermissions($user, $department);
 

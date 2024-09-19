@@ -5,6 +5,7 @@ import axios from "axios";
 import AddMemberPopup from "@/Components/Reusable/AddMemberPopup";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import { toastError } from "@/Utils/toast";
 
 import { MemberCard } from "./MemberCard";
 
@@ -71,6 +72,7 @@ export const Members = ({
                     "Failed to assign admin:",
                     rolesResponse.statusText
                 );
+
                 return;
             }
 
@@ -78,14 +80,16 @@ export const Members = ({
             onRefetch();
         } catch (error) {
             console.error("Error assigning admin:", error);
+
+            if (error.response?.data?.message) {
+                toastError(error.response?.data?.message);
+            }
         }
 
         closePopup();
     };
 
     const { isAdmin } = useContext(DepartmentContext);
-
-    console.log(members);
 
     const filteredMembers = members.filter((member) => {
         if (isAdmin) {
