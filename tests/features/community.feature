@@ -21,7 +21,8 @@ Feature: Community Management (Group)
 
 
       Scenario: Member logs in, navigates to community page, and visits a specific group
-    Given the user is logged in
+    Given the user is logged in 
+     And "testmember" group is created
     When the user navigates to the community page
     Then the community page should be displayed
       And the user should see a list of community groups
@@ -139,9 +140,11 @@ Scenario: Logged-in member creates a post with an album tag
     And the user clicks on the "Publish" button
   Then the post "This is a test post with an album tag" should be visible in the group's post list
     And the selected album tag should be visible in the post
+    
 
-    Scenario: Logged-in member creates a post with an album tag
-  Given the user is logged in
+    Scenario: Logged-in member creates a post with an event tag
+  Given the user is logged 
+     And event name "testevent" as created
     And the user is on the "testmember" community group page
   When the user clicks on the post input field with placeholder "Share Your Thoughts..."
     And the user writes "This is a test post with an album tag"
