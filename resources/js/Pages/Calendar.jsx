@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useLayoutEffect } from "react";
+import { useMemo } from "react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
@@ -6,7 +8,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
@@ -18,6 +20,96 @@ import PrintCalendar from "./Calendar/PrintCalendar";
 
 import "./Calendar/index.css";
 // import { CakeIcon } from '@heroicons/react/20/solid';
+
+const DayCellContent = ({ birthdays, ...dayInfo }) => {
+    // console.log(dayInfo);
+
+    const dayBirthdays = birthdays.filter((event) =>
+        isSameDay(event.start, dayInfo.date)
+    );
+
+    const names = dayBirthdays.flatMap((event) => event.extendedProps.names);
+    // const popover = useRef(null);
+
+    // const setupPopover = () => {
+    //     if (names.length === 0) {
+    //         console.log("no need for popover");
+    //         return;
+    //     }
+
+    //     if (!rootRef.current) {
+    //         console.log("prootRef is null");
+    //         return;
+    //     }
+
+    //     if (popover.current) {
+    //         console.log("already set");
+    //         return;
+    //     }
+
+    //     console.log("birthdays", dayBirthdays);
+
+    //     let namesList;
+
+    //     if (names.length > 1) {
+    //         namesList = names
+    //             .map((name, index) => `<li>${index + 1}. ${name}</li>`)
+    //             .join("");
+    //     } else {
+    //         namesList = `<li>${names[0]}</li>`;
+    //     }
+
+    //     const popoverContent = `
+    //                             <div className="">
+    //                                 <p class="event-title"><strong>Birthdays:</strong></p>
+    //                                 <ul>${namesList}</ul>
+    //                             </div>
+    //                         `;
+
+    //     console.log("setting popover");
+
+    //     popover.current = new bootstrap.Popover(rootRef.current, {
+    //         placement: "bottom",
+    //         trigger: "hover",
+    //         container: "body",
+    //         customClass: "custom-popover",
+    //         content: popoverContent,
+    //         html: true,
+    //         offset: "0,10",
+    //     });
+    // };
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         console.log("timeout");
+    //         setupPopover();
+    //     }, 2000);
+
+    //     return () => {
+    //         popover.current?.dispose();
+    //     };
+    // }, []);
+
+    return (
+        <div className="flex justify-between w-full z-50">
+            {dayBirthdays.length > 0 && (
+                <span
+                    role="img"
+                    aria-label="cake"
+                    style={{
+                        fontSize: "1.8em",
+                        cursor: "pointer",
+                    }}
+                    title=""
+                    data-names={names.join(",")}
+                >
+                    🎂
+                </span>
+            )}
+            <span>{dayInfo.dayNumberText}</span>
+        </div>
+    );
+};
 
 function Calendar() {
     const [events, setEvents] = useState([]);
@@ -138,6 +230,8 @@ function Calendar() {
         }
     };
 
+    const [birthdays, setBirthdays] = useState([]);
+
     const fetchBirthdayEvents = async () => {
         try {
             let allProfiles = [];
@@ -209,11 +303,13 @@ function Calendar() {
                 return acc;
             }, []);
 
-            setEvents((prevEvents) => [...prevEvents, ...birthdayEvents]);
-            setFilteredEvents((prevEvents) => [
-                ...prevEvents,
-                ...birthdayEvents,
-            ]);
+            setBirthdays(birthdayEvents);
+
+            // setEvents((prevEvents) => [...prevEvents, ...birthdayEvents]);
+            // setFilteredEvents((prevEvents) => [
+            //     ...prevEvents,
+            //     ...birthdayEvents,
+            // ]);
         } catch (error) {
             console.error("Error fetching birthdays: ", error);
         }
@@ -590,45 +686,40 @@ function Calendar() {
                         );
 
                         if (info.event.extendedProps.isBirthday) {
-                            console.log(
-                                "Birthday event detected:",
-                                info.event.extendedProps.names
-                            );
-
-                            info.el.style.backgroundColor = "transparent";
-                            info.el.style.border = "none";
-                            info.el.style.color = "black";
-
-                            const namesArray = info.event.extendedProps.names;
-                            let namesList;
-
-                            if (namesArray.length > 1) {
-                                namesList = namesArray
-                                    .map(
-                                        (name, index) =>
-                                            `<li>${index + 1}. ${name}</li>`
-                                    )
-                                    .join("");
-                            } else {
-                                namesList = `<li>${namesArray[0]}</li>`;
-                            }
-
-                            const popoverContent = `
-                            <div className="">
-                                <p class="event-title"><strong>Birthdays:</strong></p>
-                                <ul>${namesList}</ul>
-                            </div>
-                        `;
-
-                            new bootstrap.Popover(info.el, {
-                                placement: "bottom",
-                                trigger: "hover",
-                                container: "body",
-                                customClass: "custom-popover",
-                                content: popoverContent,
-                                html: true,
-                                offset: "0,10",
-                            });
+                            //     console.log(
+                            //         "Birthday event detected:",
+                            //         info.event.extendedProps.names
+                            //     );
+                            //     info.el.style.backgroundColor = "transparent";
+                            //     info.el.style.border = "none";
+                            //     info.el.style.color = "black";
+                            //     const namesArray = info.event.extendedProps.names;
+                            //     let namesList;
+                            //     if (namesArray.length > 1) {
+                            //         namesList = namesArray
+                            //             .map(
+                            //                 (name, index) =>
+                            //                     `<li>${index + 1}. ${name}</li>`
+                            //             )
+                            //             .join("");
+                            //     } else {
+                            //         namesList = `<li>${namesArray[0]}</li>`;
+                            //     }
+                            //     const popoverContent = `
+                            //     <div className="">
+                            //         <p class="event-title"><strong>Birthdays:</strong></p>
+                            //         <ul>${namesList}</ul>
+                            //     </div>
+                            // `;
+                            //     new bootstrap.Popover(info.el, {
+                            //         placement: "bottom",
+                            //         trigger: "hover",
+                            //         container: "body",
+                            //         customClass: "custom-popover",
+                            //         content: popoverContent,
+                            //         html: true,
+                            //         offset: "0,10",
+                            //     });
                         } else {
                             const formattedStartTime = new Date(
                                 info.event.start
@@ -665,6 +756,79 @@ function Calendar() {
                             });
                         }
                     }}
+                    dayCellContent={(props) => (
+                        <DayCellContent {...props} birthdays={birthdays} />
+                    )}
+                    dayCellDidMount={(props) => {
+                        // console.log(props);
+                        let popoverIsSet = false;
+
+                        const setupPopover = () => {
+                            if (popoverIsSet) {
+                                return;
+                            }
+
+                            console.log("setting popover");
+
+                            const cakeEl = props.el.querySelector(
+                                ".fc-daygrid-day-top span:first-child"
+                            );
+
+                            if (!cakeEl) {
+                                return;
+                            }
+
+                            if (!cakeEl.dataset.names) {
+                                return;
+                            }
+
+                            const names = cakeEl.dataset.names.split(", ");
+
+                            let namesList;
+
+                            if (names.length > 1) {
+                                namesList = names
+                                    .map(
+                                        (name, index) =>
+                                            `<li>${index + 1}. ${name}</li>`
+                                    )
+                                    .join("");
+                            } else {
+                                namesList = `<li>${names[0]}</li>`;
+                            }
+
+                            const popoverContent = `
+<div className="">
+    <p class="event-title"><strong>Birthdays:</strong></p>
+    <ul>${namesList}</ul>
+</div>
+`;
+
+                            new bootstrap.Popover(cakeEl, {
+                                placement: "bottom",
+                                trigger: "hover",
+                                container: "body",
+                                customClass: "custom-popover",
+                                content: popoverContent,
+                                html: true,
+                                offset: "0,10",
+                            });
+
+                            popoverIsSet = true;
+                        };
+
+                        setTimeout(() => {
+                            setupPopover();
+
+                            if (!popoverIsSet) {
+                                console.log("retrying");
+
+                                setTimeout(() => {
+                                    setupPopover();
+                                }, 1000);
+                            }
+                        }, 1000);
+                    }}
                     eventContent={(eventInfo) => {
                         const isBirthday =
                             eventInfo.event.extendedProps.isBirthday;
@@ -672,32 +836,34 @@ function Calendar() {
                         if (isBirthday) {
                             const names =
                                 eventInfo.event.extendedProps.names || [];
-                            return (
-                                <div
-                                    key={eventInfo.event.id}
-                                    style={{
-                                        position: "relative",
-                                        height: "100%",
-                                        width: "100%",
-                                    }}
-                                >
-                                    <span
-                                        role="img"
-                                        aria-label="cake"
-                                        style={{
-                                            position: "absolute",
-                                            bottom: "0",
-                                            left: "5px",
-                                            fontSize: "1.8em",
-                                            cursor: "pointer",
-                                            zIndex: 1,
-                                        }}
-                                        title={names.join(", ")}
-                                    >
-                                        🎂
-                                    </span>
-                                </div>
-                            );
+
+                            return null;
+                            // return (
+                            //     <div
+                            //         key={eventInfo.event.id}
+                            //         style={{
+                            //             position: "relative",
+                            //             height: "100%",
+                            //             width: "100%",
+                            //         }}
+                            //     >
+                            //         <span
+                            //             role="img"
+                            //             aria-label="cake"
+                            //             style={{
+                            //                 position: "absolute",
+                            //                 bottom: "0",
+                            //                 left: "5px",
+                            //                 fontSize: "1.8em",
+                            //                 cursor: "pointer",
+                            //                 zIndex: 1,
+                            //             }}
+                            //             title={names.join(", ")}
+                            //         >
+                            //             🎂
+                            //         </span>
+                            //     </div>
+                            // );
                         } else {
                             const borderColor =
                                 eventInfo.event.backgroundColor || "gray";

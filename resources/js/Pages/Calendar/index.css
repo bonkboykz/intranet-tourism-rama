@@ -27,7 +27,7 @@
   }
 }
 
-  
+
   .modal-close-button {
     position: absolute;
     top: 1px;
@@ -39,11 +39,11 @@
     font-size: 1.2em;
     color: #333;
   }
-  
+
   .modal-close-button:hover {
     color: #ff5c5c; /* Change color on hover */
   }
-  
+
   .form-control {
     width: 100%;
     padding: 8px;
@@ -52,17 +52,17 @@
     border-radius: 6px;
     font-size: 1em;
   }
-  
+
   .form-control:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     outline: none;
   }
-  
+
   .form-group {
     margin-bottom: 15px;
   }
-  
+
   .modal-submit-button {
     width: 100%;
     padding: 10px;
@@ -74,7 +74,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-  
+
   .modal-submit-button:hover {
     background-color: #0056b3;
   }
@@ -145,33 +145,33 @@ input[type="radio"]:checked + .color-display {
 }
 
 
-  
+
   /* Additional styles for the rest of the page */
   .popoverStyle {
     z-index: 99999 !important;
   }
-  
+
   a {
     color: black !important;
   }
-  
+
   .fc-event-title {
     display: flex;
     align-items: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    
-    
+
+
   }
-  
+
   .event-title {
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .fc-print-pdf-button {
     background-image: url('/assets/PrintPDF.svg');
     background-size: contain;
@@ -182,7 +182,7 @@ input[type="radio"]:checked + .color-display {
     border: none;
     cursor: pointer;
   }
-  
+
   .fc .fc-button-primary {
     background-color: white;
     color: black;
@@ -190,27 +190,27 @@ input[type="radio"]:checked + .color-display {
     border-radius: 15px;
     background-image: none;
   }
-  
+
   .fc .fc-button-primary.input-no-outline:focus {
     outline: none !important;
   }
-  
+
   .fc-toolbar {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
   }
-  
+
   .fc-toolbar .fc-toolbar-chunk {
     display: flex;
     align-items: center;
   }
-  
+
   .fc-toolbar-title {
     cursor: pointer;
     position: relative;
   }
-  
+
   .dropdown-menu {
     display: none;
     position: absolute;
@@ -225,16 +225,16 @@ input[type="radio"]:checked + .color-display {
     margin: 0;
     padding: 10px;
   }
-  
+
   .dropdown-menu.visible {
     display: block;
   }
-  
+
   .custom-popover {
     z-index: 99999 !important;
     width: auto;
   }
-  
+
   .custom-popover .popover-body {
     background-color: #ffffff;
     color: #333;
@@ -243,33 +243,33 @@ input[type="radio"]:checked + .color-display {
     border-radius: 10px; /* Set the width to be 90% of the container */
     width: 300px;  /* Restrict the maximum width */
     height: auto;
-    
+
 }
 
 /* Media Query for smaller screens */
 
 
-  
+
   .custom-popover .popover-arrow {
     display: none;
   }
-  
+
   .custom-popover .event-title {
     font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 2px;
   }
-  
+
   @media print {
     body * {
       visibility: hidden;
     }
-  
+
     .print-container,
     .print-container * {
       visibility: visible;
     }
-  
+
     .print-container {
       position: absolute;
       left: 0;
@@ -277,53 +277,63 @@ input[type="radio"]:checked + .color-display {
       width: 100%;
     }
   }
-  
+
   .print-container {
     width: 100%;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
   }
-  
+
   .print-container img {
     display: block;
   }
-  
+
   h1 {
     text-align: center;
     margin-bottom: 20px;
   }
-  
+
   .events-table {
     width: 100%;
     border-collapse: collapse;
   }
-  
+
   .events-table th,
   .events-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
   }
-  
+
   .events-table th {
     background-color: #f2f2f2;
     color: red;
     font-weight: bold;
   }
-  
+
   .events-table tr:nth-child(even) {
     background-color: #f9f9f9;
   }
-  
+
   .events-table tr:hover {
     background-color: #ddd;
   }
-  
+
   .events-table th,
   .events-table td {
     padding: 12px;
   }
   .fc .fc-daygrid-day.fc-day-today{
     background-color: rgb(206, 240, 255);
+  }
+
+  .fc-daygrid-day-top {
+    z-index: 9999;
+    position: relative;
+    height: 50px;
+  }
+
+  .fc-daygrid-day-number {
+    width: 100%;
   }
