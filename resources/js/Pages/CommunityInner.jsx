@@ -104,6 +104,7 @@ const CommunityInner = () => {
     return (
         <CommunityContext.Provider
             value={{
+                user: userData,
                 userId: userId,
                 isMember: communityData?.is_member,
                 role: communityData?.role,

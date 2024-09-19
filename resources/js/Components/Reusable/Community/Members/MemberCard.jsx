@@ -1,5 +1,9 @@
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useContext } from "react";
+
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import { Avatar } from "./Avatar";
 import { PopupMenu } from "./PopupMenu";
@@ -53,6 +57,16 @@ export const MemberCard = ({
         };
     }, [popupRef, closePopup]);
 
+    const { hasRole } = usePermissions();
+    const { isAdmin, user } = useContext(CommunityContext);
+
+    const canAssignAdmin = hasRole("superadmin") || isAdmin;
+
+    // TODO: add if member is himself
+    const canRemoveMember = hasRole("superadmin") || isAdmin || user?.id === id;
+
+    const showThreeDots = canAssignAdmin || canRemoveMember;
+
     return (
         <a href={`/user/${id}`}>
             <div className="relative flex p-2 text-neutral-800 rounded-2xl align-center hover:bg-blue-100">
@@ -63,17 +77,19 @@ export const MemberCard = ({
                 />
                 <UserInfo name={name} titles={titles} isActive={isActive} />
                 <div className="ml-auto">
-                    <button
-                        ref={buttonRef}
-                        onClick={handleDotClick}
-                        className="relative p-2"
-                    >
-                        <img
-                            src="/assets/threedots.svg"
-                            alt="Menu"
-                            className="h-8 w-9"
-                        />
-                    </button>
+                    {showThreeDots && (
+                        <button
+                            ref={buttonRef}
+                            onClick={handleDotClick}
+                            className="relative p-2"
+                        >
+                            <img
+                                src="/assets/threedots.svg"
+                                alt="Menu"
+                                className="h-8 w-9"
+                            />
+                        </button>
+                    )}
                     {activePopupId === id && (
                         <div ref={popupRef}>
                             {flag === "admin" ? (
@@ -91,6 +107,8 @@ export const MemberCard = ({
                                     }
                                     onAssign={() => onAssign(id)}
                                     closePopup={closePopup}
+                                    canAssignAdmin={canAssignAdmin}
+                                    canRemoveMember={canRemoveMember}
                                 />
                             )}
                         </div>

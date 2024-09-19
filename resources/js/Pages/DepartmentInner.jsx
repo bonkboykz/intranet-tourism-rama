@@ -64,12 +64,14 @@ const DepartmentInner = () => {
     //   return <div>Loading...</div>;
     // }
 
-    console.log("DEPARTMENT DATA", departmentData);
+    // console.log("DEPARTMENT DATA", departmentData);
+
+    // console.log("userData", userData);
 
     return (
         <DepartmentContext.Provider
             value={{
-                user: userData.user,
+                user: userData,
                 isMember: departmentData?.is_member,
                 departmentID: departmentData?.id,
                 isAdmin: ["admin", "superadmin"].includes(departmentData?.role),
