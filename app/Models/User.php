@@ -34,11 +34,12 @@ use Astrotomic\Vcard\Properties\Kind;
 use Astrotomic\Vcard\Properties\Tel;
 use Astrotomic\Vcard\Vcard;
 use Carbon\Carbon;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Authorizable, HasFactory, QueryableApi , HasApiTokens, HasPermissions, HasRoles, Notifiable;
+    use Authorizable, HasFactory, QueryableApi, HasApiTokens, HasPermissions, HasRoles, Notifiable;
 
 
     protected $table = 'users';
@@ -159,25 +160,46 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserPreference::class);
     }
 
-    public function getVcardAttribute($value) {
+    public function getVcardAttribute($value)
+    {
 
-        $vcard =  Vcard::make()
-        ->kind(Kind::INDIVIDUAL)
-        // ->gender(Gender::MALE)
-        ->fullName($this->name)
-        ->name($this->name)
-        ->email($this->email)
-        // ->email('john.smith@company.com', [Email::WORK, Email::INTERNET])
-        ->tel($this->profile->phone_no ?? 0, [Tel::WORK, Tel::VOICE])
-        ->bday(Carbon::parse($this->profile->dob))
-        // ->adr('','','1600 Pennsylvania Ave NW', 'Washington', 'DC', '20500-0003', 'USA')
-        // ->photo('data:image/jpeg;base64,'.base64_encode(file_get_contents(__DIR__.'/stubs/photo.jpg')))
-        // ->title('V. P. Research and Development')
-        // ->role('Excecutive')
-        // ->org('Google', 'GMail Team', 'Spam Detection Squad')
-        // ->member('john.smith@company.com', '550e8400-e29b-11d4-a716-446655440000')
-        // ->note('Hello world')
-    ;
+        $vcard = Vcard::make()
+            ->kind(Kind::INDIVIDUAL)
+            // ->gender(Gender::MALE)
+            ->fullName($this->name)
+            ->name($this->name)
+            ->email($this->email)
+            // ->email('john.smith@company.com', [Email::WORK, Email::INTERNET])
+            ->tel($this->profile->phone_no ?? 0, [Tel::WORK, Tel::VOICE])
+            // ->bday(Carbon::parse($this->profile->dob))
+            // ->adr('','','1600 Pennsylvania Ave NW', 'Washington', 'DC', '20500-0003', 'USA')
+            // ->photo('data:image/jpeg;base64,'.base64_encode(file_get_contents(__DIR__.'/stubs/photo.jpg')))
+            // ->title('V. P. Research and Development')
+            // ->role('Excecutive')
+            // ->org('Google', 'GMail Team', 'Spam Detection Squad')
+            // ->member('john.smith@company.com', '550e8400-e29b-11d4-a716-446655440000')
+            // ->note('Hello world')
+        ;
+
+        if ($this->employmentPost) {
+            if ($this->employmentPost->businessPost) {
+                $vcard->title($this->employmentPost->businessPost->title);
+            }
+
+            $departmentName = "";
+            $businessUnitName = "";
+
+            if ($this->employmentPost->department) {
+                $departmentName = $this->employmentPost->department->name;
+            }
+
+            if ($this->employmentPost->businessUnit) {
+                $businessUnitName = $this->employmentPost->businessUnit->name;
+            }
+
+            $vcard->org($departmentName, $businessUnitName);
+        }
+
         $svg = (new Writer(
             new ImageRenderer(
                 new RendererStyle(192, 0, null, null, Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(45, 55, 72))),

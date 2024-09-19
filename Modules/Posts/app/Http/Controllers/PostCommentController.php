@@ -67,4 +67,9 @@ class PostCommentController extends Controller
 
         return response()->noContent();
     }
+
+    public function likes(PostComment $postComment)
+    {
+
+    }
 }

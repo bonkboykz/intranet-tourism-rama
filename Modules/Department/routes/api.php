@@ -18,7 +18,7 @@ use Modules\Department\Http\Controllers\SupervisorController;
  * routes are loaded by the RouteServiceProvider within a group which
  * is assigned the "api" middleware group. Enjoy building your API!
  *
-*/
+ */
 
 // Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 //     Route::apiResource('crud', CrudController::class)->names('crud');
@@ -33,5 +33,8 @@ Route::apiResources([
     'departments' => DepartmentController::class,
     'employment_posts' => EmploymentPostController::class,
     'supervisors' => SupervisorController::class,
-
 ]);
+
+Route::get('departments/{department}/admins', [DepartmentController::class, 'getAdmins'])->name('department.getAdmins');
+Route::post('departments/{department}/invite-department-admin', [DepartmentController::class, 'inviteDepartmentAdmin'])->name('department.inviteDepartmentAdmin');
+Route::post('departments/{department}/revoke-department-admin', [DepartmentController::class, 'revokeDepartmentAdmin'])->name('department.revokeDepartmentAdmin');

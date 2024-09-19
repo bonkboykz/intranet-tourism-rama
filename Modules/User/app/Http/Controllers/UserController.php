@@ -5,6 +5,7 @@ namespace Modules\User\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Modules\User\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class UserController extends Controller
 {
@@ -29,6 +30,7 @@ class UserController extends Controller
             $search = $request->input('search');
             $modelBuilder->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
 
+            $modelBuilder->with(['profile', 'roles', 'employmentPosts.department', 'employmentPosts.businessPost', 'employmentPosts.businessUnit']);
             // Skip pagination if search is present and disabledPagination is set
             if (array_key_exists('disabledPagination', $query)) {
                 $data = $modelBuilder->get();
@@ -44,13 +46,34 @@ class UserController extends Controller
             }
         }
 
+        // attach employment_posts if empty
+        $data->each(function ($user) {
+            if ($user->employment_posts == null) {
+                $user->employment_posts = [];
+            } else if ($user->employment_posts->isEmpty()) {
+                $user->employment_posts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get() ?? [];
+            }
+        });
+
         return response()->json(['data' => $data]);
     }
 
     public function show($id)
     {
+        $user = User::where('id', $id)->with('profile', 'roles')->firstOrFail();
+
+        $user->isSuperAdmin = $user->hasRole('superadmin');
+        $user->employmentPost = $user->employmentPost()->first();
+        if ($user->employmentPost) {
+            $user->employmentPost->department = $user->employmentPost->department()->first();
+            $user->employmentPost->businessPost = $user->employmentPost->businessPost()->first();
+        }
+        // with relations expanded: department, businessPost, businessUnit
+        $user->employment_posts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get() ?? [];
+        $user->employmentPosts = $user->employment_posts;
+
         return response()->json([
-            'data' => User::where('id', $id)->queryable()->firstOrFail(),
+            'data' => $user
         ]);
     }
 

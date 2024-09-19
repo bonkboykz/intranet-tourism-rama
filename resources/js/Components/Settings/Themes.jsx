@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ImageGrid = ({ images, altTexts, onImageClick, selectedImage }) => (
-  <div className="grid grid-cols-6 gap-5 max-md:grid-cols-3">
+  <div className="grid grid-cols-6 gap-5">
     {images.map((src, index) => (
       <div
         key={index}

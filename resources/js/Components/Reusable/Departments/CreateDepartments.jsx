@@ -200,260 +200,327 @@
 //   );
 // }
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
+
 import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
+import useUserData from "@/Utils/hooks/useUserData";
+
 import getCroppedImg from "./cropImageDepartment";
 
 // Function to get current user info (replace with your actual method)
-const getCurrentUser = async () => {
-  return {
-    name: "Current User Name",
-    role: "Admin",
-    src: "path/to/current/user/avatar.jpg"
-  };
-};
+// const getCurrentUser = async () => {
+//     return {
+//         name: "Current User Name",
+//         role: "Admin",
+//         src: "path/to/current/user/avatar.jpg",
+//     };
+// };
 
 function Header({ title }) {
-  return (
-    <header className="flex items-center justify-center w-full px-5 py-3 text-2xl font-bold text-neutral-800">
-      <h1 className="text-center">{title}</h1>
-    </header>
-  );
+    return (
+        <header className="flex items-center justify-center w-full px-5 py-3 text-2xl font-bold text-neutral-800">
+            <h1 className="text-center">{title}</h1>
+        </header>
+    );
 }
 
-function Avatar({ src, alt, onImageChange, cropMode, setCropMode, crop, setCrop, zoom, setZoom, onCropComplete }) {
-  const handleClick = () => {
-    if (!cropMode) {
-      document.getElementById('avatarInput').click();
-    }
-  };
+function Banner({
+    src,
+    alt,
+    onImageChange,
+    cropMode,
+    setCropMode,
+    crop,
+    setCrop,
+    zoom,
+    setZoom,
+    onCropComplete,
+    cropDisabled = true,
+}) {
+    const handleClick = () => {
+        if (!cropMode) {
+            document.getElementById("avatarInput").click();
+        }
+    };
 
-  return (
-    <div className="flex flex-col items-center w-full">
-      <div
-        className="relative flex items-center justify-center bg-gray-200 cursor-pointer rounded-xl w-full max-w-md h-[133px] overflow-hidden"
-        onClick={handleClick}
-      >
-        {src && cropMode ? (
-          <Cropper
-            image={src}
-            crop={crop}
-            zoom={zoom}
-            aspect={3 / 1}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-            className="rounded-xl"
-          />
-        ) : (
-          <img
-            loading="lazy"
-            src={src || "/assets/uploadAnImage.svg"}
-            alt={alt}
-            className="w-full h-full object-cover"
-          />
-        )}
-      </div>
-      {!cropMode && (
-        <input
-          type="file"
-          accept="image/*"
-          id="avatarInput"
-          onChange={(e) => onImageChange(e.target.files[0])}
-          className="hidden"
-        />
-      )}
-      {src && !cropMode && (
-        <button
-          className="mt-4 px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-          onClick={() => setCropMode(true)}
-        >
-          Crop Image
-        </button>
-      )}
-    </div>
-  );
+    return (
+        <div className="flex flex-col items-center w-full">
+            <div
+                className="relative flex items-center justify-center bg-gray-200 cursor-pointer rounded-xl w-full max-w-md h-[133px] overflow-hidden"
+                onClick={handleClick}
+            >
+                {src && cropMode ? (
+                    <Cropper
+                        image={src}
+                        crop={crop}
+                        zoom={zoom}
+                        aspect={3 / 1}
+                        onCropChange={setCrop}
+                        onCropComplete={onCropComplete}
+                        onZoomChange={setZoom}
+                        className="rounded-xl"
+                    />
+                ) : (
+                    <img
+                        loading="lazy"
+                        src={src || "/assets/uploadAnImage.svg"}
+                        alt={alt}
+                        className="w-full h-full object-cover"
+                    />
+                )}
+            </div>
+            {!cropMode && (
+                <input
+                    type="file"
+                    accept="image/*"
+                    id="avatarInput"
+                    onChange={(e) => onImageChange(e.target.files[0])}
+                    className="hidden"
+                />
+            )}
+            {src && !cropMode && (
+                <button
+                    disabled={cropDisabled}
+                    className={cn(
+                        "mt-4 px-4 py-2 font-bold text-white bg-blue-500 rounded-full ",
+                        !cropDisabled && "hover:bg-blue-700"
+                    )}
+                    onClick={() => setCropMode(true)}
+                >
+                    Crop Image
+                </button>
+            )}
+        </div>
+    );
 }
 
 function UserInfo({ name, role, src }) {
-  return (
-    <div className="flex items-center gap-4 mt-5 w-full">
-      <img loading="lazy" src={src} alt="" className="shrink-0 w-10 h-10 rounded-full object-cover" />
-      <div className="flex flex-col">
-        <p className="text-lg font-bold">{name}</p>
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex items-center gap-4 mt-5 w-full">
+            <img
+                loading="lazy"
+                src={src}
+                alt=""
+                className="shrink-0 w-10 h-10 rounded-full object-cover"
+            />
+            <div className="flex flex-col">
+                <p className="text-lg font-bold">{name}</p>
+            </div>
+        </div>
+    );
 }
 
-function Card({ title, imgSrc, imgAlt, user, description, cancelText, createText, onCancel, onCreate, id }) {
-  const [departmentName, setDepartmentName] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [imageSrc, setImageSrc] = useState(imgSrc);
-  const [croppedImage, setCroppedImage] = useState(null);
-  const [selectedType, setSelectedType] = useState('');
-  const [departmentDescription, setDepartmentDescription] = useState('');
-  const [userData, setUserData] = useState({});
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [cropMode, setCropMode] = useState(false);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const csrfToken = useCsrf();
+function Card({
+    title,
+    imgSrc,
+    imgAlt,
+    user,
+    description,
+    cancelText,
+    createText,
+    onCancel,
+    onCreate,
+    id,
+}) {
+    const [departmentName, setDepartmentName] = useState("");
+    const [imageFile, setImageFile] = useState(null);
+    const [imageSrc, setImageSrc] = useState(imgSrc);
+    const [croppedImage, setCroppedImage] = useState(null);
+    const [selectedType, setSelectedType] = useState("");
+    const [departmentDescription, setDepartmentDescription] = useState("");
+    // const [userData, setUserData] = useState({});
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [cropMode, setCropMode] = useState(false);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const csrfToken = useCsrf();
 
-  const fetchUser = async () => {
-    try {
-      const response = await fetch(`/api/users/users/${id}?with[]=profile`, {
-        method: "GET",
-      });
+    const [wasCropped, setWasCropped] = useState(false);
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+    // const fetchUser = async () => {
+    //     try {
+    //         const response = await fetch(
+    //             `/api/users/users/${id}?with[]=profile`,
+    //             {
+    //                 method: "GET",
+    //             }
+    //         );
 
-      const { data } = await response.json();
-      setUserData((pv) => ({
-        ...pv,
-        ...data,
-        name: data.name,
-        profileImage: data.profile?.image
-          ? `/storage/${data.profile.image}`
-          : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${data.name}&rounded=true`
-      }));
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
+    //         if (!response.ok) {
+    //             throw new Error("Network response was not ok");
+    //         }
 
-  useEffect(() => {
-    fetchUser();
-  }, [id]);
+    //         const { data } = await response.json();
+    //         // setUserData((pv) => ({
+    //         //     ...pv,
+    //         //     ...data,
+    //         //     name: data.name,
+    //         //     profileImage: data.profile?.image
+    //         //         ? `/storage/${data.profile.image}`
+    //         //         : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${data.name}&rounded=true`,
+    //         // }));
+    //     } catch (error) {
+    //         console.error("Error fetching user data:", error);
+    //     }
+    // };
 
-  const handleImageChange = (file) => {
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageSrc(reader.result);
-      setCropMode(false);
-    };
-    reader.readAsDataURL(file);
-  };
+    // useEffect(() => {
+    //     fetchUser();
+    // }, [id]);
 
-  const onCropComplete = useCallback(async (croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-    const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-    setCroppedImage(croppedImageBlob);
-  }, [imageSrc]);
-
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append('name', departmentName);
-    if (croppedImage) {
-      formData.append('banner', croppedImage);
-    }
-    formData.append('description', departmentDescription);
-    formData.append('type', selectedType);
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        "X-CSRF-Token": csrfToken
-      },
-      body: formData
+    const handleImageChange = (file) => {
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onload = () => {
+            setImageSrc(reader.result);
+            setCropMode(false);
+        };
+        reader.readAsDataURL(file);
     };
 
-    try {
-      const response = await fetch('/api/department/departments', options);
-      const text = await response.text();
+    const onCropComplete = useCallback(
+        async (croppedArea, croppedAreaPixels) => {
+            setCroppedAreaPixels(croppedAreaPixels);
+            const croppedImageBlob = await getCroppedImg(
+                imageSrc,
+                croppedAreaPixels
+            );
+            setCroppedImage(croppedImageBlob);
+            setWasCropped(true);
+        },
+        [imageSrc]
+    );
 
-      if (!response.ok) {
-        throw new Error('Failed to create department');
-      }
+    const isDefaultImage = imageSrc === imgSrc;
 
-      const responseData = text ? JSON.parse(text) : {};
-      console.log('Department created:', responseData.data);
-      onCreate(responseData.data);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error creating department:', error.message);
-    }
-  };
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        formData.append("name", departmentName);
 
-  return (
-    <section className="flex flex-col p-5 bg-white rounded-3xl w-full max-w-xl mx-auto">
-      <Header title={title} />
-      <div className="flex flex-col items-center w-full">
-        <Avatar
-          src={imageSrc}
-          alt={imgAlt}
-          onImageChange={handleImageChange}
-          cropMode={cropMode}
-          setCropMode={setCropMode}
-          crop={crop}
-          setCrop={setCrop}
-          zoom={zoom}
-          setZoom={setZoom}
-          onCropComplete={onCropComplete}
-        />
-        <input
-          type="text"
-          placeholder="Department name"
-          value={departmentName}
-          onChange={(e) => setDepartmentName(e.target.value)}
-          className="w-full px-4 py-2 mt-6 text-2xl font-extrabold border border-gray-300 rounded-md"
-        />
-        <textarea
-          placeholder={description}
-          value={departmentDescription}
-          onChange={(e) => setDepartmentDescription(e.target.value)}
-          className="w-full px-4 py-2 mt-4 text-base font-semibold text-gray-500 border border-gray-300 rounded-md"
-        />
-        <UserInfo name={userData.name} role={user.role} src={userData.profileImage} />
-        <div className="flex justify-between w-full gap-5 mt-6 text-sm">
-          <button className="font-semibold text-neutral-800" onClick={onCancel}>
-            {cancelText}
-          </button>
-          <button
-            className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-            onClick={handleSubmit}
-          >
-            {createText}
-          </button>
-        </div>
-      </div>
-    </section>
-  );
+        if (!wasCropped && !isDefaultImage) {
+            formData.append("banner", imageFile);
+        } else if (croppedImage && !isDefaultImage) {
+            formData.append("banner", croppedImage);
+        }
+
+        formData.append("description", departmentDescription);
+        formData.append("type", selectedType);
+
+        const options = {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "X-CSRF-Token": csrfToken,
+            },
+            body: formData,
+        };
+
+        try {
+            const response = await fetch(
+                "/api/department/departments",
+                options
+            );
+            const text = await response.text();
+
+            if (!response.ok) {
+                throw new Error("Failed to create department");
+            }
+
+            const responseData = text ? JSON.parse(text) : {};
+            console.log("Department created:", responseData.data);
+            onCreate(responseData.data);
+            window.location.reload();
+        } catch (error) {
+            console.error("Error creating department:", error.message);
+        }
+    };
+
+    const userData = useUserData();
+
+    return (
+        <section className="flex flex-col p-5 bg-white rounded-3xl w-full max-w-xl mx-auto">
+            <Header title={title} />
+            <div className="flex flex-col items-center w-full">
+                <Banner
+                    src={imageSrc}
+                    alt={imgAlt}
+                    onImageChange={handleImageChange}
+                    cropMode={cropMode}
+                    setCropMode={setCropMode}
+                    crop={crop}
+                    setCrop={setCrop}
+                    zoom={zoom}
+                    setZoom={setZoom}
+                    onCropComplete={onCropComplete}
+                    cropDisabled={isDefaultImage}
+                />
+                <input
+                    type="text"
+                    placeholder="Department name"
+                    value={departmentName}
+                    onChange={(e) => setDepartmentName(e.target.value)}
+                    className="w-full px-4 py-2 mt-6 text-2xl font-extrabold border border-gray-300 rounded-md"
+                />
+                <textarea
+                    placeholder={description}
+                    value={departmentDescription}
+                    onChange={(e) => setDepartmentDescription(e.target.value)}
+                    className="w-full px-4 py-2 mt-4 text-base font-semibold text-gray-500 border border-gray-300 rounded-md"
+                />
+                <UserInfo
+                    name={userData.name}
+                    role={userData.role}
+                    src={userData.profileImage}
+                />
+                <div className="flex justify-between w-full gap-5 mt-6 text-sm">
+                    <button
+                        className="font-semibold text-neutral-800"
+                        onClick={onCancel}
+                    >
+                        {cancelText}
+                    </button>
+                    <button
+                        className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                        onClick={handleSubmit}
+                    >
+                        {createText}
+                    </button>
+                </div>
+            </div>
+        </section>
+    );
 }
 
 export default function CreateDepartments({ onCancel, onCreate, userID }) {
-  const [user, setUser] = useState({
-    name: '',
-    role: '',
-    src: ''
-  });
+    // const [user, setUser] = useState({
+    //     name: "",
+    //     role: "",
+    //     src: "",
+    // });
 
-  useEffect(() => {
-    async function fetchUser() {
-      const userInfo = await getCurrentUser();
-      setUser(userInfo);
-    }
-    fetchUser();
-  }, []);
+    // useEffect(() => {
+    //     async function fetchUser() {
+    //         const userInfo = await getCurrentUser();
+    //         setUser(userInfo);
+    //     }
+    //     fetchUser();
+    // }, []);
 
-  return (
-    <Card
-      title="Create New Department"
-      imgSrc="/assets/uploadAnImage.svg"
-      imgAlt="Departments Logo"
-      user={user}
-      type="Type"
-      description="Description"
-      cancelText="Cancel"
-      createText="Create"
-      onCancel={onCancel}
-      onCreate={onCreate}
-      id={userID}
-    />
-  );
+    return (
+        <Card
+            title="Create New Department"
+            imgSrc="/assets/uploadAnImage.svg"
+            imgAlt="Departments Logo"
+            // user={user}
+            type="Type"
+            description="Description"
+            cancelText="Cancel"
+            createText="Create"
+            onCancel={onCancel}
+            onCreate={onCreate}
+            id={userID}
+        />
+    );
 }

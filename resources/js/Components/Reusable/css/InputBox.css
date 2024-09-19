@@ -41,6 +41,12 @@
   transition: opacity 0.3s;
 }
 
+@media screen and (max-width: 600px) {
+  .tooltip .tooltiptext {
+    display: none;
+  }
+}
+
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
@@ -67,26 +73,17 @@
 }
 
 
+
+
 .input-box-container {
-  background-color: #FFFFFF;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 16px;
-  width: 100%;
-  height: auto;
-}
-
-@media (min-width: 768px) {
-  .input-box-container {
-    width: 100%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .input-box-container {
-    width: 100%;
-  }
-}
+      background-color: #FFFFFF;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      width: 600px;
+      height: auto;
+    }
 
 
   .comment-box-container {
@@ -197,7 +194,7 @@
 
   .emoji-picker-container {
     position: absolute;
-    z-index: 2000; /* Ensure it's above other elements */
+    z-index: 1000; /* Ensure it's above other elements */
     margin-left: 0px; /* Adjust the position based on your UI */
     bottom: 100%; /* Position it above the input field */
     left: 35%; /* Align it horizontally with the input */
@@ -208,15 +205,9 @@
     width: auto; /* Ensure the width is auto-adjusting */
     max-width: 100%; /* Set a maximum width */
     overflow-y: auto; /* Allow scrolling if the content is too tall */
+
 }
 
-
-.emoji-picker-container-inputbox {
-  position: absolute; /* Use absolute positioning to ensure it overlays properly */
-  z-index: 1; /* Higher z-index to display above other elements */
-  top: auto; /* Adjust as needed for positioning */
-  right: auto; /* Adjust to align with the emoji button */
-}
 
 
 
@@ -329,7 +320,7 @@
   transition: .4s;
   border-radius: 34px;
   font-size: 10px;
-  
+
 }
 
 .slider:before {
@@ -368,5 +359,5 @@ input:checked + .slider:before {
 input:checked + .slider::after {
   content: "ON";
   left: 5px;
-  
+
 }

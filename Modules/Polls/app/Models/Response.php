@@ -13,14 +13,18 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Response extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi , HasUuids;
+    use Auditable, Authorizable, HasFactory, QueryableApi, HasUuids;
 
     protected $table = 'responses';
 
     protected $fillable = [
         'user_id',
         'poll_id',
-        'question_id',
+        'answers'
+    ];
+
+    protected $casts = [
+        'answers' => 'array',
     ];
 
     public static function rules($scenario = 'create')
@@ -30,15 +34,15 @@ class Response extends Model implements AuditableContract
                 [
                     'user_id' => ['string', 'required'],
                     'poll_id' => ['string', 'required'],
-                    'question_id' => ['string', 'required'],
+                    'answers' => ['array', 'required'],
                 ],
                 // [],
             ],
             'update' => [
                 [
-                   'user_id' => ['string', 'required'],
+                    'user_id' => ['string', 'required'],
                     'poll_id' => ['string', 'required'],
-                    'question_id' => ['string', 'required'],
+                    'answers' => ['array', 'required'],
                 ],
                 // [],
             ],
@@ -57,8 +61,9 @@ class Response extends Model implements AuditableContract
         return $this->belongsTo(User::class);
     }
 
-    public function question()
+    public function answers()
     {
-        return $this->belongsTo(Question::class);
+        // answers is a json column
+        return collect($this->answers);
     }
 }

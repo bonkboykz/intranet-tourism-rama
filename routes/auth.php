@@ -57,6 +57,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // // broadcasting
+    // Route::post('api/broadcasting/auth', function () {
+    //     return auth()->user()->createToken('authToken')->plainTextToken;
+    // });
 });
 
 Route::get('auth/{driver}/redirect', [SocialLoginController::class, 'redirect']);

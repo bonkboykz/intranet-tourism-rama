@@ -35,7 +35,7 @@ class Question extends Model implements AuditableContract
             ],
             'update' => [
                 [
-                   'poll_id' => ['string', 'required'],
+                    'poll_id' => ['string', 'required'],
                     'question_text' => ['string', 'required'],
                     'question_type' => ['string', 'required'],
                 ],
@@ -46,8 +46,18 @@ class Question extends Model implements AuditableContract
         return $rules[$scenario];
     }
 
-    public function polls()
+    public function poll()
     {
         return $this->belongsTo(Poll::class);
+    }
+
+    public function options()
+    {
+        return $this->hasMany(Option::class);
+    }
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
     }
 }
