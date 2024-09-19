@@ -35,3 +35,4 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 // require_once 'crud.php';
 Route::get('user/{id}/profile-qr', [ProfileController::class, 'profileQr'])->name('profileQr');
+Route::get('get_all_birthdays', [ProfileController::class, 'getAllBirthdays'])->name('getAllBirthdays');

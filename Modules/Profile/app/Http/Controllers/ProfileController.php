@@ -172,4 +172,13 @@ class ProfileController extends Controller
         $user = User::findOrFail($id);
         return $user->vcard;
     }
+
+    public function getAllBirthdays()
+    {
+        $data = Profile::whereNotNull('dob')->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }

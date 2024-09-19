@@ -235,7 +235,7 @@ input[type="radio"]:checked + .color-display {
     width: auto;
   }
 
-  .custom-popover .popover-body {
+  .custom-popover .popover-body, .custom-popover-rsuite.custom-popover-rsuite {
     background-color: #ffffff;
     color: #333;
     border: 1px solid #ddd;
@@ -254,10 +254,15 @@ input[type="radio"]:checked + .color-display {
     display: none;
   }
 
-  .custom-popover .event-title {
+  .custom-popover .event-title, .custom-popover-rsuite .event-title {
     font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 2px;
+  }
+
+
+  .custom-popover-rsuite ul {
+    font-size: 1.5em;
   }
 
   @media print {
@@ -334,6 +339,11 @@ input[type="radio"]:checked + .color-display {
     height: 50px;
   }
 
+  .fc-daygrid-day-top:hover {
+    text-decoration: none !important;
+  }
+
   .fc-daygrid-day-number {
     width: 100%;
   }
+
