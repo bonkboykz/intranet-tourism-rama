@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
+use Modules\User\Models\User;
 use Modules\Crud\Models\BusinessGrade;
 use Modules\Crud\Models\BusinessPost;
 use Modules\Crud\Models\BusinessScheme;

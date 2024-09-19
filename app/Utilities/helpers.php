@@ -2,6 +2,7 @@
 
 
 use \Illuminate\Http\UploadedFile;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 
@@ -15,31 +16,45 @@ if (!function_exists('uploadFile')) {
         $whitelistExtension = !empty(config('filesystems.whitelist'))
             ? config('filesystems.whitelist.criteria.extension')
             : ["jpg", "jpeg", "png", "bmp", "pdf", "pptx", "ppt"];
-            // echo phpinfo();
-            // die();
-            // dd(
-            //     $uploadedFile,
-            //     // $uploadedFile->extension(),
-            //     $uploadedFile->path(),
-            //     $uploadedFile->dimensions(),
-            //     $uploadedFile->clientExtension(),
-            //     $uploadedFile->getPathname(),
-            //     $uploadedFile->getSize(),
-            // );
-            // dd($uploadedFile);
+        // echo phpinfo();
+        // die();
+        // dd(
+        //     $uploadedFile,
+        //     // $uploadedFile->extension(),
+        //     $uploadedFile->path(),
+        //     $uploadedFile->dimensions(),
+        //     $uploadedFile->clientExtension(),
+        //     $uploadedFile->getPathname(),
+        //     $uploadedFile->getSize(),
+        // );
+        // dd($uploadedFile);
+
+        // $output = new ConsoleOutput();
+        // $output->writeln($uploadedFile->extension());
+        // $output->writeln($uploadedFile->clientExtension());
+        // $output->writeln($uploadedFile->getMimeType());
+        // $output->writeln($uploadedFile->getSize());
+        // $output->writeln($uploadedFile->getClientOriginalName());
+        // $output->writeln($uploadedFile->path());
+        // $output->writeln($uploadedFile->getPathname());
+        // $output->writeln($uploadedFile->dimensions());
+
         $fileRef['extension'] = strtolower($uploadedFile->extension() ?? $uploadedFile->clientExtension());
         $fileRef['mime_type'] = $uploadedFile->getMimeType();
         $fileRef['filesize'] = $uploadedFile->getSize();
         $fileRef['original_name'] = $uploadedFile->getClientOriginalName();
 
         // dd($fileRef);
-        $whitelistExtensionList = collect($whitelistExtension)->map(fn ($ext) => strtoupper($ext))->join(' / ');
-        if (!in_array($fileRef['extension'], $whitelistExtension)) abort(422, "Fail berformat " . strtoupper($fileRef['extension']) . " tidak dapat diproses. Sila muat naik fail berformat $whitelistExtensionList sahaja.");
+        $whitelistExtensionList = collect($whitelistExtension)->map(fn($ext) => strtoupper($ext))->join(' / ');
+        if (!in_array($fileRef['extension'], $whitelistExtension))
+            abort(422, "Failed to process " . strtoupper($fileRef['extension']) . " format. Please upload files with the following formats only: $whitelistExtensionList.");
 
-        if (!$uploadedFile->getSize() || $uploadedFile->getSize() >= UploadedFile::getMaxFilesize()) abort(422, "Saiz fail terlalu besar. Sila muat naik fail bersaiz 100MB atau lebih kecil.");
+        if (!$uploadedFile->getSize() || $uploadedFile->getSize() >= UploadedFile::getMaxFilesize())
+            abort(422, "File size is too large. Please upload files with a size of 100MB or smaller.");
 
         $fileRef['path'] = $disk ? $uploadedFile->store($folder, $disk) : $uploadedFile->store($folder);
-        if (!$fileRef['path']) abort(500, "Gagal memuat naik fail.");
+        if (!$fileRef['path'])
+            abort(500, "Failed to upload file.");
         $fileRef['name'] = empty($fileName) ? pathinfo($fileRef['path'], PATHINFO_FILENAME) : $fileName;
 
         // !!important: Image optimization required synchronous operation. resources does not exist yet

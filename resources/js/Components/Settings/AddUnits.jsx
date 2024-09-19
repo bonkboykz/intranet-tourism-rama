@@ -174,22 +174,20 @@ const AddUnits = () => {
 
   return (
     <div className="container p-8 mx-auto">
-      <div className="flex items-center justify-between mb-6 max-md:flex-col max-md:w-full max-md:gap-4">
-        <div className="max-md:w-full">
+      <div className="flex items-center justify-between mb-6">
+        <div>
           <h1 className="text-3xl font-bold text-gray-900">Business Units</h1>
           <p className="text-gray-600">
             Select a department to view and manage its business units.
           </p>
         </div>
-        <div className="flex max-md:justify-end max-md:w-full">
         <button
           onClick={() => setIsPopupOpen(true)}
-          className="px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 max-md:w-full"
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
           disabled={!selectedDepartmentId}
         >
           Add New Unit
         </button>
-      </div>
       </div>
 
       {/* Department Selection */}

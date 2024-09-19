@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import Example from '../Layouts/DashboardLayoutNew';
-import PageTitle from '../Components/Reusable/PageTitle';
-import FeaturedEvents from '../Components/Reusable/FeaturedEventsWidget/FeaturedEvents';
-import WhosOnline from '../Components/Reusable/WhosOnlineWidget/WhosOnline';
-import { usePage } from '@inertiajs/react';
-import { useCsrf } from '@/composables';
+import React, { useEffect, useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { usePage } from "@inertiajs/react";
+
+import { useCsrf } from "@/composables";
+
+import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
+import PageTitle from "../Components/Reusable/PageTitle";
+import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
+import Example from "../Layouts/DashboardLayoutNew";
 
 const Ordering = () => {
     const [isNotificationVisible, setIsNotificationVisible] = useState(false);
@@ -18,43 +20,46 @@ const Ordering = () => {
 
     const fetchStaffMembers = async (departmentId) => {
         setIsLoading(true);
-    
+
         try {
-            const response = await fetch(`/api/department/employment_posts?department_id=${departmentId}`, {
-                method: "GET",
-                headers: { Accept: 'application/json' }
-            });
+            const response = await fetch(
+                `/api/department/employment_posts?department_id=${departmentId}`,
+                {
+                    method: "GET",
+                    headers: { Accept: "application/json" },
+                }
+            );
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             const data = await response.json();
-    
-            const members = data.members.map(member => ({
+
+            const members = data.data.map((member) => ({
                 id: member.user_id,
                 employment_id: member.employment_post_id,
                 name: member.name,
                 role: member.business_post_title,
-                status: 'Online',
-                imageUrl: member.staff_image || '/assets/dummyStaffPlaceHolder.jpg',
+                status: "Online",
+                imageUrl:
+                    member.staff_image || "/assets/dummyStaffPlaceHolder.jpg",
                 isDeactivated: member.is_active,
                 order: member.order,
             }));
-    
+
             members.sort((a, b) => a.order - b.order);
-    
+
             setStaffMembers(members);
         } catch (error) {
             console.error("Error:", error);
         }
         setIsLoading(false);
     };
-    
+
     useEffect(() => {
         if (departmentId) {
-          fetchStaffMembers(departmentId);
+            fetchStaffMembers(departmentId);
         }
-      }, [departmentId]);
-
+    }, [departmentId]);
 
     const updateOrderAttributes = (members) => {
         return members.map((member, index) => ({
@@ -76,41 +81,52 @@ const Ordering = () => {
     const handleMoveUp = (index) => {
         if (index === 0) return;
         const newData = [...staffMembers];
-        [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];
+        [newData[index - 1], newData[index]] = [
+            newData[index],
+            newData[index - 1],
+        ];
         setStaffMembers(updateOrderAttributes(newData));
     };
 
     const handleMoveDown = (index) => {
         if (index === staffMembers.length - 1) return;
         const newData = [...staffMembers];
-        [newData[index + 1], newData[index]] = [newData[index], newData[index + 1]];
+        [newData[index + 1], newData[index]] = [
+            newData[index],
+            newData[index + 1],
+        ];
         setStaffMembers(updateOrderAttributes(newData));
     };
 
     const updateOrderInDatabase = async (employmentPost, department_id) => {
         try {
-            const response = await fetch(`/api/department/employment_posts/${employmentPost.employment_id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify({
-                    _method: 'PATCH',
-                    department_id: department_id,
-                    user_id: employmentPost.id,
-                    order:  employmentPost.order,
-                }),
-            });
+            const response = await fetch(
+                `/api/department/employment_posts/${employmentPost.employment_id}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    body: JSON.stringify({
+                        _method: "PATCH",
+                        department_id: department_id,
+                        user_id: employmentPost.id,
+                        order: employmentPost.order,
+                    }),
+                }
+            );
 
             if (!response.ok) {
-                throw new Error(`Failed to update order for employment post with ID ${employmentPost.employment_id}`);
+                throw new Error(
+                    `Failed to update order for employment post with ID ${employmentPost.employment_id}`
+                );
             }
 
             const responseBody = await response.text();
             return responseBody ? JSON.parse(responseBody) : {};
         } catch (error) {
-            console.error('Error updating order:', error);
+            console.error("Error updating order:", error);
             return null;
         }
     };
@@ -118,12 +134,14 @@ const Ordering = () => {
     const handleSave = async () => {
         setIsNotificationVisible(true);
         setNotificationMessage("Saving changes...");
-        
-        const updatePromises = staffMembers.map((member) => updateOrderInDatabase(member, departmentId));
-        
+
+        const updatePromises = staffMembers.map((member) =>
+            updateOrderInDatabase(member, departmentId)
+        );
+
         const results = await Promise.all(updatePromises);
 
-        const success = results.every(result => result !== null);
+        const success = results.every((result) => result !== null);
         if (success) {
             setNotificationMessage("Changes saved successfully!");
         } else {
@@ -132,23 +150,23 @@ const Ordering = () => {
 
         setTimeout(() => {
             setIsNotificationVisible(false);
-            window.location.href = `/staffDirectory?departmentId=${departmentId}`;
+            window.location.href = `/staffDirectory?departmentId=${props.departmentId}`;
         }, 1500);
     };
 
     const handleBack = () => {
-        // fetchStaffMembers(departmentId);
-        window.location.href = `/staffDirectory?departmentId=${departmentId}`;
+        window.location.href = `/staffDirectory?departmentId=${props.departmentId}`;
+        // window.history.back();
     };
 
     console.log(staffMembers);
 
     const getImageSource = (imageUrl) => {
-        if (imageUrl.startsWith('staff_image/')) {
+        if (imageUrl.startsWith("staff_image/")) {
             return `/storage/${imageUrl}`;
         } else {
-            return imageUrl === '/assets/dummyStaffPlaceHolder.jpg' 
-                ? imageUrl 
+            return imageUrl === "/assets/dummyStaffPlaceHolder.jpg"
+                ? imageUrl
                 : `/avatar/${imageUrl}`;
         }
     };
@@ -160,10 +178,23 @@ const Ordering = () => {
                     <main className="w-full mt-5 xl:pl-96 max-w-[1400px]">
                         <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
                             <div className="flex items-center justify-between max-md:px-4">
-                                <h1 className="text-3xl font-bold text-gray-900 ">Manage Ordering</h1>
+                                <h1 className="text-3xl font-bold text-gray-900 ">
+                                    Manage Ordering
+                                </h1>
                                 <div className="flex space-x-4">
-                                    <button onClick={handleBack} className="font-bold text-black text-md">Back</button>
-                                    <button type="button" className="px-4 py-2 font-bold text-white bg-red-500 rounded-full text-md hover:bg-red-700" onClick={handleSave}>Save</button>
+                                    <button
+                                        onClick={handleBack}
+                                        className="font-bold text-black text-md"
+                                    >
+                                        Back
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="px-4 py-2 font-bold text-white bg-red-500 rounded-full text-md hover:bg-red-700"
+                                        onClick={handleSave}
+                                    >
+                                        Save
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -171,70 +202,130 @@ const Ordering = () => {
                             <DragDropContext onDragEnd={handleDragEnd}>
                                 <Droppable droppableId="staff">
                                     {(provided) => (
-                                        <table className="w-full bg-white divide-y divide-gray-200 table-fixed" {...provided.droppableProps} ref={provided.innerRef}>
+                                        <table
+                                            className="w-full table-fixed bg-white divide-y divide-gray-200"
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                        >
                                             <thead>
                                                 <tr>
-                                                    <th className="w-3/5 px-0 py-3 font-bold text-left text-gray-700 text-md">Name</th>
-                                                    <th className="w-1/5 py-3 font-bold text-right text-gray-700 px-14 max-md:px-0 text-md">Ordering</th>
+                                                    <th className="px-0 py-3 font-bold text-left text-gray-700 text-md w-3/5">
+                                                        Name
+                                                    </th>
+                                                    <th className="px-14 max-md:px-0 py-3 font-bold text-right text-gray-700 text-md w-1/5">
+                                                        Ordering
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {staffMembers.map((item, index) => (
-                                                    <Draggable key={item.id} draggableId={String(item.id)} index={index}>
-                                                        {(provided) => (
-                                                            <tr
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                className="bg-white border-t border-gray-200"
-                                                            >
-                                                                <td
-                                                                    className="py-4 pr-12 text-lg font-bold text-black bg-white max-md:text-sm whitespace-nowrap"
-                                                                    {...provided.dragHandleProps}
+                                                {staffMembers.map(
+                                                    (item, index) => (
+                                                        <Draggable
+                                                            key={item.id}
+                                                            draggableId={String(
+                                                                item.id
+                                                            )}
+                                                            index={index}
+                                                        >
+                                                            {(provided) => (
+                                                                <tr
+                                                                    ref={
+                                                                        provided.innerRef
+                                                                    }
+                                                                    {...provided.draggableProps}
+                                                                    className="bg-white border-t border-gray-200"
+                                                                >
+                                                                    <td
+                                                                        className="py-4 text-lg font-bold max-md:text-sm text-black pr-12 whitespace-nowrap bg-white"
+                                                                        {...provided.dragHandleProps}
                                                                     >
-                                                                    <div className="flex items-center">
-                                                                        <img
-                                                                        src={getImageSource(item.imageUrl)}
-                                                                        alt={item.name}
-                                                                        className="inline-block object-cover w-12 h-16 mr-4 rounded-md max-md:w-9 max-md:h-12 max-md:mr-2 max-md:rounded-md"
-                                                                        />
-                                                                        <div className="flex flex-col">
-                                                                        <span className="overflow-hidden whitespace-normal text-ellipsis">
-                                                                            {item.name}
-                                                                        </span>
-                                                                        {item.isDeactivated && (
-                                                                            <span className="mt-0 text-sm text-red-500">(Deactivated)</span>
-                                                                        )}
+                                                                        <div className="flex items-center">
+                                                                            <img
+                                                                                src={getImageSource(
+                                                                                    item.imageUrl
+                                                                                )}
+                                                                                alt={
+                                                                                    item.name
+                                                                                }
+                                                                                className="inline-block object-cover w-12 h-16 mr-4 max-md:w-9 max-md:h-12 max-md:mr-2 max-md:rounded-md rounded-md"
+                                                                            />
+                                                                            <div className="flex flex-col">
+                                                                                <span className="whitespace-normal overflow-hidden text-ellipsis">
+                                                                                    {
+                                                                                        item.name
+                                                                                    }
+                                                                                </span>
+                                                                                {item.isDeactivated && (
+                                                                                    <span className="text-red-500 text-sm mt-0">
+                                                                                        (Deactivated)
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td className="flex-col items-center justify-end w-full px-4 py-4 pl-24 space-x-0 bg-white max-md:pl-6 max-md:justify-end">
-                                                                    <button
-                                                                        className="px-2"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            handleMoveUp(index);
-                                                                        }}
-                                                                        disabled={index === 0}
-                                                                        style={{ opacity: index === 0 ? 0.6 : 1 }}
-                                                                    >
-                                                                        <img src="assets/orderingup.svg" alt="Up" />
-                                                                    </button>
-                                                                    <button
-                                                                        className="px-2"
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            handleMoveDown(index);
-                                                                        }}
-                                                                        disabled={index === staffMembers.length - 1}
-                                                                        style={{ opacity: index === staffMembers.length - 1 ? 0.6 : 1 }}
-                                                                    >
-                                                                        <img src="assets/orderingdown.svg" alt="Down" />
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        )}
-                                                    </Draggable>
-                                                ))}
+                                                                    </td>
+                                                                    <td className="flex-col bg-white w-full pl-24 max-md:pl-6 items-center justify-end max-md:justify-end px-4 py-4 space-x-0">
+                                                                        <button
+                                                                            className="px-2"
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                e.stopPropagation();
+                                                                                handleMoveUp(
+                                                                                    index
+                                                                                );
+                                                                            }}
+                                                                            disabled={
+                                                                                index ===
+                                                                                0
+                                                                            }
+                                                                            style={{
+                                                                                opacity:
+                                                                                    index ===
+                                                                                    0
+                                                                                        ? 0.6
+                                                                                        : 1,
+                                                                            }}
+                                                                        >
+                                                                            <img
+                                                                                src="assets/orderingup.svg"
+                                                                                alt="Up"
+                                                                            />
+                                                                        </button>
+                                                                        <button
+                                                                            className="px-2"
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                e.stopPropagation();
+                                                                                handleMoveDown(
+                                                                                    index
+                                                                                );
+                                                                            }}
+                                                                            disabled={
+                                                                                index ===
+                                                                                staffMembers.length -
+                                                                                    1
+                                                                            }
+                                                                            style={{
+                                                                                opacity:
+                                                                                    index ===
+                                                                                    staffMembers.length -
+                                                                                        1
+                                                                                        ? 0.6
+                                                                                        : 1,
+                                                                            }}
+                                                                        >
+                                                                            <img
+                                                                                src="assets/orderingdown.svg"
+                                                                                alt="Down"
+                                                                            />
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        </Draggable>
+                                                    )
+                                                )}
                                                 {provided.placeholder}
                                             </tbody>
                                         </table>
@@ -265,8 +356,10 @@ const Ordering = () => {
             </div>
             {isNotificationVisible && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="p-4 bg-green-100 shadow-lg rounded-2xl">
-                        <p className="text-lg font-semibold text-green-800">{notificationMessage}</p>
+                    <div className="p-4 bg-green-100 rounded-2xl shadow-lg">
+                        <p className="text-lg font-semibold text-green-800">
+                            {notificationMessage}
+                        </p>
                     </div>
                 </div>
             )}

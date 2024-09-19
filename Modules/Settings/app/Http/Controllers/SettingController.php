@@ -5,6 +5,7 @@ namespace Modules\Settings\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Posts\Models\Post;
+use Modules\Resources\Models\Resource;
 use Modules\Settings\Models\Setting;
 use Illuminate\Support\Str;
 use Modules\Communities\Models\Community;
@@ -15,8 +16,13 @@ class SettingController extends Controller
 {
     public function index()
     {
+        $settings = Setting::all()->pluck('value', 'key');
+
+        // attach app url to logo
+        // $settings['logo'] = config('app.url') . $settings['logo'];
+
         return response()->json([
-            'data' => Setting::queryable()->paginate(),
+            'data' => $settings,
         ]);
     }
 
@@ -39,6 +45,19 @@ class SettingController extends Controller
     {
         $validated = request()->validate(...Setting::rules('update'));
         $setting->update($validated);
+
+        return response()->noContent();
+    }
+
+    public function updateByKey(Request $request, string $key)
+    {
+        $setting = Setting::where('key', $key)->first();
+
+        $value = $request->value;
+
+
+        $setting->update(['value' => $value]);
+        $setting->save();
 
         return response()->noContent();
     }

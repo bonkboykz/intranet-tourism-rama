@@ -13,7 +13,7 @@ use Modules\Resources\Http\Controllers\ResourceController;
  * routes are loaded by the RouteServiceProvider within a group which
  * is assigned the "api" middleware group. Enjoy building your API!
  *
-*/
+ */
 
 // Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 //     Route::apiResource('crud', CrudController::class)->names('crud');
@@ -26,3 +26,7 @@ Route::apiResources([
     'resource_access' => ResourceAccessController::class,
 
 ]);
+
+
+Route::get('public-resources', [ResourceController::class, 'getPublicResources']);
+Route::put('/resources/{resource}/rename', [ResourceController::class, 'renameResource']);

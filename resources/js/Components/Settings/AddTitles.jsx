@@ -127,21 +127,19 @@ const AddTitles = () => {
 
   return (
     <div className="container p-8 mx-auto">
-      <div className="flex items-center justify-between mb-6 max-md:flex-col max-md:w-full max-md:gap-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Business Titles</h1>
           <p className="text-gray-600">
             Manage the business titles here by adding, editing, and viewing them.
           </p>
         </div>
-        <div className="max-md:w-full">
         <button
           onClick={() => setIsPopupOpen(true)}
-          className="px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 max-md:justify-end max-md:w-full"
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
         >
           Add New Title
         </button>
-      </div>
       </div>
 
       {/* Message Display */}
@@ -199,7 +197,7 @@ const AddTitles = () => {
                     ) : (
                       <button
                         onClick={() => editTitle(title.id, title.title)}
-                        className="mr-4 max-md:-ml-10 text-blue-500 hover:text-blue-700"
+                        className="mr-4 text-blue-500 hover:text-blue-700"
                       >
                         Edit
                       </button>

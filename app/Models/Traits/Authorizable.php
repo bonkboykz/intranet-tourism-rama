@@ -3,6 +3,7 @@
 namespace App\Models\Traits;
 
 use Illuminate\Support\Facades\Schema;
+use Modules\User\Models\User;
 
 trait Authorizable
 {
@@ -14,7 +15,7 @@ trait Authorizable
 
     public function scopeAuthorizedByAuth($query)
     {
-        if (! auth()->check()) {
+        if (!auth()->check()) {
             $query->where(false);
         }
 
@@ -26,7 +27,8 @@ trait Authorizable
     public function scopeAuthorizedByDepartment($query)
     {
         if (Schema::hasColumn($this->getTable(), 'user_id')) {
-            $query->where('department_id', auth()->user()->department_id);
+            $user = User::find(auth()->id());
+            $query->where('department_id', $user->department_id);
         }
     }
 }

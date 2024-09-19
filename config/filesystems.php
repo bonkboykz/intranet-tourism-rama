@@ -75,6 +75,7 @@ return [
 
     'whitelist' => [
         'criteria' => [
+            // TODO: expand with all video formats
             'extension' => ["jpg", "jpeg", "webp", "png", "bmp", "pdf", "mp4", "doc", "docx", "txt", "xlsx", "pptx", "ppt", "mov"]
         ]
     ]

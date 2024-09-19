@@ -1,6 +1,6 @@
-// OnlineUsersContext.jsx
-import React, { createContext, useState, useEffect } from 'react';
-import dummyProfilePic from '../../../public/assets/dummyProfilePic.png'
+import React, { createContext, useEffect, useState } from "react";
+
+import dummyProfilePic from "../../../public/assets/dummyProfilePic.png";
 
 export const OnlineUsersContext = createContext();
 
@@ -10,13 +10,22 @@ export const OnlineUsersProvider = ({ children }) => {
     useEffect(() => {
         const channel = window.Echo.join("online")
             .here((users) => {
-                setOnlineUsers(users.map(user => ({ ...user, avatar: dummyProfilePic })));
+                setOnlineUsers(
+                    users.map((user) => ({ ...user, avatar: dummyProfilePic }))
+                );
             })
             .joining((user) => {
-                setOnlineUsers(prevOnlineUsers => [...prevOnlineUsers, { ...user, avatar: dummyProfilePic }]);
+                setOnlineUsers((prevOnlineUsers) => [
+                    ...prevOnlineUsers,
+                    { ...user, avatar: dummyProfilePic },
+                ]);
             })
             .leaving((user) => {
-                setOnlineUsers(prevOnlineUsers => prevOnlineUsers.filter(onlineUser => onlineUser.id !== user.id));
+                setOnlineUsers((prevOnlineUsers) =>
+                    prevOnlineUsers.filter(
+                        (onlineUser) => onlineUser.id !== user.id
+                    )
+                );
             });
 
         return () => {

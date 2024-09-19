@@ -4,7 +4,7 @@ table {
 }
 
 .label-column {
-  width: 40%; /* Adjust this value to make the label column wider */
+  width: 35%; /* Adjust this value to make the label column wider */
 }
 
 .url-column {

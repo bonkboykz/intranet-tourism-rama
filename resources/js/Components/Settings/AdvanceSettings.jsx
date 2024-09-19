@@ -170,7 +170,7 @@ const Media = () => {
             <div className="flex flex-col">
               <p className="text-sm font-medium leading-6 text-gray-900">Path to Files Folder</p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col -ml-64">
               <p className="text-sm font-light leading-6 text-gray-900">Allow members to invite</p>
             </div>
             <Switch
@@ -349,7 +349,7 @@ const MailSettings = () => {
             <div className="flex flex-col">
               <p className="text-sm font-medium leading-6 text-gray-900">Path to Files Folder</p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col -ml-64">
               <p className="text-sm font-light leading-6 text-gray-900">Allow members to invite</p>
             </div>
             <Switch

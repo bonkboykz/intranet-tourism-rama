@@ -1,20 +1,48 @@
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
+# Laravel
 .env
-.env.backup
-.env.production
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
+.local.env
+.production.env
+vendor/
+node_modules/
+public/storage
+public/hot
+storage/*.key
 npm-debug.log
 yarn-error.log
-/.fleet
-/.idea
-/.vscode
-todo.md
+
+
+# Build files
+public/css/
+public/js/
+public/mix-manifest.json
+public/mix.js
+public/mix.js.map
+public/mix.css
+public/mix.css.map
+public/build
+
+# IDE/Editor specific
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+.komodotools/
+.kateproject
+.kateconfig
+*.tmproj
+*.tmproject
+*.vagrant
+
+
+# seed data
+seed/*.csv
+
+.DS_Store
+
+
+# Playwright
+playwright-report/
+playwright-video/
+playwright-trace/
+test-results/

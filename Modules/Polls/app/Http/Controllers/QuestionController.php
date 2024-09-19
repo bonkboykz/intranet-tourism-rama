@@ -4,8 +4,7 @@ namespace Modules\Polls\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Polls\Models\Question;
-use Modules\Polls\Models\Questions;
-use Modules\Posts\Models\PostComment;
+
 
 class QuestionController extends Controller
 {

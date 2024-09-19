@@ -3,7 +3,7 @@
 namespace Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,17 +17,17 @@ class EmailVerifcationController extends Controller
      */
     public function verify(Request $request)
     {
-        $user = \App\Models\User::findOrFail($request->id);
+        $user = \Modules\User\Models\User::findOrFail($request->id);
         Auth::onceUsingId($user->id);
-        if (! hash_equals((string) $request->user()->getKey(), (string) $request->route('id'))) {
+        if (!hash_equals((string) $request->user()->getKey(), (string) $request->route('id'))) {
             return false;
         }
 
-        if (! hash_equals(sha1($request->user()->getEmailForVerification()), (string) $request->route('hash'))) {
+        if (!hash_equals(sha1($request->user()->getEmailForVerification()), (string) $request->route('hash'))) {
             return false;
         }
 
-        if (! $request->user()->hasVerifiedEmail()) {
+        if (!$request->user()->hasVerifiedEmail()) {
             $request->user()->markEmailAsVerified();
 
             event(new Verified($request->user()));

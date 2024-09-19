@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+import React, { useEffect, useRef, useState } from "react";
+import PhoneInput from "react-phone-input-2";
+
+import "react-phone-input-2/lib/style.css";
 
 function ProfileDepartment({
     department,
@@ -13,7 +14,7 @@ function ProfileDepartment({
     phone,
     isEditing,
     onFormDataChange,
-    originalFormData
+    originalFormData,
 }) {
     const [localFormData, setLocalFormData] = useState({
         department,
@@ -29,22 +30,42 @@ function ProfileDepartment({
     const [departmentOptions, setDepartmentOptions] = useState([]);
     const [unitOptions, setUnitOptions] = useState([]);
     const [jobTitleOptions, setJobTitleOptions] = useState([]);
-    const [positionOptions, setPositionOptions] = useState(['Tetap', 'Kontrak', 'MySTEP']);
+    const [positionOptions, setPositionOptions] = useState([
+        "Tetap",
+        "Kontrak",
+        "MySTEP",
+    ]);
     const [gradeOptions, setGradeOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
     const [phoneOptions, setPhoneOptions] = useState([]);
 
     const inputRef = useRef(null);
 
-    const csrfToken = ''; // Add your CSRF token here if needed
+    const csrfToken = ""; // Add your CSRF token here if needed
 
     useEffect(() => {
-        fetchData('/api/department/departments', setDepartmentOptions, 'Departments');
+        fetchData(
+            "/api/department/departments",
+            setDepartmentOptions,
+            "Departments"
+        );
         fetchBusinessUnits();
-        fetchData('/api/department/business_posts', setJobTitleOptions, 'Job Title');
-        fetchData('/api/department/business_grades', setGradeOptions, 'Grades');
-        fetchData('/api/department/employment_posts', setLocationOptions, 'Location');
-        fetchData('/api/department/employment_posts', setPhoneOptions, 'Phones');
+        fetchData(
+            "/api/department/business_posts",
+            setJobTitleOptions,
+            "Job Title"
+        );
+        fetchData("/api/department/business_grades", setGradeOptions, "Grades");
+        fetchData(
+            "/api/department/employment_posts",
+            setLocationOptions,
+            "Location"
+        );
+        fetchData(
+            "/api/department/employment_posts",
+            setPhoneOptions,
+            "Phones"
+        );
     }, []);
 
     const fetchData = async (API_URL, setOptions, label) => {
@@ -56,7 +77,10 @@ function ProfileDepartment({
             while (currentPage <= lastPage) {
                 const response = await fetch(`${API_URL}?page=${currentPage}`, {
                     method: "GET",
-                    headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
+                    headers: {
+                        Accept: "application/json",
+                        "X-CSRF-Token": csrfToken,
+                    },
                 });
                 if (!response.ok) {
                     throw new Error(`Network response was not ok for ${label}`);
@@ -73,7 +97,6 @@ function ProfileDepartment({
     };
 
     console.log("DDDD", department);
-    
 
     const fetchBusinessUnits = async () => {
         let allUnits = [];
@@ -83,12 +106,18 @@ function ProfileDepartment({
         try {
             while (currentPage <= lastPage) {
                 // const response = await fetch(`/api/department/business_units?page=${currentPage}`, {
-                const response = await fetch(`/api/department/business_units?department_id=${departmentId}&page=${currentPage}`, {
-                    method: "GET",
-                    headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
-                });
+                const response = await fetch(
+                    `/api/department/business_units?department_id=${departmentId}&page=${currentPage}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json",
+                            "X-CSRF-Token": csrfToken,
+                        },
+                    }
+                );
                 if (!response.ok) {
-                    throw new Error('Network response was not ok for Units');
+                    throw new Error("Network response was not ok for Units");
                 }
                 const data = await response.json();
                 allUnits = allUnits.concat(data.data);
@@ -97,7 +126,7 @@ function ProfileDepartment({
             }
             setUnitOptions(allUnits);
         } catch (error) {
-            console.error('Error fetching data for Units:', error);
+            console.error("Error fetching data for Units:", error);
         }
     };
 
@@ -112,19 +141,19 @@ function ProfileDepartment({
         if (onFormDataChange) {
             const updatedData = { [name]: value };
 
-            if (name === 'department') {
+            if (name === "department") {
                 updatedData.department_id = value;
-            } else if (name === 'unit') {
+            } else if (name === "unit") {
                 updatedData.business_unit_id = value;
-            } else if (name === 'jobtitle') {
+            } else if (name === "jobtitle") {
                 updatedData.business_post_id = value;
-            } else if (name === 'grade') {
+            } else if (name === "grade") {
                 updatedData.business_grade_id = value;
-            } else if (name === 'location') {
+            } else if (name === "location") {
                 updatedData.location = value;
-            } else if (name === 'phone') {
+            } else if (name === "phone") {
                 updatedData.work_phone = value;
-            } else if (name === 'position') {
+            } else if (name === "position") {
                 updatedData.position = value;
             }
 
@@ -134,7 +163,7 @@ function ProfileDepartment({
 
     const formatPhoneNumber = (number) => {
         // Remove non-digit characters
-        const cleaned = ('' + number).replace(/\D/g, '');
+        const cleaned = ("" + number).replace(/\D/g, "");
         // Split the number into parts for formatting
         const match = cleaned.match(/^(\d{1,3})(\d{3})(\d{4})$/);
         if (match) {
@@ -158,25 +187,41 @@ function ProfileDepartment({
         }
     };
 
-    const renderField = (label, name, value, options, editable = true, onChangeHandler = handleInputChange) => (
+    const renderField = (
+        label,
+        name,
+        value,
+        options,
+        editable = true,
+        onChangeHandler = handleInputChange
+    ) => (
         <tr key={name}>
-            <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800 ">{label}</td>
+            <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800 ">
+                {label}
+            </td>
             <td className="w-2/3 py-2 align-center">
                 {isEditing && editable ? (
                     <select
                         name={name}
-                        value={localFormData[name] || ''}
+                        value={localFormData[name] || ""}
                         onChange={onChangeHandler}
                         className="block w-full sm:w-full md:w-full lg:w-full p-2 mt-1 overflow-y-auto text-sm border-2 rounded-full text-neutral-800 text-opacity-80 border-stone-300 max-md:ml-4"
                         ref={inputRef}
-                        style={{ maxHeight: '150px' }}
+                        style={{ maxHeight: "150px" }}
                     >
-                        <option value="">{localFormData[`${name}_display`] || value}</option>
-                        {options && options.map((option, index) => (
-                            <option key={index} value={option.id || option}>
-                                {typeof option === 'object' ? option.name || option.title || option.code : option}
-                            </option>
-                        ))}
+                        <option value="">
+                            {localFormData[`${name}_display`] || value}
+                        </option>
+                        {options &&
+                            options.map((option, index) => (
+                                <option key={index} value={option.id || option}>
+                                    {typeof option === "object"
+                                        ? option.name ||
+                                          option.title ||
+                                          option.code
+                                        : option}
+                                </option>
+                            ))}
                     </select>
                 ) : (
                     <div className="block w-full p-2 mt-1 text-sm border-2 border-transparent rounded-md text-neutral-800 text-opacity-80">
@@ -193,19 +238,56 @@ function ProfileDepartment({
                 <div className="flex flex-col w-full md:ml-0 md:w-full">
                     <table className="w-full text-left border-collapse table-auto">
                         <tbody>
-                            {renderField('Department', 'department', localFormData.department, departmentOptions, false, handleInputChange)}
-                            {renderField('Unit', 'unit', localFormData.unit, unitOptions, true, handleInputChange)}
-                            {renderField('Job Title', 'jobtitle', localFormData.jobtitle, jobTitleOptions, true, handleInputChange)}
-                            {renderField('Position', 'position', localFormData.position, positionOptions, true, handleInputChange)}
-                            {renderField('Grade', 'grade', localFormData.grade, gradeOptions, true, handleInputChange)}
+                            {renderField(
+                                "Department",
+                                "department",
+                                localFormData.department,
+                                departmentOptions,
+                                false,
+                                handleInputChange
+                            )}
+                            {renderField(
+                                "Unit",
+                                "unit",
+                                localFormData.unit,
+                                unitOptions,
+                                true,
+                                handleInputChange
+                            )}
+                            {renderField(
+                                "Job Title",
+                                "jobtitle",
+                                localFormData.jobtitle,
+                                jobTitleOptions,
+                                true,
+                                handleInputChange
+                            )}
+                            {renderField(
+                                "Position",
+                                "position",
+                                localFormData.position,
+                                positionOptions,
+                                true,
+                                handleInputChange
+                            )}
+                            {renderField(
+                                "Grade",
+                                "grade",
+                                localFormData.grade,
+                                gradeOptions,
+                                true,
+                                handleInputChange
+                            )}
                             <tr>
-                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">Location</td>
+                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
+                                    Location
+                                </td>
                                 <td className="w-2/3 py-2 align-center">
                                     {isEditing ? (
                                         <input
                                             type="text"
                                             name="location"
-                                            value={localFormData.location || ''}
+                                            value={localFormData.location || ""}
                                             onChange={handleInputChange}
                                             className="block w-full sm:w-full md:w-full lg:w-full p-2 mt-1 text-sm border-2 rounded-full text-neutral-800 text-opacity-80 border-stone-300 max-md:ml-4"
                                         />
@@ -217,15 +299,21 @@ function ProfileDepartment({
                                 </td>
                             </tr>
                             <tr>
-                                <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">Office Number</td>
+                                <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
+                                    Office Number
+                                </td>
                                 <td className="w-2/3 py-2 align-center ml-20 text-neutral-800">
                                     {isEditing ? (
                                         <PhoneInput
-                                        country={'my'}
-                                        value={localFormData.phone}
-                                        onChange={handlePhoneChange}
-                                        containerClass="w-full sm:ml-[5px] md:ml-[4px] lg:ml-[1px] max-md:px-3" // Tailwind classes for margin adjustments
-                                        inputStyle={{ width: '100%', marginLeft: '0px' }}                                      />
+                                            country={"my"}
+                                            value={localFormData.phone}
+                                            onChange={handlePhoneChange}
+                                            containerClass="w-full sm:ml-[5px] md:ml-[4px] lg:ml-[1px] max-md:px-3" // Tailwind classes for margin adjustments
+                                            inputStyle={{
+                                                width: "100%",
+                                                marginLeft: "0px",
+                                            }}
+                                        />
                                     ) : (
                                         <div className="text-neutral-800 text-opacity-80 font-normal">
                                             +{localFormData.phone}

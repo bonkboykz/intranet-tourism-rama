@@ -5,7 +5,7 @@ namespace Modules\Crud\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\Attachable;
@@ -80,5 +80,7 @@ class Post extends Model implements AuditableContract
     {
         return $this->hasMany(PostComment::class);
     }
+
+
 
 }

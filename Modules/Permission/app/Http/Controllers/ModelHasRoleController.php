@@ -3,15 +3,19 @@
 namespace Modules\Permission\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Modules\User\Models\User;
 use Modules\Permission\Models\ModelHasRole;
 use Spatie\Permission\Models\Role;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 class ModelHasRoleController extends Controller
 {
     public function index()
     {
+        $output = new ConsoleOutput();
+        $output->writeln('Hello from the ModelHasRoleController');
+
         $roleFilters = request()->query('filter');
         $modelId = request()->query('model_id');
 

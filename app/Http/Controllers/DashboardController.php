@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\ProfileModel;
-use App\Models\User;
+use Modules\User\Models\User;
 use Carbon\Carbon; // Import Carbon for date handling
 
 use Inertia\Inertia;
@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user_id=auth()->id();
+        $user_id = auth()->id();
 
         // Check if the profile exists for the authenticated user
         $profile = ProfileModel::where('user_id', $user_id)->first();
@@ -24,6 +24,7 @@ class DashboardController extends Controller
                 'bio' => $user->name,
             ]);
         }
+
         return Inertia::render('Dashboard', ['id' => auth()->id()]);
     }
 

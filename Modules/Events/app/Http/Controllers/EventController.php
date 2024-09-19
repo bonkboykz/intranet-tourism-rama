@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Modules\Events\Models\Event;
 use Illuminate\Http\Request;
 use Modules\Events\Models\EventAttendance;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class EventController extends Controller
 {
@@ -20,14 +21,14 @@ class EventController extends Controller
     {
         $query = $request->query();
         $modelBuilder = Event::queryable();
-        
+
         // Handle search by title
         if ($request->has('search')) {
             $search = $request->input('search');
             $modelBuilder->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($search) . '%']);
-            $modelBuilder->select('id', 'title');
+            $modelBuilder->select('id', 'title', 'start_at', 'end_at');
         }
-        
+
 
         // Handle pagination
         if (array_key_exists('disabledPagination', $query)) {
@@ -48,10 +49,12 @@ class EventController extends Controller
 
     public function store()
     {
+        // if no description, put empty string
+        request()->merge(['description' => request()->description ?? '']);
         $validated = request()->validate(...Event::rules());
-        Event::create($validated);
+        $createdEvent = Event::create($validated);
 
-        return response()->noContent();
+        return response()->json(['data' => $createdEvent]);
     }
 
     public function update(Event $event)
@@ -66,7 +69,7 @@ class EventController extends Controller
     {
         abort_unless(auth()->id() == $event->created_by, 403, 'You are not allowed to invite people to this event.');
         $validated = request()->validate(...Event::rules('invite'));
-        $attendances = collect(collect($validated)->get('users'))->map(fn ($item) => ['user_id' => $item['id']])->toArray();
+        $attendances = collect(collect($validated)->get('users'))->map(fn($item) => ['user_id' => $item['id']])->toArray();
         $event->attendances()->createMany($attendances);
 
         return response()->noContent();

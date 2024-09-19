@@ -1,0 +1,23 @@
+providers = ["...", "php"]
+
+[variables]
+UPLOAD_MAX_FILESIZE = '1024M'
+POST_MAX_SIZE = '1024M'
+MEMORY_LIMIT = '2048M'
+
+[phases.setup]
+nixPkgs = ['...', 'php82Extensions.gd']
+cmds = [
+    'UPLOAD_INI_PATH=$(find /nix/store/*-php-*/lib -name php.ini -print0 | head -z -n 1 | rev | cut -c 9- | rev)/upload.ini; echo "upload_max_filesize=${UPLOAD_MAX_FILESIZE};" >> $UPLOAD_INI_PATH; echo "post_max_size=${POST_MAX_SIZE};" >> $UPLOAD_INI_PATH; echo "memory_limit=${MEMORY_LIMIT};" >> $UPLOAD_INI_PATH;',
+]
+
+
+[phases.build]
+cmds = [
+    # "./setup_limits.sh",
+    '...',
+    # TODO: When modules clean up done, uncomment below
+    # "php artisan optimize",
+    # "php artisan migrate",
+    "php artisan storage:link",
+]

@@ -5,7 +5,14 @@ namespace Modules\Posts\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
-use Modules\User\Models\User;;
+use Modules\Album\Models\Album;
+use Modules\Communities\Models\Community;
+use Modules\Communities\Models\CommunityMember;
+use Modules\Department\Models\Department;
+use Modules\Polls\Models\Poll;
+use Modules\Resources\Models\Resource;
+use Modules\User\Models\User;
+
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,7 +36,11 @@ class Post extends Model implements AuditableContract
         'pool_posting',
         // 'likes',
         'mentions',
-        'event'
+        'event',
+        'department_id',
+        'community_id',
+        'announced',
+        'post_as',
     ];
     protected $casts = [
         'likes' => 'array',
@@ -51,13 +62,18 @@ class Post extends Model implements AuditableContract
                     'mentions' => ['string'],
                     'accessibilities' => ['array'],
                     'event' => ['string'],
+                    'department_id' => ['string'],
+                    'community_id' => ['string'],
+                    'announced' => ['boolean'],
+                    'post_as' => ['string', 'nullable'],
+                    "albums" => ["array"],
                 ],
                 // [],
             ],
             'update' => [
                 [
                     'user_id' => ['string', 'required'],
-                    'type' => ['string', 'required'],
+                    'type' => ['string'],
                     'content' => ['string'],
                     'title' => ['string'],
                     'tag' => ['string'],
@@ -66,6 +82,11 @@ class Post extends Model implements AuditableContract
                     'likes' => ['string'],
                     'mentions' => ['string'],
                     'event' => ['string'],
+                    'department_id' => ['string'],
+                    'community_id' => ['string'],
+                    'announced' => ['boolean'],
+                    'post_as' => ['string', 'nullable'],
+                    "albums" => ["array"],
                 ],
                 // [],
             ],
@@ -94,4 +115,33 @@ class Post extends Model implements AuditableContract
         return $this->belongsToMany(self::class, 'post_comment', 'post_id', 'comment_id');
     }
 
+    public function viewHistories()
+    {
+        return $this->hasMany(PostViewHistory::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function community()
+    {
+        return $this->belongsTo(Community::class, 'community_id');
+    }
+
+    public function attachments()
+    {
+        return $this->morphMany(Resource::class, 'attachable');
+    }
+
+    public function albums()
+    {
+        return $this->belongsToMany(Album::class, 'album_post');
+    }
+
+    public function poll()
+    {
+        return $this->hasOne(related: Poll::class);
+    }
 }

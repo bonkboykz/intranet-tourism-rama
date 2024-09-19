@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/album",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Album\\app\\Providers\\AlbumServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Album\\": "app/",
+            "Modules\\Album\\Database\\Factories\\": "database/factories/",
+            "Modules\\Album\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Album\\Tests\\": "tests/"
+        }
+    }
+}
