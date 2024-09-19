@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useLayoutEffect } from "react";
+import { usePage } from "@inertiajs/react";
 
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
@@ -25,6 +27,28 @@ const DepartmentDropdown = ({
     const [isAddMemberPopupOpen, setIsAddMemberPopupOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const dropdownRef = useRef(null);
+
+    const {
+        props: { departmentId },
+    } = usePage();
+
+    useLayoutEffect(() => {
+        if (!departmentId) {
+            return;
+        }
+
+        const department = departments.find(
+            (department) => department.id.toString() === departmentId
+        );
+
+        if (!department) {
+            return;
+        }
+
+        setSearchTerm(department.name);
+        setSelectedDepartment(department);
+        onSelectDepartment(department.id);
+    }, [departmentId, departments]);
 
     const handleSelect = (department) => {
         // // Simulate fetching department members and details (replace with real fetch logic)
@@ -153,6 +177,10 @@ const DepartmentDropdown = ({
     // }, []);
 
     useEffect(() => {
+        if (departmentId) {
+            return;
+        }
+
         if (isSuperAdmin) {
             setSelectedDepartment({
                 id: "",

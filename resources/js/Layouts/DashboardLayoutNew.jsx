@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { QueryParamProvider } from "use-query-params";
 
 import Header from "../Components/DashboardHeaderNew";
 import Sidebar from "../Components/SideNavBarNew";
