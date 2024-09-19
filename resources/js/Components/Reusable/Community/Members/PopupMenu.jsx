@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export const PopupMenu = ({
     onRemove,
@@ -64,29 +65,31 @@ export const PopupMenu = ({
                 )}
             </div>
 
-            {showPopup && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="relative p-8 bg-white shadow-lg rounded-2xl w-96">
-                        <h2 className="mb-4 text-xl font-bold text-center">
-                            Delete member?
-                        </h2>
-                        <div className="flex justify-center space-x-4">
-                            <button
-                                className="px-6 py-2 text-base font-bold text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
-                                onClick={handleClosePopup}
-                            >
-                                No
-                            </button>
-                            <button
-                                className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                                onClick={handleConfirmRemove}
-                            >
-                                Yes
-                            </button>
+            {showPopup &&
+                createPortal(
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="relative p-8 bg-white shadow-lg rounded-2xl w-96">
+                            <h2 className="mb-4 text-xl font-bold text-center">
+                                Delete member?
+                            </h2>
+                            <div className="flex justify-center space-x-4">
+                                <button
+                                    className="px-6 py-2 text-base font-bold text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
+                                    onClick={handleClosePopup}
+                                >
+                                    No
+                                </button>
+                                <button
+                                    className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                    onClick={handleConfirmRemove}
+                                >
+                                    Yes
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </div>,
+                    document.body
+                )}
         </div>
     );
 };
