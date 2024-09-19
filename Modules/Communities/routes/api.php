@@ -28,3 +28,5 @@ Route::post('communities/{community}/invite-community-admin', [CommunityControll
 Route::post('communities/{community}/revoke-community-admin', [CommunityController::class, 'revokeCommunityAdmin'])->name('community.revokeCommunityAdmin');
 Route::get('communities/{community}/admins', [CommunityController::class, 'getAdmins'])->name('community.getAdmins');
 Route::get('communities/{community}/members', [CommunityController::class, 'getMembers'])->name('community.getMembers');
+Route::put('communities/{community}/archive', [CommunityController::class, 'archive'])->name('community.archive');
+Route::put('communities/{community}/unarchive', [CommunityController::class, 'unarchive'])->name('community.unarchive');

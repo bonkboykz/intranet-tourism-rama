@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 import { toastError } from "@/Utils/toast";
 
 import CommunityCard from "../Components/Reusable/Community/CommunityCard";
@@ -58,23 +60,12 @@ const Community = () => {
                     type: community.type,
                     imageUrl:
                         community.banner || "/assets/defaultCommunity.png", // Use banner if available
-                    isArchived: false, // Initialize with not archived
+                    isArchived: community.is_archived,
                     isMember: community.is_member,
                     role: community.role,
                 }));
 
-                // Retrieve archived state from localStorage
-                const archivedState =
-                    JSON.parse(localStorage.getItem("archivedCommunities")) ||
-                    {};
-
-                // Update the archived state based on localStorage data
-                const updatedDepartments = departmentData.map((department) => ({
-                    ...department,
-                    isArchived: archivedState[department.id] || false,
-                }));
-
-                allCommunities.push(...updatedDepartments);
+                allCommunities.push(...departmentData);
 
                 totalPages = data.data.last_page;
                 currentPage++;
@@ -159,31 +150,62 @@ const Community = () => {
         setFilter(selectedFilter);
     };
 
-    const handleArchiveToggle = (departmentId) => {
-        setDepartmentsList((prevList) => {
-            const updatedList = prevList.map((department) =>
-                department.id === departmentId
-                    ? { ...department, isArchived: !department.isArchived }
-                    : department
+    const handleArchiveToggle = async (departmentId) => {
+        const department = departmentsList.find(
+            (department) => department.id === departmentId
+        );
+
+        const isArchived = department.isArchived;
+
+        try {
+            const response = await axios.put(
+                `/api/communities/communities/${departmentId}/${isArchived ? "unarchive" : "archive"}`
             );
 
-            // Update localStorage with new archived state
-            const archivedState = updatedList.reduce((acc, department) => {
-                acc[department.id] = department.isArchived;
-                return acc;
-            }, {});
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to archive the community");
+            }
 
-            localStorage.setItem(
-                "archivedCommunities",
-                JSON.stringify(archivedState)
-            );
-            return updatedList;
-        });
+            fetchDepartments();
+        } catch (e) {
+            console.error(e);
+
+            toastError("Failed to archive the community");
+        }
+
+        // setDepartmentsList((prevList) => {
+        //     const updatedList = prevList.map((department) =>
+        //         department.id === departmentId
+        //             ? { ...department, isArchived: !department.isArchived }
+        //             : department
+        //     );
+
+        //     // Update localStorage with new archived state
+        //     const archivedState = updatedList.reduce((acc, department) => {
+        //         acc[department.id] = department.isArchived;
+        //         return acc;
+        //     }, {});
+
+        //     localStorage.setItem(
+        //         "archivedCommunities",
+        //         JSON.stringify(archivedState)
+        //     );
+        //     return updatedList;
+        // });
     };
+
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
 
     const filteredDepartments = departmentsList
         .filter((community) => {
-            if (filter === "All") return !community.isArchived;
+            if (filter === "All") {
+                if (isSuperAdmin) {
+                    return true;
+                }
+
+                return !community.isArchived;
+            }
             if (filter === "Public")
                 return community.type === "public" && !community.isArchived;
             if (filter === "Private")

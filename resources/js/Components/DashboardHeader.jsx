@@ -1,12 +1,14 @@
 import React, { Fragment, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
+
 // import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import logo from "../../../public/assets/logo.png";
-import search from "../../../public/assets/search.png";
 // import bell from '../../../public/assets/notification.png';
 import profileDummy from "../../../public/assets/profileDummy.png";
-import "./Reusable/css/General.css";
+import search from "../../../public/assets/search.png";
 import NotificationPopup from "./NotificationPopup";
+
+import "./Reusable/css/General.css";
 
 // import styles from './styles.css';
 
@@ -70,8 +72,8 @@ const Header = () => {
                                     isActive
                                         ? "/assets/activeBell.svg" // Image when active
                                         : isHovered
-                                        ? "/assets/hoverBell.svg" // Image when hovered
-                                        : "/assets/notification.png" // Default image
+                                          ? "/assets/hoverBell.svg" // Image when hovered
+                                          : "/assets/notification.png" // Default image
                                 }
                                 alt="Notification"
                                 className="w-5 h-6 mr-1"

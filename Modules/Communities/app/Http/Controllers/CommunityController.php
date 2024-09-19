@@ -84,6 +84,12 @@ class CommunityController extends Controller
             return $item;
         });
 
+        // attach count of members
+        $data->map(function ($item) {
+            $item['members_count'] = $item->members()->count();
+            return $item;
+        });
+
 
         return response()->json([
             'data' => $data
@@ -259,6 +265,26 @@ class CommunityController extends Controller
 
         return response()->json([
             'message' => 'User has been successfully revoked as a community admin.',
+        ]);
+    }
+
+    public function archive(Community $community)
+    {
+        $community->is_archived = true;
+        $community->save();
+
+        return response()->json([
+            'message' => 'Community has been archived successfully.'
+        ]);
+    }
+
+    public function unarchive(Community $community)
+    {
+        $community->is_archived = false;
+        $community->save();
+
+        return response()->json([
+            'message' => 'Community has been unarchived successfully.'
         ]);
     }
 }

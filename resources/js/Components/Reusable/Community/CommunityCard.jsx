@@ -59,6 +59,7 @@ const CommunityCard = ({
                 <div className="flex items-center justify-center">
                     <h3 className="staff-member-name whitespace-nowrap overflow-hidden text-ellipsis">
                         {name}
+                        {isArchived && " (Archived)"}
                     </h3>
                     {isPrivate && (
                         <FaLock
