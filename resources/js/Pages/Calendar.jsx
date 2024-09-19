@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLayoutEffect } from "react";
 import { useMemo } from "react";
+import { createPortal } from "react-dom";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
@@ -9,9 +10,16 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
 import { format, isSameDay } from "date-fns";
+// import { CakeIcon } from '@heroicons/react/20/solid';
+import { getDate, getMonth } from "date-fns";
+import { Popover as RsuitePopover, Whisper } from "rsuite";
 
+import BirthdayCom from "@/Components/Reusable/Birthdayfunction/birthdaypopup";
+import Popup from "@/Components/Reusable/Popup";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { getAvatarSource } from "@/Utils/getProfileImage";
+import useUserData from "@/Utils/hooks/useUserData";
 
 import pencilIcon from "../../../public/assets/EditIcon.svg";
 import printIcon from "../../../public/assets/PrintPDF.svg";
@@ -19,94 +27,122 @@ import searchIcon from "../../../public/assets/search.png";
 import PrintCalendar from "./Calendar/PrintCalendar";
 
 import "./Calendar/index.css";
-// import { CakeIcon } from '@heroicons/react/20/solid';
+import "rsuite/dist/rsuite-no-reset.min.css";
+
+const isBirthdayDay = (date, today) => {
+    return (
+        getMonth(today) === getMonth(date) && getDate(today) === getDate(date)
+    );
+};
 
 const DayCellContent = ({ birthdays, ...dayInfo }) => {
     // console.log(dayInfo);
 
     const dayBirthdays = birthdays.filter((event) =>
-        isSameDay(event.start, dayInfo.date)
+        isBirthdayDay(event.date, dayInfo.date)
     );
 
-    const names = dayBirthdays.flatMap((event) => event.extendedProps.names);
-    // const popover = useRef(null);
+    if (dayBirthdays.length > 0) {
+        console.log("Birthdays found:", dayBirthdays);
+    }
 
-    // const setupPopover = () => {
-    //     if (names.length === 0) {
-    //         console.log("no need for popover");
-    //         return;
-    //     }
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
 
-    //     if (!rootRef.current) {
-    //         console.log("prootRef is null");
-    //         return;
-    //     }
+    const [selectedBirthday, setSelectedBirthday] = useState(null);
+    const [isBirthdayComOpen, setIsBirthdayComOpen] = useState(false);
 
-    //     if (popover.current) {
-    //         console.log("already set");
-    //         return;
-    //     }
-
-    //     console.log("birthdays", dayBirthdays);
-
-    //     let namesList;
-
-    //     if (names.length > 1) {
-    //         namesList = names
-    //             .map((name, index) => `<li>${index + 1}. ${name}</li>`)
-    //             .join("");
-    //     } else {
-    //         namesList = `<li>${names[0]}</li>`;
-    //     }
-
-    //     const popoverContent = `
-    //                             <div className="">
-    //                                 <p class="event-title"><strong>Birthdays:</strong></p>
-    //                                 <ul>${namesList}</ul>
-    //                             </div>
-    //                         `;
-
-    //     console.log("setting popover");
-
-    //     popover.current = new bootstrap.Popover(rootRef.current, {
-    //         placement: "bottom",
-    //         trigger: "hover",
-    //         container: "body",
-    //         customClass: "custom-popover",
-    //         content: popoverContent,
-    //         html: true,
-    //         offset: "0,10",
-    //     });
-    // };
-
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         console.log("timeout");
-    //         setupPopover();
-    //     }, 2000);
-
-    //     return () => {
-    //         popover.current?.dispose();
-    //     };
-    // }, []);
+    const userData = useUserData();
 
     return (
-        <div className="flex justify-between w-full z-50">
-            {dayBirthdays.length > 0 && (
-                <span
-                    role="img"
-                    aria-label="cake"
-                    style={{
-                        fontSize: "1.8em",
-                        cursor: "pointer",
-                    }}
-                    title=""
-                    data-names={names.join(",")}
-                >
-                    🎂
-                </span>
-            )}
+        <div className="flex justify-between w-full relative">
+            <span></span>
+            <span
+                className="absolute top-0 left-0  z-100 cursor-pointer"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }}
+                onMouseDown={handleMouseDown}
+            >
+                {dayBirthdays.length > 0 && (
+                    <Whisper
+                        // role="img"
+                        // aria-label="cake"
+                        // style={{
+                        //     fontSize: "1.8em",
+                        //     cursor: "pointer",
+                        // }}
+                        // title=""
+                        // data-names={names.join(",")}
+
+                        placement="bottom"
+                        trigger="hover"
+                        enterable
+                        speaker={
+                            <RsuitePopover
+                                arrow={false}
+                                className="custom-popover-rsuite"
+                            >
+                                <div>
+                                    <p className="event-title">
+                                        <strong>Birthdays:</strong>
+                                    </p>
+
+                                    <ul>
+                                        {dayBirthdays.map((person, index) => (
+                                            <li
+                                                key={index}
+                                                onClick={() => {
+                                                    if (
+                                                        person.profileId ===
+                                                        userData.id
+                                                    ) {
+                                                        return;
+                                                    }
+
+                                                    setSelectedBirthday(person);
+                                                    setIsBirthdayComOpen(true);
+                                                }}
+                                                className="cursor-pointer"
+                                            >
+                                                {index + 1}. {person.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </RsuitePopover>
+                        }
+                    >
+                        <span
+                            style={{
+                                fontSize: "1.8em",
+                            }}
+                        >
+                            🎂
+                        </span>
+                    </Whisper>
+                )}
+            </span>
             <span>{dayInfo.dayNumberText}</span>
+
+            {selectedBirthday &&
+                createPortal(
+                    <Popup
+                        isOpen={isBirthdayComOpen}
+                        onClose={() => setIsBirthdayComOpen(false)}
+                    >
+                        <BirthdayCom
+                            loggedInUser={userData}
+                            profileImage={selectedBirthday.profileImage}
+                            name={selectedBirthday.name}
+                            selectedID={selectedBirthday.profileId}
+                        />
+                    </Popup>,
+                    document.body
+                )}
         </div>
     );
 };
@@ -152,34 +188,6 @@ function Calendar() {
     useEffect(() => {
         filterEvents();
     }, [searchTerm, events]);
-
-    // const fetchEvents = () => {
-    //     fetch('/api/events/events?with[]=author')
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             console.log("DATAAA", data);
-
-    //             const formattedEvents = data.data.data.map(event => ({
-    //                 id: event.id,
-    //                 title: event.title,
-    //                 start: event.start_at,
-    //                 end: event.end_at,
-    //                 description: event.description,
-    //                 venue: event.venue,
-    //                 color: event.color,
-    //                 userName: event.author.name,
-    //                 url: event.url,
-    //             }));
-    //             setEvents(prevEvents => [...prevEvents, ...formattedEvents]);
-    //             setFilteredEvents(prevEvents => [...prevEvents, ...formattedEvents]);
-    //             if (calendarRef.current) {
-    //                 calendarRef.current.getApi().gotoDate(new Date());
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching events: ', error);
-    //         });
-    // };
 
     const fetchEvents = async () => {
         try {
@@ -234,74 +242,26 @@ function Calendar() {
 
     const fetchBirthdayEvents = async () => {
         try {
-            let allProfiles = [];
-            let currentPage = 1;
-            let totalPages = 1;
+            // let currentPage = 1;
+            // let totalPages = 1;
 
-            while (currentPage <= totalPages) {
-                // const response = await fetch(`/api/profile/profiles?page=${currentPage}`);
-                const response = await fetch(
-                    `/api/profile/profiles?filter[]=dob&paginate=false`
-                );
-                const data = await response.json();
+            const response = await axios.get("/api/profile/get_all_birthdays");
 
-                if (data && data.data && Array.isArray(data.data.data)) {
-                    allProfiles = [...allProfiles, ...data.data.data];
+            const allProfiles = response.data.data;
 
-                    totalPages = data.data.last_page;
-                    currentPage++;
-                } else {
-                    console.error("Error: Expected an array, but got:", data);
-                    break;
-                }
-            }
-            console.log("DATAAAA", allProfiles);
+            const birthdayEvents = allProfiles
+                .filter((profile) => {
+                    const dob = new Date(profile.dob);
+                    if (isNaN(dob.getTime())) return false; // Skip invalid dob
 
-            // Map profiles to birthday events
-            const birthdayEvents = allProfiles.reduce((acc, profile) => {
-                if (!profile.dob) return acc; // Skip profiles with no dob
-
-                const dob = new Date(profile.dob);
-                if (isNaN(dob.getTime())) return acc; // Skip invalid dob
-
-                const currentYear = new Date().getFullYear();
-                dob.setFullYear(currentYear);
-
-                // const dateStr = dob.toISOString().split('T')[0];
-                const year = dob.getFullYear();
-                const month = String(dob.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
-                const day = String(dob.getDate()).padStart(2, "0");
-                const dateStr = `${year}-${month}-${day}`;
-
-                // console.log("dateStr", dateStr);
-                // console.log("dob", dob);
-
-                let existingEvent = acc.find(
-                    (event) => event.start === dateStr
-                );
-
-                if (existingEvent) {
-                    // Ensure names property exists and push the new name
-                    if (!existingEvent.extendedProps.names) {
-                        existingEvent.extendedProps.names = [];
-                    }
-                    existingEvent.extendedProps.names.push(profile.bio);
-                } else {
-                    // Create a new birthday event with names initialized
-                    acc.push({
-                        title: `Birthday: ${profile.bio}`,
-                        start: dateStr,
-                        allDay: true,
-                        backgroundColor: "transparent",
-                        textColor: "blue",
-                        isBirthday: true,
-                        extendedProps: {
-                            names: [profile.bio], // Initialize names array
-                        },
-                    });
-                }
-                return acc;
-            }, []);
+                    return true;
+                })
+                .map((profile) => ({
+                    date: new Date(profile.dob),
+                    name: profile.bio,
+                    profileId: profile.user_id,
+                    profileImage: getAvatarSource(profile.image, profile.bio),
+                }));
 
             setBirthdays(birthdayEvents);
 
@@ -759,76 +719,76 @@ function Calendar() {
                     dayCellContent={(props) => (
                         <DayCellContent {...props} birthdays={birthdays} />
                     )}
-                    dayCellDidMount={(props) => {
-                        // console.log(props);
-                        let popoverIsSet = false;
+                    //                     dayCellDidMount={(props) => {
+                    //                         // console.log(props);
+                    //                         let popoverIsSet = false;
 
-                        const setupPopover = () => {
-                            if (popoverIsSet) {
-                                return;
-                            }
+                    //                         const setupPopover = () => {
+                    //                             if (popoverIsSet) {
+                    //                                 return;
+                    //                             }
 
-                            console.log("setting popover");
+                    //                             console.log("setting popover");
 
-                            const cakeEl = props.el.querySelector(
-                                ".fc-daygrid-day-top span:first-child"
-                            );
+                    //                             const cakeEl = props.el.querySelector(
+                    //                                 ".fc-daygrid-day-top span:first-child"
+                    //                             );
 
-                            if (!cakeEl) {
-                                return;
-                            }
+                    //                             if (!cakeEl) {
+                    //                                 return;
+                    //                             }
 
-                            if (!cakeEl.dataset.names) {
-                                return;
-                            }
+                    //                             if (!cakeEl.dataset.names) {
+                    //                                 return;
+                    //                             }
 
-                            const names = cakeEl.dataset.names.split(", ");
+                    //                             const names = cakeEl.dataset.names.split(", ");
 
-                            let namesList;
+                    //                             let namesList;
 
-                            if (names.length > 1) {
-                                namesList = names
-                                    .map(
-                                        (name, index) =>
-                                            `<li>${index + 1}. ${name}</li>`
-                                    )
-                                    .join("");
-                            } else {
-                                namesList = `<li>${names[0]}</li>`;
-                            }
+                    //                             if (names.length > 1) {
+                    //                                 namesList = names
+                    //                                     .map(
+                    //                                         (name, index) =>
+                    //                                             `<li>${index + 1}. ${name}</li>`
+                    //                                     )
+                    //                                     .join("");
+                    //                             } else {
+                    //                                 namesList = `<li>${names[0]}</li>`;
+                    //                             }
 
-                            const popoverContent = `
-<div className="">
-    <p class="event-title"><strong>Birthdays:</strong></p>
-    <ul>${namesList}</ul>
-</div>
-`;
+                    //                             const popoverContent = `
+                    // <div className="">
+                    //     <p class="event-title"><strong>Birthdays:</strong></p>
+                    //     <ul>${namesList}</ul>
+                    // </div>
+                    // `;
 
-                            new bootstrap.Popover(cakeEl, {
-                                placement: "bottom",
-                                trigger: "hover",
-                                container: "body",
-                                customClass: "custom-popover",
-                                content: popoverContent,
-                                html: true,
-                                offset: "0,10",
-                            });
+                    //                             new bootstrap.Popover(cakeEl, {
+                    //                                 placement: "bottom",
+                    //                                 trigger: "hover",
+                    //                                 container: "body",
+                    //                                 customClass: "custom-popover",
+                    //                                 content: popoverContent,
+                    //                                 html: true,
+                    //                                 offset: "0,0",
+                    //                             });
 
-                            popoverIsSet = true;
-                        };
+                    //                             popoverIsSet = true;
+                    //                         };
 
-                        setTimeout(() => {
-                            setupPopover();
+                    //                         setTimeout(() => {
+                    //                             setupPopover();
 
-                            if (!popoverIsSet) {
-                                console.log("retrying");
+                    //                             if (!popoverIsSet) {
+                    //                                 console.log("retrying");
 
-                                setTimeout(() => {
-                                    setupPopover();
-                                }, 1000);
-                            }
-                        }, 1000);
-                    }}
+                    //                                 setTimeout(() => {
+                    //                                     setupPopover();
+                    //                                 }, 1000);
+                    //                             }
+                    //                         }, 1000);
+                    //                     }}
                     eventContent={(eventInfo) => {
                         const isBirthday =
                             eventInfo.event.extendedProps.isBirthday;
