@@ -379,8 +379,8 @@ function ShareYourThoughts({
         closePopup(); // Close the popup
     };
 
-    const handleSaveEvent = (selectedPeople) => {
-        setChosenEvent(selectedPeople); // Update chosenPeople state
+    const handleSaveEvent = (event) => {
+        setChosenEvent(event); // Update chosenPeople state
         closePopup(); // Close the popup
     };
 

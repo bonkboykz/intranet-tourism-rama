@@ -4,6 +4,12 @@ import { Loader2 } from "lucide-react";
 
 import { cn } from "@/Utils/cn";
 
+import {
+    ChosenEvent,
+    Event,
+    RecommendedEvent,
+    SearchEventInput,
+} from "./InputEvent";
 import TaggedItem from "./TaggedItem";
 import { UserProfileAvatar } from "./UserProfileAvatar";
 
@@ -18,6 +24,10 @@ function EditPost({
     const [attachments, setAttachments] = useState(post.attachments || []);
     const [albums, setAlbums] = useState(
         [...(post.albums ?? [])].filter(Boolean)
+    );
+
+    const [chosenEvent, setChosenEvent] = useState(
+        post.event ? JSON.parse(post.event) : []
     );
     const [loading, setLoading] = useState(false);
 
@@ -67,6 +77,16 @@ function EditPost({
                 formData.append("remove_albums", "");
             }
 
+            if (chosenEvent.length > 0) {
+                const events = chosenEvent
+                    .map((eventTitle) => `"${eventTitle}"`)
+                    .join(", ");
+                const formattedEvents = `[${events}]`;
+                formData.append("event", formattedEvents);
+            } else {
+                formData.append("remove_events", "");
+            }
+
             attachments.forEach((file, index) => {
                 if (file instanceof File) {
                     formData.append(`attachments[${index}]`, file);
@@ -92,7 +112,7 @@ function EditPost({
 
     const [allAlbums, setAllAlbums] = useState([]);
 
-    console.log("allAlbums", allAlbums, albums);
+    // console.log("allAlbums", allAlbums, albums);
 
     useEffect(() => {
         axios.get("/api/album").then((response) => {
@@ -117,6 +137,16 @@ function EditPost({
     //         );
     //     }
     // }, [albums.length]);
+
+    const [searchEventResults, setSearchEventResults] = useState([]);
+
+    const handleAddEvent = (event) => {
+        setChosenEvent([event.title]);
+    };
+
+    const handleRemoveEvent = (id) => {
+        setChosenEvent([]);
+    };
 
     return (
         <>
@@ -150,6 +180,28 @@ function EditPost({
                         placeholder="Edit caption"
                     />
                     <div>
+                        <div className="flex flex-col gap-2">
+                            <ChosenEvent
+                                chosenEvent={chosenEvent.map((e) => ({
+                                    title: e,
+                                }))}
+                                onRemoveEvent={handleRemoveEvent}
+                            />
+
+                            <SearchEventInput
+                                onSearchResults={setSearchEventResults}
+                            />
+
+                            <div className="max-h-[300px] overflow-y-auto">
+                                {searchEventResults.map((event) => (
+                                    <RecommendedEvent
+                                        key={event.id}
+                                        event={event}
+                                        onAddEvent={handleAddEvent}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                         <div className="tags-container mt-3">
                             {allAlbums.map((allAlbum, index) => (
                                 <div

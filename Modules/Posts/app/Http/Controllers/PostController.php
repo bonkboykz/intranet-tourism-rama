@@ -188,6 +188,12 @@ class PostController extends Controller
             $post->albums()->sync(request('albums'));
         }
 
+        if (request()->has('remove_events')) {
+            $post->event = null;
+        } else {
+            $post->event = request()->event;
+        }
+
         DB::beginTransaction();
         try {
 

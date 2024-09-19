@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { format, isSameDay } from "date-fns";
 
-function SearchPeopleInput({ onSearchResults }) {
+export function SearchEventInput({ onSearchResults }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
@@ -59,7 +59,7 @@ function SearchPeopleInput({ onSearchResults }) {
     );
 }
 
-function ChosenEvent({ chosenEvent, onRemoveEvent }) {
+export function ChosenEvent({ chosenEvent, onRemoveEvent }) {
     return (
         <>
             <div className="mt-5 text-sm font-semibold text-neutral-500">
@@ -86,7 +86,7 @@ function ChosenEvent({ chosenEvent, onRemoveEvent }) {
     );
 }
 
-function RecommendedEvent({ event, onAddEvent }) {
+export function RecommendedEvent({ event, onAddEvent }) {
     // console.log("event", event);
 
     return (
@@ -146,7 +146,7 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
                     </div>
                 </div>
                 <div className="flex flex-col">
-                    <SearchPeopleInput onSearchResults={setSearchResults} />
+                    <SearchEventInput onSearchResults={setSearchResults} />
                     <ChosenEvent
                         chosenEvent={selectedEvent}
                         onRemoveEvent={handleRemoveEvent}
