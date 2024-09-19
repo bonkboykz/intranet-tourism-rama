@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Switch from "react-switch";
 import { useForm, usePage } from "@inertiajs/react";
 import axios from "axios";
+import { add, format, startOfDay } from "date-fns";
 
 import { cn } from "@/Utils/cn";
 import useUserData from "@/Utils/hooks/useUserData";
@@ -225,6 +226,10 @@ export function InputPolls({
                                 id="end_date"
                                 name="end_date"
                                 type="date"
+                                min={format(
+                                    add(startOfDay(new Date()), { days: 1 }),
+                                    "yyyy-MM-dd"
+                                )}
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
                                 className={cn(
