@@ -55,6 +55,7 @@ function DepartmentMembers({ departmentID, loggedInID }) {
             const fetchedMembers = membersData || [];
             fetchedMembers.sort((a, b) => a.order - b.order);
 
+            // console.log("MEMBERS", fetchedMembers);
             // setAdmins(updatedAdmins);
             setMembers(fetchedMembers);
         } catch (error) {

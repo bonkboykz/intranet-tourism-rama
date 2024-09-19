@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useContext } from "react";
 import axios from "axios";
 
 import AddMemberPopup from "@/Components/Reusable/AddMemberPopup";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import { MemberCard } from "./MemberCard";
@@ -81,6 +83,19 @@ export const Members = ({
         closePopup();
     };
 
+    const { isAdmin } = useContext(DepartmentContext);
+
+    console.log(members);
+
+    const filteredMembers = members.filter((member) => {
+        if (isAdmin) {
+            return true;
+        }
+
+        // TODO: is_active = isDeactivated, need to inverse that
+        return !member.is_active;
+    });
+
     return (
         <>
             <div className="flex justify-between gap-5 mt-10 max-md:flex-wrap max-md:max-w-full">
@@ -89,12 +104,12 @@ export const Members = ({
                         <h2 className="text-2xl font-bold text-black grow">
                             Members
                             <span className="ml-4 text-xl mt-0.5 font-semibold text-stone-300">
-                                {members.length}
+                                {filteredMembers.length}
                             </span>
                         </h2>
                     </div>
 
-                    {members.map((member, index) => (
+                    {filteredMembers.map((member, index) => (
                         <MemberCard
                             key={index}
                             id={member.user_id}

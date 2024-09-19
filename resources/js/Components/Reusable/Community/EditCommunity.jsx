@@ -3,6 +3,7 @@ import Cropper from "react-easy-crop";
 import { usePage } from "@inertiajs/react";
 
 import { useCsrf } from "@/composables";
+import { toastError } from "@/Utils/toast";
 
 import getCroppedImg from "./cropImgCommunity";
 
@@ -50,6 +51,12 @@ function Avatar({ src, alt, onImageChange }) {
     }, []);
 
     const handleCrop = useCallback(async () => {
+        if (previewSrc === "/assets/uploadAnImage.svg") {
+            toastError("You need to upload image");
+
+            return;
+        }
+
         try {
             const croppedImage = await getCroppedImg(
                 previewSrc,
@@ -300,7 +307,7 @@ function Card({
 const EditCommunity = ({ department, onCancel, onSave }) => (
     <Card
         title="Edit Community"
-        imgSrc="/assets/upload.png"
+        imgSrc="/assets/uploadAnImage.svg"
         imgAlt="Community Banner"
         department={department}
         cancelText="Cancel"
