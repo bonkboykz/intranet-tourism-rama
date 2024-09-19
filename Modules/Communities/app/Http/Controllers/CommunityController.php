@@ -148,7 +148,7 @@ class CommunityController extends Controller
 
         CommunityPermissionsHelper::assignCommunityAdminPermissions($user, $new_community);
 
-        return response()->noContent();
+        return response()->json($new_community);
     }
 
     public function update(Community $community)

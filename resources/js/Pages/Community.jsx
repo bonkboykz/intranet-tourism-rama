@@ -86,11 +86,13 @@ const Community = () => {
     }, []);
 
     const handleNewDepartment = (newDepartment) => {
-        setDepartmentsList((prevList) =>
-            [...prevList, { ...newDepartment, isArchived: false }].sort(
-                (a, b) => a.name?.localeCompare(b.name)
-            )
-        );
+        setIsCreateCommunityOpen(false);
+        fetchDepartments();
+        // setDepartmentsList((prevList) =>
+        //     [...prevList, { ...newDepartment, isArchived: false }].sort(
+        //         (a, b) => a.name?.localeCompare(b.name)
+        //     )
+        // );
     };
 
     const handleDelete = async (departmentId) => {
@@ -214,7 +216,7 @@ const Community = () => {
             return false;
         })
         .filter((community) =>
-            community.name.toLowerCase().includes(searchTerm.toLowerCase())
+            community.name?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
     return (

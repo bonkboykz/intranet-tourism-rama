@@ -3,6 +3,7 @@ import Cropper from "react-easy-crop";
 import { usePage } from "@inertiajs/react";
 
 import { useCsrf } from "@/composables";
+import { blobToBase64 } from "@/Utils/convert";
 import { toastError } from "@/Utils/toast";
 
 import getCroppedImg from "./cropImgCommunity";
@@ -15,7 +16,8 @@ function Header({ title }) {
     );
 }
 
-function Avatar({ src, alt, onImageChange }) {
+function Avatar({ src, alt, onImageChange, onOriginalImageChange }) {
+    const [croppedPreviewSrc, setCroppedPreviewSrc] = useState(src);
     const [previewSrc, setPreviewSrc] = useState(src);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -28,6 +30,7 @@ function Avatar({ src, alt, onImageChange }) {
 
     const handleImageChange = (file) => {
         if (file && file instanceof Blob) {
+            onOriginalImageChange(file);
             const objectUrl = URL.createObjectURL(file);
             setPreviewSrc(objectUrl);
             setCropping(true);
@@ -42,7 +45,7 @@ function Avatar({ src, alt, onImageChange }) {
         if (previewSrc.startsWith("banner/")) {
             banner = `/storage/${previewSrc}`;
         } else {
-            banner = previewSrc;
+            banner = croppedPreviewSrc;
         }
     }
 
@@ -63,7 +66,7 @@ function Avatar({ src, alt, onImageChange }) {
                 croppedAreaPixels
             );
             onImageChange(croppedImage);
-            setPreviewSrc(URL.createObjectURL(croppedImage));
+            setCroppedPreviewSrc(URL.createObjectURL(croppedImage));
             setCropping(false);
         } catch (e) {
             console.error(e);
@@ -74,7 +77,7 @@ function Avatar({ src, alt, onImageChange }) {
         setCropping(true);
         // Re-fetch the original image from the server
         try {
-            const response = await fetch(banner);
+            const response = await fetch(previewSrc);
             if (!response.ok) {
                 throw new Error("Failed to fetch the image for repositioning");
             }
@@ -112,7 +115,7 @@ function Avatar({ src, alt, onImageChange }) {
                 </>
             ) : (
                 <>
-                    {previewSrc ? (
+                    {croppedPreviewSrc ? (
                         <div className="flex flex-col items-center">
                             <img
                                 loading="lazy"
@@ -161,9 +164,11 @@ function Card({
         department?.name || ""
     );
 
-    const [imageSrc, setImageSrc] = useState(department?.banner || imgSrc);
+    const [imageSrc, setImageSrc] = useState(
+        department?.banner_original || department?.banner || imgSrc
+    );
     const [initialImageSrc, setInitialImageSrc] = useState(
-        department?.banner || imgSrc
+        department?.banner_original || department?.banner || imgSrc
     );
     const [imageFile, setImageFile] = useState(null); // New state to hold the file object
 
@@ -197,13 +202,27 @@ function Card({
         setInitialDepartmentDescription(department?.description || "");
     }, [department, imgSrc]);
 
+    const [originalImageSrc, setOriginalImageSrc] = useState(imgSrc);
+    const [originalImageBase64, setOriginalImageBase64] = useState("");
+
     const handleImageChange = (file) => {
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onloadend = () => {
+        reader.onloadend = async () => {
             setImageSrc(reader.result); // Use base64 string as the image source
             setImageFile(reader.result); // Store the base64 string
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleOriginalImageChange = (file) => {
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            setOriginalImageSrc(reader.result);
+            setOriginalImageBase64(await blobToBase64(file));
         };
         reader.readAsDataURL(file);
     };
@@ -224,6 +243,7 @@ function Card({
 
         if (imageFile) {
             formData.append("banner", imageFile);
+            formData.append("banner_original", originalImageBase64);
         } else {
             formData.append("banner", initialImageSrc);
         }
@@ -269,6 +289,7 @@ function Card({
                     src={imageSrc}
                     alt={imgAlt}
                     onImageChange={handleImageChange}
+                    onOriginalImageChange={handleOriginalImageChange}
                 />
                 <input
                     type="text"

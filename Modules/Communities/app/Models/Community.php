@@ -22,6 +22,8 @@ class Community extends Model implements AuditableContract
         'banner',
         'description',
         'type',
+        'banner_original',
+        'is_archived',
     ];
 
     public static function rules($scenario = 'create')
@@ -34,6 +36,7 @@ class Community extends Model implements AuditableContract
                     'description' => ['string'],
                     'type' => ['string', 'required'],
                     'is_archived' => ['boolean'],
+                    'banner_original' => ['string'],
                 ],
                 // [],
             ],
@@ -44,6 +47,7 @@ class Community extends Model implements AuditableContract
                     'description' => ['nullable', 'string'],
                     'type' => ['string', 'required'],
                     'is_archived' => ['boolean'],
+                    'banner_original' => ['nullable', 'string'],
                 ],
                 // [],
             ],

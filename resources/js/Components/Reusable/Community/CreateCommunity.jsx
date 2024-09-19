@@ -76,6 +76,8 @@ function Card({
     onCreate,
 }) {
     const [communityName, setCommunityName] = useState("");
+    const [originalImageSrc, setOriginalImageSrc] = useState(imgSrc);
+    const [originalImageBase64, setOriginalImageBase64] = useState("");
     const [imageSrc, setImageSrc] = useState(imgSrc);
     const [imageBase64, setImageBase64] = useState(""); // Base64 image string
     const [selectedType, setSelectedType] = useState("");
@@ -94,6 +96,8 @@ function Card({
         const reader = new FileReader();
         reader.onload = async () => {
             setImageSrc(reader.result);
+            setOriginalImageSrc(reader.result);
+            setOriginalImageBase64(await blobToBase64(file));
             const base64 = await blobToBase64(file);
             setImageBase64(base64); // Reset the base64 string when a new image is selected
             setCroppedImage(""); // Reset the cropped image when a new image is selected
@@ -126,6 +130,7 @@ function Card({
 
         if (imageBase64) {
             data.banner = imageBase64;
+            data.banner_original = originalImageBase64;
         }
         if (communityDescription) {
             data.description = communityDescription;
@@ -149,7 +154,7 @@ function Card({
             // const responseData = text ? JSON.parse(text) : {};
             // console.log("Community created:", responseData.data);
             onCreate(responseData.data);
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             console.error("Error creating community:", error.message);
 
@@ -181,7 +186,7 @@ function Card({
                 {imageSrc && (
                     <div className="relative w-full h-[300px] mt-3">
                         <Cropper
-                            image={imageSrc}
+                            image={originalImageSrc}
                             crop={crop}
                             zoom={zoom}
                             aspect={3 / 1} // Aspect ratio 3:1
