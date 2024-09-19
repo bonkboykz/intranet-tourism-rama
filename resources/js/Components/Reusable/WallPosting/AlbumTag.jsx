@@ -49,7 +49,7 @@ const TagInput = ({ tag, setTag, onClose, onSave }) => {
     };
 
     const handleRemoveTag = () => {
-        setAlbums([]);
+        setTag([]);
         setShowWarning(false); // Hide warning when the tag is removed
     };
 
