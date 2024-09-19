@@ -1,3 +1,5 @@
+import { useRef } from "react";
+import { useLayoutEffect } from "react";
 import { useState } from "react";
 
 export const PopupMenuAdmin = ({ onRemove, onAssign, closePopup }) => {
@@ -9,7 +11,7 @@ export const PopupMenuAdmin = ({ onRemove, onAssign, closePopup }) => {
         setShowPopup(true);
     };
 
-    const handleAssign = () => {
+    const handleAssign = (event) => {
         event.preventDefault();
         event.stopPropagation();
         onAssign();
@@ -26,6 +28,23 @@ export const PopupMenuAdmin = ({ onRemove, onAssign, closePopup }) => {
         setShowPopup(false);
         closePopup();
     };
+
+    const popupRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const handleClickOutside = (event) => {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                event.preventDefault();
+
+                closePopup();
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [closePopup]);
 
     return (
         <div className="relative">
@@ -56,7 +75,10 @@ export const PopupMenuAdmin = ({ onRemove, onAssign, closePopup }) => {
 
             {showPopup && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="relative p-8 bg-white shadow-lg rounded-2xl w-96">
+                    <div
+                        className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
+                        ref={popupRef}
+                    >
                         <h2 className="mb-4 text-xl font-bold text-center">
                             Delete member?
                         </h2>
