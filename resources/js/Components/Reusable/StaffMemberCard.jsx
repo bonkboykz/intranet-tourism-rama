@@ -1,5 +1,9 @@
 import React, { useRef, useState } from "react";
+import { useContext } from "react";
 import { InertiaLink } from "@inertiajs/inertia-react";
+
+import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import deactivateButton from "../../../../public/assets/activatedButton.svg";
 import callIcon from "../../../../public/assets/callIcon.png";
@@ -78,7 +82,7 @@ const StaffMemberCard = ({
     const isPhoneNumberAvailable = () => phoneNo != null;
     const isWorkNumberAvailable = () => workNo != null;
 
-    console.log("imageUrl", imageUrl);
+    // console.log("imageUrl", imageUrl);
 
     // const source = imageUrl === '/assets/dummyStaffPlaceHolder.jpg' ? imageUrl : `/avatar/${imageUrl}`;
 
@@ -93,6 +97,11 @@ const StaffMemberCard = ({
                 : `/avatar/${imageUrl}`;
     }
 
+    const { hasRole } = usePermissions();
+    const { isAdmin } = useContext(DepartmentContext);
+
+    const canDeactivateMember = hasRole("superadmin") || isAdmin;
+
     return (
         <div
             className={`staff-member-card ${isDeactivated ? "deactivated" : ""}`}
@@ -105,23 +114,29 @@ const StaffMemberCard = ({
                         className="staff-member-image"
                     />
                 </a>
-                <button
-                    className="status-button"
-                    onClick={() => {
-                        if (isDeactivated) {
-                            onActivateClick();
-                        } else {
-                            onDeactivateClick();
-                        }
-                    }}
-                    ref={threeDotButtonRef}
-                >
-                    <img
-                        style={{ width: "40px" }}
-                        src={isDeactivated ? activateButton : deactivateButton}
-                        alt="Indicator Button"
-                    />
-                </button>
+                {canDeactivateMember && (
+                    <button
+                        className="status-button"
+                        onClick={() => {
+                            if (isDeactivated) {
+                                onActivateClick();
+                            } else {
+                                onDeactivateClick();
+                            }
+                        }}
+                        ref={threeDotButtonRef}
+                    >
+                        <img
+                            style={{ width: "40px" }}
+                            src={
+                                isDeactivated
+                                    ? activateButton
+                                    : deactivateButton
+                            }
+                            alt="Indicator Button"
+                        />
+                    </button>
+                )}
             </div>
             <div className="card-body">
                 <h3 className="staff-member-name">{name}</h3>
