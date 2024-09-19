@@ -276,7 +276,7 @@
 
 // export default ProfileIcons;
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { jsPDF } from "jspdf"; // Make sure you install jspdf using npm or yarn
 
 function ProfileIcons({
@@ -295,7 +295,7 @@ function ProfileIcons({
 
     useEffect(() => {
         if (isPopupOpen) {
-            fetch(`/user/${user_id}/profile-qr`, {
+            fetch(`/api/profile/user/${user_id}/profile-qr`, {
                 headers: {
                     Accept: "image/svg+xml",
                 },
@@ -481,13 +481,6 @@ function ProfileIcons({
                         className=" p-6 rounded-3xl shadow-custom max-w-md popup"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex justify-center">
-                            <img
-                                src="/assets/logo_tourism.png"
-                                alt="Tourism Logo"
-                                className="w-20 h-15 mr-2 align-middle my-4"
-                            />
-                        </div>
                         <div className="flex flex-col items-center justify-center">
                             <p className="text-lg font-bold text-gray-900">
                                 <span className="font-bold text-center w-full flex justify-center">
@@ -500,16 +493,27 @@ function ProfileIcons({
                                 </span>
                             </p>
 
-                            {qrCodeSvg ? (
-                                <div
-                                    className="qr-code-svg mt-4"
-                                    dangerouslySetInnerHTML={{
-                                        __html: qrCodeSvg,
+                            <div className="relative">
+                                <img
+                                    src="/assets/logo_tourism.png"
+                                    alt="Tourism Logo"
+                                    className="w-[80px] mt-[4px] h-auto align-middle absolute"
+                                    style={{
+                                        left: "50%",
+                                        top: "50%",
+                                        transform: "translate(-50%, -50%)",
                                     }}
                                 />
-                            ) : (
-                                <p>Loading QR code...</p>
-                            )}
+
+                                {qrCodeSvg ? (
+                                    <img
+                                        src={qrCodeSvg}
+                                        className="h-auto w-[256px]"
+                                    />
+                                ) : (
+                                    <p>Loading QR code...</p>
+                                )}
+                            </div>
                         </div>
 
                         <hr className="mb-4 mt-4 w-full border-gray-300" />

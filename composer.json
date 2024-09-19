@@ -13,6 +13,7 @@
         "php": "^8.2",
         "astrotomic/laravel-vcard": "^0.6.0",
         "bacon/bacon-qr-code": "^3.0",
+        "chillerlan/php-qrcode": "^5.0",
         "illuminate/support": "*",
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.0",

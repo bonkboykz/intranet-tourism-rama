@@ -18,7 +18,7 @@ use Modules\Profile\Http\Controllers\ProfileController;
  * routes are loaded by the RouteServiceProvider within a group which
  * is assigned the "api" middleware group. Enjoy building your API!
  *
-*/
+ */
 
 // Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 //     Route::apiResource('crud', CrudController::class)->names('crud');
@@ -34,3 +34,4 @@ Route::group(['middleware' => ['auth:api']], function () {
 });
 
 // require_once 'crud.php';
+Route::get('user/{id}/profile-qr', [ProfileController::class, 'profileQr'])->name('profileQr');

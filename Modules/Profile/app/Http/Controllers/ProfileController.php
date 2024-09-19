@@ -166,4 +166,10 @@ class ProfileController extends Controller
         $profile->delete();
         return response()->noContent();
     }
+
+    public function profileQr($id)
+    {
+        $user = User::findOrFail($id);
+        return $user->vcard;
+    }
 }

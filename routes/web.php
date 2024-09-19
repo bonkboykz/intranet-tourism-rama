@@ -44,8 +44,6 @@ Route::post('/logout', function () {
     return redirect('/');  // Redirect to home or login page
 })->name('logout');
 
-Route::get('/user/{id}/profile-qr', [ProfileController::class, 'profileQr'])->name('profileQr');
-
 Route::get('/csrf-token', \App\Http\Controllers\RefreshCsrfTokenController::class);
 action:
 Route::post('/pusher/user-auth', [PusherController::class, 'pusherAuth']);

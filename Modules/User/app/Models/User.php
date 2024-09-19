@@ -5,6 +5,10 @@ namespace Modules\User\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use chillerlan\QRCode\Common\EccLevel;
+use chillerlan\QRCode\Data\QRMatrix;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -26,12 +30,12 @@ use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-use BaconQrCode\Renderer\Color\Rgb;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\Fill;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
+// use BaconQrCode\Renderer\Color\Rgb;
+// use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+// use BaconQrCode\Renderer\ImageRenderer;
+// use BaconQrCode\Renderer\RendererStyle\Fill;
+// use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+// use BaconQrCode\Writer;
 use Astrotomic\Vcard\Properties\Kind;
 use Astrotomic\Vcard\Properties\Tel;
 use Astrotomic\Vcard\Vcard;
@@ -217,14 +221,32 @@ class User extends Authenticatable implements AuditableContract
             $vcard->org($departmentName, $businessUnitName);
         }
 
-        $svg = (new Writer(
-            new ImageRenderer(
-                new RendererStyle(192, 0, null, null, Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(45, 55, 72))),
-                new SvgImageBackEnd
-            )
-        ))->writeString($vcard);
+        $options = new QROptions([
+            // 'version' => 5,
+            'eccLevel' => EccLevel::H,
+            'imageBase64' => true,
+            'addLogoSpace' => true,
+            'logoSpaceWidth' => 32,
+            'logoSpaceHeight' => 32,
+            'scale' => 6,
+            'imageTransparent' => false,
+            'drawCircularModules' => true,
+            'circleRadius' => 0.45,
+            'keepAsSquare' => [QRMatrix::M_FINDER, QRMatrix::M_FINDER_DOT],
+        ]);
 
-        return trim(substr($svg, strpos($svg, "\n") + 1));
+        $svg = (new QRCode($options))->render(data: $vcard);
+
+        // $svg = (new Writer(
+        //     new ImageRenderer(
+        //         new RendererStyle(192, 0, null, null, Fill::uniformColor(new Rgb(255, 255, 255), new Rgb(45, 55, 72))),
+        //         new SvgImageBackEnd
+        //     )
+        // ))->writeString($vcard);
+
+        return $svg;
+
+        // return trim(substr($svg, strpos($svg, "\n") + 1));
 
 
     }
