@@ -123,6 +123,8 @@ export function InputPolls({
                 "post_as",
                 postAs.includes("admin") ? "admin" : "member"
             );
+        } else {
+            formData.append("post_as", "member");
         }
 
         try {
