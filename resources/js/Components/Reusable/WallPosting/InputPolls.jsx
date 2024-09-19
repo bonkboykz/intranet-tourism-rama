@@ -59,9 +59,7 @@ export function InputPolls({
         setInputValue(event.target.value);
     };
 
-    const { data, setData } = useForm({
-        remember: false,
-    });
+    const [isMultiple, setIsMultiple] = useState(false);
 
     const [options, setOptions] = useState(["Option 1", "Option 2"]);
 
@@ -102,7 +100,10 @@ export function InputPolls({
             formData.append(`options[${index}]`, option);
         }
 
-        formData.append("multiple", data.remember);
+        if (isMultiple) {
+            formData.append("multiple", isMultiple);
+        }
+
         if (includeEndDate) {
             formData.append("end_date", endDate);
         }
@@ -193,8 +194,8 @@ export function InputPolls({
                     />
                     <div className="flex items-center gap-4">
                         <Switch
-                            checked={data.remember}
-                            onChange={(checked) => setData("remember", checked)}
+                            checked={isMultiple}
+                            onChange={(checked) => setIsMultiple(checked)}
                             onColor="#36c"
                             onHandleColor="#fff"
                             handleDiameter={24}
