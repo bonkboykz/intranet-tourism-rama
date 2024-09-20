@@ -410,7 +410,7 @@ function UserDetailContent() {
 
     return (
         <WallContext.Provider
-            value={{ loggedInUserId: user.id, variant: "user-details" }}
+            value={{ loggedInUserId: user.id, variant: "user-wall" }}
         >
             <Example>
                 <main className="xl:pl-96 w-full">
@@ -666,12 +666,12 @@ function UserDetailContent() {
             `}
                     </style>
                     <div className="file-directory-header">
-                        <PageTitle title="My Profile" />
+                        <PageTitle title="User Profile" />
                     </div>
                     <hr className="file-directory-underline" />
                     <div>
                         <FeaturedEvents />
-                        {/* <WhosOnline /> */}
+                        <WhosOnline />
                     </div>
                 </aside>
                 {isSaveNotificationOpen && (

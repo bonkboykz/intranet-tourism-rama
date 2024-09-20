@@ -20,6 +20,7 @@ import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { getAvatarSource } from "@/Utils/getProfileImage";
 import useUserData from "@/Utils/hooks/useUserData";
+import { isBirthdayDay } from "@/Utils/isBirthday";
 
 import pencilIcon from "../../../public/assets/EditIcon.svg";
 import printIcon from "../../../public/assets/PrintPDF.svg";
@@ -28,12 +29,6 @@ import PrintCalendar from "./Calendar/PrintCalendar";
 
 import "./Calendar/index.css";
 import "rsuite/dist/rsuite-no-reset.min.css";
-
-const isBirthdayDay = (date, today) => {
-    return (
-        getMonth(today) === getMonth(date) && getDate(today) === getDate(date)
-    );
-};
 
 const DayCellContent = ({ birthdays, ...dayInfo }) => {
     // console.log(dayInfo);

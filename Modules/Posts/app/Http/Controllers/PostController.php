@@ -39,10 +39,9 @@ class PostController extends Controller
                 $query->where(function ($query) use ($user) {
                     $query->whereNull('community_id')
                         ->orWhereHas('community', function ($query) use ($user) {
-                            $query->where('type', 'public')
-                                ->orWhereHas('members', function ($query) use ($user) {
-                                    $query->where('user_id', $user->id);
-                                });
+                            $query->whereHas('members', function ($query) use ($user) {
+                                $query->where('user_id', $user->id);
+                            });
                         });
                 })
                     ->where(function ($query) use ($user) {
@@ -55,6 +54,11 @@ class PostController extends Controller
                     });
             });
         }
+
+        // // if user is in json column mentions of the post include it too
+        // $query->orWhere(function ($query) use ($user) {
+        //     $query->where('mentions', 'LIKE', '%"id": "' . $user->id . '"%');
+        // });
 
         // Sort posts by announcement status and updated_at
         $query->orderByRaw("CASE WHEN announced = true THEN 0 ELSE 1 END")
@@ -708,10 +712,9 @@ class PostController extends Controller
                 $query->where(function ($query) use ($user) {
                     $query->whereNull('community_id')
                         ->orWhereHas('community', function ($query) use ($user) {
-                            $query->where('type', 'public')
-                                ->orWhereHas('members', function ($query) use ($user) {
-                                    $query->where('user_id', $user->id);
-                                });
+                            $query->whereHas('members', function ($query) use ($user) {
+                                $query->where('user_id', $user->id);
+                            });
                         });
                 })
                     ->where(function ($query) use ($user) {
