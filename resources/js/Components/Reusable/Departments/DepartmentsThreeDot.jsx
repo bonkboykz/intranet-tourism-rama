@@ -18,6 +18,14 @@ const ThreeDotButton = ({ selectedDepartmentId }) => {
         setIsPopupOpen(false);
     };
 
+    const { hasRole } = usePermissions();
+
+    const canHandleOrdering = hasRole("superadmin");
+
+    if (!canHandleOrdering) {
+        return null;
+    }
+
     return (
         <div className="relative">
             <button onClick={togglePopup} className="p-2 mt-1">
