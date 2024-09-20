@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
+import { useState } from "react";
 
 import { PopupMenuAdmin } from "@/Components/Reusable/Community/Members/PopupMenuAdmin";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
@@ -21,41 +22,71 @@ export const MemberCard = ({
     isActive,
     onAssign,
     onRemove,
-    activePopupId,
-    setActivePopupId,
     closePopup,
 }) => {
     const popupRef = useRef(null);
     const buttonRef = useRef(null);
 
-    // const handleDotClick = () => {
-    //   if (activePopupId === id) {
-    //     closePopup();
-    //   } else {
-    //     setActivePopupId(id);
-    //   }
-    // };
+    const [showPopup, setShowPopup] = useState(false);
 
     const handleDotClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (activePopupId === id) {
-            closePopup();
-        } else {
-            setActivePopupId(id);
-        }
+        setShowPopup(!showPopup);
     };
+
+    const modalAdminRef = useRef(null);
+    const modalRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
+            console.log("user_id", id);
+            console.log("employment_post_id", employment_post_id);
+            const isClickedInsideOfPopup = popupRef.current?.contains(
+                event.target
+            );
+            const isClickedInsideOfModal = modalRef.current?.contains(
+                event.target
+            );
+            const isClickedInsideOfModalAdmin = modalAdminRef.current?.contains(
+                event.target
+            );
+
+            const isClickedInsideOfButton = buttonRef.current?.contains(
+                event.target
+            );
+
+            // console.log(event.target);
+
+            // console.log(
+            //     "isClickedInsideOfPopup",
+            //     isClickedInsideOfPopup,
+            //     popupRef.current
+            // );
+            // console.log(
+            //     "isClickedInsideOfModal",
+            //     isClickedInsideOfModal,
+            //     modalRef.current
+            // );
+            // console.log(
+            //     "isClickedInsideOfModalAdmin",
+            //     isClickedInsideOfModalAdmin,
+            //     modalAdminRef.current
+            // );
+            // console.log(
+            //     "isClickedInsideOfButton",
+            //     isClickedInsideOfButton,
+            //     buttonRef.current
+            // );
+
             if (
-                popupRef.current &&
-                !popupRef.current.contains(event.target) &&
-                buttonRef.current &&
-                !buttonRef.current.contains(event.target)
+                !isClickedInsideOfPopup &&
+                !isClickedInsideOfModal &&
+                !isClickedInsideOfModalAdmin &&
+                !isClickedInsideOfButton
             ) {
-                closePopup();
+                setShowPopup(false);
             }
         };
 
@@ -63,7 +94,7 @@ export const MemberCard = ({
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [popupRef, closePopup]);
+    }, [closePopup]);
 
     const { hasRole } = usePermissions();
     const { isAdmin, user } = useContext(DepartmentContext);
@@ -73,6 +104,8 @@ export const MemberCard = ({
     const canRemoveMember = hasRole("superadmin") || isAdmin;
 
     const showThreeDots = canAssignAdmin || canRemoveMember;
+
+    console.log(`userid ${id}`, popupRef.current);
 
     return (
         <a href={`/user/${id}`}>
@@ -97,7 +130,7 @@ export const MemberCard = ({
                             />
                         </button>
                     )}
-                    {activePopupId === id && (
+                    {showPopup && (
                         <div ref={popupRef}>
                             {flag === "admin" ? (
                                 <PopupMenuAdmin
@@ -106,6 +139,7 @@ export const MemberCard = ({
                                     }
                                     onAssign={() => onAssign(id)}
                                     closePopup={closePopup}
+                                    modalRef={modalAdminRef}
                                 />
                             ) : (
                                 <PopupMenu
@@ -116,6 +150,7 @@ export const MemberCard = ({
                                     closePopup={closePopup}
                                     canAssignAdmin={canAssignAdmin}
                                     canRemoveMember={canRemoveMember}
+                                    modalRef={modalRef}
                                 />
                             )}
                         </div>

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
+import { useState } from "react";
 
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
@@ -21,33 +22,69 @@ export const MemberCard = ({
     isActive,
     onAssign,
     onRemove,
-    activePopupId,
-    setActivePopupId,
     closePopup,
 }) => {
     const popupRef = useRef(null);
     const buttonRef = useRef(null);
 
+    const [showPopup, setShowPopup] = useState(false);
+
     const handleDotClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (activePopupId === id) {
-            closePopup();
-        } else {
-            setActivePopupId(id);
-        }
+        setShowPopup(!showPopup);
     };
+
+    const modalAdminRef = useRef(null);
+    const modalRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
+            const isClickedInsideOfPopup = popupRef.current?.contains(
+                event.target
+            );
+            const isClickedInsideOfModal = modalRef.current?.contains(
+                event.target
+            );
+            const isClickedInsideOfModalAdmin = modalAdminRef.current?.contains(
+                event.target
+            );
+
+            const isClickedInsideOfButton = buttonRef.current?.contains(
+                event.target
+            );
+
+            // console.log(event.target);
+
+            // console.log(
+            //     "isClickedInsideOfPopup",
+            //     isClickedInsideOfPopup,
+            //     popupRef.current
+            // );
+            // console.log(
+            //     "isClickedInsideOfModal",
+            //     isClickedInsideOfModal,
+            //     modalRef.current
+            // );
+            // console.log(
+            //     "isClickedInsideOfModalAdmin",
+            //     isClickedInsideOfModalAdmin,
+            //     modalAdminRef.current
+            // );
+            // console.log(
+            //     "isClickedInsideOfButton",
+            //     isClickedInsideOfButton,
+            //     buttonRef.current
+            // );
+
             if (
-                popupRef.current &&
-                !popupRef.current.contains(event.target) &&
-                buttonRef.current &&
-                !buttonRef.current.contains(event.target)
+                !isClickedInsideOfPopup &&
+                !isClickedInsideOfModal &&
+                !isClickedInsideOfModalAdmin &&
+                !isClickedInsideOfButton
             ) {
-                closePopup();
+                setShowPopup(false);
             }
         };
 
@@ -55,7 +92,7 @@ export const MemberCard = ({
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [popupRef, closePopup]);
+    }, [closePopup]);
 
     const { hasRole } = usePermissions();
     const { isAdmin, user } = useContext(CommunityContext);
@@ -90,7 +127,7 @@ export const MemberCard = ({
                             />
                         </button>
                     )}
-                    {activePopupId === id && (
+                    {showPopup && (
                         <div ref={popupRef}>
                             {flag === "admin" ? (
                                 <PopupMenuAdmin
@@ -99,6 +136,7 @@ export const MemberCard = ({
                                     }
                                     onAssign={() => onAssign(id)}
                                     closePopup={closePopup}
+                                    modalRef={modalAdminRef}
                                 />
                             ) : (
                                 <PopupMenu
@@ -109,6 +147,7 @@ export const MemberCard = ({
                                     closePopup={closePopup}
                                     canAssignAdmin={canAssignAdmin}
                                     canRemoveMember={canRemoveMember}
+                                    modalRef={modalRef}
                                 />
                             )}
                         </div>

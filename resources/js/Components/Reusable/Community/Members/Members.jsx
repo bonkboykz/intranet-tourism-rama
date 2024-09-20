@@ -11,6 +11,7 @@ export function Members({ members, communityID, onRefetch, loggedInID }) {
     };
 
     const handleRemove = async (id) => {
+        console.log("Removing member with ID:", id);
         const url = `/api/communities/communities/${communityID}/delete-member`;
 
         try {

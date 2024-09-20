@@ -43,7 +43,7 @@ const Community = () => {
             const allCommunities = [];
 
             while (currentPage <= totalPages) {
-                const url = `/api/communities/communities?page=${currentPage}`;
+                const url = `/api/communities/communities?page=${currentPage}&perpage=100`;
                 const response = await fetch(url, {
                     method: "GET",
                     headers: { Accept: "application/json" },
