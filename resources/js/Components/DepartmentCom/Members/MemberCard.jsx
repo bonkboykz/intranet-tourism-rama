@@ -70,8 +70,7 @@ export const MemberCard = ({
 
     const canAssignAdmin = hasRole("superadmin") || isAdmin;
 
-    // TODO: add if member is himself
-    const canRemoveMember = hasRole("superadmin") || isAdmin || user?.id === id;
+    const canRemoveMember = hasRole("superadmin") || isAdmin;
 
     const showThreeDots = canAssignAdmin || canRemoveMember;
 
