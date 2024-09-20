@@ -2,6 +2,8 @@ import React, { useCallback, useRef, useState } from "react";
 import Cropper from "react-easy-crop";
 import { toast } from "react-toastify";
 
+import { cn } from "@/Utils/cn";
+
 import getCroppedImg from "./cropImage"; // Assume you have this utility to crop the image
 
 function Popup({
@@ -14,13 +16,16 @@ function Popup({
     csrfToken,
     authToken,
     setPhoto,
+    imgSrc,
 }) {
     const [fileNames, setFileNames] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(
+        profileData.backgroundImage
+    );
     const fileInputRef = useRef(null);
 
     const handleClickImg = () => {
@@ -136,11 +141,13 @@ function Popup({
                             />
                         )}
                     </div>
-                    <div
-                        className="flex justify-start w-full cursor-pointer my-2" // Moved below and added margin-top for spacing
-                        onClick={handleClickImg}
-                    >
-                        Choose photo from the device
+                    <div>
+                        <button
+                            className="flex justify-start w-full cursor-pointer my-2 rounded-lg bg-blue-500 text-white px-4 py-2"
+                            onClick={handleClickImg}
+                        >
+                            Choose photo from the device
+                        </button>
                     </div>
                     <input
                         type="file"
@@ -185,7 +192,12 @@ function Popup({
                         Cancel
                     </button>
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-sm text-white px-4 py-2 rounded-full"
+                        disabled={croppedImage === profileData.backgroundImage}
+                        className={cn(
+                            "bg-blue-500 text-sm text-white px-4 py-2 rounded-full  opacity-50",
+                            croppedImage !== profileData.backgroundImage &&
+                                "hover:bg-blue-700 opacity-100"
+                        )}
                         onClick={handleCropAndSave} // Combined Crop and Save function
                     >
                         Crop & Save
