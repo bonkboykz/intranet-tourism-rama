@@ -107,12 +107,7 @@ class ProfileController extends Controller
 
         DB::beginTransaction();
         try {
-            $output = new ConsoleOutput();
-            $output->writeln('Updating profile');
-            $output->writeln('Request has image: ' . request()->hasFile('image') ? 'true' : 'false');
-
-            $output->writeln('test');
-            request()->merge(['bio' => request('name')]);
+            request()->merge(input: ['bio' => request('name')]);
             $validated = request()->validate(...Profile::rules('update'));
             $validatedUser = request()->validate(...User::rules('update'));
 
@@ -153,6 +148,19 @@ class ProfileController extends Controller
 
         $profile->update([
             'image' => $imagePath,
+        ]);
+
+        return response()->json([
+            'profile' => $profile
+        ]);
+    }
+
+    public function updateProfileCover(Profile $profile)
+    {
+        $coverPhotoPath = uploadFile(request()->file('cover_photo'), null, 'cover_photo')['path'];
+
+        $profile->update([
+            'cover_photo' => $coverPhotoPath,
         ]);
 
         return response()->json([

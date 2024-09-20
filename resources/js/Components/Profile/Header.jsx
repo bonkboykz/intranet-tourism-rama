@@ -187,7 +187,7 @@ function ProfileHeader({
         csrfToken,
         authToken
     ) => {
-        const url = `/api/profile/profiles/${profileId}/updateProfileImage`;
+        const url = `/api/profile/profiles/${profileId}/update_profile_image`;
 
         const formData = new FormData();
         formData.append("image", file);
