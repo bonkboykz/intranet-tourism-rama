@@ -1,76 +1,84 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useMemo } from "react";
 import { CogIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 
 import SettingNavigation from "@/Components/Settings/SettingsComponent";
 import { SettingsPage } from "@/Components/Settings/SettingsPage";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import PageTitle from "../Components/Reusable/PageTitle";
-
-const navigation = [
-    {
-        name: "Basic Settings",
-        href: "#",
-        inactive: "assets/Inactive Basic Settings.svg",
-        active: "assets/Active Basic Settings.svg",
-    },
-    {
-        name: "Themes",
-        href: "#",
-        inactive: "assets/Inactive Theme.svg",
-        active: "assets/Active Theme.svg",
-    },
-    {
-        name: "Advance Settings",
-        href: "#",
-        inactive: "assets/Inactive Advanced Settings.svg",
-        active: "assets/Active Advanced Settings.svg",
-    },
-    // { name: 'Departments', href: '#', inactive: "assets/Inactive Departments.svg", active: "assets/Active Departments.svg" },
-    // { name: 'Media', href: '#', inactive: "assets/Inactive Media.svg", active: "assets/Active Media.svg" },
-    {
-        name: "Requests",
-        href: "#",
-        inactive: "assets/Inactive Requests.svg",
-        active: "assets/Active Requests.svg",
-    },
-    {
-        name: "Audit Trail",
-        href: "#",
-        inactive: "assets/Inactive Audit Trail.svg",
-        active: "assets/Active Audit Trail.svg",
-    },
-    {
-        name: "Feedback",
-        href: "#",
-        inactive: "assets/Inactive Feedback.svg",
-        active: "assets/Active Feedback.svg",
-    },
-    {
-        name: "Birthday Template",
-        href: "#",
-        inactive: "assets/Inactive Birthday Template.svg",
-        active: "assets/Active Birthday Template.svg",
-    },
-    {
-        name: "Roles",
-        href: "#",
-        inactive: "assets/role-inactive.svg",
-        active: "assets/role-active.svg",
-    },
-    {
-        name: "Permissions",
-        href: "#",
-        inactive: "assets/permission-active.svg",
-        active: "assets/permission-active.svg",
-    },
-];
-
 const Settings = () => {
     const [currentPage, setCurrentPage] = useState("Basic Settings");
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
+
+    const navigation = useMemo(
+        () =>
+            [
+                isSuperAdmin && {
+                    name: "Basic Settings",
+                    href: "#",
+                    inactive: "assets/Inactive Basic Settings.svg",
+                    active: "assets/Active Basic Settings.svg",
+                },
+                isSuperAdmin && {
+                    name: "Themes",
+                    href: "#",
+                    inactive: "assets/Inactive Theme.svg",
+                    active: "assets/Active Theme.svg",
+                },
+                isSuperAdmin && {
+                    name: "Advance Settings",
+                    href: "#",
+                    inactive: "assets/Inactive Advanced Settings.svg",
+                    active: "assets/Active Advanced Settings.svg",
+                },
+                // { name: 'Departments', href: '#', inactive: "assets/Inactive Departments.svg", active: "assets/Active Departments.svg" },
+                // { name: 'Media', href: '#', inactive: "assets/Inactive Media.svg", active: "assets/Active Media.svg" },
+                isSuperAdmin && {
+                    name: "Requests",
+                    href: "#",
+                    inactive: "assets/Inactive Requests.svg",
+                    active: "assets/Active Requests.svg",
+                },
+                isSuperAdmin && {
+                    name: "Audit Trail",
+                    href: "#",
+                    inactive: "assets/Inactive Audit Trail.svg",
+                    active: "assets/Active Audit Trail.svg",
+                },
+                {
+                    name: "Feedback",
+                    href: "#",
+                    inactive: "assets/Inactive Feedback.svg",
+                    active: "assets/Active Feedback.svg",
+                },
+                isSuperAdmin && {
+                    name: "Birthday Template",
+                    href: "#",
+                    inactive: "assets/Inactive Birthday Template.svg",
+                    active: "assets/Active Birthday Template.svg",
+                },
+                isSuperAdmin && {
+                    name: "Roles",
+                    href: "#",
+                    inactive: "assets/role-inactive.svg",
+                    active: "assets/role-active.svg",
+                },
+                isSuperAdmin && {
+                    name: "Permissions",
+                    href: "#",
+                    inactive: "assets/permission-active.svg",
+                    active: "assets/permission-active.svg",
+                },
+            ].filter(Boolean),
+        [isSuperAdmin]
+    );
 
     useEffect(() => {
         const savedPage = localStorage.getItem("currentSettingsPage");

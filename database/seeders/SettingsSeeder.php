@@ -9,7 +9,7 @@ class SettingsSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('settings')->upsert([
+        $settings = [
             [
                 'group' => 'UI',
                 'key' => 'logo',
@@ -20,21 +20,49 @@ class SettingsSeeder extends Seeder
             [
                 'group' => 'FUNCTIONALITY',
                 'key' => 'wall_enabled',
-                'value' => 'true',
+                'value' => '1',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'group' => 'FUNCTIONALITY',
                 'key' => 'calendar_enabled',
-                'value' => 'true',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'FUNCTIONALITY',
+                'key' => 'notifications_enabled',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'FUNCTIONALITY',
+                'key' => 'pages_enabled',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'FUNCTIONALITY',
+                'key' => 'polls_enabled',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'FUNCTIONALITY',
+                'key' => 'organisation_chart_enabled',
+                'value' => '1',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'group' => 'STORAGE',
                 'key' => 'max_file_size',
-                'value' => '10MB',
+                'value' => '20MB',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -76,7 +104,7 @@ class SettingsSeeder extends Seeder
             [
                 'group' => 'FUNCTIONALITY',
                 'key' => 'member_invites_enabled',
-                'value' => 'true',
+                'value' => '1',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -86,7 +114,47 @@ class SettingsSeeder extends Seeder
                 'value' => 'Happy Birthday, {{name}}! Wishing you all the best!',
                 'created_at' => now(),
                 'updated_at' => now()
+            ],
+            [
+                'group' => 'STORAGE',
+                'key' => 'max_video_size',
+                'value' => '20MB',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'STORAGE',
+                'key' => 'max_image_size',
+                'value' => '20MB',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'COVER_PHOTOS',
+                'key' => 'groups_enabled',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'group' => 'COVER_PHOTOS',
+                'key' => 'profiles_enabled',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
-        ], 'key');
+        ];
+
+
+        foreach ($settings as $setting) {
+            DB::table('settings')->updateOrInsert(
+                ['group' => $setting['group'], 'key' => $setting['key']],
+                [
+                    'value' => $setting['value'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            );
+        }
     }
 }
