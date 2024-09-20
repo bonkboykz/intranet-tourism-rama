@@ -47,23 +47,23 @@ export const MemberCard = ({
         }
     };
 
-    // useEffect(() => {
-    //     const handleClickOutside = (event) => {
-    //         if (
-    //             popupRef.current &&
-    //             !popupRef.current.contains(event.target) &&
-    //             buttonRef.current &&
-    //             !buttonRef.current.contains(event.target)
-    //         ) {
-    //             closePopup();
-    //         }
-    //     };
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                popupRef.current &&
+                !popupRef.current.contains(event.target) &&
+                buttonRef.current &&
+                !buttonRef.current.contains(event.target)
+            ) {
+                closePopup();
+            }
+        };
 
-    //     document.addEventListener("mousedown", handleClickOutside);
-    //     return () => {
-    //         document.removeEventListener("mousedown", handleClickOutside);
-    //     };
-    // }, [popupRef, closePopup]);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [popupRef, closePopup]);
 
     const { hasRole } = usePermissions();
     const { isAdmin, user } = useContext(DepartmentContext);
