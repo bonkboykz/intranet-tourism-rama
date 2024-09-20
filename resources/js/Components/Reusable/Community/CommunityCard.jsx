@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
 import { FaLock } from "react-icons/fa"; // Import the lock icon
 
 import defaultImage from "../../../../../public/assets/dummyStaffImage.png";
@@ -28,6 +30,38 @@ const CommunityCard = ({
         setIsPopupOpen(false);
     };
 
+    const popupRef = useRef(null);
+    const buttonRef = useRef(null);
+    const modalRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            const isClickedInsideOfPopup = popupRef.current?.contains(
+                event.target
+            );
+            const isClickedInsideOfModal = modalRef.current?.contains(
+                event.target
+            );
+
+            const isClickedInsideOfButton = buttonRef.current?.contains(
+                event.target
+            );
+
+            if (
+                !isClickedInsideOfPopup &&
+                !isClickedInsideOfModal &&
+                !isClickedInsideOfButton
+            ) {
+                setIsPopupOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
         <div className="staff-member-card">
             <div className="card-header">
@@ -37,7 +71,11 @@ const CommunityCard = ({
                     className="staff-member-image"
                 />
                 {["superadmin", "admin"].includes(role) && (
-                    <button className="status-button" onClick={togglePopup}>
+                    <button
+                        className="status-button"
+                        onClick={togglePopup}
+                        ref={buttonRef}
+                    >
                         <img
                             src="/assets/threedots.svg"
                             alt="Menu"
@@ -47,6 +85,8 @@ const CommunityCard = ({
                 )}
                 {isPopupOpen && (
                     <PopupMenu
+                        popupRef={popupRef}
+                        modalRef={modalRef}
                         selectedDepartmentId={communityID}
                         onArchiveToggle={onArchiveToggle}
                         onDelete={onDelete}
