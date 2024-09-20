@@ -74,14 +74,18 @@ function ProfileDepartment({
         let lastPage = 1;
 
         try {
+            // TODO: refactor this, too many requests
             while (currentPage <= lastPage) {
-                const response = await fetch(`${API_URL}?page=${currentPage}`, {
-                    method: "GET",
-                    headers: {
-                        Accept: "application/json",
-                        "X-CSRF-Token": csrfToken,
-                    },
-                });
+                const response = await fetch(
+                    `${API_URL}?page=${currentPage}&perpage=20`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json",
+                            "X-CSRF-Token": csrfToken,
+                        },
+                    }
+                );
                 if (!response.ok) {
                     throw new Error(`Network response was not ok for ${label}`);
                 }
