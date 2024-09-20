@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import Cropper from "react-easy-crop";
+import { toast } from "react-toastify";
 
 import getCroppedImg from "./cropImage"; // Assume you have this utility to crop the image
 
@@ -63,7 +64,7 @@ function Popup({
             FfData.append("_method", "PUT");
             FfData.append("name", formData.name);
 
-            const url = `/api/profile/profiles/${profileData.profile.id}?with[]=user`;
+            const url = `/api/profile/profiles/${profileData.profile.id}/update_profile_cover`;
 
             const uploadResponse = await fetch(url, {
                 method: "POST",
@@ -80,15 +81,18 @@ function Popup({
                 throw new Error(error.message || "Error uploading file");
             }
 
-            const data = await uploadResponse.json();
-            if (data.success) {
-                setPhoto(croppedImg); // Update the photo URL with the cropped image
-                onSave(); // Trigger the onSave callback
-                console.log("File uploaded successfully:", data);
-                window.location.reload();
-            } else {
-                console.error("Error uploading file:", data);
-            }
+            toast.success("Profile cover photo updated successfully");
+            window.location.reload();
+
+            // const data = await uploadResponse.json();
+            // if (data.success) {
+            //     setPhoto(croppedImg); // Update the photo URL with the cropped image
+            //     onSave(); // Trigger the onSave callback
+            //     console.log("File uploaded successfully:", data);
+
+            // } else {
+            //     console.error("Error uploading file:", data);
+            // }
         } catch (error) {
             console.error("Error cropping or uploading file:", error);
             window.location.reload();
