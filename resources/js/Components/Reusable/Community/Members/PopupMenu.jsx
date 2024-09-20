@@ -7,6 +7,7 @@ export const PopupMenu = ({
     closePopup,
     canAssignAdmin,
     canRemoveMember,
+    modalRef,
 }) => {
     const [showPopup, setShowPopup] = useState(false);
 
@@ -16,7 +17,7 @@ export const PopupMenu = ({
         setShowPopup(true);
     };
 
-    const handleAssign = () => {
+    const handleAssign = (event) => {
         event.preventDefault();
         event.stopPropagation();
         onAssign();
@@ -68,7 +69,10 @@ export const PopupMenu = ({
             {showPopup &&
                 createPortal(
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="relative p-8 bg-white shadow-lg rounded-2xl w-96">
+                        <div
+                            className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
+                            ref={modalRef}
+                        >
                             <h2 className="mb-4 text-xl font-bold text-center">
                                 Delete member?
                             </h2>

@@ -9,7 +9,7 @@ export const PopupMenuAdmin = ({ onRemove, onAssign, closePopup }) => {
         setShowPopup(true);
     };
 
-    const handleAssign = () => {
+    const handleAssign = (event) => {
         event.preventDefault();
         event.stopPropagation();
         onAssign();
