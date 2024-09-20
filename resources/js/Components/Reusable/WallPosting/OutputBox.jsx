@@ -1,7 +1,12 @@
 import React from "react";
 import { useContext } from "react";
 
+import useUserData from "@/Utils/hooks/useUserData";
+import { isBirthdayDay } from "@/Utils/isBirthday";
+
+import { DefaultPostCard } from "./DefaultPostCard/DefaultPostCard";
 import { PersonalWall } from "./PersonalWall";
+import { SystemBirthdayCard } from "./SystemBirthdayCard/SystemBirthdayCard";
 import { useInfiniteScroll } from "./useInfiniteScroll";
 import { UserWall } from "./UserWall";
 import { WallContext } from "./WallContext";
@@ -32,9 +37,25 @@ function OutputData({
         },
     });
 
+    const user = useUserData();
+
+    const userHasBirthday = user.dob && isBirthdayDay(user.dob, new Date());
+
     const renderWall = () => {
         switch (variant) {
             case "profile":
+                return (
+                    <>
+                        <SystemBirthdayCard />
+
+                        <UserWall
+                            posts={posts}
+                            onLoad={fetchData}
+                            hasMore={hasMore}
+                            userId={userId}
+                        />
+                    </>
+                );
             case "user-wall":
                 return (
                     <UserWall
@@ -67,8 +88,6 @@ function OutputData({
 
     return (
         <>
-            {/* <Polls polls={polls} /> */}
-
             {/* TODO: PersonalWall is used on communities page, which could trigger multiple loads */}
             {renderWall()}
         </>
