@@ -321,7 +321,7 @@ export function DefaultPostCard({ post }) {
     const handleAnnouncement = async (post) => {
         try {
             const response = await axios.put(`/api/posts/posts/${post.id}`, {
-                announced: true,
+                announced: !post.announced,
                 user_id: String(post.user.id),
                 visibility: "public",
             });
@@ -492,6 +492,7 @@ export function DefaultPostCard({ post }) {
                             onAnnouncement={() =>
                                 handleAnnouncement(cachedPost)
                             }
+                            isAnnounced={cachedPost.announced}
                         />
                     )}
                 </header>

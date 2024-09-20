@@ -111,10 +111,9 @@ class ResourceController extends Controller
                                 // Check if the post belongs to no community or a public community, or the user is a member of the private community
                                 $query->whereNull('community_id')
                                     ->orWhereHas('community', function ($query) use ($user) {
-                                    $query->where('type', 'public')
-                                        ->orWhereHas('members', function ($query) use ($user) {
-                                            $query->where('user_id', $user->id); // User is a member of the private community
-                                        });
+                                    $query->whereHas('members', function ($query) use ($user) {
+                                        $query->where('user_id', $user->id); // User is a member of the private community
+                                    });
                                 });
                             })
                                 ->where(function ($query) use ($user) {
