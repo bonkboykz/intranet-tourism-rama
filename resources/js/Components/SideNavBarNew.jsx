@@ -5,7 +5,97 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 
+import { useSettings } from "@/Layouts/useSettings";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+
+const SidebarItemDesktop = ({
+    item,
+    activeIndex,
+    handleClick,
+    index,
+    handleMouseEnter,
+    handleMouseLeave,
+    hoveredIndex,
+    tooltipPosition,
+}) => {
+    const ref = useRef(null);
+    return (
+        <li key={item.name}>
+            <a
+                href={item.href}
+                className={classNames(
+                    activeIndex === index
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                    "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold relative"
+                )}
+                onClick={(e) => handleClick(e, index, item.name)}
+                onMouseEnter={() => handleMouseEnter(index, ref)}
+                onMouseLeave={handleMouseLeave}
+                ref={ref}
+            >
+                <img
+                    src={activeIndex === index ? item.active : item.inactive}
+                    className="h-6 w-6 shrink-0"
+                    alt={item.name}
+                />
+                <span className="sr-only">{item.name}</span>
+                {hoveredIndex === index && (
+                    <Tooltip
+                        item={item}
+                        index={index}
+                        position={tooltipPosition}
+                    />
+                )}
+            </a>
+        </li>
+    );
+};
+
+const SidebarItem = ({
+    item,
+    activeIndex,
+    handleClick,
+    index,
+    handleMouseEnter,
+    handleMouseLeave,
+    hoveredIndex,
+    tooltipPosition,
+}) => {
+    const ref = useRef(null);
+
+    return (
+        <li key={item.name}>
+            <a
+                href={item.href}
+                className={classNames(
+                    activeIndex === index
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
+                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold relative"
+                )}
+                onClick={(e) => handleClick(e, index, item.name)}
+                onMouseEnter={() => handleMouseEnter(index, ref)}
+                onMouseLeave={handleMouseLeave}
+                ref={ref}
+            >
+                <img
+                    src={activeIndex === index ? item.active : item.inactive}
+                    className="h-6 w-6 shrink-0"
+                    alt={item.name}
+                />
+                {item.name}
+                {hoveredIndex === index && (
+                    <Tooltip
+                        item={item}
+                        index={index}
+                        position={tooltipPosition}
+                    />
+                )}
+            </a>
+        </li>
+    );
+};
 
 const Tooltip = ({ item, index, position }) => {
     const tooltipStyles = {
@@ -38,10 +128,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     const { hasRole } = usePermissions();
     const isSuperAdmin = hasRole("superadmin");
 
+    const { settings, fetchSettings } = useSettings();
+
     const navigation = useMemo(
         () =>
             [
-                {
+                (settings.wall_enabled || isSuperAdmin) && {
                     name: "Dashboard",
                     href: "/dashboard",
                     inactive: "/assets/Dashboard Inactive.svg",
@@ -53,7 +145,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     inactive: "/assets/Staff Directory Inactive.svg",
                     active: "/assets/Staff Directory Active.svg",
                 },
-                {
+                (settings.calendar_enabled || isSuperAdmin) && {
                     name: "Calendar",
                     href: "/calendar",
                     inactive: "/assets/Calendar Inactive.svg",
@@ -89,7 +181,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     inactive: "/assets/Link Inactive.svg",
                     active: "/assets/Link Active.svg",
                 },
-                isSuperAdmin && {
+                {
                     name: "Settings",
                     href: "/settings",
                     inactive: "/assets/Settings Inactive.svg",
@@ -102,7 +194,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     active: "/assets/Logout Active.svg",
                 },
             ].filter(Boolean),
-        [isSuperAdmin]
+        [isSuperAdmin, settings]
     );
 
     useEffect(() => {
@@ -232,61 +324,30 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                             className="-mx-2 flex-1 space-y-1"
                                         >
                                             {navigation.map((item, index) => {
-                                                const ref = useRef(null);
                                                 return (
-                                                    <li key={item.name}>
-                                                        <a
-                                                            href={item.href}
-                                                            className={classNames(
-                                                                activeIndex ===
-                                                                    index
-                                                                    ? "bg-gray-100 text-gray-900"
-                                                                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-                                                                "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold relative"
-                                                            )}
-                                                            onClick={(e) =>
-                                                                handleClick(
-                                                                    e,
-                                                                    index,
-                                                                    item.name
-                                                                )
-                                                            }
-                                                            onMouseEnter={() =>
-                                                                handleMouseEnter(
-                                                                    index,
-                                                                    ref
-                                                                )
-                                                            }
-                                                            onMouseLeave={
-                                                                handleMouseLeave
-                                                            }
-                                                            ref={ref}
-                                                        >
-                                                            <img
-                                                                src={
-                                                                    activeIndex ===
-                                                                    index
-                                                                        ? item.active
-                                                                        : item.inactive
-                                                                }
-                                                                className="h-6 w-6 shrink-0"
-                                                                alt={item.name}
-                                                            />
-                                                            {item.name}
-                                                            {hoveredIndex ===
-                                                                index && (
-                                                                <Tooltip
-                                                                    item={item}
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                    position={
-                                                                        tooltipPosition
-                                                                    }
-                                                                />
-                                                            )}
-                                                        </a>
-                                                    </li>
+                                                    <SidebarItem
+                                                        key={item.name}
+                                                        item={item}
+                                                        activeIndex={
+                                                            activeIndex
+                                                        }
+                                                        handleClick={
+                                                            handleClick
+                                                        }
+                                                        index={index}
+                                                        handleMouseEnter={
+                                                            handleMouseEnter
+                                                        }
+                                                        handleMouseLeave={
+                                                            handleMouseLeave
+                                                        }
+                                                        hoveredIndex={
+                                                            hoveredIndex
+                                                        }
+                                                        tooltipPosition={
+                                                            tooltipPosition
+                                                        }
+                                                    />
                                                 );
                                             })}
                                         </ul>
@@ -309,47 +370,18 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                         className="flex flex-col items-center space-y-1 relative z-40"
                     >
                         {navigation.map((item, index) => {
-                            const ref = useRef(null);
                             return (
-                                <li key={item.name}>
-                                    <a
-                                        href={item.href}
-                                        className={classNames(
-                                            activeIndex === index
-                                                ? "bg-gray-100 text-gray-900"
-                                                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50",
-                                            "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold relative"
-                                        )}
-                                        onClick={(e) =>
-                                            handleClick(e, index, item.name)
-                                        }
-                                        onMouseEnter={() =>
-                                            handleMouseEnter(index, ref)
-                                        }
-                                        onMouseLeave={handleMouseLeave}
-                                        ref={ref}
-                                    >
-                                        <img
-                                            src={
-                                                activeIndex === index
-                                                    ? item.active
-                                                    : item.inactive
-                                            }
-                                            className="h-6 w-6 shrink-0"
-                                            alt={item.name}
-                                        />
-                                        <span className="sr-only">
-                                            {item.name}
-                                        </span>
-                                        {hoveredIndex === index && (
-                                            <Tooltip
-                                                item={item}
-                                                index={index}
-                                                position={tooltipPosition}
-                                            />
-                                        )}
-                                    </a>
-                                </li>
+                                <SidebarItemDesktop
+                                    key={item.name}
+                                    item={item}
+                                    activeIndex={activeIndex}
+                                    handleClick={handleClick}
+                                    index={index}
+                                    handleMouseEnter={handleMouseEnter}
+                                    handleMouseLeave={handleMouseLeave}
+                                    hoveredIndex={hoveredIndex}
+                                    tooltipPosition={tooltipPosition}
+                                />
                             );
                         })}
                     </ul>

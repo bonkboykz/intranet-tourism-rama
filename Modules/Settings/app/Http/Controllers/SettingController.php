@@ -21,6 +21,16 @@ class SettingController extends Controller
         // attach app url to logo
         // $settings['logo'] = config('app.url') . $settings['logo'];
 
+        foreach ($settings as $key => $value) {
+            if ($settings[$key] === '1' || $settings[$key] === 'true') {
+                $settings[$key] = true;
+            } elseif ($settings[$key] === '0' || $settings[$key] === 'false') {
+                $settings[$key] = false;
+            } else if (is_string($settings[$key]) && str_ends_with($settings[$key], 'MB')) {
+                $settings[$key] = (int) $settings[$key];
+            }
+        }
+
         return response()->json([
             'data' => $settings,
         ]);
@@ -59,7 +69,7 @@ class SettingController extends Controller
         $setting->update(['value' => $value]);
         $setting->save();
 
-        return response()->noContent();
+        return response()->json($setting);
     }
 
     public function destroy(Setting $setting)
