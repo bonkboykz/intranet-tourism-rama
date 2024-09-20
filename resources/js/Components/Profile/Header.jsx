@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useState } from "react";
 import Cropper from "react-easy-crop";
+import { toast } from "react-toastify";
 
 import { useCsrf } from "@/composables";
 import {
@@ -186,7 +187,7 @@ function ProfileHeader({
         csrfToken,
         authToken
     ) => {
-        const url = `/api/profile/profiles/${profileId}`;
+        const url = `/api/profile/profiles/${profileId}/updateProfileImage`;
 
         const formData = new FormData();
         formData.append("image", file);
@@ -222,10 +223,15 @@ function ProfileHeader({
                 const data = await response.json();
                 console.log("Profile photo updated successfully:", data);
 
+                toast.success("Profile photo updated successfully");
+
                 if (data.profile && data.profile.image) {
                     const fullPath = data.profile.image;
                     setCurrentProfileImage(fullPath);
                     setSelectedFile(fullPath);
+
+                    // TODO: refetch user data in context
+                    window.location.reload();
                 }
             } else {
                 console.error("Error: Response is not JSON");

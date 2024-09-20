@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Modules\Profile\Http\Requests\ProfileUpdateRequest;
 use Modules\Profile\Models\Profile;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ProfileController extends Controller
 {
@@ -103,8 +104,14 @@ class ProfileController extends Controller
 
     public function update(Profile $profile)
     {
+
         DB::beginTransaction();
         try {
+            $output = new ConsoleOutput();
+            $output->writeln('Updating profile');
+            $output->writeln('Request has image: ' . request()->hasFile('image') ? 'true' : 'false');
+
+            $output->writeln('test');
             request()->merge(['bio' => request('name')]);
             $validated = request()->validate(...Profile::rules('update'));
             $validatedUser = request()->validate(...User::rules('update'));
@@ -138,6 +145,19 @@ class ProfileController extends Controller
         }
 
         return response()->noContent();
+    }
+
+    public function updateProfileImage(Profile $profile)
+    {
+        $imagePath = uploadFile(request()->file('image'), null, 'avatar')['path'];
+
+        $profile->update([
+            'image' => $imagePath,
+        ]);
+
+        return response()->json([
+            'profile' => $profile
+        ]);
     }
 
     /**
