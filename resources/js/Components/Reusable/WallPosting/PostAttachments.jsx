@@ -182,7 +182,11 @@ function PostAttachments({ attachments }) {
                                             } // Unique key for image
                                             src={`/storage/${imagesAndVideos[currentMediaIndex].path}`}
                                             alt="Current attachment"
-                                            className="w-[500px] h-[500px] object-contain rounded-none" // Fixed width and height
+                                            className={cn(
+                                                "w-[500px] h-[500px] object-contain rounded-none",
+                                                imagesAndVideos.length === 1 &&
+                                                    "w-full h-auto"
+                                            )}
                                         />
                                     ) : (
                                         <video
@@ -204,35 +208,42 @@ function PostAttachments({ attachments }) {
                                 </div>
                             </div>
                             <div className="flex justify-start mt-4 overflow-x-scroll w-full">
-                                {imagesAndVideos.map((attachment, index) => (
-                                    <div
-                                        key={index}
-                                        className={cn(
-                                            `cursor-pointer mx-1 min-w-20 max-w-20 h-20`,
-                                            currentMediaIndex === index &&
-                                                "border-2 border-blue-500"
-                                        )}
-                                        onClick={() =>
-                                            setCurrentMediaIndex(index)
-                                        }
-                                    >
-                                        {attachment.mime_type.startsWith(
-                                            "image/"
-                                        ) ? (
-                                            <img
-                                                src={`/storage/${attachment.path}`}
-                                                alt="Thumbnail"
-                                                className="w-full h-full object-cover rounded-lg"
-                                            />
-                                        ) : (
-                                            <video className="w-full h-full object-cover rounded-lg">
-                                                <source
-                                                    src={`/storage/${attachment.path}`}
-                                                />
-                                            </video>
-                                        )}
-                                    </div>
-                                ))}
+                                {imagesAndVideos.length === 1
+                                    ? null
+                                    : imagesAndVideos.map(
+                                          (attachment, index) => (
+                                              <div
+                                                  key={index}
+                                                  className={cn(
+                                                      `cursor-pointer mx-1 min-w-20 max-w-20 h-20`,
+                                                      currentMediaIndex ===
+                                                          index &&
+                                                          "border-2 border-blue-500"
+                                                  )}
+                                                  onClick={() =>
+                                                      setCurrentMediaIndex(
+                                                          index
+                                                      )
+                                                  }
+                                              >
+                                                  {attachment.mime_type.startsWith(
+                                                      "image/"
+                                                  ) ? (
+                                                      <img
+                                                          src={`/storage/${attachment.path}`}
+                                                          alt="Thumbnail"
+                                                          className="w-full h-full object-cover rounded-lg"
+                                                      />
+                                                  ) : (
+                                                      <video className="w-full h-full object-cover rounded-lg">
+                                                          <source
+                                                              src={`/storage/${attachment.path}`}
+                                                          />
+                                                      </video>
+                                                  )}
+                                              </div>
+                                          )
+                                      )}
                             </div>
                         </div>
                     </div>
