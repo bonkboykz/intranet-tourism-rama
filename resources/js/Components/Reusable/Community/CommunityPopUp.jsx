@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 const PopupMenu = ({
     onArchiveToggle,
@@ -6,24 +7,10 @@ const PopupMenu = ({
     onClose,
     onDelete,
     isArchived,
+    popupRef,
+    modalRef,
 }) => {
     const [showConfirm, setShowConfirm] = useState(false);
-    const popupRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (popupRef.current && !popupRef.current.contains(event.target)) {
-                event.preventDefault();
-
-                onClose();
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [onClose]);
 
     const handleDeleteClick = () => {
         setShowConfirm(true);
@@ -58,32 +45,34 @@ const PopupMenu = ({
                     Delete
                 </button>
             </div>
-            {showConfirm && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                    <div
-                        className="bg-white p-6 rounded-lg shadow-lg"
-                        ref={popupRef}
-                    >
-                        <p className="mb-4 text-lg">
-                            Are you sure you want to delete this community?
-                        </p>
-                        <div className="flex justify-center space-x-4">
-                            <button
-                                onClick={handleCancelDelete}
-                                className="px-8 py-1 text-white bg-red-500 rounded-full hover:bg-red-700"
-                            >
-                                No
-                            </button>
-                            <button
-                                onClick={handleConfirmDelete}
-                                className="px-8 py-1 text-base text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
-                            >
-                                Yes
-                            </button>
+            {showConfirm &&
+                createPortal(
+                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                        <div
+                            className="bg-white p-6 rounded-lg shadow-lg"
+                            ref={modalRef}
+                        >
+                            <p className="mb-4 text-lg">
+                                Are you sure you want to delete this community?
+                            </p>
+                            <div className="flex justify-center space-x-4">
+                                <button
+                                    onClick={handleCancelDelete}
+                                    className="px-8 py-1 text-white bg-red-500 rounded-full hover:bg-red-700"
+                                >
+                                    No
+                                </button>
+                                <button
+                                    onClick={handleConfirmDelete}
+                                    className="px-8 py-1 text-base text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
+                                >
+                                    Yes
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </div>,
+                    document.body
+                )}
         </div>
     );
 };
