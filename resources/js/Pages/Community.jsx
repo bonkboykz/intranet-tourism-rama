@@ -72,7 +72,17 @@ const Community = () => {
             }
 
             setDepartmentsList(
-                allCommunities.sort((a, b) => a.name?.localeCompare(b.name))
+                allCommunities.sort((a, b) => {
+                    if (a.isMember && !b.isMember) {
+                        return -1;
+                    }
+
+                    if (!a.isMember && b.isMember) {
+                        return 1;
+                    }
+
+                    return a.name?.localeCompare(b.name);
+                })
             );
         } catch (error) {
             console.error("Error fetching departments:", error);
