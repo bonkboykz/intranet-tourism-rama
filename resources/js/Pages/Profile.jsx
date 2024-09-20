@@ -650,9 +650,10 @@ function ProfileContent() {
                 )}
                 {isPopupOpen && (
                     <Popup
-                        title="Edit Banner Photo"
+                        title="Edit Cover Photo"
                         onClose={() => setIsPopupOpen(false)}
                         onSave={handleSaveBio}
+                        imgSrc="https://cdn.builder.io/api/v1/image/assets/TEMP/51aef219840e60eadf3805d1bd5616298ec00b2df42d036b6999b052ac398ab5"
                         profileData={profileData}
                         id={id}
                         formData={formData}
