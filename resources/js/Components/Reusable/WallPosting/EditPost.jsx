@@ -79,7 +79,12 @@ function EditPost({
 
             if (chosenEvent.length > 0) {
                 const events = chosenEvent
-                    .map((eventTitle) => `"${eventTitle}"`)
+                    .map((event) =>
+                        JSON.stringify({
+                            id: event.id,
+                            title: event.title,
+                        })
+                    )
                     .join(", ");
                 const formattedEvents = `[${events}]`;
                 formData.append("event", formattedEvents);
@@ -141,7 +146,12 @@ function EditPost({
     const [searchEventResults, setSearchEventResults] = useState([]);
 
     const handleAddEvent = (event) => {
-        setChosenEvent([event.title]);
+        setChosenEvent([
+            {
+                id: event.id,
+                title: event.title,
+            },
+        ]);
     };
 
     const handleRemoveEvent = (id) => {
@@ -182,9 +192,7 @@ function EditPost({
                     <div>
                         <div className="flex flex-col gap-2">
                             <ChosenEvent
-                                chosenEvent={chosenEvent.map((e) => ({
-                                    title: e,
-                                }))}
+                                chosenEvent={chosenEvent}
                                 onRemoveEvent={handleRemoveEvent}
                             />
 

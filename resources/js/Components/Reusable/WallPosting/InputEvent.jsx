@@ -120,7 +120,7 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
     };
 
     const handleRemoveEvent = (id) => {
-        setSelectedEvent(selectedEvent.filter((person) => person.id !== id));
+        setSelectedEvent(selectedEvent.filter((event) => event.id !== id));
     };
 
     const handleSave = () => {

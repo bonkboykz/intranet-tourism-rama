@@ -4,6 +4,7 @@ namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\NewPollCreatedNotification;
+use Modules\Events\Models\Event;
 use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
 use Modules\Polls\Models\Option;
@@ -84,6 +85,27 @@ class PostController extends Controller
 
             return $post;
         });
+
+        // TODO: when refactoring either remove or return the following code
+        // // attach event if present
+        // $data->map(function ($post) {
+        //     // post event is json column with array with { id: "uid", title: "" }
+        //     if ($post->event) {
+        //         $event_array = json_decode($post->event);
+
+        //         // if array empty
+        //         if (empty($event_array)) {
+        //             return $post;
+        //         }
+
+        //         $event_first_el = $event_array[0];
+
+        //         // get first element of the array
+        //         $post->event = Event::find($event_first_el->id);
+        //     }
+
+        //     return $post;
+        // });
 
         // Return the response
         return response()->json([

@@ -175,7 +175,12 @@ function ShareYourThoughts({
         // Handle events
         if (chosenEvent.length > 0) {
             const events = chosenEvent
-                .map((event) => `"${event.title}"`)
+                .map((event) =>
+                    JSON.stringify({
+                        id: event.id,
+                        title: event.title,
+                    })
+                )
                 .join(", ");
             const formattedEvents = `[${events}]`;
             formData.append("event", formattedEvents);

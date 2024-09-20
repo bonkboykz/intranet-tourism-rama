@@ -1,8 +1,11 @@
 import { useContext, useState } from "react";
 import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import { format, isSameDay } from "date-fns";
 import { Volume2 } from "lucide-react";
+import { Popover, Whisper } from "rsuite";
 
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
@@ -10,6 +13,7 @@ import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
+import { truncate } from "@/Utils/truncate";
 
 import Comment from "../Comment";
 import { DeletePopup } from "../DeletePopup";
@@ -24,6 +28,92 @@ import { CardImage } from "./CardImage/CardImage";
 import { Comments } from "./Comments/Comments";
 import { Likes } from "./Likes/Likes";
 import { PostDetails } from "./PostDetails/PostDetails";
+
+import "rsuite/dist/rsuite-no-reset.min.css";
+
+function EventTag({ event }) {
+    const firstEvent = JSON.parse(event)[0];
+
+    const [eventDetails, setEventDetails] = useState(null);
+
+    const fetchEventDetails = async () => {
+        try {
+            const response = await axios.get(
+                `/api/events/events/${firstEvent.id}`
+            );
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to fetch event details");
+            }
+
+            console.log(response.data);
+
+            setEventDetails(response.data.data);
+        } catch (error) {
+            console.error("Error fetching event details:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (!firstEvent) {
+            return;
+        }
+
+        fetchEventDetails();
+    }, [event]);
+
+    if (!firstEvent) {
+        return null;
+    }
+
+    return (
+        <div className="flex">
+            <Whisper
+                placement="right"
+                trigger="hover"
+                enterable
+                speaker={
+                    <Popover
+                        arrow={false}
+                        style={{
+                            borderRadius: 10,
+                        }}
+                    >
+                        {eventDetails && (
+                            <div className="p-2">
+                                <div className="text-sm font-semibold text-blue-500">
+                                    {eventDetails.title}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                    {format(
+                                        new Date(eventDetails.start_at),
+                                        "yyyy.MM.dd"
+                                    )}
+                                    {eventDetails.end_at &&
+                                        !isSameDay(
+                                            new Date(eventDetails.start_at),
+                                            new Date(eventDetails.end_at)
+                                        ) &&
+                                        ` – ${format(new Date(eventDetails.end_at), "yyyy.MM.dd")}`}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                    {eventDetails.location}
+                                </div>
+                                <div>
+                                    {truncate(eventDetails.description, 50)}
+                                </div>
+                            </div>
+                        )}
+                    </Popover>
+                }
+            >
+                <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full cursor-pointer">
+                    {firstEvent.title}
+                </p>
+            </Whisper>
+        </div>
+    );
+}
 
 const renderContentWithTags = (content, mentions) => {
     const mentionData = mentions ? JSON.parse(mentions) : [];
@@ -321,9 +411,7 @@ export function DefaultPostCard({ post }) {
                     {cachedPost.albums?.map((album) => album.name).join(", ")}
                 </p>
 
-                <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
-                    {cachedPost.event?.replace(/[\[\]"]/g, "") || ""}
-                </p>
+                {cachedPost.event && <EventTag event={cachedPost.event} />}
                 <PostAttachments attachments={post.attachments} />
             </>
         );
