@@ -1,4 +1,8 @@
 import React, { Fragment } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import { createPortal } from "react-dom";
 import {
     Menu,
     MenuButton,
@@ -24,8 +28,33 @@ const PopupContent = ({
     onDelete,
     onFileSelect,
     canEdit = true,
+    onClose,
 }) => {
     // console.log("FILE", file);
+
+    const [showModal, setShowModal] = useState(false);
+    const modalRef = useRef(null);
+
+    useEffect(() => {
+        if (!showModal) {
+            return;
+        }
+
+        const handleClickOutside = (event) => {
+            const isClickedInsideOfModal = modalRef.current?.contains(
+                event.target
+            );
+
+            if (!isClickedInsideOfModal) {
+                setShowModal(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showModal]);
 
     if (!file || !file.id) {
         console.error("No file selected or file ID is missing.");
@@ -40,9 +69,7 @@ const PopupContent = ({
 
     const handleDelete = (e) => {
         e.preventDefault();
-        if (window.confirm("Are you sure you want to delete this file?")) {
-            onDelete(file.id);
-        }
+        onDelete(file.id);
     };
 
     const handleDownload = async (e) => {
@@ -104,74 +131,56 @@ const PopupContent = ({
     const isPdf = file.metadata.path.endsWith(".pdf"); // Check if the file is a PDF
 
     return (
-        <Menu as="div" className="relative inline-block text-left">
-            <div>
-                <MenuButton className="inline-flex justify-center items-center w-full pl-5 max-md:pl-1">
-                    <img
-                        src={threeDotsIcon}
-                        alt="Options"
-                        className="h-auto w-auto"
-                    />
-                </MenuButton>
-            </div>
-            <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-            >
-                <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
-                        {canEdit && (
-                            <MenuItem>
-                                {({ active, close }) => (
-                                    <button
-                                        onClick={(e) => handleRename(e, close)}
-                                        className={classNames(
-                                            active
-                                                ? "bg-blue-100 text-gray-900"
-                                                : "text-gray-700",
-                                            "group flex items-center px-4 py-2 text-sm w-full"
-                                        )}
-                                    >
-                                        <img
-                                            src={renameIcon}
-                                            alt="Rename"
-                                            className="mr-3 h-5 w-5"
-                                        />
-                                        Rename
-                                    </button>
-                                )}
-                            </MenuItem>
-                        )}
-                        <MenuItem>
-                            {({ active }) => (
-                                <button
-                                    onClick={handleDownload}
-                                    className={classNames(
-                                        active
-                                            ? "bg-blue-100 text-gray-900"
-                                            : "text-gray-700",
-                                        "group flex items-center px-4 py-2 text-sm w-full"
+        <>
+            <Menu as="div" className="relative inline-block text-left">
+                <div>
+                    <MenuButton className="inline-flex justify-center items-center w-full pl-5 max-md:pl-1">
+                        <img
+                            src={threeDotsIcon}
+                            alt="Options"
+                            className="h-auto w-auto"
+                        />
+                    </MenuButton>
+                </div>
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                >
+                    <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="py-1">
+                            {canEdit && (
+                                <MenuItem>
+                                    {({ active, close }) => (
+                                        <button
+                                            onClick={(e) =>
+                                                handleRename(e, close)
+                                            }
+                                            className={classNames(
+                                                active
+                                                    ? "bg-blue-100 text-gray-900"
+                                                    : "text-gray-700",
+                                                "group flex items-center px-4 py-2 text-sm w-full"
+                                            )}
+                                        >
+                                            <img
+                                                src={renameIcon}
+                                                alt="Rename"
+                                                className="mr-3 h-5 w-5"
+                                            />
+                                            Rename
+                                        </button>
                                     )}
-                                >
-                                    <img
-                                        src={downloadIcon}
-                                        alt="Download"
-                                        className="mr-3 h-5 w-5"
-                                    />
-                                    Download
-                                </button>
+                                </MenuItem>
                             )}
-                        </MenuItem>
-                        {canEdit && (
                             <MenuItem>
                                 {({ active }) => (
                                     <button
-                                        onClick={handleDelete}
+                                        onClick={handleDownload}
                                         className={classNames(
                                             active
                                                 ? "bg-blue-100 text-gray-900"
@@ -180,41 +189,96 @@ const PopupContent = ({
                                         )}
                                     >
                                         <img
-                                            src={deleteIcon}
-                                            alt="Delete"
+                                            src={downloadIcon}
+                                            alt="Download"
                                             className="mr-3 h-5 w-5"
                                         />
-                                        Delete
+                                        Download
                                     </button>
                                 )}
                             </MenuItem>
-                        )}
-                        {isPdf && (
-                            <MenuItem>
-                                {({ active }) => (
-                                    <button
-                                        onClick={handleViewClick}
-                                        className={classNames(
-                                            active
-                                                ? "bg-blue-100 text-gray-900"
-                                                : "text-gray-700",
-                                            "group flex items-center px-4 py-2 text-sm w-full"
-                                        )}
-                                    >
-                                        <img
-                                            src={ViewIcon}
-                                            alt="View"
-                                            className="mr-3 h-5 w-5"
-                                        />
-                                        View
-                                    </button>
-                                )}
-                            </MenuItem>
-                        )}
-                    </div>
-                </MenuItems>
-            </Transition>
-        </Menu>
+                            {canEdit && (
+                                <MenuItem>
+                                    {({ active }) => (
+                                        <button
+                                            onClick={() => {
+                                                setShowModal(true);
+                                            }}
+                                            className={classNames(
+                                                active
+                                                    ? "bg-blue-100 text-gray-900"
+                                                    : "text-gray-700",
+                                                "group flex items-center px-4 py-2 text-sm w-full"
+                                            )}
+                                        >
+                                            <img
+                                                src={deleteIcon}
+                                                alt="Delete"
+                                                className="mr-3 h-5 w-5"
+                                            />
+                                            Delete
+                                        </button>
+                                    )}
+                                </MenuItem>
+                            )}
+                            {isPdf && (
+                                <MenuItem>
+                                    {({ active }) => (
+                                        <button
+                                            onClick={handleViewClick}
+                                            className={classNames(
+                                                active
+                                                    ? "bg-blue-100 text-gray-900"
+                                                    : "text-gray-700",
+                                                "group flex items-center px-4 py-2 text-sm w-full"
+                                            )}
+                                        >
+                                            <img
+                                                src={ViewIcon}
+                                                alt="View"
+                                                className="mr-3 h-5 w-5"
+                                            />
+                                            View
+                                        </button>
+                                    )}
+                                </MenuItem>
+                            )}
+                        </div>
+                    </MenuItems>
+                </Transition>
+            </Menu>
+            {showModal &&
+                createPortal(
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div
+                            className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
+                            ref={modalRef}
+                        >
+                            <h2 className="mb-4 text-xl font-bold text-center">
+                                Delete file?
+                            </h2>
+                            <div className="flex justify-center space-x-4">
+                                <button
+                                    className="px-6 py-2 text-base font-bold text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        onClose();
+                                    }}
+                                >
+                                    No
+                                </button>
+                                <button
+                                    className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                    onClick={handleDelete}
+                                >
+                                    Yes
+                                </button>
+                            </div>
+                        </div>
+                    </div>,
+                    document.body
+                )}
+        </>
     );
 };
 
