@@ -266,7 +266,7 @@ import {
     Media,
     SizeLimit,
 } from "./AdvanceSettings";
-import { AuditCalendar, AuditSearch, AuditTrailTable } from "./AuditTrail";
+import { AuditTrail } from "./AuditTrail";
 import LogoUploader from "./BasicSettings";
 import Departments from "./Departments";
 import Permissions from "./Permissions";
@@ -300,12 +300,7 @@ const SettingsPage = ({ currentPage }) => {
             {/* {currentPage === 'Departments' && <Departments onSave={handleSave} />}
       {currentPage === 'Media' && <div></div>} */}
             {currentPage === "Requests" && <Requests />}
-            {currentPage === "Audit Trail" && (
-                <>
-                    <AuditSearch onSave={handleSave} />
-                    <AuditTrailTable onSave={handleSave} />
-                </>
-            )}
+            {currentPage === "Audit Trail" && <AuditTrail />}
             {currentPage === "Feedback" && <Polls />}
             {/* {currentPage === "Birthday Template" && <div></div>} */}
             {currentPage === "Business Titles" && <AddTitles />}
@@ -317,9 +312,6 @@ const SettingsPage = ({ currentPage }) => {
 };
 
 export {
-    AuditCalendar,
-    AuditSearch,
-    AuditTrailTable,
     CoreFeatures,
     CoverPhotos,
     Departments,
