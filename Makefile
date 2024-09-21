@@ -40,6 +40,9 @@ start_notifications:
 seed_settings:
 	php artisan db:seed --class=SettingsSeeder
 
+seed_birthday_templates:
+	php artisan db:seed --class=BirthdayTemplateSeeder
+
 # Run tests
 test:
 	$(PHPUNIT)

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 
 import { useCsrf } from "@/composables";
 
@@ -18,6 +20,33 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
     const [attachments, setAttachments] = useState([]);
     const [taggedPeople, setTaggedPeople] = useState([name]); // State to store tagged people
     const [showTaggingPopup, setShowTaggingPopup] = useState(false); // State to control tagging popup visibility
+
+    const [backgroundTemplates, setBackgroundTemplates] = useState([]);
+
+    const fetchBirthdayTemplates = async () => {
+        try {
+            const response = await axios.get("/api/birthday-templates");
+
+            const data = response.data.data
+                .map((item) => {
+                    return {
+                        ...item,
+                        background: item.background.includes("/assets")
+                            ? item.background
+                            : `/storage/${item.background}`,
+                    };
+                })
+                .filter((item) => item.is_enabled);
+
+            setBackgroundTemplates(data);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchBirthdayTemplates();
+    }, []);
 
     const handleBackgroundChange = (imageSrc) => {
         setBackgroundImage(imageSrc);
@@ -165,7 +194,18 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
                 </div>
 
                 <div className="relative mt-2 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-6 lg:grid-cols-16 xl:grid-cols-20 h-24 w-full overflow-x-auto border-2 rounded-2xl px-2 py-2">
-                    <img
+                    {backgroundTemplates.map((template, index) => (
+                        <img
+                            key={index}
+                            src={template.background}
+                            className="w-12 h-9 cursor-pointer rounded-lg mb-1.5"
+                            alt={`image ${index}`}
+                            onClick={() =>
+                                handleBackgroundChange(template.background)
+                            }
+                        />
+                    ))}
+                    {/* <img
                         loading="lazy"
                         src="/assets/Birthday-Template-1.png"
                         className="w-12 h-9 cursor-pointer rounded-lg mb-1.5"
@@ -307,7 +347,7 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
                                 "/assets/Birthday-Template-1.png"
                             )
                         }
-                    />
+                    /> */}
                     {/* Additional images */}
                 </div>
 
