@@ -53,7 +53,7 @@ trait QueryableApi
                             $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
                         }
                     }
-                } else if ($filter['user_id']) {
+                } else if (isset($filter['user_id'])) {
                     // Special case for filtering user_id
                     // use either user_id for auth or where user was mentioned
                     $query->where('user_id', $filter['user_id'])->orWhere('mentions', 'LIKE', '%"id": "' . $filter['user_id'] . '"%');
