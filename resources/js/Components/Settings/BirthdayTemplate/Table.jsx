@@ -13,7 +13,7 @@ export const BirthdayTemplateTable = () => {
         axios.get("/api/birthday-templates").then((response) => {
             const data = response.data.data.map((template) => ({
                 ...template,
-                background: template.background.incldues("/assets")
+                background: template.background.includes("assets")
                     ? template.background
                     : `/storage/${template.background}`,
             }));
@@ -46,7 +46,7 @@ export const BirthdayTemplateTable = () => {
                     <div>{template.name}</div>
                     <div>
                         <img
-                            src={`/storage/${template.background}`}
+                            src={template.background}
                             className="w-12 h-9 rounded-lg mb-1.5"
                             alt={`image ${template.id}`}
                         />

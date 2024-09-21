@@ -31,7 +31,7 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
                 .map((item) => {
                     return {
                         ...item,
-                        background: item.background.incldues("/assets")
+                        background: item.background.includes("/assets")
                             ? item.background
                             : `/storage/${item.background}`,
                     };
