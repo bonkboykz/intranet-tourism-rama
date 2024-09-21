@@ -190,7 +190,8 @@ function EditPost({
                         placeholder="Edit caption"
                     />
                     <div>
-                        <div className="flex flex-col gap-2">
+                        <div className="font-semibold text-lg mt-4">Edit album tag</div>
+                        <div className="flex flex-col gap-0">
                             <ChosenEvent
                                 chosenEvent={chosenEvent}
                                 onRemoveEvent={handleRemoveEvent}

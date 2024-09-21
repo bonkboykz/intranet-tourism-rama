@@ -63,15 +63,15 @@ const Dashboard = () => {
                         <aside className="fixed bottom-0 hidden w-1/4 px-4 py-6 overflow-y-auto left-20 top-16 sm:px-6 lg:px-8 xl:block">
                             <style>
                                 {`
-                aside::-webkit-scrollbar {
-                  width: 0px !important;
-                  background: transparent !important;
-                }
-                aside {
-                  scrollbar-width: none !important; /* For Firefox */
-                  -ms-overflow-style: none;  /* IE и Edge */
-                }
-              `}
+                                    aside::-webkit-scrollbar {
+                                    width: 0px !important;
+                                    background: transparent !important;
+                                    }
+                                    aside {
+                                    scrollbar-width: none !important; /* For Firefox */
+                                    -ms-overflow-style: none;  /* IE и Edge */
+                                    }
+                                `}
                             </style>
                             <div className="file-directory-header">
                                 <PageTitle title="My Wall" />
@@ -83,7 +83,7 @@ const Dashboard = () => {
                             </div>
                         </aside>
 
-                        <aside className="fixed bottom-0 right-0 hidden w-5/10 px-4 py-6 overflow-y-auto border-l border-gray-200 top-16 sm:px-6 lg:px-4 xl:block">
+                        <aside className="fixed bottom-0 right-0 hidden w-1/4 px-4 py-6 overflow-y-auto border-l border-gray-200 top-16 sm:px-6 lg:px-4 xl:block">
                             <div>
                                 <MyComponent />
                             </div>

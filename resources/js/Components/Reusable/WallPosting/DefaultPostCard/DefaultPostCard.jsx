@@ -87,14 +87,14 @@ function EventTag({ event }) {
                                 <div className="text-xs text-gray-500">
                                     {format(
                                         new Date(eventDetails.start_at),
-                                        "yyyy.MM.dd"
+                                        "dd.MM.yyyy"
                                     )}
                                     {eventDetails.end_at &&
                                         !isSameDay(
                                             new Date(eventDetails.start_at),
                                             new Date(eventDetails.end_at)
                                         ) &&
-                                        ` – ${format(new Date(eventDetails.end_at), "yyyy.MM.dd")}`}
+                                        ` – ${format(new Date(eventDetails.end_at), "dd.MM.yyyy")}`}
                                 </div>
                                 <div className="text-xs text-gray-500">
                                     {eventDetails.location}
@@ -107,9 +107,11 @@ function EventTag({ event }) {
                     </Popover>
                 }
             >
-                <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full cursor-pointer">
-                    {firstEvent.title}
-                </p>
+                <div className="px-2 py-0 rounded-md bg-red-100">
+                    <p className="mt-0 text-xs font-semibold leading-6 text-red-500 max-md:max-w-full cursor-pointer">
+                        {firstEvent.title}
+                    </p>
+                </div>
             </Whisper>
         </div>
     );
@@ -406,13 +408,12 @@ export function DefaultPostCard({ post }) {
                     )}
                 </article>
 
-                <p className="taging my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                <PostAttachments attachments={post.attachments} />
+                <p className="taging px-2 py-0 bg-blue-100 rounded-md my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
                     {/* {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""} */}
                     {cachedPost.albums?.map((album) => album.name).join(", ")}
                 </p>
-
                 {cachedPost.event && <EventTag event={cachedPost.event} />}
-                <PostAttachments attachments={post.attachments} />
             </>
         );
     };
@@ -450,7 +451,7 @@ export function DefaultPostCard({ post }) {
                 )}
             >
                 {cachedPost.announced && (
-                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl  pl-6">
+                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl pl-6">
                         <div className="flex items-center gap-1 w-full h-full">
                             <Volume2 className="w-6 h-6 text-white" />
                             <div className="text-white text-center font-bold text-lg	ml-2">

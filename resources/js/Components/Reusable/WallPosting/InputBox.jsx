@@ -550,7 +550,7 @@ function ShareYourThoughts({
                                         {showReactionPicker && (
                                             <div
                                                 ref={emojiPickerRef}
-                                                className="emoji-picker-container "
+                                                className="emoji-picker-container-comment"
                                             >
                                                 <Picker
                                                     onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
@@ -597,7 +597,7 @@ function ShareYourThoughts({
                                             {showReactionPicker && (
                                                 <div
                                                     ref={emojiPickerRef}
-                                                    className="emoji-picker-container "
+                                                    className="emoji-picker-container-input-box"
                                                 >
                                                     <Picker
                                                         onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler

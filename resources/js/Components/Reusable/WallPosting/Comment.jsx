@@ -568,21 +568,6 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                             }}
                         >
                             <button
-                                onClick={handleDelete}
-                                style={{
-                                    backgroundColor: "#E53935",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "25px",
-                                    width: "80px",
-                                    padding: "10px 20px",
-                                    cursor: "pointer",
-                                    marginRight: "10px",
-                                }}
-                            >
-                                Yes
-                            </button>
-                            <button
                                 onClick={() => setShowDeletePopup(false)}
                                 style={{
                                     backgroundColor: "white",
@@ -592,9 +577,24 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                     width: "80px",
                                     padding: "10px 20px",
                                     cursor: "pointer",
+                                    marginRight: "10px",
                                 }}
                             >
                                 No
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                style={{
+                                    backgroundColor: "#E53935",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "25px",
+                                    width: "80px",
+                                    padding: "10px 20px",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Yes
                             </button>
                         </div>
                     </div>

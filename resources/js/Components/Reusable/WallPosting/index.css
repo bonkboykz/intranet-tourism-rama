@@ -16,44 +16,8 @@
   border-radius: 1.25rem; /* rounded-2xl */
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
   width: auto;
+  max-width: 700px;
   background-color: #FF5437;
-}
-
-@media (min-width: 1024px) { /* lg */
-  .output-box-depart {
-    width: 610px;
-  }
-}
-
-@media (max-width: 1023px) and (min-width: 768px) { /* md */
-  .output-box-depart {
-    width: 610px;
-  }
-}
-
-@media (max-width: 767px) { /* sm */
-  .output-box-depart {
-    width: 610px;
-  }
-}
-
-
-@media (min-width: 1024px) { /* lg */
-  .default-output-box {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1023px) and (min-width: 768px) { /* md */
-  .default-output-box {
-    width: 610px;
-  }
-}
-
-@media (max-width: 767px) { /* sm */
-  .default-output-box {
-    width: 610px;
-  }
 }
 
 .tagged-text {
@@ -69,32 +33,39 @@ text-decoration: underline;
 
 
 .attachment-grid {
+  margin-top: 16px;
   display: grid;
   gap: 4px;
 }
 
 .attachment-grid.one {
+  margin-top: 16px;
   grid-template-columns: repeat(1, 1fr);
 }
 
 .attachment-grid.two {
+  margin-top: 16px;
   grid-template-columns: repeat(2, 1fr);
 }
 
 .attachment-grid.three {
+  margin-top: 16px;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: repeat(2, 1fr);
 }
 
 .attachment-grid.three .attachment:first-child {
+  margin-top: 16px;
   grid-row: span 2; /* Ensure the first (tallest) image spans two rows */
 }
 
 .attachment-grid.four {
+  margin-top: 16px;
   grid-template-columns: repeat(2, 1fr);
 }
 
 .attachment-grid.more-than-four {
+  margin-top: 16px;
   grid-template-columns: repeat(3, 1fr);
 }
 

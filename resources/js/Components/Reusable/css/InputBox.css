@@ -83,6 +83,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       width:auto;
       height: auto;
+      max-width: 700px;
     }
 
 
@@ -192,11 +193,11 @@
     height: 50%;
   }
 
-  .emoji-picker-container {
+  .emoji-picker-container-input-box {
     position: absolute;
     z-index: 1000; /* Ensure it's above other elements */
     margin-left: 0px; /* Adjust the position based on your UI */
-    bottom: 100%; /* Position it above the input field */
+    top: 100%; /* Position it above the input field */
     left: 35%; /* Align it horizontally with the input */
     transform: translateX(-50%); /* Center it horizontally */
     background-color: white; /* Ensure the background is clear */
@@ -205,6 +206,22 @@
     width: auto; /* Ensure the width is auto-adjusting */
     max-width: 100%; /* Set a maximum width */
     overflow-y: auto; /* Allow scrolling if the content is too tall */
+
+}
+
+.emoji-picker-container-comment {
+  position: absolute;
+  z-index: 1000; /* Ensure it's above other elements */
+  margin-left: 0px; /* Adjust the position based on your UI */
+  bottom: 100%; /* Position it above the input field */
+  left: 35%; /* Align it horizontally with the input */
+  transform: translateX(-50%); /* Center it horizontally */
+  background-color: white; /* Ensure the background is clear */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a shadow for better visibility */
+  border-radius: 10px; /* Smooth edges */
+  width: auto; /* Ensure the width is auto-adjusting */
+  max-width: 100%; /* Set a maximum width */
+  overflow-y: auto; /* Allow scrolling if the content is too tall */
 
 }
 
@@ -247,6 +264,7 @@
   flex-wrap: wrap;
   gap: 10px; /* Adjust gap as needed */
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .tag,
@@ -260,10 +278,10 @@
 .taging {
   display: inline-flex; /* Use inline-flex to shrink-wrap the content */
   align-items: center;
-  padding-left: 1%;
+  /* padding-left: 1%;
   padding-right: 1%;
   background-color:#EBF5FF;
-  border-radius: 5px;
+  border-radius: 5px; */
   max-width: 100%; /* Ensure it doesn't exceed the parent's width */
   white-space: nowrap; /* Prevent text from wrapping to the next line */
 }

@@ -32,7 +32,7 @@ const FeaturedEvents = () => {
     }, []);
 
     return (
-        <div className="featured-events-container border-2 shadow-custom">
+        <div className="featured-events-container border-2 shadow-custom w-full max-w-[320px]">
             <h2
                 style={{
                     fontWeight: "bold",
@@ -42,10 +42,6 @@ const FeaturedEvents = () => {
             >
                 Upcoming Events
             </h2>
-            <hr
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-                className="underline"
-            />
             <ul className="featured-events-list text-ellipsis mt-2 mb-2 overflow-hidden whitespace-nowrap">
                 {featuredEvents.length === 0 ? (
                     <p>No upcoming events</p>

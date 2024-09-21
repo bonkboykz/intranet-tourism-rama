@@ -322,7 +322,7 @@ export function PollPostCard({ post }) {
 
                     <button
                         disabled={loading}
-                        className="rounded-3xl min-w-20 bg-[#FF5437] text-white border-none disabled:opacity-40"
+                        className="rounded-3xl min-w-20 font-bold bg-red-100 hover:bg-red-700 text-white border-none disabled:opacity-40"
                         onClick={onSubmit}
                     >
                         Send
@@ -369,8 +369,8 @@ export function PollPostCard({ post }) {
             <article
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
-                    "w-full lg:w-full md:w-[610px] sm:w-[610px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative"
+                    "w-full max-w-[700px]",
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative"
                 )}
             >
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">

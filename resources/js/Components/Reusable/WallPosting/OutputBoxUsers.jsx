@@ -62,7 +62,7 @@ function FeedbackForm() {
                 style={{ maxHeight: "30px", overflowY: "auto" }}
             />
             <button
-                className="flex flex-col justify-center my-auto text-xs font-semibold leading-5 text-center text-white whitespace-nowrap px-6 py-2 bg-red-500 rounded-2xl max-md:px-5"
+                className="flex flex-col justify-center my-auto text-xs font-bold leading-5 text-center text-white whitespace-nowrap px-6 py-2 bg-red-500 rounded-2xl max-md:px-5"
                 onClick={handleFeedbackClick}
             >
                 Send
