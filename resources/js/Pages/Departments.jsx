@@ -57,7 +57,19 @@ const Departments = () => {
 
             setDepartmentsList((prevDepartments) => {
                 const allDepartments = [...prevDepartments, ...departmentData];
-                return allDepartments.sort((a, b) => a.order - b.order);
+                return allDepartments
+                    .sort((a, b) => a.order - b.order)
+                    .sort((a, b) => {
+                        if (a.isMember && !b.isMember) {
+                            return -1;
+                        }
+
+                        if (!a.isMember && b.isMember) {
+                            return 1;
+                        }
+
+                        return a.name?.localeCompare(b.name);
+                    });
             });
 
             if (data.data.next_page_url) {
