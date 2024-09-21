@@ -11,16 +11,17 @@ export const Admins = ({ admins, departmentID, onRefetch }) => {
 
     const handleAdminRemove = async (member) => {
         // TODO: Removing an admin is practically the same as demoting them in communities
-        await handleDemotion(member);
+        await handleDemotion(member, true);
     };
 
-    const handleDemotion = async (admin) => {
+    const handleDemotion = async (admin, withRemove = false) => {
         try {
             const rolesResponse = await axios.post(
                 `/api/department/departments/${departmentID}/revoke-department-admin`,
                 {
                     user_id: admin.id,
                     department_id: departmentID,
+                    ...(withRemove == true && { remove: true }),
                 }
             );
 
