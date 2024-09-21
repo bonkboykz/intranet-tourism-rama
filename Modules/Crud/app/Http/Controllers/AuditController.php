@@ -9,8 +9,27 @@ class AuditController extends Controller
 {
     public function index()
     {
+        $query = Audit::queryable();
+
+        $query->with(['user']);
+
+        if (request()->has('search')) {
+            $query->where('event', 'like', '%' . request('search') . '%')
+                ->orWhere('auditable_type', 'like', '%' . request('search') . '%');
+        }
+
+        if (request()->has('start_date')) {
+            $query->where('created_at', '>=', request('start_date'));
+        }
+
+        if (request()->has('end_date')) {
+            $query->where('created_at', '<=', request('end_date'));
+        }
+
+        $data = $query->paginate();
+
         return response()->json([
-            'data' => Audit::queryable()->paginate(),
+            'data' => $data,
         ]);
     }
 
