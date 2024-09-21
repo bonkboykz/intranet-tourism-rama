@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BirthdayTemplateController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Community;
 use App\Http\Controllers\communityPost;
@@ -21,6 +22,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\OrderingController;
 use App\Http\Controllers\ManageLinksController;
+use Modules\Crud\Http\Controllers\AuditController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -85,6 +87,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/getGroupJoinRequests', [RequestController::class, 'getGroupJoinRequests'])->name('getGroupJoinRequests');
     Route::post('/api/approveGroupJoinRequest', [RequestController::class, 'approveGroupJoinRequest'])->name('approveGroupJoinRequest');
     Route::post('/api/rejectGroupJoinRequest', [RequestController::class, 'rejectGroupJoinRequest'])->name('rejectGroupJoinRequest');
+
+    Route::get('/api/audits', [AuditController::class, 'index'])->name('audits');
+    Route::post('/api/birthday-templates', [BirthdayTemplateController::class, 'store']);
+    Route::get('/api/birthday-templates', [BirthdayTemplateController::class, 'index']);
+    Route::put('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'update']);
+    Route::put('/api/birthday-templates/{birthdayTemplate}/toggle-enabled', [BirthdayTemplateController::class, 'toggleEnabled']);
 });
 
 require __DIR__ . '/auth.php';

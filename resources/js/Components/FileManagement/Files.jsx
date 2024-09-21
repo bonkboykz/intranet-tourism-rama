@@ -12,6 +12,7 @@ import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import PopupContent from "../Reusable/PopupContent";
+import { FileRow } from "./FileRow";
 
 const excludedExtensions = [
     "jpg",
@@ -24,6 +25,22 @@ const excludedExtensions = [
     "mp4",
     "mov",
 ];
+
+const SavingPopup = ({ isSaving }) => {
+    return isSaving ? (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-8 rounded-lg shadow-lg">
+                <div className="flex items-center">
+                    <div
+                        className="loader spinner-border mr-4"
+                        role="status"
+                    ></div>
+                    <span>Saving...</span>
+                </div>
+            </div>
+        </div>
+    ) : null;
+};
 
 const itemsPerPage = 8;
 
@@ -174,19 +191,6 @@ const FileTable = ({
         fetchFiles();
     }, []);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (inputRef.current && !inputRef.current.contains(event.target)) {
-                setEditingIndex(null);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
     const { hasRole } = usePermissions();
     const { isAdmin: isCommunityAdmin } = useContext(CommunityContext);
     const { isAdmin: isDepartmentAdmin } = useContext(DepartmentContext);
@@ -273,22 +277,6 @@ const FileTable = ({
         }
     };
 
-    const SavingPopup = ({ isSaving }) => {
-        return isSaving ? (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-8 rounded-lg shadow-lg">
-                    <div className="flex items-center">
-                        <div
-                            className="loader spinner-border mr-4"
-                            role="status"
-                        ></div>
-                        <span>Saving...</span>
-                    </div>
-                </div>
-            </div>
-        ) : null;
-    };
-
     const handleKeyDown = (e, index) => {
         if (e.key === "Enter") {
             handleRename(index, editingName);
@@ -302,10 +290,10 @@ const FileTable = ({
             headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
         };
 
-        const startEditing = (index, currentName) => {
-            setEditingIndex(index);
-            setEditingName(currentName);
-        };
+        // const startEditing = (index, currentName) => {
+        //     setEditingIndex(index);
+        //     setEditingName(currentName);
+        // };
 
         try {
             const response = await fetch(url, options);
@@ -351,101 +339,34 @@ const FileTable = ({
                         </thead>
                         <tbody className="text-center divide-y-reverse rounded-full divide-neutral-300 mt-1">
                             {files.map((item, index) => {
-                                const metadata = item.metadata || {};
-                                const isEditing = editingIndex === index;
-
                                 const canEdit =
                                     hasRole("superadmin") ||
                                     isCommunityAdmin ||
                                     isDepartmentAdmin ||
                                     item.author.id === user.id;
 
+                                const isEditing = editingIndex === index;
+
                                 return (
-                                    <tr key={item.id}>
-                                        <td className="border-b border-r border-neutral-300 whitespace-nowrap px-3 py-2 text-sm text-neutral-800 sm:pl-1 text-left overflow-hidden text-ellipsis">
-                                            {isEditing ? (
-                                                <div
-                                                    ref={inputRef}
-                                                    className="flex items-center"
-                                                >
-                                                    <input
-                                                        type="text"
-                                                        value={editingName}
-                                                        onChange={(e) =>
-                                                            setEditingName(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        onBlur={() =>
-                                                            handleRename(
-                                                                index,
-                                                                editingName
-                                                            )
-                                                        }
-                                                        onKeyDown={(e) =>
-                                                            handleKeyDown(
-                                                                e,
-                                                                index
-                                                            )
-                                                        }
-                                                        className="text-sm text-neutral-800 text-opacity-80 mt-1 block w-full rounded-full p-2 border-2 border-stone-300 max-md:ml-4 overflow-hidden text-ellipsis"
-                                                    />
-
-                                                    <button
-                                                        onClick={() =>
-                                                            handleRename(
-                                                                index,
-                                                                editingName
-                                                            )
-                                                        }
-                                                        className="ml-2 text-blue-500"
-                                                    >
-                                                        Save
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <div
-                                                    className="text-sm font-bold mt-1 block w-full rounded-md py-2 border-2 border-transparent text-neutral-800 text-opacity-80 overflow-hidden text-ellipsis"
-                                                    onDoubleClick={() => {
-                                                        if (!canEdit) {
-                                                            return;
-                                                        }
-
-                                                        startEditing(
-                                                            index,
-                                                            metadata.original_name
-                                                        );
-                                                    }}
-                                                >
-                                                    {metadata.original_name ||
-                                                        "Unknown"}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="px-3 py-4 overflow-hidden text-sm border-b border-r border-neutral-300 whitespace-nowrap text-neutral-800 text-center text-ellipsis">
-                                            {item.uploader || "Unknown"}
-                                        </td>
-                                        <td className="px-3 py-4 overflow-hidden text-sm border-b border-r border-neutral-300 whitespace-nowrap text-neutral-800 text-ellipsis">
-                                            {new Date(
-                                                item.created_at
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td className="relative mt-6 flex z-1000">
-                                            <PopupContent
-                                                file={item}
-                                                canEdit={canEdit}
-                                                onRename={() =>
-                                                    startEditing(
-                                                        indexOfFirstItem +
-                                                            index,
-                                                        metadata.original_name
-                                                    )
-                                                }
-                                                onDelete={handleDelete}
-                                                onFileSelect={setSelectedFile}
-                                            />
-                                        </td>
-                                    </tr>
+                                    <FileRow
+                                        key={item.id}
+                                        item={item}
+                                        canEdit={canEdit}
+                                        isEditing={isEditing}
+                                        onStartEditing={startEditing}
+                                        onSaveEditing={saveEditing}
+                                        setEditingName={setEditingName}
+                                        onKeyDown={handleKeyDown}
+                                        index={index}
+                                        editingName={editingName}
+                                        indexOfFirstItem={indexOfFirstItem}
+                                        setEditingIndex={setEditingIndex}
+                                        onRename={handleRename}
+                                        onDelete={() =>
+                                            handleDelete(item.id, index)
+                                        }
+                                        onFileSelect={setSelectedFile}
+                                    />
                                 );
                             })}
                         </tbody>
