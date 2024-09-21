@@ -224,6 +224,14 @@ class DepartmentController extends Controller
         // Revoke the user's department-specific permissions
         DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($user, $department);
 
+        if (request()->has('remove')) {
+            $employmentPost = EmploymentPost::where('user_id', $user->id)->where('department_id', $department->id)->first();
+
+            if ($employmentPost) {
+                $employmentPost->delete();
+            }
+        }
+
         return response()->json([
             'message' => 'User has been successfully revoked as a department admin.',
         ]);
