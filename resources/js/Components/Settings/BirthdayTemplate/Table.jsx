@@ -11,7 +11,14 @@ export const BirthdayTemplateTable = () => {
 
     const fetchBirthdayTemplates = () => {
         axios.get("/api/birthday-templates").then((response) => {
-            setBirthdayTemplates(response.data.data);
+            const data = response.data.data.map((template) => ({
+                ...template,
+                background: template.background.incldues("/assets")
+                    ? template.background
+                    : `/storage/${template.background}`,
+            }));
+
+            setBirthdayTemplates(data);
         });
     };
 
