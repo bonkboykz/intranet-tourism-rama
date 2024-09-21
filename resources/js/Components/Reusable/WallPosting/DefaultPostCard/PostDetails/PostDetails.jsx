@@ -4,7 +4,7 @@ import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
-export function PostDetails({ onEdit, onDelete, onAnnouncement }) {
+export function PostDetails({ onEdit, onDelete, onAnnouncement, isAnnounced }) {
     const { hasRole } = usePermissions();
 
     const isSuperAdmin = hasRole("superadmin");
@@ -50,7 +50,7 @@ export function PostDetails({ onEdit, onDelete, onAnnouncement }) {
                         src="/assets/AnnounceIcon.svg"
                         alt="Announcement"
                     />
-                    Announcement
+                    {isAnnounced ? "Unannounce" : "Announce"}
                 </p>
             )}
         </div>

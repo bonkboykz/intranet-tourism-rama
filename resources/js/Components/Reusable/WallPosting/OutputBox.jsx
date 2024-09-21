@@ -1,8 +1,15 @@
 import React from "react";
+import { useContext } from "react";
 
+import useUserData from "@/Utils/hooks/useUserData";
+import { isBirthdayDay } from "@/Utils/isBirthday";
+
+import { DefaultPostCard } from "./DefaultPostCard/DefaultPostCard";
 import { PersonalWall } from "./PersonalWall";
+import { SystemBirthdayCard } from "./SystemBirthdayCard/SystemBirthdayCard";
 import { useInfiniteScroll } from "./useInfiniteScroll";
 import { UserWall } from "./UserWall";
+import { WallContext } from "./WallContext";
 
 import "./index.css";
 
@@ -15,7 +22,10 @@ function OutputData({
     userId,
     postType,
 }) {
+    const { variant } = useContext(WallContext);
+
     const { posts, fetchData, hasMore } = useInfiniteScroll({
+        variant,
         userId: userId,
         communityId,
         departmentId,
@@ -27,25 +37,59 @@ function OutputData({
         },
     });
 
+    const user = useUserData();
+
+    const userHasBirthday = user.dob && isBirthdayDay(user.dob, new Date());
+
+    const renderWall = () => {
+        switch (variant) {
+            case "profile":
+                return (
+                    <>
+                        <SystemBirthdayCard />
+
+                        <UserWall
+                            posts={posts}
+                            onLoad={fetchData}
+                            hasMore={hasMore}
+                            userId={userId}
+                        />
+                    </>
+                );
+            case "user-wall":
+                return (
+                    <UserWall
+                        posts={posts}
+                        onLoad={fetchData}
+                        hasMore={hasMore}
+                        userId={userId}
+                    />
+                );
+            case "community":
+            case "department":
+                return (
+                    <PersonalWall
+                        posts={posts}
+                        onLoad={fetchData}
+                        hasMore={hasMore}
+                    />
+                );
+            case "dashboard":
+            default:
+                return (
+                    <PersonalWall
+                        posts={posts}
+                        onLoad={fetchData}
+                        hasMore={hasMore}
+                    />
+                );
+        }
+    };
+
     return (
         <>
-            {/* <Polls polls={polls} /> */}
-
             {/* TODO: PersonalWall is used on communities page, which could trigger multiple loads */}
-            {userId ? (
-                <UserWall
-                    posts={posts}
-                    onLoad={fetchData}
-                    hasMore={hasMore}
-                    userId={userId}
-                />
-            ) : (
-                <PersonalWall
-                    posts={posts}
-                    onLoad={fetchData}
-                    hasMore={hasMore}
-                />
-            )}
+            {renderWall()}
         </>
     );
 }

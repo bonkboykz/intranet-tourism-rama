@@ -53,6 +53,10 @@ trait QueryableApi
                             $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
                         }
                     }
+                } else if (isset($filter['user_id'])) {
+                    // Special case for filtering user_id
+                    // use either user_id for auth or where user was mentioned
+                    $query->where('user_id', $filter['user_id'])->orWhere('mentions', 'LIKE', '%"id": "' . $filter['user_id'] . '"%');
                 } else if ($filter['field'] == 'metadata') {
                     if (isset($filter['subfield']) && in_array($filter['subfield'], ['original_name', 'mime_type', 'extension'])) {
                         if (!empty($filter['type']) && $filter['type'] == 'like') {

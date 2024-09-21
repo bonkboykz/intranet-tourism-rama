@@ -89,11 +89,15 @@ const WhosOnline = () => {
                 ) : (
                     onlineUsers.map((user, index) => (
                         <div
+                            className="cursor-pointer"
                             key={index}
                             onMouseEnter={(event) =>
                                 handleMouseEnter(event, user)
                             }
                             onMouseLeave={handleMouseLeave}
+                            onClick={() => {
+                                window.location.href = `/user/${user.id}`;
+                            }}
                         >
                             <UserAvatar {...user} ID_USER={user.id} />
                         </div>

@@ -20,6 +20,8 @@ import {
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+import useUserData from "@/Utils/hooks/useUserData";
 
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
 import PageTitle from "../Components/Reusable/PageTitle";
@@ -88,6 +90,10 @@ function UserDetailContent() {
     });
     const [userData, setUserData] = useState({});
 
+    const { hasRole } = usePermissions();
+    const loggedInUser = useUserData();
+    const canEdit = loggedInUser.id === user.id || hasRole("superadmin");
+
     useEffect(() => {
         fetch(
             `/api/users/users/${user.id}?with[]=profile&with[]=employmentPosts.department&with[]=employmentPosts.businessPost&with[]=employmentPosts.businessUnit`,
@@ -100,6 +106,7 @@ function UserDetailContent() {
                 setProfileData((pv) => ({
                     ...pv,
                     ...data,
+                    icon1: canEdit ? pv.icon1 : "",
                     backgroundImage:
                         data.profile && data.profile.cover_photo
                             ? `/storage/${data.profile.cover_photo}`
@@ -410,7 +417,7 @@ function UserDetailContent() {
 
     return (
         <WallContext.Provider
-            value={{ loggedInUserId: user.id, variant: "user-details" }}
+            value={{ loggedInUserId: user.id, variant: "user-wall" }}
         >
             <Example>
                 <main className="xl:pl-96 w-full">
@@ -666,12 +673,12 @@ function UserDetailContent() {
             `}
                     </style>
                     <div className="file-directory-header">
-                        <PageTitle title="My Profile" />
+                        <PageTitle title="User Profile" />
                     </div>
                     <hr className="file-directory-underline" />
                     <div>
                         <FeaturedEvents />
-                        {/* <WhosOnline /> */}
+                        <WhosOnline />
                     </div>
                 </aside>
                 {isSaveNotificationOpen && (

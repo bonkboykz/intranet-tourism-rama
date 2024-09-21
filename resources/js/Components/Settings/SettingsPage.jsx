@@ -255,6 +255,8 @@
 //     );
 //   };
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import AddTitles from "./AddTitles";
 import AddUnits from "./AddUnits";
 import {
@@ -290,9 +292,9 @@ const SettingsPage = ({ currentPage }) => {
                 <>
                     <CoreFeatures onSave={handleSave} />
                     <SizeLimit onSave={handleSave} />
-                    <Media onSave={handleSave} />
+                    {/* <Media onSave={handleSave} /> */}
                     <CoverPhotos onSave={handleSave} />
-                    <MailSettings onSave={handleSave} />
+                    {/* <MailSettings onSave={handleSave} /> */}
                 </>
             )}
             {/* {currentPage === 'Departments' && <Departments onSave={handleSave} />}

@@ -43,7 +43,7 @@ const Community = () => {
             const allCommunities = [];
 
             while (currentPage <= totalPages) {
-                const url = `/api/communities/communities?page=${currentPage}`;
+                const url = `/api/communities/communities?page=${currentPage}&perpage=100`;
                 const response = await fetch(url, {
                     method: "GET",
                     headers: { Accept: "application/json" },
@@ -72,7 +72,17 @@ const Community = () => {
             }
 
             setDepartmentsList(
-                allCommunities.sort((a, b) => a.name?.localeCompare(b.name))
+                allCommunities.sort((a, b) => {
+                    if (a.isMember && !b.isMember) {
+                        return -1;
+                    }
+
+                    if (!a.isMember && b.isMember) {
+                        return 1;
+                    }
+
+                    return a.name?.localeCompare(b.name);
+                })
             );
         } catch (error) {
             console.error("Error fetching departments:", error);

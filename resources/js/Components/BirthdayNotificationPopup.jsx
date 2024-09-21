@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 import { getAvatarSource } from "@/Utils/getProfileImage";
+import { isBirthdayDay } from "@/Utils/isBirthday";
 
 import BirthdayCom from "./Reusable/Birthdayfunction/birthdaypopup";
 import Popup from "./Reusable/Popup";
@@ -14,60 +16,26 @@ function BirthdayNotificationPopup({ onClose, userData }) {
 
     const fetchBirthdayEvents = async () => {
         try {
-            let allProfiles = [];
-            let currentPage = 1;
-            let totalPages = 1;
+            const response = await axios.get("/api/profile/get_all_birthdays");
 
-            while (currentPage <= totalPages) {
-                // const response = await fetch(`/api/profile/profiles?page=${currentPage}`);
-                const response = await fetch(
-                    `/api/profile/profiles?filter[]=dob&paginate=false`
-                );
+            const allProfiles = response.data.data;
 
-                const data = await response.json();
+            const birthdayEvents = allProfiles
+                .filter((profile) => {
+                    const dob = new Date(profile.dob);
+                    if (isNaN(dob.getTime())) return false; // Skip invalid dob
 
-                if (data && data.data && Array.isArray(data.data.data)) {
-                    allProfiles = [...allProfiles, ...data.data.data];
-                    totalPages = data.data.last_page;
-                    currentPage++;
-                } else {
-                    console.error("Error: Expected an array, but got:", data);
-                    break;
-                }
-            }
-
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentDay = today.getDate();
-
-            let birthdayEvents = allProfiles.reduce((acc, profile) => {
-                if (!profile.dob) return acc;
-
-                const dob = new Date(profile.dob);
-                if (isNaN(dob.getTime())) return acc;
-
-                const dobMonth = dob.getMonth();
-                const dobDay = dob.getDate();
-
-                // Only include birthdays that are today
-                if (dobMonth === currentMonth && dobDay === currentDay) {
-                    acc.push({
-                        name: profile.bio,
-                        profileId: profile.user_id,
-                        profileImage: getAvatarSource(
-                            profile.image,
-                            profile.bio
-                        ),
-                    });
-                }
-
-                return acc;
-            }, []);
+                    return isBirthdayDay(dob, new Date());
+                })
+                .map((profile) => ({
+                    date: new Date(profile.dob),
+                    name: profile.bio,
+                    profileId: profile.user_id,
+                    profileImage: getAvatarSource(profile.image, profile.bio),
+                }));
 
             // Sort the birthday events by name alphabetically
             birthdayEvents.sort((a, b) => a.name.localeCompare(b.name));
-
-            console.log("birthdayEvents", birthdayEvents);
 
             setBirthdays(birthdayEvents);
         } catch (error) {
@@ -80,8 +48,6 @@ function BirthdayNotificationPopup({ onClose, userData }) {
     }, []);
 
     const handleBirthdayClick = (birthday) => {
-        // console.log("BDAY", birthday);
-
         setSelectedBirthday(birthday);
         setIsBirthdayComOpen(true); // Open the BirthdayCom popup
     };
@@ -91,25 +57,20 @@ function BirthdayNotificationPopup({ onClose, userData }) {
     };
 
     const renderBirthdays = () => {
-        return birthdays.map(
-            (birthday, index) => (
-                console.log("BIRTHDAYS", birthday),
-                (
-                    <div
-                        key={index}
-                        className="cursor-pointer text-sm text-gray-600 mt-1 p-2 hover:bg-blue-100 rounded flex items-center"
-                        onClick={() => handleBirthdayClick(birthday)}
-                    >
-                        <img
-                            src={birthday.profileImage}
-                            alt={`${birthday.name}'s avatar`}
-                            className="w-8 h-8 rounded-full mr-2"
-                        />
-                        <p className="font-semibold">{birthday.name}</p>
-                    </div>
-                )
-            )
-        );
+        return birthdays.map((birthday, index) => (
+            <div
+                key={index}
+                className="cursor-pointer text-sm text-gray-600 mt-1 p-2 hover:bg-blue-100 rounded flex items-center"
+                onClick={() => handleBirthdayClick(birthday)}
+            >
+                <img
+                    src={birthday.profileImage}
+                    alt={`${birthday.name}'s avatar`}
+                    className="w-8 h-8 rounded-full mr-2"
+                />
+                <p className="font-semibold">{birthday.name}</p>
+            </div>
+        ));
     };
 
     return (

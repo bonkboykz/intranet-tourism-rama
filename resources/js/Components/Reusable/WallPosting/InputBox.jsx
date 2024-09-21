@@ -6,6 +6,7 @@ import Picker from "emoji-picker-react";
 import { CircleXIcon, Loader2 } from "lucide-react";
 
 import { useCsrf } from "@/composables";
+import { useSettings } from "@/Layouts/useSettings";
 import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
@@ -308,7 +309,17 @@ function ShareYourThoughts({
         );
     };
 
+    const { settings } = useSettings();
+
     const createFileInputHandler = (accept) => () => {
+        let baseMaxSize = settings.max_file_size;
+
+        if (accept === "video/*") {
+            baseMaxSize = settings.max_video_size;
+        } else if (accept === "image/*") {
+            baseMaxSize = settings.max_image_size;
+        }
+
         const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = accept;
@@ -320,7 +331,8 @@ function ShareYourThoughts({
 
             for (const file of e.target.files) {
                 // 20MB
-                const maxSize = 20971520;
+                // const maxSize = 20971520;
+                const maxSize = baseMaxSize * 1024 * 1024;
 
                 if (file.size > maxSize) {
                     areAllUnderLimit = false;
@@ -329,7 +341,7 @@ function ShareYourThoughts({
             }
 
             if (!areAllUnderLimit) {
-                toast.error("File size should be less than 20MB", {
+                toast.error(`File size should be less than ${baseMaxSize}MB`, {
                     icon: <CircleXIcon className="w-6 h-6 text-white" />,
                     theme: "colored",
                 });

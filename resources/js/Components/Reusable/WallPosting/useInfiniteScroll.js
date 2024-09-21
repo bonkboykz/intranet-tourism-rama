@@ -2,9 +2,12 @@ import { useRef } from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 const postsPerScroll = 5;
 
 export function useInfiniteScroll({
+    variant,
     userId,
     communityId,
     departmentId,
@@ -18,6 +21,11 @@ export function useInfiniteScroll({
     const [hasMore, setHasMore] = useState(true);
 
     const activeLoading = useRef(false);
+
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
+
+    const constructFilter = () => {};
 
     async function fetchData() {
         if (
@@ -87,13 +95,11 @@ export function useInfiniteScroll({
                 }
             }
 
-            console.log("NEW FILTER", newFilter);
+            // console.log("NEW FILTER", newFilter);
 
             if (userId) {
                 newFilter.push({
-                    field: "user_id",
-                    type: "like",
-                    value: userId,
+                    user_id: userId,
                 });
             }
 
@@ -113,6 +119,16 @@ export function useInfiniteScroll({
                 });
             }
 
+            const isDashboardWall = variant === "dashboard";
+
+            if (["profile", "user-wall"].includes(variant) && !isSuperAdmin) {
+                newFilter.push({
+                    field: "announced",
+                    type: "like",
+                    value: "false",
+                });
+            }
+
             const postsResponse = await axios.get(`/api/posts/posts`, {
                 params: {
                     with: [
@@ -125,8 +141,6 @@ export function useInfiniteScroll({
                         "poll.question.options",
                         "poll.responses",
                     ],
-                    // TODO: return post type announcement first, then sort by updated_at
-                    // sort: [{ updated_at: "desc" }],
                     page: currentPage.current,
                     paginate: true,
                     perpage: postsPerScroll,
@@ -137,7 +151,12 @@ export function useInfiniteScroll({
                         {
                             field: "type",
                             type: "like",
-                            value: ["post", "birthday", "poll"],
+                            value: [
+                                "post",
+                                "poll",
+                                ["profile", "user-wall"].includes(variant) &&
+                                    "birthday",
+                            ],
                         },
                         ...newFilter,
                     ].filter(Boolean),
