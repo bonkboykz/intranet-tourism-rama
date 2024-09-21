@@ -25,31 +25,35 @@ const Settings = () => {
                     </h1>
                 </div>
 
-                <div className="flex flex-row w-full">
+                <div className="flex flex-row max-md:flex-col w-full">
                     {/* Left section for System */}
-                    <div className="flex flex-col w-1/2 p-4 sm:p-6 lg:p-8">
+                    <div className="flex flex-col w-1/2 max-md:w-full p-4 sm:p-6 lg:p-8">
                         <div className="flex items-center justify-between mb-4">
-                            <PageTitle title="System" />
-                            <button
-                                className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                                onClick={handleLinkNavigation}
-                            >
-                                Manage System
-                            </button>
+                        <h1 className="text-2xl font-bold whitespace-nowrap">System</h1>
+                            <div className="w-full flex justify-end">
+                                <button
+                                    className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 whitespace-nowrap"
+                                    onClick={handleLinkNavigation}
+                                >
+                                    Manage System
+                                </button>
+                            </div>
                         </div>
                         <Pautan />
                     </div>
 
                     {/* Right section for Official Folder */}
-                    <div className="flex flex-col w-1/2 p-4 sm:p-6 lg:p-8 border-l border-gray-300">
+                    <div className="flex flex-col w-1/2 max-md:w-full p-4 sm:p-6 lg:p-8 border-l border-gray-300">
                         <div className="flex items-center justify-between mb-4">
-                            <PageTitle title="Official Folder" />
-                            <button
-                                className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                                onClick={handleFolderNavigation}
-                            >
-                                Manage File
-                            </button>
+                            <h1 className="text-2xl font-bold whitespace-nowrap">Official Folder</h1>
+                            <div className="w-full flex justify-end">
+                                <button
+                                    className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 whitespace-nowrap"
+                                    onClick={handleFolderNavigation}
+                                >
+                                    Manage File
+                                </button>
+                            </div>
                         </div>
                         {/* Placeholder for folder-related content */}
                         <div className="bg-white p-6 shadow-sm rounded-lg">

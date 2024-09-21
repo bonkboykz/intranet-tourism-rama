@@ -880,7 +880,7 @@ function Calendar() {
 
                 {isModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="modal-container">
+                        <div className="modal-container w-[400px] max-md:w-[290px]">
                             <h1 className="flex items-start justify-center mb-4 text-2xl font-bold text-neutral-800">
                                 Create New Event
                             </h1>

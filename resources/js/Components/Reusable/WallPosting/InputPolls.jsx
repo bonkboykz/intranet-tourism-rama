@@ -149,7 +149,7 @@ export function InputPolls({
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
             <div
-                className="bg-white p-5 rounded-3xl shadow-lg max-w-3xl w-full md:w-2/3"
+                className="bg-white p-5 rounded-3xl shadow-lg max-w-3xl w-full md:w-2/3 max-md:mx-4"
                 onClick={(e) => e.stopPropagation()}
             >
                 <header className="flex justify-between items-center mb-6 text-2xl font-bold text-neutral-800">

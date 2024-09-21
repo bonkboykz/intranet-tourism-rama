@@ -440,9 +440,9 @@ export function DefaultPostCard({ post }) {
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
                     variant === "department"
-                        ? "w-full lg:w-[610px] md:w-[610px] sm:w-[610px]"
-                        : "w-full lg:w-full md:w-[610px] sm:w-[610px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative",
+                        ? "w-full "
+                        : "w-full",
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full z-5 relative",
                     cachedPost.announced &&
                         (cachedPost.community_id || cachedPost.department_id
                             ? "relative pt-20"

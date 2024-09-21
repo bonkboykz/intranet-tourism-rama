@@ -21,7 +21,7 @@ const FeaturedEvents = () => {
                     .sort(
                         (a, b) => new Date(a.start_at) - new Date(b.start_at)
                     ); // Sort events by start date
-                const upcomingEvents = sortedEvents.slice(0, 5);
+                const upcomingEvents = sortedEvents.slice(0, 3);
                 setFeaturedEvents(upcomingEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);

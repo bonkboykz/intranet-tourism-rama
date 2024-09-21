@@ -450,7 +450,7 @@ function ShareYourThoughts({
                         />
                     )}
                     {fileNames.length > 0 && (
-                        <div className="file-names-container py-2 w-auto flex flex-col gap-2 mr-[40px]">
+                        <div className="file-names-container py-2 w-auto flex flex-col gap-2">
                             {fileNames.map((name, index) => (
                                 <div
                                     className="file-name inline-flex rounded-lg border-2 bg-gray-100 py-1 px-4 justify-between items-center overflow-hidden whitespace-nowrap text-ellipsis"
@@ -474,7 +474,7 @@ function ShareYourThoughts({
                     )}
                     <div className=" ">
                         <div className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-4 items-center">
-                            <button
+                            {/* <button
                                 className="tooltip"
                                 onClick={toggleReactionPicker}
                             >
@@ -497,12 +497,12 @@ function ShareYourThoughts({
                                         onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
                                     />
                                 </div>
-                            )}
+                            )} */}
 
                             {isComment && (
                                 <>
                                     <div className="flex flex-row w-full justify-between items-center mt-1">
-                                        <div>
+                                        <div className="w-full flex justify-between">
                                             {/* <button
                                             type="button"
                                             onClick={handleClickPeople}
@@ -521,10 +521,34 @@ function ShareYourThoughts({
                                                 </span>
                                             )}
                                         </button> */}
+                                        <button
+                                            className="tooltip"
+                                            onClick={toggleReactionPicker}
+                                        >
+                                            <img
+                                                loading="lazy"
+                                                src={Emoji}
+                                                alt="Emoji Icon"
+                                                className="w-[16px] h-[16px]"
+                                            />
+                                            <span className="tooltiptext">
+                                                React 😀🤣😤
+                                            </span>
+                                        </button>
+                                        {showReactionPicker && (
+                                            <div
+                                                ref={emojiPickerRef}
+                                                className="emoji-picker-container "
+                                            >
+                                                <Picker
+                                                    onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
+                                                />
+                                            </div>
+                                        )}
                                         </div>
                                         <button
                                             onClick={handleClickSend}
-                                            className="flex send-button align-item justify-end"
+                                            // className="flex send-button align-item justify-end"
                                         >
                                             {isSending ? (
                                                 <Loader2 className="w-6 h-6 animate-spin" />
@@ -533,7 +557,7 @@ function ShareYourThoughts({
                                                     loading="lazy"
                                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
                                                     alt="SEND"
-                                                    className="h-6 w-6 max-md:mt-8"
+                                                    className="h-6 w-6"
                                                 />
                                             )}
                                         </button>
@@ -544,6 +568,30 @@ function ShareYourThoughts({
                                 <>
                                     <div className="flex w-full max-md:flex-col lg:flex-row max-md:gap-4 lg: justify-between">
                                         <div className="flex w-full flex-row justify-between lg:w-2/3 max-md:py mr-4">
+                                            <button
+                                                className="tooltip"
+                                                onClick={toggleReactionPicker}
+                                            >
+                                                <img
+                                                    loading="lazy"
+                                                    src={Emoji}
+                                                    alt="Emoji Icon"
+                                                    className="w-[16px] h-[16px]"
+                                                />
+                                                <span className="tooltiptext">
+                                                    React 😀🤣😤
+                                                </span>
+                                            </button>
+                                            {showReactionPicker && (
+                                                <div
+                                                    ref={emojiPickerRef}
+                                                    className="emoji-picker-container "
+                                                >
+                                                    <Picker
+                                                        onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
+                                                    />
+                                                </div>
+                                            )}
                                             <button
                                                 className="tooltip"
                                                 onClick={handleClickPoll}
@@ -643,13 +691,12 @@ function ShareYourThoughts({
 
                                         {/* column baru */}
                                         <div className="flex flex-row w-full justify-between gap-4">
-                                            <div className="flex flex-row w-full max-md:justify-between justify-end gap-4">
+                                            <div className="flex flex-row w-full max-md:justify-between justify-end gap-4 whitespace-nowrap">
                                                 {variant !== "comment" &&
                                                     canSetAnnouncement && (
-                                                        <div className="flex items-center">
+                                                        <div className="w-full flex items-center justify-end max-md:justify-start">
                                                             <label className="text-sm mr-3">
-                                                                Set as
-                                                                Announcement?
+                                                                Set as Announcement?
                                                             </label>
                                                             <label className="switch">
                                                                 <input
@@ -675,11 +722,28 @@ function ShareYourThoughts({
                                                     communityId={communityId}
                                                     departmentId={departmentId}
                                                 />
+                                                <div className="flex justify-end max-md:w-full">
+                                                    <button
+                                                        onClick={handleClickSend}
+                                                        // className="flex send-button align-item justify-end"
+                                                    >
+                                                        {isSending ? (  
+                                                            <Loader2 className="w-6 h-6 animate-spin" />
+                                                        ) : (
+                                                            <img
+                                                                loading="lazy"
+                                                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
+                                                                alt="SEND"
+                                                                className="h-6 w-6"
+                                                            />
+                                                        )}
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <button
+                                            {/* <button
                                                 onClick={handleClickSend}
                                                 className="flex send-button align-item justify-end absolute"
-                                                style={{
+                                                style={{`
                                                     right: "16px",
                                                     top: "50%",
                                                     transform:
@@ -693,7 +757,7 @@ function ShareYourThoughts({
                                                     alt="SEND"
                                                     className="h-6 w-6"
                                                 />
-                                            </button>
+                                            </button> */}
                                         </div>
                                     </div>
                                 </>

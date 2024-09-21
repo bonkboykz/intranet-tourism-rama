@@ -158,14 +158,13 @@ const ManageAlbum = () => {
         <Example>
             <>
                 <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[1500px] mx-8 my-10">
-                    <div className="flex items-start justify-between mb-2 border-b border-gray-200">
-                        <h2 className="mb-3 text-3xl font-bold text-blue-500">
+                    <div className="flex items-start justify-between mb-2 border-b pb-4 border-gray-200 max-md:flex-col">
+                        <h2 className="mb-3 text-3xl font-bold text-blue-500 whitespace-nowrap max-md:text-2xl">
                             Manage Albums
                         </h2>
-
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-4 max-md:w-full max-md:justify-end">
                             <button
-                                className="px-4 py-2 font-bold text-white whitespace-nowrap bg-blue-500 hover:bg-blue-700 rounded-full"
+                                className="px-4 py-2 font-bold text-white max-md:text-sm whitespace-nowrap bg-blue-500 hover:bg-blue-700 rounded-full"
                                 onClick={() => {
                                     resetForm();
                                     setIsAddModalVisible(true);
@@ -185,10 +184,10 @@ const ManageAlbum = () => {
                                 >
                                     <thead>
                                         <tr>
-                                            <th className="border border-gray-300 px-20 max-md:px-2 py-3 font-bold text-md text-start text-black-500 label-column">
+                                            <th className="w-3/4 px-6 max-md:px-2 py-3 font-bold text-md text-start label-column text-gray-500">
                                                 Album Name
                                             </th>
-                                            <th className="border border-gray-300 w-1/12	 max-md:px-2 py-3 font-bold text-md text-start text-black-500 label-column">
+                                            <th className="w-1/4 max-md:px-2 py-3 font-bold text-md justify-start label-column text-gray-500">
                                                 Delete
                                             </th>
                                         </tr>
@@ -252,9 +251,9 @@ const ManageAlbum = () => {
 
                 {isAddModalVisible && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="relative px-8 py-6 bg-white rounded-2xl shadow-lg w-96">
+                        <div className="relative px-8 py-6 bg-white rounded-2xl shadow-lg w-96 max-md:w-full max-md:mx-4">
                             <h2 className="mb-4 text-xl font-bold">
-                                Create Album
+                                Create New Album
                             </h2>
                             <input
                                 type="text"

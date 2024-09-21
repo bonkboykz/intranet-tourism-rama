@@ -449,7 +449,7 @@ function Navigation({ departmentName, type }) {
             }}
         >
             <div className="flex flex-col">
-                <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
+                <nav className="flex items-center w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
                     <div
                         className={`cursor-pointer ${
                             activeTab === "Post" ? "text-blue-500" : ""

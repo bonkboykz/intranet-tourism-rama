@@ -130,7 +130,7 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
             <div
-                className="flex flex-col font-semibold rounded-2xl p-6 w-full max-w-[442px] bg-white"
+                className="flex flex-col font-semibold rounded-2xl p-6 w-[442px] max-md:w-full max-md:mx-4 bg-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex w-full justify-between items-center mb-6">

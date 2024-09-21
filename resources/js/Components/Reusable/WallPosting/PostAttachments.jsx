@@ -157,8 +157,8 @@ function PostAttachments({ attachments }) {
 
             {showPopup && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="flex flex-row w-full justify-center items-start">
-                        <div className="bg-white lg:p-6 p-4 rounded-2xl max-w-3xl max-h-screen relative max-md:mx-4">
+                    <div className="flex flex-row w-full justify-center items-start px-8">
+                        <div className="bg-white lg:p-6 p-4 rounded-2xl max-w-3xl max-h-screen relative max-md:mx-4 max-md:w-full mx-6">
                             <button
                                 onClick={closePopup}
                                 className="absolute top-2 right-2"

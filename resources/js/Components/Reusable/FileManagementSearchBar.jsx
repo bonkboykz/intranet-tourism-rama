@@ -136,7 +136,7 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
             </div>
             {showPopup && (
                 <div className="file-popup px-4">
-                    <div className="file-popup-content rounded-3xl w-[400px]">
+                    <div className="file-popup-content rounded-3xl w-[400px] max-sm:w-full max-md:mx-4">
                         <div className="popup-header">
                             <h2 className="mb-4 text-2xl font-bold flex justify-start">
                                 Upload file

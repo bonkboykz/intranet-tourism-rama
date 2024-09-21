@@ -35,7 +35,7 @@ export function SendAs({ postAs, onChange, departmentId, communityId }) {
         <div className="relative inline-block text-left flex self-end">
             <button
                 onClick={togglePostAsDropdown}
-                className="px-4 py-2 text-sm font-medium   rounded-md focus:outline-none"
+                className="px-4 py-2 text-sm font-medium rounded-md focus:outline-none"
             >
                 {postAs}
                 <span className="ml-2">▼</span>

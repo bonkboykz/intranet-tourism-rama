@@ -84,24 +84,26 @@ const Media = () => {
             <main className="min-h-screen bg-gray-100 xl:pl-96">
                 <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
                     <div>
-                        <div className="relative flex flex-col justify-center max-w-full text-sm text-neutral-800">
-                            <div
-                                style={{ width: "180px" }}
-                                className="flex justify-between gap-5 px-4 py-1 bg-white shadow-custom cursor-pointer rounded-2xl"
-                            >
-                                <select
-                                    disabled={isLoading}
-                                    value={selectedTag}
-                                    onChange={handleTagChange}
-                                    className="border-none outline-none w-full"
+                        <div className="w-full flex flex-row justify-between items-center">
+                            <div className="relative flex flex-col justify-center max-w-full text-sm text-neutral-800">
+                                <div
+                                    style={{ width: "180px" }}
+                                    className="flex justify-between gap-5 px-4 py-1 bg-white shadow-custom cursor-pointer rounded-2xl"
                                 >
-                                    <option value="">All</option>
-                                    {tagOptions.map((tag, index) => (
-                                        <option key={index} value={tag.id}>
-                                            {tag.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    <select
+                                        disabled={isLoading}
+                                        value={selectedTag}
+                                        onChange={handleTagChange}
+                                        className="border-none outline-none w-full"
+                                    >
+                                        <option value="">All</option>
+                                        {tagOptions.map((tag, index) => (
+                                            <option key={index} value={tag.id}>
+                                                {tag.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             {hasRole("superadmin") && (

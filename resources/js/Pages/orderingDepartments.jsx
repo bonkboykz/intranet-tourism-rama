@@ -176,9 +176,9 @@ const OrderingDepartments = () => {
                 <div className="flex">
                     <main className="w-full mt-5 xl:pl-96 max-w-[1400px]">
                         <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
-                            <div className="flex items-center justify-between max-md:px-4">
-                                <h1 className="text-3xl font-bold text-gray-900 ">Manage Ordering</h1>
-                                <div className="flex space-x-4">
+                            <div className="flex items-center max-md:flex-col max-md:gap-4 justify-between max-md:px-4">
+                                <h1 className="text-3xl font-bold text-gray-900 whitespace-nowrap max-md:w-full max-md:justify-start">Manage Ordering</h1>
+                                <div className="flex space-x-4 max-md:w-full max-md:justify-end">
                                     <button onClick={handleBack} className="font-bold text-black text-md">Back</button>
                                     <button type="button" className="px-4 py-2 font-bold text-white bg-red-500 rounded-full text-md hover:bg-red-700" onClick={handleSave}>Save</button>
                                 </div>

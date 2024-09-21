@@ -81,7 +81,7 @@
       margin-bottom: 20px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      width: 600px;
+      width:auto;
       height: auto;
     }
 
@@ -173,7 +173,7 @@
   .send-button {
     /* position: absolute; */
     /* right: 0; */
-    flex: auto;
+    /* flex: auto; */
     /* bottom: 50px; */
   }
 
