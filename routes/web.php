@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BirthdayTemplateController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Community;
 use App\Http\Controllers\communityPost;
@@ -88,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/rejectGroupJoinRequest', [RequestController::class, 'rejectGroupJoinRequest'])->name('rejectGroupJoinRequest');
 
     Route::get('/api/audits', [AuditController::class, 'index'])->name('audits');
+    Route::post('/api/birthday-templates', [BirthdayTemplateController::class, 'store']);
+    Route::get('/api/birthday-templates', [BirthdayTemplateController::class, 'index']);
+    Route::put('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'update']);
+    Route::put('/api/birthday-templates/{birthdayTemplate}/toggle-enabled', [BirthdayTemplateController::class, 'toggleEnabled']);
 });
 
 require __DIR__ . '/auth.php';
