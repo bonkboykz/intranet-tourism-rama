@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import { useRef } from "react";
 import axios from "axios";
 
 import { toastError } from "../toast";
 
-export const useLoading = (url, params = {}) => {
+export const useLoading = (url, params) => {
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
@@ -14,9 +15,7 @@ export const useLoading = (url, params = {}) => {
 
         try {
             const response = await axios.get(url, {
-                params: {
-                    ...params,
-                },
+                params: params,
             });
             const data = response.data.data;
             setData(data);
@@ -82,9 +81,29 @@ export const useLazyLoading = (url, params = {}) => {
         setIsLoading(false);
     };
 
+    const prevParams = useRef(params);
+
     useEffect(() => {
+        console.log("Current page", currentPage);
+
         fetchData();
     }, [currentPage]);
+
+    useEffect(() => {
+        if (JSON.stringify(prevParams.current) !== JSON.stringify(params)) {
+            setData([]);
+
+            setTotalPages(1);
+
+            if (currentPage === 1) {
+                fetchData();
+            } else {
+                setCurrentPage(1);
+            }
+
+            prevParams.current = params;
+        }
+    }, [params]);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
