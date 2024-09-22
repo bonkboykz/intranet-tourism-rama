@@ -4,7 +4,13 @@ import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
-export function PostDetails({ onEdit, onDelete, onAnnouncement, isAnnounced }) {
+export function PostDetails({
+    onEdit,
+    onDelete,
+    onAnnouncement,
+    isAnnounced,
+    popupRef,
+}) {
     const { hasRole } = usePermissions();
 
     const isSuperAdmin = hasRole("superadmin");
@@ -15,7 +21,10 @@ export function PostDetails({ onEdit, onDelete, onAnnouncement, isAnnounced }) {
         isSuperAdmin || isCommunityAdmin || isDepartmentAdmin;
 
     return (
-        <div className="absolute bg-white border-2 rounded-xl p-1 shadow-custom mt-16 right-0 w-[180px] h-auto z-10">
+        <div
+            className="absolute bg-white border-2 rounded-xl p-1 shadow-custom mt-16 right-0 w-[180px] h-auto z-10"
+            ref={popupRef}
+        >
             <p
                 className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
                 onClick={onEdit}

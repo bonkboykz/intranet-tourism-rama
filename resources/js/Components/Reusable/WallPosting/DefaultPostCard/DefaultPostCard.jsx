@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useLayoutEffect } from "react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useClickAway } from "@uidotdev/usehooks";
 import axios from "axios";
 import { format, isSameDay } from "date-fns";
 import { Volume2 } from "lucide-react";
@@ -11,6 +12,7 @@ import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
 import { truncate } from "@/Utils/truncate";
@@ -431,6 +433,11 @@ export function DefaultPostCard({ post }) {
 
     const userData = useUserData();
 
+    const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
+        setShowDetails(false);
+        setShowModal(false);
+    });
+
     if (isDeleted) {
         return null;
     }
@@ -470,6 +477,7 @@ export function DefaultPostCard({ post }) {
                             <div className="flex items-center gap-2">
                                 {canEdit && (
                                     <img
+                                        ref={buttonRef}
                                         loading="lazy"
                                         src="/assets/wallpost-dotbutton.svg"
                                         alt="Options"
@@ -485,8 +493,9 @@ export function DefaultPostCard({ post }) {
 
                     {showDetails && canEdit && (
                         <PostDetails
+                            popupRef={popupRef}
                             onEdit={() => {
-                                setShowDetails(false);
+                                // setShowDetails(false);
                                 setShowModal(true);
                             }}
                             onDelete={() => setShowDeletePopup(true)}
@@ -538,7 +547,10 @@ export function DefaultPostCard({ post }) {
                             className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
                             onClick={() => setShowModal(false)}
                         ></div>
-                        <div className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]">
+                        <div
+                            className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]"
+                            ref={modalRef}
+                        >
                             <EditPost
                                 post={cachedPost}
                                 loggedInUserId={loggedInUserId}
@@ -577,6 +589,7 @@ export function DefaultPostCard({ post }) {
                             onClick={() => setShowDeletePopup(false)}
                         ></div>
                         <DeletePopup
+                            modalRef={modalRef}
                             onClose={() => setShowDeletePopup(false)}
                             onDelete={handleDelete}
                         />
