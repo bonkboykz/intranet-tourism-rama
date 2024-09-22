@@ -2,9 +2,11 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 import { PopupMenuAdmin } from "@/Components/Reusable/Community/Members/PopupMenuAdmin";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import { Avatar } from "./Avatar";
@@ -22,11 +24,7 @@ export const MemberCard = ({
     isActive,
     onAssign,
     onRemove,
-    closePopup,
 }) => {
-    const popupRef = useRef(null);
-    const buttonRef = useRef(null);
-
     const [showPopup, setShowPopup] = useState(false);
 
     const handleDotClick = (event) => {
@@ -36,68 +34,8 @@ export const MemberCard = ({
         setShowPopup(!showPopup);
     };
 
-    const modalAdminRef = useRef(null);
-    const modalRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            console.log("user_id", id);
-            console.log("employment_post_id", employment_post_id);
-            const isClickedInsideOfPopup = popupRef.current?.contains(
-                event.target
-            );
-            const isClickedInsideOfModal = modalRef.current?.contains(
-                event.target
-            );
-            const isClickedInsideOfModalAdmin = modalAdminRef.current?.contains(
-                event.target
-            );
-
-            const isClickedInsideOfButton = buttonRef.current?.contains(
-                event.target
-            );
-
-            // console.log(event.target);
-
-            // console.log(
-            //     "isClickedInsideOfPopup",
-            //     isClickedInsideOfPopup,
-            //     popupRef.current
-            // );
-            // console.log(
-            //     "isClickedInsideOfModal",
-            //     isClickedInsideOfModal,
-            //     modalRef.current
-            // );
-            // console.log(
-            //     "isClickedInsideOfModalAdmin",
-            //     isClickedInsideOfModalAdmin,
-            //     modalAdminRef.current
-            // );
-            // console.log(
-            //     "isClickedInsideOfButton",
-            //     isClickedInsideOfButton,
-            //     buttonRef.current
-            // );
-
-            if (
-                !isClickedInsideOfPopup &&
-                !isClickedInsideOfModal &&
-                !isClickedInsideOfModalAdmin &&
-                !isClickedInsideOfButton
-            ) {
-                setShowPopup(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [closePopup]);
-
     const { hasRole } = usePermissions();
-    const { isAdmin, user } = useContext(DepartmentContext);
+    const { isAdmin } = useContext(DepartmentContext);
 
     const canAssignAdmin = hasRole("superadmin") || isAdmin;
 
@@ -105,7 +43,20 @@ export const MemberCard = ({
 
     const showThreeDots = canAssignAdmin || canRemoveMember;
 
-    console.log(`userid ${id}`, popupRef.current);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleConfirmRemove = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        onRemove(employment_post_id);
+        setShowModal(false);
+    };
+
+    const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
+        setShowPopup(false);
+        setShowModal(false);
+    });
 
     return (
         <a href={`/user/${id}`}>
@@ -134,27 +85,70 @@ export const MemberCard = ({
                         <div ref={popupRef}>
                             {flag === "admin" ? (
                                 <PopupMenuAdmin
-                                    onRemove={() =>
-                                        onRemove(employment_post_id)
-                                    }
-                                    onAssign={() => onAssign(id)}
-                                    closePopup={closePopup}
-                                    modalRef={modalAdminRef}
+                                    onRemove={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setShowPopup(false);
+                                        setShowModal(true);
+                                    }}
+                                    onAssign={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setShowPopup(false);
+                                        onAssign(id);
+                                    }}
                                 />
                             ) : (
                                 <PopupMenu
-                                    onRemove={() =>
-                                        onRemove(employment_post_id)
-                                    }
-                                    onAssign={() => onAssign(id)}
-                                    closePopup={closePopup}
+                                    onRemove={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setShowPopup(false);
+                                        setShowModal(true);
+                                    }}
+                                    onAssign={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setShowPopup(false);
+                                        onAssign(id);
+                                    }}
                                     canAssignAdmin={canAssignAdmin}
                                     canRemoveMember={canRemoveMember}
-                                    modalRef={modalRef}
                                 />
                             )}
                         </div>
                     )}
+
+                    {showModal &&
+                        createPortal(
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div
+                                    className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
+                                    ref={modalRef}
+                                >
+                                    <h2 className="mb-4 text-xl font-bold text-center">
+                                        Delete member?
+                                    </h2>
+                                    <div className="flex justify-center space-x-4">
+                                        <button
+                                            className="px-6 py-2 text-base font-bold text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
+                                            onClick={() => {
+                                                setShowModal(false);
+                                            }}
+                                        >
+                                            No
+                                        </button>
+                                        <button
+                                            className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                            onClick={handleConfirmRemove}
+                                        >
+                                            Yes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>,
+                            document.body
+                        )}
                 </div>
             </div>
         </a>
