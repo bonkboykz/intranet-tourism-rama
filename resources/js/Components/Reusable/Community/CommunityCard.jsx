@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { FaLock } from "react-icons/fa"; // Import the lock icon
 
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
+
 import defaultImage from "../../../../../public/assets/dummyStaffImage.png";
 import PopupMenu from "./CommunityPopUp";
 
@@ -30,37 +32,9 @@ const CommunityCard = ({
         setIsPopupOpen(false);
     };
 
-    const popupRef = useRef(null);
-    const buttonRef = useRef(null);
-    const modalRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            const isClickedInsideOfPopup = popupRef.current?.contains(
-                event.target
-            );
-            const isClickedInsideOfModal = modalRef.current?.contains(
-                event.target
-            );
-
-            const isClickedInsideOfButton = buttonRef.current?.contains(
-                event.target
-            );
-
-            if (
-                !isClickedInsideOfPopup &&
-                !isClickedInsideOfModal &&
-                !isClickedInsideOfButton
-            ) {
-                setIsPopupOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+    const { popupRef, buttonRef, modalRef } = useClickOutside(() => {
+        setIsPopupOpen(false);
+    });
 
     return (
         <div className="staff-member-card">
@@ -90,7 +64,7 @@ const CommunityCard = ({
                         selectedDepartmentId={communityID}
                         onArchiveToggle={onArchiveToggle}
                         onDelete={onDelete}
-                        isArchived={isArchived} // Pass the archived state to PopupMenu
+                        isArchived={isArchived}
                         onClose={() => console.log("Popup closed")} // Example onClose handler
                     />
                 )}
@@ -107,7 +81,6 @@ const CommunityCard = ({
                             className="mt-2 ml-1.5"
                         />
                     )}{" "}
-                    {/* Lock icon in black */}
                 </div>
             </div>
             <div className="card-footer items-center">
