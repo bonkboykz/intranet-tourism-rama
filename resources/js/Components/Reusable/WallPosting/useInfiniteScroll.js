@@ -140,6 +140,7 @@ export function useInfiniteScroll({
                         "poll.question",
                         "poll.question.options",
                         "poll.responses",
+                        "poll.feedbacks",
                     ],
                     page: currentPage.current,
                     paginate: true,

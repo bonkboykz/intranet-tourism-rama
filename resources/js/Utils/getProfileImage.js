@@ -1,5 +1,5 @@
 export const getProfileImage = (profile, name = "User") => {
-    if (!profile || !profile.image || !profile.staff_image) {
+    if (!profile && !profile.image && !profile.staff_image) {
         return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
             name
         )}&rounded=true`;
