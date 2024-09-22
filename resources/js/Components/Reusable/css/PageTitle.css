@@ -6,6 +6,7 @@
   font-size: 32px;
   color: #202224;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* @media (max-width: 640px) {
