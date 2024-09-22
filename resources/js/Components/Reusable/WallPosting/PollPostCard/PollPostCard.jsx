@@ -414,7 +414,11 @@ export function PollPostCard({ post }) {
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
                     "w-full max-w-[700px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative"
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
+                    cachedPost.announced &&
+                        (cachedPost.community_id || cachedPost.department_id
+                            ? "relative pt-20"
+                            : "relative pt-16")
                 )}
             >
                 {cachedPost.announced && (
