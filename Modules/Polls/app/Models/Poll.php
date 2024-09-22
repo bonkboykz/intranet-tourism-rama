@@ -92,4 +92,9 @@ class Poll extends Model implements AuditableContract
     {
         return $this->belongsTo(Post::class);
     }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
 }

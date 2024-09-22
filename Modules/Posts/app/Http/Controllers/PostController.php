@@ -131,6 +131,7 @@ class PostController extends Controller
 
         // attach user by user_id
         $post->user = User::find($post->user_id);
+        $post->user->profile = $post->user->profile;
         $post->attachments = Resource::where('attachable_id', $post->id)->get();
         $post->comments = $post->comments->map(function ($comment) {
             $comment->user = User::find($comment->user_id);
@@ -145,6 +146,7 @@ class PostController extends Controller
             $post->poll = $poll;
             $post->poll->question = $poll->question;
             $post->poll->question->options = $poll->question->options;
+            $post->poll->feedbacks = Feedback::where('poll_id', $poll->id)->get();
         }
 
         return response()->json([
@@ -505,22 +507,35 @@ class PostController extends Controller
         // we create a response with user_id, poll_id, answers array of option_ids
         $user = Auth::user();
 
+        // if no options_ids, make empty array
+        if (!$request->option_ids) {
+            $request->option_ids = [];
+        }
+
         DB::beginTransaction();
         try {
+
+            // check if user already answered the poll
+            $response = PollResponse::where('poll_id', $request->poll_id)->where('user_id', $user->id)->first();
+
+            if ($response) {
+                // if yes, update answers
+
+                $response->answers = $request->option_ids;
+                $response->save();
+
+                DB::commit();
+
+                return response()->json([
+                    'data' => $response,
+                ]);
+            }
 
             $response = PollResponse::create([
                 'user_id' => $user->id,
                 'poll_id' => $request->poll_id,
                 'answers' => $request->option_ids,
             ]);
-
-            if ($request->has('feedbackText')) {
-                $feedback = Feedback::create([
-                    'user_id' => $user->id,
-                    'poll_id' => $request->poll_id,
-                    'feedback_text' => $request->feedbackText,
-                ]);
-            }
 
             DB::commit();
         } catch (\Exception $e) {
@@ -530,6 +545,33 @@ class PostController extends Controller
 
         return response()->json([
             'data' => $response,
+        ]);
+    }
+
+    public function submitPollFeedback(Request $request)
+    {
+        // request has
+        // 1. poll_id
+        // 2. feedbackText string
+        // we create a feedback with user_id, poll_id, feedbackText
+        $user = Auth::user();
+
+        DB::beginTransaction();
+        try {
+            $feedback = Feedback::create([
+                'user_id' => $user->id,
+                'poll_id' => $request->poll_id,
+                'feedback_text' => $request->feedbackText,
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return response()->json([
+            'data' => $feedback,
         ]);
     }
 

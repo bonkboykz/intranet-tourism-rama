@@ -42,7 +42,7 @@ class UserController extends Controller
             if (array_key_exists('disabledPagination', $query)) {
                 $data = $modelBuilder->get();
             } else {
-                $data = $modelBuilder->paginate();
+                $data = $modelBuilder->paginate(100);
             }
         }
 
