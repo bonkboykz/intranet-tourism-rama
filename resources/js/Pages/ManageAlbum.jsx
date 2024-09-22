@@ -164,6 +164,14 @@ const ManageAlbum = () => {
                         </h2>
                         <div className="flex space-x-4 max-md:w-full max-md:justify-end">
                             <button
+                                onClick={() => {
+                                    window.location.href = "/media";
+                                }}
+                                className="font-bold text-black text-md"
+                            >
+                                Back
+                            </button>
+                            <button
                                 className="px-4 py-2 font-bold text-white max-md:text-sm whitespace-nowrap bg-blue-500 hover:bg-blue-700 rounded-full"
                                 onClick={() => {
                                     resetForm();
