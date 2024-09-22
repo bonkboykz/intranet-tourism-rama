@@ -1,11 +1,12 @@
-import { expect, test } from "@playwright/test";
-import { loginAs } from "../helpers/loginHelper"; // Импортируем функцию логина
+import {expect, test} from "@playwright/test";
+import {loginAs} from "../helpers/loginHelper"; // Импортируем функцию логина
+// import * as path from "path";
 
 const baseUrl = "https://intranet-tourism-rama-production.up.railway.app";
 
 test.describe("Community Management", () => {
     // Scenario: View Community Groups
-    test("User can automatically log in and view community groups", async ({ page }) => {
+    test("User can automatically log in and view community groups", async ({page}) => {
         await loginAs(page, "user");
 
         // После логина сразу переходим на страницу сообществ
@@ -24,7 +25,7 @@ test.describe("Community Management", () => {
         console.log(`Test passed: Found ${count} community items`);
     });
 
-    test("Member can create a public community group", async ({ page }) => {
+    test("Member can create a public community group", async ({page}) => {
         await loginAs(page, "member");
 
         await page.goto(`${baseUrl}/community`);
@@ -49,7 +50,7 @@ test.describe("Community Management", () => {
 
         await groupDescriptionInput.fill("testmember description");
 
-        await groupTypeDropdown.selectOption({ label: "Public" });
+        await groupTypeDropdown.selectOption({label: "Public"});
 
         await createButton.click();
 
@@ -61,7 +62,7 @@ test.describe("Community Management", () => {
     });
 
     // Scenario: Member logs in, navigates to community page, and visits a specific group
-    test("Member logs in, navigates to community page, and visits 'jij' group", async ({ page }) => {
+    test("Member logs in, navigates to community page, and visits 'jij' group", async ({page}) => {
         await loginAs(page, "member");
 
         // Переход на страницу сообщества
@@ -84,7 +85,7 @@ test.describe("Community Management", () => {
 
         // Ожидаем переход на страницу после клика по 'jij'
         await Promise.all([
-            page.waitForNavigation({ waitUntil: "networkidle" }),
+            page.waitForNavigation({waitUntil: "networkidle"}),
             jijGroupLink.click(),
         ]);
 
@@ -99,7 +100,7 @@ test.describe("Community Management", () => {
     });
 
     // Scenario: Logged-in member joins the group, writes, and publishes a post
-    test("Logged-in member joins the group, writes, and publishes a post", async ({ page }) => {
+    test("Logged-in member joins the group, writes, and publishes a post", async ({page}) => {
         // Шаг 1: Войти как участник
         await loginAs(page, "member");
 
@@ -139,7 +140,7 @@ test.describe("Community Management", () => {
     });
 
     // Scenario: Logged-in member writes and publishes a post with an emoji
-    test("Logged-in member writes and publishes a post with an emoji via Emoji Picker", async ({ page }) => {
+    test("Logged-in member writes and publishes a post with an emoji via Emoji Picker", async ({page}) => {
         // Шаг 1: Войти как участник
         await loginAs(page, "member");
 
@@ -183,7 +184,7 @@ test.describe("Community Management", () => {
 
 
     // Scenario: Logged-in member creates a poll with any title
-    test("Logged-in member creates a poll with any title", async ({ page }) => {
+    test("Logged-in member creates a poll with any title", async ({page}) => {
         // Шаг 1: Войти как участник
         await loginAs(page, "member");
 
@@ -225,7 +226,7 @@ test.describe("Community Management", () => {
 
 
     // Scenario: Logged-in member adds an additional option to an existing poll
-    test("Logged-in member creates a poll and adds an additional option", async ({ page }) => {
+    test("Logged-in member creates a poll and adds an additional option", async ({page}) => {
         // Шаг 1: Войти как участник
         await loginAs(page, "member");
 
@@ -276,7 +277,7 @@ test.describe("Community Management", () => {
     });
 
     // Scenario: Logged-in member sets a post as an announcement
-    test("Logged-in member sets a post as an announcement", async ({ page }) => {
+    test("Logged-in member sets a post as an announcement", async ({page}) => {
         // Шаг 1: Войти как участник
         await loginAs(page, "member");
 
@@ -324,51 +325,287 @@ test.describe("Community Management", () => {
 
 
     // Scenario: Logged-in member uploads a video
-    test("Logged-in member uploads a video and automatically clicks SEND", async ({ page }) => {
-            // Step 1: Log in as a member
-            await loginAs(page, "member");
+    test("Logged-in member uploads a video and automatically clicks SEND", async ({page}) => {
+        // Step 1: Log in as a member
+        await loginAs(page, "member");
 
-    // Step 2: Go to the "testmember" group page
-            await page.goto(`${baseUrl}/communityInner?communityId=37`);
-            await page.waitForLoadState("domcontentloaded");
+        // Step 2: Go to the "testmember" group page
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("domcontentloaded");
 
-    // Verify that we are on the "testmember" group page
-            await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+        // Verify that we are on the "testmember" group page
+        await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
 
-    // Step 3: Click the video upload icon (camera icon)
-            const videoUploadIcon = page.locator('img[alt="Video Icon"]'); // Locator for the video upload icon
-            await videoUploadIcon.click();
+        // Step 3: Click the video upload icon (camera icon)
+        const videoUploadIcon = page.locator('img[alt="Video Icon"]');
+        const [fileChooser] = await Promise.all([
+            page.waitForEvent('filechooser'), // Ожидаем событие открытия файлового менеджера
+            videoUploadIcon.click() // Кликаем на иконку загрузки видео
+        ]);
+        const videoFilePath = 'tests/assets/video700kb.mov';
+        await fileChooser.setFiles(videoFilePath);
 
-    // Step 4: Intercept the file chooser dialog
-            const [fileChooser] = await Promise.all([
-                page.waitForEvent('filechooser'), // Wait for the file chooser dialog to open
-                videoUploadIcon.click()           // Click the video upload icon
-            ]);
+        // Загрузка видеофайла
+        await page.waitForTimeout(2000);
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
 
-    // Step 5: After the user selects the file, wait for it to be added
-     await fileChooser.setFiles('tests/assets/video700kb.mov');  // Select file via fileChooser
+        await page.waitForLoadState('networkidle');
 
-    // Wait a bit for the file to be added
-            await page.waitForTimeout(3000); // 3-second delay
+        const videoLocator = page.locator('video').last();
+        const videoSourceLocator = videoLocator.locator('source');
 
-    // Step 6: Click the "Publish" button (arrow icon)
-            const publishButton = page.locator('img[alt="SEND"]');
-            await publishButton.click();
+        const videoSrc = await videoSourceLocator.getAttribute('src');
 
-    // Step 7: Wait for the page to refresh and the video to appear in the post list
-            await page.waitForLoadState('networkidle');
+        await expect(videoSrc).toBeTruthy();
+        await page.waitForLoadState('domcontentloaded');
+        const videoDom = await videoLocator.evaluate((video) => video.outerHTML);
 
-        {/*    // Step 8: Verify that the uploaded video is visible in the post list
-            const allVideos = await page.locator('video').all();
-            const latestVideo = allVideos[allVideos.length - 1];
-            await expect(latestVideo).toBeVisible(); */}
-
-    // Log success
-            console.log('Test passed: Latest video is visible in the group\'s post list.');
+        await expect(videoDom).toContain('<video');
+        await expect(videoDom).toContain(`src="${videoSrc}"`);
 
     });
 
 
+    test('Logged-in member uploads a video and adds text', async ({page}) => {
+        // Логинимся как участник
+        await loginAs(page, "member");
+
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState('networkidle');
+
+        await expect(page).toHaveURL(`${baseUrl}/communityInner?communityId=37`);
+
+        const videoUploadIcon = page.locator('img[alt="Video Icon"]');
+        const [fileChooser] = await Promise.all([
+            page.waitForEvent('filechooser'), // Ожидаем событие открытия файлового менеджера
+            videoUploadIcon.click() // Кликаем на иконку загрузки видео
+        ]);
+
+        // Загрузка видеофайла
+        const videoFilePath = 'tests/assets/video700kb.mov';
+        await fileChooser.setFiles(videoFilePath);
+        await page.waitForTimeout(2000);
+        const postInput = page.locator("textarea[placeholder='Share Your Thoughts...']");
+        const postContent = "This is a test post2";
+        await postInput.fill(postContent);
+        await page.waitForTimeout(2000);
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
+
+        await page.waitForLoadState('networkidle');
+
+        const videoLocator = page.locator('video').last();
+        const videoSourceLocator = videoLocator.locator('source');
+
+        const videoSrc = await videoSourceLocator.getAttribute('src');
+
+        await expect(videoSrc).toBeTruthy();
+        await page.waitForLoadState('domcontentloaded');
+
+        const videoDom = await videoLocator.evaluate((video) => video.outerHTML);
+
+        await expect(videoDom).toContain('<video');
+        await expect(videoDom).toContain(`src="${videoSrc}"`);
+
+        const newPost = page.locator(`.post-content:has-text('${postContent}')`).last();
+        await expect(newPost).toBeVisible();
+    });
+
+
+    test("Logged-in member uploads a single image", async ({page}) => {
+        // Step 1: Log in as a member
+        await loginAs(page, "member");
+
+        // Step 2: Go to the "testmember" group page
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Verify that we are on the "testmember" group page
+        await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+
+        // Step 3: Click the image upload icon (camera icon)
+        const imageUploadIcon = page.locator('img[alt="Image Icon"]');
+        const [fileChooser] = await Promise.all([
+            page.waitForEvent('filechooser'), // Wait for the file chooser to open
+            imageUploadIcon.click() // Click the image upload icon
+        ]);
+        const imageFilePath = 'tests/assets/image1.png';
+        await fileChooser.setFiles(imageFilePath);
+
+        // Wait for the image to upload
+        await page.waitForTimeout(2000);
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
+
+        await page.waitForLoadState('networkidle');
+
+        const imageLocator = page.locator('img').last();
+        const imageSrc = await imageLocator.getAttribute('src');
+
+        // Check if the image source is truthy (image uploaded successfully)
+        await expect(imageSrc).toBeTruthy();
+        await page.waitForLoadState('domcontentloaded');
+        const imageDom = await imageLocator.evaluate((img) => img.outerHTML);
+
+        await expect(imageDom).toContain('<img');
+        await expect(imageDom).toContain(`src="${imageSrc}"`);
+    });
+
+    test("Logged-in member uploads multiple images", async ({ page }) => {
+        // Step 1: Log in as a member
+        await loginAs(page, "member");
+
+        // Step 2: Go to the "testmember" group page
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Verify that we are on the "testmember" group page
+        await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+
+        // Step 3: Click the image upload icon (camera icon)
+        const imageUploadIcon = page.locator('img[alt="Image Icon"]');
+        const [fileChooser] = await Promise.all([
+            page.waitForEvent('filechooser'), // Wait for the file chooser to open
+            imageUploadIcon.click() // Click the image upload icon
+        ]);
+
+        // Specify multiple image files to upload
+        const imageFilePaths = [
+            'tests/assets/image1.png',
+            'tests/assets/image2.png',
+        ];
+
+        // Set multiple files in the file chooser
+        await fileChooser.setFiles(imageFilePaths);
+
+        // Wait for the images to upload
+        await page.waitForTimeout(2000);
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
+
+        await page.waitForLoadState('networkidle');
+
+        // Locate all uploaded images
+        const images = await page.locator('img').all();
+
+        // Check each image for the expected source
+        for (const imageFilePath of imageFilePaths) {
+            const imageFileName = imageFilePath.split('/').pop(); // Get the file name
+            const imageSrcElement = await images.find(async (img) => {
+                const src = await img.getAttribute('src');
+                return src && src.includes(imageFileName); // Check if the src contains the image file name
+            });
+
+            // Ensure each image was uploaded successfully
+            expect(imageSrcElement).toBeTruthy();
+            const imageDom = await imageSrcElement.evaluate((img) => img.outerHTML);
+
+            // Check that the HTML contains the expected image source
+            await expect(imageDom).toContain('<img');
+            const srcAttribute = await imageSrcElement.getAttribute('src'); // Await here
+            await expect(imageDom).toContain(`src="${srcAttribute}"`);
+        }
+    });
+
+    test("Logged-in member uploads multiple images and adds text", async ({ page }) => {
+        // Step 1: Log in as a member
+        await loginAs(page, "member");
+
+        // Step 2: Go to the "testmember" group page
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("domcontentloaded");
+
+        // Verify that we are on the "testmember" group page
+        await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+
+        // Step 3: Click the image upload icon (camera icon)
+        const imageUploadIcon = page.locator('img[alt="Image Icon"]');
+        const [fileChooser] = await Promise.all([
+            page.waitForEvent('filechooser'), // Wait for the file chooser to open
+            imageUploadIcon.click() // Click the image upload icon
+        ]);
+
+        // Specify multiple image files to upload
+        const imageFilePaths = [
+            'tests/assets/image1.png',
+            'tests/assets/image2.png',
+        ];
+
+        // Set multiple files in the file chooser
+        await fileChooser.setFiles(imageFilePaths);
+
+        // Wait for the images to upload
+        await page.waitForTimeout(2000);
+        const postInput = page.locator("textarea[placeholder='Share Your Thoughts...']");
+        const postContent = "This is a test post2";
+        await postInput.fill(postContent);
+        await page.waitForTimeout(2000);
+        const publishButton = page.locator('img[alt="SEND"]');
+        await publishButton.click();
+
+        await page.waitForLoadState('networkidle');
+
+        // Locate all uploaded images
+        const images = await page.locator('img').all();
+
+        // Check each image for the expected source
+        for (const imageFilePath of imageFilePaths) {
+            const imageFileName = imageFilePath.split('/').pop(); // Get the file name
+            const imageSrcElement = await images.find(async (img) => {
+                const src = await img.getAttribute('src');
+                return src && src.includes(imageFileName); // Check if the src contains the image file name
+            });
+
+            // Ensure each image was uploaded successfully
+            expect(imageSrcElement).toBeTruthy();
+            const imageDom = await imageSrcElement.evaluate((img) => img.outerHTML);
+
+            // Check that the HTML contains the expected image source
+            await expect(imageDom).toContain('<img');
+            const srcAttribute = await imageSrcElement.getAttribute('src'); // Await here
+            await expect(imageDom).toContain(`src="${srcAttribute}"`);
+        }
+        const newPost = page.locator(`.post-content:has-text('${postContent}')`).last();
+        await expect(newPost).toBeVisible();
+    });
+
+    // TODO
+    test("Logged-in member downloads a file", async ({ page }) => {
+        // Step 1: Log in as a member
+        await loginAs(page, "member");
+
+        // Step 2: Go to the group page
+        await page.goto(`${baseUrl}/communityInner?communityId=37`);
+        await page.waitForLoadState("networkidle");
+
+        // Verify that we are on the correct group page
+        await expect(page).toHaveURL(/\/communityInner\?communityId=37/);
+
+        // Step 3: Click the link/button to download the file
+        const downloadLink = page.locator('text=Download File'); // Adjust selector as needed
+        const [download] = await Promise.all([
+            page.waitForEvent('download'), // Wait for the download event
+            downloadLink.click() // Click the download link
+        ]);
+
+        const filePath = 'tests/assets/testdoc.xlsx'; // Specify the file path
+        // Step 4: Define the expected download path (local path)
+        const downloadDir = path.join(__dirname, 'downloads'); // Ensure this directory exists
+        const downloadPath = path.join(downloadDir, path.basename(filePath)); // Use the same name as the original file
+
+        // Step 5: Wait for the download to complete and save the file
+        await download.saveAs(downloadPath);
+
+        // Step 6: Check if the file exists
+        await page.waitForTimeout(2000); // Give time for the file to save
+        const fileExists = fs.existsSync(downloadPath);
+        expect(fileExists).toBe(true); // Ensure the file was downloaded successfully
+
+        // Optionally: Check for a confirmation message or download indicator
+        const downloadIndicator = page.locator('.download-indicator'); // Adjust selector as needed
+        await expect(downloadIndicator).toBeVisible();
+    });
 
 
 
