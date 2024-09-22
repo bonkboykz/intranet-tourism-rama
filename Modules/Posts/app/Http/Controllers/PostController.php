@@ -723,12 +723,23 @@ class PostController extends Controller
 
 
         // Apply filters for image and video MIME types
-        $query->whereHas('attachments', function ($query) {
-            $query->where(function ($query) {
-                $query->where('mime_type', 'like', 'image/%')
-                    ->orWhere('mime_type', 'like', 'video/%');
+
+        if (request()->has('only_video')) {
+            $query->whereHas('attachments', function ($query) {
+                $query->where('mime_type', 'like', 'video/%');
             });
-        });
+        } else if (request()->has('only_image')) {
+            $query->whereHas('attachments', function ($query) {
+                $query->where('mime_type', 'like', 'image/%');
+            });
+        } else {
+            $query->whereHas('attachments', function ($query) {
+                $query->where(function ($query) {
+                    $query->where('mime_type', 'like', 'image/%')
+                        ->orWhere('mime_type', 'like', 'video/%');
+                });
+            });
+        }
 
         if (request()->has('album_id')) {
             $query->whereHas('albums', function ($query) {
@@ -770,7 +781,7 @@ class PostController extends Controller
             });
         }
 
-        $posts = $query->get();
+        $posts = $query->paginate(5);
 
         // Return the result as JSON
         return response()->json([

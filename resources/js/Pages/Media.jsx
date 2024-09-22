@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
 import axios from "axios";
 
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
@@ -64,7 +65,6 @@ const Media = () => {
         fetchTags();
         fetchData();
     }, []);
-
     // console.log("DATA", posts);
 
     useEffect(() => {
@@ -119,7 +119,10 @@ const Media = () => {
                             )}
                         </div>
 
-                        <Gallery filteredPosts={posts} />
+                        <Gallery
+                            filteredPosts={posts}
+                            selectedTag={selectedTag}
+                        />
                     </div>
                 </div>
             </main>

@@ -1,12 +1,39 @@
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { Loader2 } from "lucide-react";
+
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
 import { VideoGallery } from "./Video";
 
 import "react-photo-view/dist/react-photo-view.css";
 
-export function Gallery({ filteredPosts }) {
+export function Gallery({ filteredPosts, selectedTag }) {
+    const {
+        data: images,
+        hasMore: hasMoreImages,
+        nextPage: loadMoreImages,
+        isLoading: isImagesLoading,
+    } = useLazyLoading("/api/posts/public_media", {
+        ...(selectedTag !== "" && {
+            album_id: selectedTag,
+        }),
+        only_image: true,
+    });
+
+    const {
+        data: videos,
+        hasMore: hasMoreVideo,
+        nextPage: loadMoreVideo,
+        isLoading: isVideoLoading,
+    } = useLazyLoading("/api/posts/public_media", {
+        ...(selectedTag !== "" && {
+            album_id: selectedTag,
+        }),
+        only_video: true,
+    });
+
     const renderImages = () => {
-        return filteredPosts.map((post) =>
+        return images.map((post) =>
             post.attachments
                 ?.filter((attachment) =>
                     attachment.mime_type.startsWith("image/")
@@ -42,10 +69,23 @@ export function Gallery({ filteredPosts }) {
                             maskClassName="backdrop"
                         >
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
-                                {/* <h1 className="pb-2 text-2xl font-bold text-neutral-800 max-md:max-w-full">Images</h1> */}
                                 {renderImages()}
                             </div>
                         </PhotoProvider>
+
+                        {hasMoreImages && (
+                            <button
+                                disabled={isImagesLoading}
+                                onClick={loadMoreImages}
+                                className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-blue-500 hover:bg-blue-700 flex align-center justify-center"
+                            >
+                                {isImagesLoading ? (
+                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                ) : (
+                                    "Load More"
+                                )}
+                            </button>
+                        )}
                     </section>
                 </section>
             </div>
@@ -59,7 +99,7 @@ export function Gallery({ filteredPosts }) {
                     </header>
                     <section className="mt-4 max-md:max-w-full">
                         <VideoGallery
-                            videos={filteredPosts
+                            videos={videos
                                 .filter((post) => post.attachments)
                                 .map((post) => post.attachments)
                                 .flat()
@@ -73,6 +113,20 @@ export function Gallery({ filteredPosts }) {
                                     path: `/storage/${attachment.path}`,
                                 }))}
                         />
+
+                        {hasMoreVideo && (
+                            <button
+                                disabled={isVideoLoading}
+                                onClick={loadMoreVideo}
+                                className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-blue-500 hover:bg-blue-700 flex align-center justify-center"
+                            >
+                                {isVideoLoading ? (
+                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                ) : (
+                                    "Load More"
+                                )}
+                            </button>
+                        )}
                     </section>
                 </section>
             </div>
