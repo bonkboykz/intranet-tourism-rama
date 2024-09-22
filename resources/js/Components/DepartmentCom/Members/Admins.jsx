@@ -3,14 +3,13 @@ import axios from "axios";
 
 import { MemberCard } from "./MemberCard";
 
-export const Admins = ({ admins, departmentID, onRefetch }) => {
+export const Admins = ({ admins, departmentID, onRefetch, searchInput }) => {
     const [activePopupId, setActivePopupId] = useState(null);
     const closePopup = () => {
         setActivePopupId(null);
     };
 
     const handleAdminRemove = async (member) => {
-        // TODO: Removing an admin is practically the same as demoting them in communities
         await handleDemotion(member, true);
     };
 

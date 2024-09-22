@@ -9,13 +9,14 @@ export function Admins({ admins, communityID, onRefetch }) {
         setActivePopupId(null);
     };
 
-    const handleDemotion = async (admin) => {
+    const handleDemotion = async (admin, withRemove = false) => {
         try {
             const rolesResponse = await axios.post(
                 `/api/communities/communities/${communityID}/revoke-community-admin`,
                 {
                     user_id: admin.id,
                     community_id: communityID,
+                    ...(withRemove == true && { remove: true }),
                 }
             );
 
@@ -36,8 +37,7 @@ export function Admins({ admins, communityID, onRefetch }) {
     };
 
     const handleAdminRemove = async (member) => {
-        // TODO: Removing an admin is practically the same as demoting them in communities
-        await handleDemotion(member);
+        await handleDemotion(member, true);
     };
 
     return (
@@ -50,8 +50,6 @@ export function Admins({ admins, communityID, onRefetch }) {
             </header>
 
             {admins.map((admin, index) => {
-                console.log(admin);
-
                 return (
                     <MemberCard
                         key={index}

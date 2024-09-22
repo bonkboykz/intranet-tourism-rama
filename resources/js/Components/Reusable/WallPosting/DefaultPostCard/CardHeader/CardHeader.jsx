@@ -3,7 +3,11 @@ export function CardHeader({ post }) {
         return (
             <div className="flex w-full items-center justify-between h-auto mb-4">
                 <span className="text-sm font-semibold text-neutral-600 bg-gray-200 rounded-lg px-2 py-1">
-                    <span>Community:</span> {post.community.name}
+                    <a
+                        href={`/communityInner?communityId=${post.community.id}`}
+                    >
+                        <span>Community:</span> {post.community.name}
+                    </a>
                 </span>
             </div>
         );
@@ -13,7 +17,11 @@ export function CardHeader({ post }) {
         return (
             <div className="flex w-full items-center justify-between h-auto mb-4">
                 <span className="text-sm font-semibold text-neutral-600 bg-gray-200 rounded-lg px-2 py-1">
-                    <span>Department:</span> {post.department.name}
+                    <a
+                        href={`/departmentInner?departmentId=${post.department.id}`}
+                    >
+                        <span>Department:</span> {post.department.name}
+                    </a>
                 </span>
             </div>
         );

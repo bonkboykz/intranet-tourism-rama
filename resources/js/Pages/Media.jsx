@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
 import axios from "axios";
 
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
@@ -15,38 +16,12 @@ import "../Components/Reusable/css/FileManagementSearchBar.css";
 
 const Media = () => {
     // const [selectedMedia, setSelectedMedia] = useState('All');
-    const [posts, setPosts] = useState([]);
     const [selectedTag, setSelectedTag] = useState("");
-    const [filteredPosts, setFilteredPosts] = useState([]);
     const [tagOptions, setTagOptions] = useState([]);
 
     const { hasRole } = usePermissions();
 
     const [isLoading, setIsLoading] = useState(false);
-
-    const fetchData = async () => {
-        setIsLoading(true);
-        const url = "/api/posts/public_media";
-
-        try {
-            const response = await axios.get(url, {
-                params: {
-                    ...(selectedTag !== "" && {
-                        album_id: selectedTag,
-                    }),
-                },
-            });
-            const data = response.data.data;
-            // Filter out posts with type 'story'
-            // const filteredData = data.filter((post) => post.type !== "story");
-
-            setPosts(data);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-
-        setIsLoading(false);
-    };
 
     const fetchTags = async () => {
         const url = "/api/album";
@@ -62,14 +37,7 @@ const Media = () => {
 
     useEffect(() => {
         fetchTags();
-        fetchData();
     }, []);
-
-    // console.log("DATA", posts);
-
-    useEffect(() => {
-        fetchData();
-    }, [selectedTag]);
 
     const handleTagChange = (event) => {
         setSelectedTag(event.target.value);
@@ -119,7 +87,7 @@ const Media = () => {
                             )}
                         </div>
 
-                        <Gallery filteredPosts={posts} />
+                        <Gallery selectedTag={selectedTag} />
                     </div>
                 </div>
             </main>

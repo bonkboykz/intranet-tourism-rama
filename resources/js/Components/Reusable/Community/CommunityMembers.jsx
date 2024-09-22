@@ -73,15 +73,26 @@ function CommunityMembers({ communityID, loggedInID }) {
     };
 
     const [searchResults, setSearchResults] = useState([]);
+    const [adminSearchResults, setAdminSearchResults] = useState([]);
 
     useEffect(() => {
+        const fileteredAdmins = admins.filter((admin) =>
+            admin.name.toLowerCase().includes(searchInput.toLowerCase())
+        );
         const filteredMembers = members.filter((member) =>
             member.name.toLowerCase().includes(searchInput.toLowerCase())
         );
+        setAdminSearchResults(fileteredAdmins);
         setSearchResults(filteredMembers);
-    }, [searchInput, members]);
+    }, [searchInput, members, admins]);
 
-    const displayedMembers = searchResults.length > 0 ? searchResults : members;
+    const displayedAdmins =
+        adminSearchResults.length > 0 ? adminSearchResults : [];
+    const displayedMembers = searchResults.length > 0 ? searchResults : [];
+
+    const nonAdminUsers = displayedMembers.filter(
+        (member) => !admins.some((admin) => admin.id === member.user_id)
+    );
 
     if (isLoading) {
         return (
@@ -90,10 +101,6 @@ function CommunityMembers({ communityID, loggedInID }) {
             </div>
         );
     }
-
-    const nonAdminUsers = displayedMembers.filter(
-        (member) => !admins.some((admin) => admin.id === member.user_id)
-    );
 
     return (
         <section className="flex flex-col h-auto max-w-full p-6 rounded-3xl max-md:px-5">
@@ -114,7 +121,7 @@ function CommunityMembers({ communityID, loggedInID }) {
             </div>
 
             <Admins
-                admins={admins}
+                admins={displayedAdmins}
                 communityID={communityID}
                 onRefetch={() => {
                     fetchAdmins();

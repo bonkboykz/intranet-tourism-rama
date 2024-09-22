@@ -1,6 +1,7 @@
-export function DeletePopup({ onClose, onDelete }) {
+export function DeletePopup({ onClose, onDelete, modalRef }) {
     return (
         <div
+            ref={modalRef}
             style={{
                 position: "fixed",
                 top: "50%",
