@@ -781,7 +781,7 @@ class PostController extends Controller
             });
         }
 
-        $posts = $query->paginate(5);
+        $posts = $query->paginate(20);
 
         // Return the result as JSON
         return response()->json([
