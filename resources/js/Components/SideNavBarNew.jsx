@@ -210,7 +210,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
             (item) => item.href === currentPath
         );
         setActiveIndex(currentIndex);
-    }, []);
+    }, [navigation]);
 
     const handleLogout = (event) => {
         event.preventDefault();
