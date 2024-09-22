@@ -114,7 +114,9 @@ const StoryNew = ({ userId }) => {
             return;
         }
 
-        setSelectedStory(avatarStories);
+        setSelectedStory(
+            avatarStories.sort((a, b) => a.timestamp - b.timestamp)
+        );
         setSelectedUser(avatar);
         setShowStoryViewer(true);
         setCurrentGroupIndex(groupIndex); // Set current group index when opening viewer
@@ -204,7 +206,7 @@ const StoryNew = ({ userId }) => {
             if (userId.toString() === id.toString()) {
                 userGroupedStories.push({
                     userId: userId,
-                    stories,
+                    stories: stories.sort((a, b) => a.timestamp - b.timestamp),
                     avatar: avatars[id],
                     allViewed: stories.every((story) => {
                         return viewedMap[story.postId];
@@ -213,7 +215,7 @@ const StoryNew = ({ userId }) => {
             } else {
                 otherUsersGroupedStories.push({
                     userId: userId,
-                    stories,
+                    stories: stories.sort((a, b) => a.timestamp - b.timestamp),
                     avatar: avatars[userId],
                     allViewed: stories.every((story) => {
                         return viewedMap[story.postId];
