@@ -8,6 +8,7 @@ import { Volume2 } from "lucide-react";
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
 
@@ -361,6 +362,11 @@ export function PollPostCard({ post }) {
 
     const userData = useUserData();
 
+    const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
+        setShowDetails(false);
+        setShowModal(false);
+    });
+
     if (isDeleted) {
         return null;
     }
@@ -393,6 +399,7 @@ export function PollPostCard({ post }) {
                             <div className="flex items-center gap-2">
                                 {canEdit && (
                                     <img
+                                        ref={buttonRef}
                                         loading="lazy"
                                         src="/assets/wallpost-dotbutton.svg"
                                         alt="Options"
@@ -408,6 +415,7 @@ export function PollPostCard({ post }) {
 
                     {showDetails && canEdit && (
                         <PostDetails
+                            popupRef={popupRef}
                             onEdit={() => {
                                 setShowDetails(false);
                                 setShowModal(true);
@@ -434,7 +442,10 @@ export function PollPostCard({ post }) {
                                 className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
                                 onClick={() => setShowModal(false)}
                             ></div>
-                            <div className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]">
+                            <div
+                                className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]"
+                                ref={modalRef}
+                            >
                                 <EditPost
                                     post={cachedPost}
                                     loggedInUserId={loggedInUserId}
@@ -501,6 +512,7 @@ export function PollPostCard({ post }) {
                             onClick={() => setShowDeletePopup(false)}
                         ></div>
                         <DeletePopup
+                            modalRef={modalRef}
                             onClose={() => setShowDeletePopup(false)}
                             onDelete={handleDelete}
                         />
