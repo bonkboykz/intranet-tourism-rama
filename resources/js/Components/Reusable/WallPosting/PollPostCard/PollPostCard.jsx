@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import { Volume2 } from "lucide-react";
 
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
@@ -119,7 +120,7 @@ export function PollPostCard({ post }) {
     const handleAnnouncement = async (post) => {
         try {
             const response = await axios.put(`/api/posts/posts/${post.id}`, {
-                announced: true,
+                announced: !post.announced,
                 user_id: String(post.user.id),
                 visibility: "public",
             });
@@ -373,6 +374,16 @@ export function PollPostCard({ post }) {
                     "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative"
                 )}
             >
+                {cachedPost.announced && (
+                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl  pl-6">
+                        <div className="flex items-center gap-1 w-full h-full">
+                            <Volume2 className="w-6 h-6 text-white" />
+                            <div className="text-white text-center font-bold text-lg	ml-2">
+                                Announcement
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
@@ -405,6 +416,7 @@ export function PollPostCard({ post }) {
                             onAnnouncement={() =>
                                 handleAnnouncement(cachedPost)
                             }
+                            isAnnounced={cachedPost.announced}
                         />
                     )}
                 </header>
