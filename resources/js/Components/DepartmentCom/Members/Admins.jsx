@@ -10,7 +10,6 @@ export const Admins = ({ admins, departmentID, onRefetch }) => {
     };
 
     const handleAdminRemove = async (member) => {
-        // TODO: Removing an admin is practically the same as demoting them in communities
         await handleDemotion(member, true);
     };
 
