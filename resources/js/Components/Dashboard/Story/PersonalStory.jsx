@@ -10,7 +10,9 @@ export function PersonalStory({
         <div
             style={{
                 display: "inline-block",
-                margin: "10px",
+                marginLeft: "10px",
+                marginRight: "10px",
+                marginBottom: "10px",
                 position: "relative",
                 marginRight: "30px",
                 flexShrink: 0,
