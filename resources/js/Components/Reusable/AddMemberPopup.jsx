@@ -4,6 +4,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 import { useCsrf } from "@/composables";
+import { toastError } from "@/Utils/toast";
 
 import defaultImage from "../../../../public/assets/dummyStaffPlaceHolder.jpg";
 
@@ -432,6 +433,16 @@ const AddMemberPopup = ({
                     "Error adding member to department:",
                     responseText
                 );
+                if (
+                    responseText.includes(
+                        "already has an employment post in this department"
+                    )
+                ) {
+                    toastError(
+                        "User already has an employment post in this department"
+                    );
+                }
+
                 setError(`Failed to add ${selectedPerson.name}.`);
                 return;
             }
