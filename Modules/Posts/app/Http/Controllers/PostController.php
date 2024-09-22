@@ -131,6 +131,7 @@ class PostController extends Controller
 
         // attach user by user_id
         $post->user = User::find($post->user_id);
+        $post->user->profile = $post->user->profile;
         $post->attachments = Resource::where('attachable_id', $post->id)->get();
         $post->comments = $post->comments->map(function ($comment) {
             $comment->user = User::find($comment->user_id);

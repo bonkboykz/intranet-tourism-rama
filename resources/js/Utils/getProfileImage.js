@@ -1,5 +1,5 @@
 export const getProfileImage = (profile, name = "User") => {
-    if (!profile && !profile.image && !profile.staff_image) {
+    if (!profile) {
         return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
             name
         )}&rounded=true`;
@@ -11,6 +11,12 @@ export const getProfileImage = (profile, name = "User") => {
         }
 
         return `/avatar/${profile.staff_image}`;
+    }
+
+    if (!profile.image) {
+        return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
+            name
+        )}&rounded=true`;
     }
 
     if (profile.image === "/assets/dummyStaffPlaceHolder.jpg") {

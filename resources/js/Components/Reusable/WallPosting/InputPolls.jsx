@@ -172,7 +172,7 @@ export function InputPolls({
                                 post={{
                                     user: {
                                         name: userData.name,
-                                        profile: userData,
+                                        profile: userData.profile,
                                     },
                                 }}
                             />
@@ -232,7 +232,9 @@ export function InputPolls({
                             <label
                                 htmlFor="end_date"
                                 className="inline-block bg-gray-100 p-4 text-center text-sm text-neutral-800 rounded-3xl cursor-pointer select-none"
-                                onClick={() => setIncludeEndDate(!includeEndDate)}
+                                onClick={() =>
+                                    setIncludeEndDate(!includeEndDate)
+                                }
                             >
                                 Choose end date (opt.)
                             </label>
@@ -243,7 +245,9 @@ export function InputPolls({
                                     name="end_date"
                                     type="date"
                                     min={format(
-                                        add(startOfDay(new Date()), { days: 1 }),
+                                        add(startOfDay(new Date()), {
+                                            days: 1,
+                                        }),
                                         "yyyy-MM-dd"
                                     )}
                                     value={endDate}

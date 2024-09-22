@@ -41,13 +41,10 @@ export function UserProfileAvatar({ post }) {
         );
     }
 
-    console.log(post);
-    console.log(getProfileImage(post.user.profile));
-
     return (
         <img
             loading="lazy"
-            src={getProfileImage(post.user.profile)}
+            src={getProfileImage(post.user?.profile)}
             alt={post.user.name}
             className="shrink-0 aspect-square w-[53px] rounded-image"
         />
