@@ -44,20 +44,20 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
             <ul>
                 {filteredNotifications.map((notification) => (
                     <div
-                        className="flex flex-row h-[104px] mb-2 hover:bg-blue-100 items-center rounded-xl"
+                        className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl"
                         key={notification.id}
                         onMouseOver={() => markAsRead(notification.id)}
                     >
                         <div className="flex items-center bg-gray h-16">
                             <img
-                                className="h-14 w-14 ml-2"
+                                className="h-10 w-10 ml-2"
                                 src={getProfileImage({
                                     image: notification.imageSrc,
                                 })}
                                 alt=""
                                 style={{
-                                    height: "80px",
-                                    width: "80px",
+                                    height: "60px",
+                                    width: "60px",
                                     borderRadius: "100%",
                                 }}
                             />
@@ -155,13 +155,13 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                             )}
                         </div>
                         <div className="flex flex-col w-48 h-50 ml-2">
-                            <div className="block px-2 py-1 text-sm notification-message">
+                            <div className="block px-1 py-1 text-sm font-semibold notification-message">
                                 {/* <span className="font-bold mr-1">
                                     {notification.users}
                                 </span> */}
                                 <span>{notification.data.message}</span>
                             </div>
-                            <div className="block px-2 py-1 text-sm font-medium text-neutral-800 text-opacity-50">
+                            <div className="block px-1 py-1 text-sm font-medium text-neutral-800 text-opacity-50">
                                 {formatTimeAgo(notification.created_at)}
                             </div>
                         </div>
