@@ -231,8 +231,21 @@ const Community = () => {
 
     return (
         <Example>
-            <main className="w-full xl:pl-96 bg-gray-100 min-h-screen">
-                <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
+        <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+            {/* left widgets */}
+            <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                <div className="file-directory-header">
+                    <PageTitle title="Communities" />
+                </div>
+                <hr className="file-directory-underline" />
+                <div>
+                    <FeaturedEvents />
+                    <WhosOnline />
+                </div>
+            </div>
+
+            {/* main content */}
+            <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                     <CommunitySearchBar
                         onSearch={(value) => setSearchTerm(value)}
                         toggleCreateCommunity={toggleCreateCommunity}
@@ -267,7 +280,7 @@ const Community = () => {
                     </div>
                 </div>
             </main>
-            <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
+            {/* <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
                 <style>
                     {`
           aside::-webkit-scrollbar {
@@ -284,7 +297,7 @@ const Community = () => {
                     <FeaturedEvents />
                     <WhosOnline />
                 </div>
-            </aside>
+            </aside> */}
             {isCreateCommunityOpen && (
                 <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                     <div className="bg-white p-4 rounded-2xl shadow-lg max-md:w-5/6 relative">
