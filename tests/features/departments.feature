@@ -30,4 +30,6 @@ Scenario: Super admin views departments page
   Then a new department named "Test" should be created
     And the new department "Test" should be visible in the list of departments
 
+
+
     
