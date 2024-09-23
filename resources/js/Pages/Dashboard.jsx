@@ -106,7 +106,7 @@ const Dashboard = () => {
         >
             <Example>
     <div className="flex-row w-full">
-        <main className="min-h-screen bg-gray-100 flex-row flex justify-center gap-20 md:gap-12">
+        <main className="z-0 min-h-screen bg-gray-100 flex-row flex justify-center gap-20 md:gap-12">
             {/* left widgets */}
             <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden lg:block no-scrollbar">
                 <div className="file-directory-header">

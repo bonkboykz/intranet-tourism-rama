@@ -49,49 +49,60 @@ const Media = () => {
 
     return (
         <Example>
-            <main className="min-h-screen bg-gray-100 xl:pl-96">
-                <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
-                    <div>
-                        <div className="w-full flex flex-row justify-between items-center">
-                            <div className="relative flex flex-col justify-center max-w-full text-sm text-neutral-800">
-                                <div
-                                    style={{ width: "180px" }}
-                                    className="flex justify-between gap-5 px-4 py-1 bg-white shadow-custom cursor-pointer rounded-2xl"
-                                >
-                                    <select
-                                        disabled={isLoading}
-                                        value={selectedTag}
-                                        onChange={handleTagChange}
-                                        className="border-none outline-none w-full"
-                                    >
-                                        <option value="">All</option>
-                                        {tagOptions.map((tag, index) => (
-                                            <option key={index} value={tag.id}>
-                                                {tag.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
+        <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+            {/* left widgets */}
+            <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                <div className="file-directory-header">
+                    <PageTitle title="Media" />
+                </div>
+                <hr className="file-directory-underline" />
+                <div>
+                    <FeaturedEvents />
+                    <WhosOnline />
+                </div>
+            </div>
 
-                            {hasRole("superadmin") && (
-                                <div className="ml-auto">
-                                    {/* Manage Album Button */}
-                                    <button
-                                        className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                                        onClick={handleManageAlbum}
-                                    >
-                                        Manage Album
-                                    </button>
-                                </div>
-                            )}
+            {/* main content */}
+            <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                    <div className="w-full flex flex-row justify-between items-center">
+                        <div className="relative flex flex-col justify-center max-w-full text-sm text-neutral-800">
+                            <div
+                                style={{ width: "180px" }}
+                                className="flex justify-between gap-5 px-4 py-1 bg-white shadow-custom cursor-pointer rounded-2xl"
+                            >
+                                <select
+                                    disabled={isLoading}
+                                    value={selectedTag}
+                                    onChange={handleTagChange}
+                                    className="border-none outline-none w-full"
+                                >
+                                    <option value="">All</option>
+                                    {tagOptions.map((tag, index) => (
+                                        <option key={index} value={tag.id}>
+                                            {tag.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
 
-                        <Gallery selectedTag={selectedTag} />
+                        {hasRole("superadmin") && (
+                            <div className="ml-auto">
+                                {/* Manage Album Button */}
+                                <button
+                                    className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                    onClick={handleManageAlbum}
+                                >
+                                    Manage Album
+                                </button>
+                            </div>
+                        )}
                     </div>
+
+                    <Gallery selectedTag={selectedTag} />
                 </div>
             </main>
-            <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
+            {/* <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
                 <style>
                     {`
             aside::-webkit-scrollbar {
@@ -109,7 +120,7 @@ const Media = () => {
                     <FeaturedEvents />
                     <WhosOnline />
                 </div>
-            </aside>
+            </aside> */}
         </Example>
     );
 };

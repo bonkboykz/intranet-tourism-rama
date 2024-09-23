@@ -424,7 +424,7 @@ export default function Adminwall({
         <WallContext.Provider
             value={{ variant: "department", loggedInUserId: userId }}
         >
-            <div className="flex flex-wrap mx-auto my-20 text-black justify-left max-w-7xl gap-y-10">
+            <div className="flex flex-wrap my-20 text-black gap-y-10">
                 <Adminsection
                     departmentID={departmentID}
                     departmentHeader={departmentHeader}

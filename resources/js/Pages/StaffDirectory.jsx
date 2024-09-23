@@ -248,8 +248,21 @@ const StaffDirectory = () => {
         <Example>
             <div className="flex-row">
                 <div className="flex">
-                    <main className="w-full min-h-screen bg-gray-100 xl:pl-96">
-                        <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 max-w-[1200px]">
+                    <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                        {/* left widgets */}
+                        <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                            <div className="file-directory-header">
+                                <PageTitle title="Staff Directory" />
+                            </div>
+                            <hr className="file-directory-underline" />
+                            <div>
+                                <FeaturedEvents />
+                                <WhosOnline />
+                            </div>
+                        </div>
+
+                        {/* main content */}
+                        <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                             <SearchMembers
                                 {...{
                                     handleStaffListButton,
@@ -308,14 +321,14 @@ const StaffDirectory = () => {
                             )}
                         </div>
                     </main>
-                    <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
+                    {/* <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
                         <style>
                             {`
-            aside::-webkit-scrollbar {
-              width: 0px;
-              background: transparent;
-            }
-          `}
+                            aside::-webkit-scrollbar {
+                            width: 0px;
+                            background: transparent;
+                            }
+                        `}
                         </style>
                         <div className="file-directory-header">
                             <PageTitle title="Staff Directory" />
@@ -325,7 +338,7 @@ const StaffDirectory = () => {
                             <FeaturedEvents />
                             <WhosOnline />
                         </div>
-                    </aside>
+                    </aside> */}
                 </div>
             </div>
             {isDeactivateModalOpen && (

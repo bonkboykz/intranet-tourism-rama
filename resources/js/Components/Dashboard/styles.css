@@ -203,4 +203,35 @@
       display: none !important;
     }
   }
-  
+
+  .left-widget-dashboard {
+    z-index: 0;
+    padding-left: 2.5rem; /* Tailwind pl-10 */
+    padding-right: 2.5rem; /* Tailwind pr-10 */
+    padding-top: 2.5rem; /* Tailwind pt-10 */
+    padding-bottom: 5rem; /* Tailwind pb-20 */
+    overflow-y: auto;
+    height: auto;
+    width: 100%;
+    max-width: 330px;
+    max-height: 100vh;
+    position: sticky;
+    top: 0;
+    display: none; /* Tailwind hidden */
+}
+
+@media (min-width: 1024px) {
+    .custom-widget {
+        display: block; /* Tailwind lg:block */
+    }
+}
+
+/* Custom class to hide the scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
