@@ -23,6 +23,8 @@ use App\Http\Controllers\LinkController;
 use App\Http\Controllers\OrderingController;
 use App\Http\Controllers\ManageLinksController;
 use Modules\Crud\Http\Controllers\AuditController;
+use App\Http\Controllers\ManageFoldersController;
+
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -65,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/notifications', [NotificationController::class, 'index'])->name('notification');
     Route::get('/profile/unread-notifications', [NotificationController::class, 'index_unread'])->name('notification-unread');
     Route::get('/community', [Community::class, 'index'])->name('Community');
-
+    Route::get('/manage-folders', [ManageFoldersController::class, 'index'])->name('manage-folders');
     Route::get('/departments', [departments::class, 'index'])->name('Departments');
     Route::get('/departmentInner', [departments::class, 'renderinner'])->name('DepartmentInner');
     Route::get('/communityInner', [Community::class, 'renderinner'])->name('CommunityInner');
