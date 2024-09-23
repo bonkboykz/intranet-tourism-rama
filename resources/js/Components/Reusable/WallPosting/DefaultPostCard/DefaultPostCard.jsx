@@ -448,8 +448,8 @@ export function DefaultPostCard({ post }) {
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
                     variant === "department"
-                        ? "w-full "
-                        : "w-full",
+                        ? "w-full max-w-[700px]"
+                        : "w-full max-w-[700px]",
                     "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full z-5 relative",
                     cachedPost.announced &&
                         (cachedPost.community_id || cachedPost.department_id

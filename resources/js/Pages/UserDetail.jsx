@@ -420,8 +420,21 @@ function UserDetailContent() {
             value={{ loggedInUserId: user.id, variant: "user-wall" }}
         >
             <Example>
-                <main className="xl:pl-96 w-full">
-                    <div className="px-1 py-10 sm:px-1 lg:px-8 lg:py-6 sm:mr-0 md:mr-7 lg:mr-9 mr-9">
+                <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                    {/* left widgets */}
+                    <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                        <div className="file-directory-header">
+                            <PageTitle title="User Profile" />
+                        </div>
+                        <hr className="file-directory-underline" />
+                        <div>
+                            <FeaturedEvents />
+                            <WhosOnline />
+                        </div>
+                    </div>
+
+                    {/* main content */}
+                    <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                         <div>
                             <div className="profile-header w-full bg-white h-[485px] max-md:h-[385px] shadow-custom rounded-lg ml-8">
                                 <ProfileHeader
@@ -659,28 +672,6 @@ function UserDetailContent() {
                         </div>
                     </div>
                 </main>
-                <aside className="fixed bottom-0 left-20 top-16 hidden w-1/4 max-w-sm overflow-y-auto px-4 py-6 sm:px-6 lg:px-8 xl:block">
-                    <style>
-                        {`
-                aside::-webkit-scrollbar {
-                    width: 0px !important;
-                    background: transparent !important;
-                }
-                aside {
-                    scrollbar-width: none !important; /* For Firefox */
-                    -ms-overflow-style: none;  /* IE and Edge */
-                }
-            `}
-                    </style>
-                    <div className="file-directory-header">
-                        <PageTitle title="User Profile" />
-                    </div>
-                    <hr className="file-directory-underline" />
-                    <div>
-                        <FeaturedEvents />
-                        <WhosOnline />
-                    </div>
-                </aside>
                 {isSaveNotificationOpen && (
                     <SaveNotification
                         title="Changes saved successfully"

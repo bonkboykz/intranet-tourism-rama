@@ -59,7 +59,7 @@ const NotificationPopup = () => {
 
     return (
         <div
-            className="notification-box absolute right-0 max-md:-mr-4 mt-2 w-[360px] max-sm:w-[260px] bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+            className="notification-box absolute right-0 max-md:-mr-4 mt-2 w-[300px] max-sm:w-[260px] bg-white border border-gray-200 rounded-lg shadow-lg z-50"
             ref={popupRef} // Attach the reference to the popup div
         >
             <h2

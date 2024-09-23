@@ -539,7 +539,7 @@ function Navigation({ departmentName, type }) {
                     {activeTab === "Post" && (
                         <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
                             {/* TODO: if not a member -> don't show */}
-                            <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
+                            <div className="px-20 w-full whitespace-nowrap absolute content-items pb-8">
                                 {isMember && (
                                     <ShareYourThoughts
                                         userId={userId}
