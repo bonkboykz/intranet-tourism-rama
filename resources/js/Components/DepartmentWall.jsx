@@ -300,8 +300,8 @@ function Navigation({ userId, departmentID, departmentName }) {
                     )}
 
                     {activeTab === "Post" && (
-                        <div className="flex flex-col max-w-[1000px] shadow-2xl pb-6 rounded-xl mt-6">
-                            <div className="max-w-[875px] w-full whitespace-nowrap absolute content-items pb-8">
+                        <div className="flex flex-col shadow-2xl pb-6 rounded-xl mt-6">
+                            <div className="px-20 w-full bg-gray-100 whitespace-nowrap absolute content-items pb-8">
                                 {isMember && (
                                     <ShareYourThoughts
                                         userId={userId}
@@ -424,7 +424,7 @@ export default function Adminwall({
         <WallContext.Provider
             value={{ variant: "department", loggedInUserId: userId }}
         >
-            <div className="flex flex-wrap my-20 text-black gap-y-10">
+            <div className="flex flex-wrap mx-auto my-20 text-black justify-left max-w-7xl gap-y-10">
                 <Adminsection
                     departmentID={departmentID}
                     departmentHeader={departmentHeader}

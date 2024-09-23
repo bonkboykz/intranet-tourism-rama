@@ -9,9 +9,7 @@ export function SystemBirthdayCard() {
     return (
         <article
             className={cn(
-                "w-full max-w-[700px]",
-                "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
-                "relative pt-4"
+                "p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
             )}
         >
             <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
