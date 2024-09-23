@@ -147,57 +147,58 @@ function HeaderSection({
 function Navigation({ userId, departmentID, departmentName }) {
     const [activeTab, setActiveTab] = useState("Post"); // Default active tab set to 'Post'
     const [polls, setPolls] = useState([]);
-    const [birthdaysToday, setBirthdaysToday] = useState([]);
+    // const [birthdaysToday, setBirthdaysToday] = useState([]);
 
-    useEffect(() => {
-        const fetchAllUsers = async () => {
-            let allUsers = [];
-            let page = 1;
-            let hasMoreData = true;
+    // useEffect(() => {
+    //     const fetchAllUsers = async () => {
+    //         let allUsers = [];
+    //         let page = 1;
+    //         let hasMoreData = true;
 
-            while (hasMoreData) {
-                try {
-                    const response = await fetch(
-                        `/api/users/users?page=${page}&with[]=profile&with[]=employmentPosts.department&with[]=employmentPosts.businessPost&with[]=employmentPosts.businessUnit`,
-                        {
-                            method: "GET",
-                        }
-                    );
+    //         // TODO: optimize this
+    //         while (hasMoreData) {
+    //             try {
+    //                 const response = await fetch(
+    //                     `/api/users/users?page=${page}&with[]=profile&with[]=employmentPosts.department&with[]=employmentPosts.businessPost&with[]=employmentPosts.businessUnit`,
+    //                     {
+    //                         method: "GET",
+    //                     }
+    //                 );
 
-                    const result = await response.json();
-                    const { data } = result;
+    //                 const result = await response.json();
+    //                 const { data } = result;
 
-                    // console.log("RESULTT", result);
+    //                 // console.log("RESULTT", result);
 
-                    // Append the current page's users to the allUsers array
-                    allUsers = [...allUsers, ...data.data];
+    //                 // Append the current page's users to the allUsers array
+    //                 allUsers = [...allUsers, ...data.data];
 
-                    // Check if there are more pages to fetch
-                    hasMoreData = data.next_page_url !== null;
-                    page++;
-                } catch (error) {
-                    console.error("Error fetching user data:", error);
-                    hasMoreData = false;
-                }
-            }
+    //                 // Check if there are more pages to fetch
+    //                 hasMoreData = data.next_page_url !== null;
+    //                 page++;
+    //             } catch (error) {
+    //                 console.error("Error fetching user data:", error);
+    //                 hasMoreData = false;
+    //             }
+    //         }
 
-            // Get today's date in MM-DD format
-            const today = new Date().toISOString().slice(5, 10);
+    //         // Get today's date in MM-DD format
+    //         const today = new Date().toISOString().slice(5, 10);
 
-            // Filter users whose birthday is today
-            const bdayToday = allUsers.filter((user) => {
-                const dob = user.profile?.dob;
-                return dob && dob.slice(5, 10) === today;
-            });
+    //         // Filter users whose birthday is today
+    //         const bdayToday = allUsers.filter((user) => {
+    //             const dob = user.profile?.dob;
+    //             return dob && dob.slice(5, 10) === today;
+    //         });
 
-            console.log("Filtered Birthdays Today", bdayToday);
+    //         console.log("Filtered Birthdays Today", bdayToday);
 
-            // Set the filtered list to state
-            setBirthdaysToday(bdayToday);
-        };
+    //         // Set the filtered list to state
+    //         setBirthdaysToday(bdayToday);
+    //     };
 
-        fetchAllUsers();
-    }, []);
+    //     fetchAllUsers();
+    // }, []);
 
     const handleCreatePoll = (poll) => {
         setPolls((prevPolls) => [...prevPolls, poll]);
@@ -209,7 +210,7 @@ function Navigation({ userId, departmentID, departmentName }) {
 
     const { isMember } = useContext(DepartmentContext);
 
-    console.log(isMember);
+    // console.log(isMember);
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -308,11 +309,11 @@ function Navigation({ userId, departmentID, departmentName }) {
                                         includeAccessibilities={true}
                                         filterType="Community"
                                         filterId={departmentID}
-                                        birthdaysToday={
-                                            birthdaysToday.length > 0
-                                                ? birthdaysToday
-                                                : null
-                                        }
+                                        // birthdaysToday={
+                                        //     birthdaysToday.length > 0
+                                        //         ? birthdaysToday
+                                        //         : null
+                                        // }
                                         departmentId={departmentID}
                                     />
                                 )}
@@ -423,7 +424,7 @@ export default function Adminwall({
         <WallContext.Provider
             value={{ variant: "department", loggedInUserId: userId }}
         >
-            <div className="flex flex-wrap mx-auto my-20 text-black justify-left max-w-7xl gap-y-10">
+            <div className="flex flex-wrap my-20 text-black gap-y-10">
                 <Adminsection
                     departmentID={departmentID}
                     departmentHeader={departmentHeader}

@@ -88,7 +88,7 @@ const TagInput = ({ tag, setTag, onClose, onSave }) => {
                                 </div>
                             )}
                         </div>
-                        <div className="tags-container mt-3">
+                        <div className="tags-container">
                             {albums.map((album, index) => (
                                 <div key={album.id} className="tag">
                                     {album.name}

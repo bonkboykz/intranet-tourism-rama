@@ -11,7 +11,7 @@ const CommunityItem = ({
     memberCount,
 }) => (
     <a href={`/communityInner?communityId=${id}`}>
-        <article className="flex items-start w-full gap-3 px-4 py-1 mt-1">
+        <article className="flex items-start w-full gap-3 py-1 ">
             <div className="flex flex-col items-center mt-2 text-xs font-semibold uppercase">
                 <img
                     src={imgSrc}
@@ -91,10 +91,20 @@ function MyComponent() {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center max-w-[320px] text-neutral-800 mb-20">
-            <section className="flex flex-col items-start py-2 bg-white border-2 rounded-2xl shadow-custom">
-                <h1 className="mt-2 ml-4 text-2xl font-bold">Communities</h1>
-                <hr className="border border-gray-200 w-[270px] mx-4 -mt-4"></hr>
+        <div className="flex flex-col justify-center max-w-[320px] text-neutral-800 mb-10">
+            <section className="flex flex-col items-start py-2 px-4 bg-white border-2 rounded-2xl shadow-custom">
+                <h2
+                    style={{
+                        fontWeight: "bold",
+                        fontSize: "24px",
+                        fontFamily: "Nunito Sans",
+                        marginTop: "10px",
+                        textAlign: "start"
+                    }}
+                >
+                    Communities
+                </h2>
+                <hr className="border border-gray-200 w-full"></hr>
                 <div className="flex flex-col justify-center w-full py-4">
                     {isLoading ? (
                         <div className="flex items-center justify-center h-64">
@@ -114,9 +124,9 @@ function MyComponent() {
                         ))
                     )}
                 </div>
-                <hr className="border border-gray-200 w-[270px] mx-4 mt-2"></hr>
+                <hr className="border border-gray-200 w-full"></hr>
                 <a href="../community">
-                    <button className="flex items-center my-2 ml-4 text-sm font-bold">
+                    <button className="flex items-center my-2 text-sm font-bold">
                         VIEW ALL
                         <img
                             src="assets/viewAllArrow.png"

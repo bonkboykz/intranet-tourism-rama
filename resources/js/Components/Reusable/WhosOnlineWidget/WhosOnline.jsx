@@ -57,8 +57,8 @@ const WhosOnline = () => {
     };
 
     return (
-        <div className="whos-online-container border-2 shadow-2xl flex-col justify-start">
-            <div className="whos-online-header flex justify-between items-center">
+        <div className="whos-online-container border-2 shadow-2xl flex-col justify-start w-full max-w-[320px]">
+            <div className="whos-online-header flex justify-between items-normal">
                 <h2
                     style={{
                         fontWeight: "bold",

@@ -263,6 +263,14 @@ class CommunityController extends Controller
         // Revoke the user's community-specific permissions
         CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
 
+        if (request()->has('remove')) {
+            $employmentPost = CommunityMember::where('user_id', $user->id)->where('community_id', $community->id)->first();
+
+            if ($employmentPost) {
+                $employmentPost->delete();
+            }
+        }
+
         return response()->json([
             'message' => 'User has been successfully revoked as a community admin.',
         ]);

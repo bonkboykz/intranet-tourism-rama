@@ -1,3 +1,5 @@
+import { getProfileImage } from "@/Utils/getProfileImage";
+
 const getDepartmentOrCommunityBannerUrl = (group) => {
     if (!group.banner) {
         return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
@@ -42,18 +44,7 @@ export function UserProfileAvatar({ post }) {
     return (
         <img
             loading="lazy"
-            src={
-                post.user.profile?.image
-                    ? post.user.profile.image ===
-                      "/assets/dummyStaffPlaceHolder.jpg"
-                        ? post.user.profile.image
-                        : post.user.profile.image.startsWith("avatar/")
-                          ? `/storage/${post.user.profile.image}`
-                          : `/avatar/${post.user.profile.image}`
-                    : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
-                          post.user.name
-                      )}&rounded=true`
-            }
+            src={getProfileImage(post.user?.profile)}
             alt={post.user.name}
             className="shrink-0 aspect-square w-[53px] rounded-image"
         />

@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:api']], function () {
         Route::post('{id}/markAsViewed', [PostController::class, 'markAsViewed'])->name('post.markAsViewed');
         Route::post('{post}/haveAnsweredPoll', [PostController::class, 'haveAnsweredPoll'])->name('post.haveAnsweredPoll');
         Route::post('{post}/submitPollResponse', [PostController::class, 'submitPollResponse'])->name('post.submitPollResponse');
+        Route::post('{post}/submitPollFeedback', [PostController::class, 'submitPollFeedback'])->name('post.submitPollFeedback');
         Route::post('{post}/calculatePollResults', [PostController::class, 'calculatePollResults'])->name('post.calculatePollResults');
     });
 

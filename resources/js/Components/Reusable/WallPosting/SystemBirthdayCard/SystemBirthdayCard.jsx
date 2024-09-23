@@ -9,8 +9,8 @@ export function SystemBirthdayCard() {
     return (
         <article
             className={cn(
-                "w-full lg:w-full md:w-[610px] sm:w-[610px]",
-                "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative",
+                "w-full max-w-[700px]",
+                "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
                 "relative pt-4"
             )}
         >
@@ -45,7 +45,7 @@ export function SystemBirthdayCard() {
                     />
                     <div className="absolute inset-0 flex justify-center items-center p-4">
                         <span
-                            className="text-5xl font-black text-center text-white text-opacity-90 bg-black bg-opacity-50 rounded-lg"
+                            className="text-5xl px-4 py-2 font-black text-center text-white text-opacity-90 bg-black bg-opacity-50 rounded-lg"
                             style={{
                                 maxWidth: "90%",
                                 overflowWrap: "break-word",

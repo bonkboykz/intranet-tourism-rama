@@ -11,8 +11,8 @@ export function AnnouncementPostCard({ announce }) {
         <div
             className={cn(
                 variant === "department"
-                    ? "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] relative pb-16 bg-[#FF5437]"
-                    : "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full lg:w-full md:w-[610px] sm:w-[610px] relative pb-16 bg-[#FF5437]"
+                    ? "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full max-w-[700px] relative pb-16 bg-[#FF5437]"
+                    : "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full max-w-[700px] relative pb-16 bg-[#FF5437]"
             )}
         >
             <div className="mb-2 flex items-center gap-1">

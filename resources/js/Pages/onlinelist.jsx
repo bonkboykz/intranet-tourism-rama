@@ -157,6 +157,7 @@
 
 import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
+import Example from "@/Layouts/DashboardLayoutNew";
 
 const ProfileCard = ({ name, status, ID_USER }) => {
     const [isUserProfile, setIsUserProfile] = useState({
@@ -211,7 +212,7 @@ const ProfileCard = ({ name, status, ID_USER }) => {
 
     return (
         <a href={`/user/${ID_USER}`} className="no-underline">
-            <div className="flex gap-3 hover:bg-blue-100 w-full px-0 py-5 mt-2 rounded-xl">
+            <div className="flex gap-4 hover:bg-blue-100 w-full px-2 py-2 mt-1 rounded-xl">
                 <div className="relative flex items-center h-16 sm:h-[75px] ml-2">
                     <img
                         loading="lazy"
@@ -223,7 +224,7 @@ const ProfileCard = ({ name, status, ID_USER }) => {
                         className={`absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white ${getStatusIndicatorClass(status)}`}
                     />
                 </div>
-                <div className="flex flex-col self-start mt-2.5">
+                <div className="flex flex-col self-start mt-2">
                     <div className="text-base sm:text-lg font-extrabold">
                         {name}
                     </div>
@@ -268,21 +269,22 @@ const MyComponent = () => {
     }, []);
 
     return (
+        <Example>
         <div className="w-full min-h-screen bg-slate-100">
-            <section className="flex flex-col items-center py-10">
-                <header className="flex justify-between items-center w-full sm:w-96 sm:absolute left-5 sm:left-20">
-                    <div className="font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 mb-6">
+            <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
+                <header className="flex justify-between items-center w-full">
+                    <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
                         Who’s Online
-                        <div className="font-extrabold text-neutral-800 mt-2 mb-6 border-b-2 border-neutral-300"></div>
+                        <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
                     </div>
                 </header>
-                <div className="container max-w-screen-lg bg-white py-6 px-4 rounded-xl mt-10 sm:mt-40 mb-40 items-start shadow-2xl mx-5">
+                <div className="w-full bg-white p-6 rounded-2xl mt-4 items-start shadow-2xl">
                     <div className="flex flex-col text-neutral-800">
-                        <header className="flex justify-between items-center text-xl sm:text-2xl font-extrabold text-neutral-800 ml-2">
-                            <span className="underline">Online List</span>
+                        <header className="flex justify-between items-center font-extrabold text-neutral-800 mb-4">
+                            <span className="text-xl sm:text-2xl ">Online List</span>
                             <button
                                 onClick={() => window.history.back()}
-                                className="text-blue-500 hover:text-blue-700 font-bold py-2 px-4 rounded mt-10 sm:mt-0"
+                                className="text-blue-500 hover:text-blue-700 font-bold text-lg"
                             >
                                 Back
                             </button>
@@ -304,6 +306,7 @@ const MyComponent = () => {
                 </div>
             </section>
         </div>
+        </Example>
     );
 };
 

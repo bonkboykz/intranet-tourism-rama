@@ -2,8 +2,18 @@ import React from 'react';
 
 function AdvertisementDashboard() {
   return (
-    <div className="mt-66 max-w-[320px] px-4 bg-white border-2 rounded-2xl shadow-custom" style={{ textAlign: 'center'}}>
-      <h2 className="flex w-full text-2xl font-bold mt-4">Advertisement</h2>
+    <div className="mt-0   max-w-[320px] px-4 bg-white border-2 rounded-2xl shadow-custom" style={{ textAlign: 'center'}}>
+      <h2
+                    style={{
+                        fontWeight: "bold",
+                        fontSize: "24px",
+                        fontFamily: "Nunito Sans",
+                        marginTop: "16px",
+                        textAlign: "start"
+                    }}
+                >
+                    Advertisement
+                </h2>
       <hr className="border border-gray-200 w-full mt-2"></hr>
       {/* <h2>Sponsored Ad</h2>
       <p>Buy the best products at unbeatable prices!</p> */}

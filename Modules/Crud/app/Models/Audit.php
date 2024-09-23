@@ -6,6 +6,7 @@ use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\User\Models\User;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
@@ -67,5 +68,10 @@ class Audit extends Model implements AuditableContract
         ];
 
         return $rules[$scenario];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

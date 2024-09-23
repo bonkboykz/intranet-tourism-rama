@@ -59,7 +59,7 @@ const NotificationPopup = () => {
 
     return (
         <div
-            className="notification-box absolute right-0 mt-2 w-[360px] bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+            className="notification-box absolute right-0 max-md:-mr-4 mt-2 w-[360px] max-sm:w-[260px] bg-white border border-gray-200 rounded-lg shadow-lg z-50"
             ref={popupRef} // Attach the reference to the popup div
         >
             <h2
@@ -114,10 +114,10 @@ const NotificationPopup = () => {
                 onClick={() => {
                     window.location.href = "/profile/notifications";
                 }}
-                className="flex flex-row font-bold bg-slaute-400 h-10 px-2 w-full gap-2 cursor-pointer hover:bg-slate-200 rounded-lg items-center"
+                className="flex flex-row font-bold bg-slaute-400 text-[13px] px-4 py-2 w-full gap-2 cursor-pointer hover:bg-slate-200 rounded-lg items-center"
             >
                 VIEW ALL
-                <img className="h-6 w-6" src="/assets/viewall.svg" />
+                <img className="h-auto w-[15px]" src="/assets/viewall.svg" />
             </div>
         </div>
     );

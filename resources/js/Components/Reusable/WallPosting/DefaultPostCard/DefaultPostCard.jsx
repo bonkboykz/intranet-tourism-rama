@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useLayoutEffect } from "react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useClickAway } from "@uidotdev/usehooks";
 import axios from "axios";
 import { format, isSameDay } from "date-fns";
 import { Volume2 } from "lucide-react";
@@ -11,6 +12,7 @@ import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
 import { truncate } from "@/Utils/truncate";
@@ -87,14 +89,14 @@ function EventTag({ event }) {
                                 <div className="text-xs text-gray-500">
                                     {format(
                                         new Date(eventDetails.start_at),
-                                        "yyyy.MM.dd"
+                                        "dd.MM.yyyy"
                                     )}
                                     {eventDetails.end_at &&
                                         !isSameDay(
                                             new Date(eventDetails.start_at),
                                             new Date(eventDetails.end_at)
                                         ) &&
-                                        ` – ${format(new Date(eventDetails.end_at), "yyyy.MM.dd")}`}
+                                        ` – ${format(new Date(eventDetails.end_at), "dd.MM.yyyy")}`}
                                 </div>
                                 <div className="text-xs text-gray-500">
                                     {eventDetails.location}
@@ -107,9 +109,11 @@ function EventTag({ event }) {
                     </Popover>
                 }
             >
-                <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full cursor-pointer">
-                    {firstEvent.title}
-                </p>
+                <div className="px-2 py-0 rounded-md bg-red-100">
+                    <p className="mt-0 text-xs font-semibold leading-6 text-red-500 max-md:max-w-full cursor-pointer">
+                        {firstEvent.title}
+                    </p>
+                </div>
             </Whisper>
         </div>
     );
@@ -406,13 +410,12 @@ export function DefaultPostCard({ post }) {
                     )}
                 </article>
 
-                <p className="taging my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                <PostAttachments attachments={post.attachments} />
+                <p className="taging px-2 py-0 bg-blue-100 rounded-md my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
                     {/* {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""} */}
                     {cachedPost.albums?.map((album) => album.name).join(", ")}
                 </p>
-
                 {cachedPost.event && <EventTag event={cachedPost.event} />}
-                <PostAttachments attachments={post.attachments} />
             </>
         );
     };
@@ -430,6 +433,11 @@ export function DefaultPostCard({ post }) {
 
     const userData = useUserData();
 
+    const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
+        setShowDetails(false);
+        setShowModal(false);
+    });
+
     if (isDeleted) {
         return null;
     }
@@ -440,9 +448,9 @@ export function DefaultPostCard({ post }) {
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
                     variant === "department"
-                        ? "w-full lg:w-[610px] md:w-[610px] sm:w-[610px]"
-                        : "w-full lg:w-full md:w-[610px] sm:w-[610px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative",
+                        ? "w-full "
+                        : "w-full",
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full z-5 relative",
                     cachedPost.announced &&
                         (cachedPost.community_id || cachedPost.department_id
                             ? "relative pt-20"
@@ -450,7 +458,7 @@ export function DefaultPostCard({ post }) {
                 )}
             >
                 {cachedPost.announced && (
-                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl  pl-6">
+                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl pl-6">
                         <div className="flex items-center gap-1 w-full h-full">
                             <Volume2 className="w-6 h-6 text-white" />
                             <div className="text-white text-center font-bold text-lg	ml-2">
@@ -469,6 +477,7 @@ export function DefaultPostCard({ post }) {
                             <div className="flex items-center gap-2">
                                 {canEdit && (
                                     <img
+                                        ref={buttonRef}
                                         loading="lazy"
                                         src="/assets/wallpost-dotbutton.svg"
                                         alt="Options"
@@ -484,8 +493,9 @@ export function DefaultPostCard({ post }) {
 
                     {showDetails && canEdit && (
                         <PostDetails
+                            popupRef={popupRef}
                             onEdit={() => {
-                                setShowDetails(false);
+                                // setShowDetails(false);
                                 setShowModal(true);
                             }}
                             onDelete={() => setShowDeletePopup(true)}
@@ -537,7 +547,10 @@ export function DefaultPostCard({ post }) {
                             className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
                             onClick={() => setShowModal(false)}
                         ></div>
-                        <div className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]">
+                        <div
+                            className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]"
+                            ref={modalRef}
+                        >
                             <EditPost
                                 post={cachedPost}
                                 loggedInUserId={loggedInUserId}
@@ -576,6 +589,7 @@ export function DefaultPostCard({ post }) {
                             onClick={() => setShowDeletePopup(false)}
                         ></div>
                         <DeletePopup
+                            modalRef={modalRef}
                             onClose={() => setShowDeletePopup(false)}
                             onDelete={handleDelete}
                         />

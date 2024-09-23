@@ -12,22 +12,25 @@ import { UserProfileAvatar } from "./UserProfileAvatar";
 
 function PollOption({ option, onRemove, onChange }) {
     return (
-        <div className="flex gap-5 px-px mt-3 text-sm leading-5 text-neutral-800 max-md:flex-wrap">
-            <div className="flex flex-auto gap-3 px-4 py-2 bg-gray-100 rounded-3xl max-md:flex-wrap items-center">
-                <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
-                <input
-                    type="text"
-                    value={option}
-                    onChange={onChange}
-                    className="flex-auto bg-gray-100 outline-none border-none"
+        <div className="flex gap-5 px-px mt-0 text-sm leading-5 text-neutral-800 max-md:flex-wrap">
+            <div className="flex flex-auto gap-3 px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-2xl items-center">
+                <div className="flex items-center w-full">
+                    <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
+                    <input
+                        type="text"
+                        value={option}
+                        onChange={onChange}
+                        className="flex-auto bg-gray-100 text-md outline-none border-none"
+                    />
+                </div>
+                <img
+                    loading="lazy"
+                    src="assets/CloseIcon.svg"
+                    alt="Close icon"
+                    className="cursor-pointer w-[14px] h-[14px] object-contain"
+                    onClick={onRemove}
                 />
             </div>
-            <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/2b330e075518102f0d7cedcbac4231209eacd02d6ed1f3210266297b383a48d7?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
-                alt="Remove option"
-                className="shrink-0 my-auto aspect-square w-[19px] cursor-pointer"
-                onClick={onRemove}
-            />
         </div>
     );
 }
@@ -35,13 +38,13 @@ function PollOption({ option, onRemove, onChange }) {
 function AddOptionButton({ label, onClick }) {
     return (
         <div
-            className="addoptionbutton flex flex-auto gap-3 py-1.5 bg-gray-100 rounded-3xl pr-5 cursor-pointer"
+            className="flex items-center gap-3 p-2 bg-gray-100 border-2 border-gray-300 rounded-3xl cursor-pointer w-fit"
             onClick={onClick}
         >
-            <div className="flex justify-center items-center px-2.5 text-xl font-bold ml-1 text-center text-white bg-blue-500 rounded-3xl h-[30px] w-[30px]">
+            <div className="justify-center items-center text-xl font-bold text-center text-white bg-blue-500 rounded-3xl h-[30px] w-[30px]">
                 +
             </div>
-            <div className="flex-auto my-auto text-sm leading-5 text-neutral-800">
+            <div className="text-md font-bold text-neutral-800 mr-2">
                 {label}
             </div>
         </div>
@@ -149,14 +152,14 @@ export function InputPolls({
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
             <div
-                className="bg-white p-5 rounded-3xl shadow-lg max-w-3xl w-full md:w-2/3"
+                className="bg-white p-5 rounded-3xl shadow-lg overflow-y-auto overflow-x-hidden max-h-screen my-12 max-w-3xl w-full md:w-2/3 max-md:mx-4"
                 onClick={(e) => e.stopPropagation()}
             >
-                <header className="flex justify-between items-center mb-6 text-2xl font-bold text-neutral-800">
+                <header className="flex justify-between items-start mb-6 text-2xl font-bold text-neutral-800">
                     <h1>Create Poll</h1>
                     <button onClick={onClose}>
                         <img
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/d5c01ea628264d796f4bd86723682019081b89678cb8451fb7b48173e320e5ff?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
+                            src="assets/cancel.svg"
                             alt="Close icon"
                             className="w-6 cursor-pointer"
                         />
@@ -169,7 +172,7 @@ export function InputPolls({
                                 post={{
                                     user: {
                                         name: userData.name,
-                                        profile: userData,
+                                        profile: userData.profile,
                                     },
                                 }}
                             />
@@ -184,7 +187,7 @@ export function InputPolls({
                         value={inputValue}
                         onChange={handleChange}
                         placeholder="Type something..."
-                        className="w-full p-2 text-xl font-bold text-neutral-800 border-none rounded-md resize-none"
+                        className="w-full p-2 text-xl font-bold text-neutral-800 border-1 border-gray-300 rounded-md resize-none"
                         rows="4"
                         style={{ maxHeight: "100px", overflowY: "auto" }}
                     />
@@ -206,6 +209,9 @@ export function InputPolls({
                         onClick={handleAddOption}
                     />
                     <div className="flex items-center gap-4">
+                        <span className="text-sm text-blue-600">
+                            Allow multiple answers?
+                        </span>
                         <Switch
                             checked={isMultiple}
                             onChange={(checked) => setIsMultiple(checked)}
@@ -220,47 +226,50 @@ export function InputPolls({
                             width={40}
                             className="react-switch"
                         />
-                        <span className="text-sm text-blue-600">
-                            Allow multiple answers?
-                        </span>
                     </div>
-                    <div className="flex relative w-full my-8 gap-4">
-                        <label
-                            htmlFor="end_date"
-                            className="inline-block bg-gray-100 p-4 text-center text-sm text-neutral-800 rounded-3xl cursor-pointer select-none"
-                            onClick={() => setIncludeEndDate(!includeEndDate)}
-                        >
-                            Choose end date (opt.)
-                        </label>
+                    <div className="flex relative w-full flex-row max-md:flex-col justify-between max-md:justify-start items-center my-8 gap-4 max-md:gap-2">
+                        <div className="flex flex-row max-md:flex-col max-md:justify-start w-full">
+                            <label
+                                htmlFor="end_date"
+                                className="inline-block bg-gray-100 p-4 text-center text-sm text-neutral-800 rounded-3xl cursor-pointer select-none"
+                                onClick={() =>
+                                    setIncludeEndDate(!includeEndDate)
+                                }
+                            >
+                                Choose end date (opt.)
+                            </label>
 
-                        {includeEndDate && (
-                            <input
-                                id="end_date"
-                                name="end_date"
-                                type="date"
-                                min={format(
-                                    add(startOfDay(new Date()), { days: 1 }),
-                                    "yyyy-MM-dd"
-                                )}
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                className={cn(
-                                    `border-none p-4 text-sm text-neutral-800 rounded-3xl`,
-                                    includeEndDate ? "block" : "hidden"
-                                )}
+                            {includeEndDate && (
+                                <input
+                                    id="end_date"
+                                    name="end_date"
+                                    type="date"
+                                    min={format(
+                                        add(startOfDay(new Date()), {
+                                            days: 1,
+                                        }),
+                                        "yyyy-MM-dd"
+                                    )}
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className={cn(
+                                        `border-none p-4 text-sm text-neutral-800 rounded-3xl`,
+                                        includeEndDate ? "block" : "hidden"
+                                    )}
+                                />
+                            )}
+                        </div>
+                        <div className="w-full flex justify-end max-md:justify-start   ">
+                            <SendAs
+                                postAs={postAs}
+                                onChange={(newPostAs) => setPostAs(newPostAs)}
+                                communityId={communityId}
+                                departmentId={departmentId}
                             />
-                        )}
-                    </div>
-                    <div>
-                        <SendAs
-                            postAs={postAs}
-                            onChange={(newPostAs) => setPostAs(newPostAs)}
-                            communityId={communityId}
-                            departmentId={departmentId}
-                        />
+                        </div>
                     </div>
                     <button
-                        className="w-full py-2 mt-4 text-white bg-blue-500 rounded-3xl"
+                        className="w-full py-2 mt-4 text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
                         onClick={handlePostPoll}
                     >
                         Post poll

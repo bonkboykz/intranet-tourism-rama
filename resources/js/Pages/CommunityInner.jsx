@@ -115,8 +115,21 @@ const CommunityInner = () => {
             }}
         >
             <Example>
-                <main className="relative ml-4 mr-4 lg:w-full xl:pl-96 xl:pr-24 sm:pr-44 2xl:pl-80 lg:ml-10 lg:mr-24 bottom-10">
-                    <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 max-w-full lg:max-w-[900px] mx-auto ">
+                    <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                        {/* left widgets */}
+                        <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                            <div className="file-directory-header">
+                                <PageTitle title="Communities" />
+                            </div>
+                            <hr className="file-directory-underline" />
+                            <div>
+                                <FeaturedEvents />
+                                <WhosOnline />
+                            </div>
+                        </div>
+
+                        {/* main content */}
+                        <div className=" bg-pink-100 flex flex-col justify-start w-full max-w-[1200px] pt-10 mr-10 lg:mr-10 md:mr-0 md:px-10 lg:ml-10 max-md:px-10">
                         {isLoading ? (
                             <div className="flex items-center justify-center min-h-screen">
                                 <div className="flex items-center justify-center">
@@ -146,7 +159,7 @@ const CommunityInner = () => {
                     </div>
                 </main>
 
-                <aside className="fixed bottom-0 left-0 hidden w-full px-4 py-6 overflow-y-auto border-r border-gray-200 lg:left-20 top-16 lg:w-96 sm:px-6 lg:px-8 xl:block">
+                {/* <aside className="fixed bottom-0 left-0 hidden w-full px-4 py-6 overflow-y-auto border-r border-gray-200 lg:left-20 top-16 lg:w-96 sm:px-6 lg:px-8 xl:block">
                     <style>
                         {`
           aside::-webkit-scrollbar {
@@ -163,7 +176,7 @@ const CommunityInner = () => {
                         <FeaturedEvents />
                         <WhosOnline />
                     </div>
-                </aside>
+                </aside> */}
 
                 {isEditPopupOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

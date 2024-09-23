@@ -56,6 +56,18 @@ class EmploymentPostController extends Controller
     public function store()
     {
         $validated = request()->validate(...EmploymentPost::rules());
+
+        // check if user already has an employment post, even with different position, in the same department
+        $employmentPost = EmploymentPost::where('user_id', $validated['user_id'])
+            ->where('department_id', $validated['department_id'])
+            ->first();
+
+        if ($employmentPost) {
+            return response()->json([
+                'message' => 'User already has an employment post in this department',
+            ], 400);
+        }
+
         EmploymentPost::create($validated);
 
         return response()->noContent();

@@ -62,7 +62,7 @@ function FeedbackForm() {
                 style={{ maxHeight: "30px", overflowY: "auto" }}
             />
             <button
-                className="flex flex-col justify-center my-auto text-xs font-semibold leading-5 text-center text-white whitespace-nowrap px-6 py-2 bg-red-500 rounded-2xl max-md:px-5"
+                className="flex flex-col justify-center my-auto text-xs font-bold leading-5 text-center text-white whitespace-nowrap px-6 py-2 bg-red-500 rounded-2xl max-md:px-5"
                 onClick={handleFeedbackClick}
             >
                 Send
@@ -125,7 +125,7 @@ function OutputDataUsers({ userId }) {
         <>
             {filteredPosts.map((post, index) => (
                 <div key={post.id} className="">
-                    <article className="mt-4 p-4 rounded-2xl bg-white border-2 shadow-xl w-[610px] relative">
+                    <article className="mt-4 p-4 rounded-2xl border-2 shadow-sm w-full relative">
                         <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                             <div className="flex gap-1 mt-2"></div>
 

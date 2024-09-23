@@ -2,13 +2,17 @@ import { useState } from "react";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
+import { Volume2 } from "lucide-react";
 
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
+import { toastError } from "@/Utils/toast";
 
 import Comment from "../Comment";
 import { CardHeader } from "../DefaultPostCard/CardHeader/CardHeader";
@@ -21,7 +25,14 @@ import EditPost from "../EditPost";
 import LikesPopup from "../LikesPopup";
 import { WallContext } from "../WallContext";
 
-function PollOption({ option, onClick, selected, disabled }) {
+function PollOption({
+    option,
+    onClick,
+    selected,
+    disabled,
+    percentage = 0,
+    showPercentage = false,
+}) {
     return (
         <div className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12">
             <div
@@ -39,35 +50,39 @@ function PollOption({ option, onClick, selected, disabled }) {
                 >
                     {option}
                 </button>
-            </div>
-        </div>
-    );
-}
-
-function PollOptionAnswered({ option, selected, percentage }) {
-    return (
-        <div className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12">
-            <div
-                className={cn(
-                    `flex flex-auto gap-3 px-4   bg-gray-100 rounded-3xl max-md:flex-wrap items-center  transition `,
-                    selected && "bg-[#4880FF] text-white"
-                )}
-            >
-                <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
-                <button
-                    disabled
-                    className="py-2 flex-auto outline-none border-none  text-start "
-                >
-                    {option}
-                </button>
 
                 <div className="flex gap-2">
-                    <div>{percentage.toFixed(2)}%</div>
+                    {showPercentage && <div>{percentage.toFixed(2)}%</div>}
                 </div>
             </div>
         </div>
     );
 }
+
+// function PollOptionAnswered({ option, selected, percentage }) {
+//     return (
+//         <div className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12">
+//             <div
+//                 className={cn(
+//                     `flex flex-auto gap-3 px-4   bg-gray-100 rounded-3xl max-md:flex-wrap items-center  transition `,
+//                     selected && "bg-[#4880FF] text-white"
+//                 )}
+//             >
+//                 <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
+//                 <button
+//                     disabled
+//                     className="py-2 flex-auto outline-none border-none  text-start "
+//                 >
+//                     {option}
+//                 </button>
+
+//                 <div className="flex gap-2">
+//                     <div>{percentage.toFixed(2)}%</div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }
 
 export function PollPostCard({ post }) {
     const [cachedPost, setCachedPost] = useState(post);
@@ -92,6 +107,7 @@ export function PollPostCard({ post }) {
                         "poll",
                         "poll.question",
                         "poll.question.options",
+                        "poll.feedbacks",
                     ],
                 },
             });
@@ -119,7 +135,7 @@ export function PollPostCard({ post }) {
     const handleAnnouncement = async (post) => {
         try {
             const response = await axios.put(`/api/posts/posts/${post.id}`, {
-                announced: true,
+                announced: !post.announced,
                 user_id: String(post.user.id),
                 visibility: "public",
             });
@@ -156,25 +172,32 @@ export function PollPostCard({ post }) {
     const noMoreOptions = isSingleChoice && chosenAnswers.length >= 1;
 
     const onClick = (option) => {
+        let newChosenAnswers = [];
+
         if (chosenAnswers.includes(option.id)) {
-            setChosenAnswers(chosenAnswers.filter((x) => x !== option.id));
-        } else if (!noMoreOptions) {
-            setChosenAnswers([...chosenAnswers, option.id]);
+            newChosenAnswers = chosenAnswers.filter((x) => x !== option.id);
+            setChosenAnswers(newChosenAnswers);
+        } else if (!isSingleChoice) {
+            newChosenAnswers = [...chosenAnswers, option.id];
+            setChosenAnswers(newChosenAnswers);
+        } else if (isSingleChoice && chosenAnswers.length > 0) {
+            return;
+        } else if (isSingleChoice && chosenAnswers.length === 0) {
+            newChosenAnswers = [option.id];
+            setChosenAnswers(newChosenAnswers);
         }
+
+        onSubmit(newChosenAnswers);
     };
 
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = async () => {
+    const onSubmit = async (optionIds) => {
         setLoading(true);
 
         const formData = new FormData();
 
-        if (feedbackText.trim() !== "") {
-            formData.append("feedbackText", feedbackText.trim());
-        }
-
-        chosenAnswers.forEach((answer, index) => {
+        optionIds.forEach((answer, index) => {
             formData.append(`option_ids[${index}]`, answer);
         });
 
@@ -195,6 +218,37 @@ export function PollPostCard({ post }) {
             setPreviousResponse(responseData);
         } catch (e) {
             console.error(e);
+        }
+        setLoading(false);
+    };
+
+    const onSubmitFeedback = async () => {
+        setLoading(true);
+
+        const formData = new FormData();
+
+        formData.append("feedbackText", feedbackText.trim());
+        formData.append("poll_id", poll.id);
+
+        try {
+            const response = await axios.post(
+                `/api/posts/posts/${post.id}/submitPollFeedback`,
+                formData
+            );
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to submit poll feedback");
+            }
+
+            const responseData = response.data.data;
+
+            toast.success("Feedback submitted successfully");
+
+            await refetchPost();
+        } catch (e) {
+            console.error(e);
+
+            toastError("Failed to submit feedback");
         }
         setLoading(false);
     };
@@ -238,6 +292,10 @@ export function PollPostCard({ post }) {
             const previousResponse = response.data.data;
 
             setPreviousResponse(previousResponse);
+
+            setChosenAnswers(
+                previousResponse?.answers?.map((answer) => answer) ?? []
+            );
         } catch (e) {
             console.error(e);
         }
@@ -258,76 +316,61 @@ export function PollPostCard({ post }) {
         return null;
     }
 
-    const renderPollResults = () => {
-        const answers = previousResponse?.answers ?? [];
-
-        const percentagesMap = results.percentages?.reduce((acc, cur) => {
-            acc[cur.option_id] = cur.percentage;
-            return acc;
-        }, {});
-
-        return (
-            <>
-                <div className="flex flex-col gap-1 max-h-50 overflow-y-auto">
-                    {percentagesMap &&
-                        poll.question?.options?.map((option, index) => (
-                            <PollOptionAnswered
-                                key={index}
-                                selected={answers.includes(option.id)}
-                                option={option.option_text}
-                                percentage={percentagesMap[option.id] ?? 0}
-                            />
-                        ))}
-                </div>
-
-                <div
-                    className="absolute right-[1rem] bottom-[1rem] text-[#FF5437]"
-                    style={{
-                        fontSize: 22,
-                    }}
-                >
-                    Total votes: {results.total_count_of_votes}
-                </div>
-            </>
-        );
-    };
+    const isExpired = poll?.end_date
+        ? new Date(poll?.end_date) < new Date()
+        : false;
 
     const renderPoll = () => {
+        const answers = previousResponse?.answers ?? [];
+
+        const hasSubmittedAnswers = answers.length > 0;
+
+        const percentagesMap =
+            results.percentages?.reduce((acc, cur) => {
+                acc[cur.option_id] = cur.percentage;
+                return acc;
+            }, {}) ?? {};
+
+        const hasSubmittedFeedback =
+            poll.feedbacks?.some(
+                (feedback) => feedback.user_id === loggedInUserId
+            ) ?? false;
+
         return (
             <>
                 <div className="flex flex-col gap-1 max-h-50 overflow-y-auto">
                     {poll.question?.options?.map((option, index) => (
                         <PollOption
-                            disabled={
-                                (!chosenAnswers.includes(option.id) &&
-                                    noMoreOptions) ||
-                                loading
-                            }
+                            disabled={loading || isExpired}
                             key={index}
                             selected={chosenAnswers.includes(option.id)}
                             option={option.option_text}
-                            onClick={(e) => onClick(option)}
+                            onClick={() => onClick(option)}
+                            percentage={percentagesMap[option.id] ?? 0}
+                            showPercentage={hasSubmittedAnswers}
                         />
                     ))}
                 </div>
 
-                <div className="mt-4 flex w-full gap-2">
-                    <input
-                        className="border-slate-300 rounded-md px-4 py-2 flex flex-1"
-                        type="text"
-                        placeholder="Give Your Feedback"
-                        value={feedbackText}
-                        onChange={(e) => setFeedbackText(e.target.value)}
-                    />
+                {!hasSubmittedFeedback && (
+                    <div className="mt-4 flex w-full gap-2">
+                        <input
+                            className="border-slate-300 rounded-md px-4 py-2 flex flex-1"
+                            type="text"
+                            placeholder="Give Your Feedback"
+                            value={feedbackText}
+                            onChange={(e) => setFeedbackText(e.target.value)}
+                        />
 
-                    <button
-                        disabled={loading}
-                        className="rounded-3xl min-w-20 bg-[#FF5437] text-white border-none disabled:opacity-40"
-                        onClick={onSubmit}
-                    >
-                        Send
-                    </button>
-                </div>
+                        <button
+                            disabled={loading}
+                            className="rounded-3xl min-w-20 font-bold bg-red-100 hover:bg-red-700 text-white border-none disabled:opacity-40"
+                            onClick={onSubmitFeedback}
+                        >
+                            Send
+                        </button>
+                    </div>
+                )}
             </>
         );
     };
@@ -354,11 +397,12 @@ export function PollPostCard({ post }) {
 
     const [showLikesPopup, setShowLikesPopup] = useState(false);
 
-    const isExpired = poll?.end_date
-        ? new Date(poll?.end_date) < new Date()
-        : false;
-
     const userData = useUserData();
+
+    const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
+        setShowDetails(false);
+        setShowModal(false);
+    });
 
     if (isDeleted) {
         return null;
@@ -369,10 +413,24 @@ export function PollPostCard({ post }) {
             <article
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
-                    "w-full lg:w-full md:w-[610px] sm:w-[610px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full lg:w-[610px] md:w-[610px] sm:w-[610px] z-5 relative"
+                    "w-full max-w-[700px]",
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
+                    cachedPost.announced &&
+                        (cachedPost.community_id || cachedPost.department_id
+                            ? "relative pt-20"
+                            : "relative pt-16")
                 )}
             >
+                {cachedPost.announced && (
+                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl  pl-6">
+                        <div className="flex items-center gap-1 w-full h-full">
+                            <Volume2 className="w-6 h-6 text-white" />
+                            <div className="text-white text-center font-bold text-lg	ml-2">
+                                Announcement
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
@@ -382,8 +440,9 @@ export function PollPostCard({ post }) {
                             <div className="flex items-center gap-2">
                                 {canEdit && (
                                     <img
+                                        ref={buttonRef}
                                         loading="lazy"
-                                        src="/assets/wallpost-dotbutton.svg"
+                                        src="/assets/icon_poll_card_threedots.svg"
                                         alt="Options"
                                         className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
                                         onClick={() =>
@@ -397,6 +456,7 @@ export function PollPostCard({ post }) {
 
                     {showDetails && canEdit && (
                         <PostDetails
+                            popupRef={popupRef}
                             onEdit={() => {
                                 setShowDetails(false);
                                 setShowModal(true);
@@ -405,15 +465,14 @@ export function PollPostCard({ post }) {
                             onAnnouncement={() =>
                                 handleAnnouncement(cachedPost)
                             }
+                            isAnnounced={cachedPost.announced}
                         />
                     )}
                 </header>
 
                 <div>{poll.question?.question_text}</div>
 
-                {previousResponse || isExpired
-                    ? renderPollResults()
-                    : renderPoll()}
+                {renderPoll()}
 
                 {showModal &&
                     createPortal(
@@ -422,7 +481,10 @@ export function PollPostCard({ post }) {
                                 className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
                                 onClick={() => setShowModal(false)}
                             ></div>
-                            <div className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]">
+                            <div
+                                className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]"
+                                ref={modalRef}
+                            >
                                 <EditPost
                                     post={cachedPost}
                                     loggedInUserId={loggedInUserId}
@@ -489,6 +551,7 @@ export function PollPostCard({ post }) {
                             onClick={() => setShowDeletePopup(false)}
                         ></div>
                         <DeletePopup
+                            modalRef={modalRef}
                             onClose={() => setShowDeletePopup(false)}
                             onDelete={handleDelete}
                         />

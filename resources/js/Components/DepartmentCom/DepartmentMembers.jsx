@@ -14,6 +14,7 @@ function DepartmentMembers({ departmentID, loggedInID }) {
     const [admins, setAdmins] = useState([]);
     const [showInvite, setShowInvite] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [adminSearchResults, setAdminSearchResults] = useState([]);
 
     const fetchAdmins = async () => {
         setIsLoading(true);
@@ -74,11 +75,15 @@ function DepartmentMembers({ departmentID, loggedInID }) {
     console.log("ADMINS", admins);
 
     useEffect(() => {
+        const fileteredAdmins = admins.filter((admin) =>
+            admin.name.toLowerCase().includes(searchInput.toLowerCase())
+        );
         const filteredMembers = members.filter((member) =>
             member.name.toLowerCase().includes(searchInput.toLowerCase())
         );
+        setAdminSearchResults(fileteredAdmins);
         setSearchResults(filteredMembers);
-    }, [searchInput, members]);
+    }, [searchInput, members, admins]);
 
     const handleSearchChange = (e) => {
         setSearchInput(e.target.value);
@@ -102,7 +107,9 @@ function DepartmentMembers({ departmentID, loggedInID }) {
         );
     }
 
-    const displayedMembers = searchResults.length > 0 ? searchResults : members;
+    const displayedAdmins =
+        adminSearchResults.length > 0 ? adminSearchResults : [];
+    const displayedMembers = searchResults.length > 0 ? searchResults : [];
 
     const nonAdminUsers = displayedMembers.filter(
         (member) => !admins.some((admin) => admin.id === member.user_id)
@@ -150,7 +157,7 @@ function DepartmentMembers({ departmentID, loggedInID }) {
                     </div>
 
                     <Admins
-                        admins={admins}
+                        admins={displayedAdmins}
                         departmentID={departmentID}
                         onRefetch={() => {
                             fetchAdmins();
@@ -165,7 +172,6 @@ function DepartmentMembers({ departmentID, loggedInID }) {
                             fetchAdmins();
                             fetchMembers();
                         }}
-                        searchInput={searchInput}
                         loggedInID={loggedInID}
                         setShowInvite={setShowInvite}
                         showInvite={showInvite}

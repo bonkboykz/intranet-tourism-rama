@@ -21,7 +21,7 @@ const FeaturedEvents = () => {
                     .sort(
                         (a, b) => new Date(a.start_at) - new Date(b.start_at)
                     ); // Sort events by start date
-                const upcomingEvents = sortedEvents.slice(0, 5);
+                const upcomingEvents = sortedEvents.slice(0, 3);
                 setFeaturedEvents(upcomingEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);
@@ -32,7 +32,7 @@ const FeaturedEvents = () => {
     }, []);
 
     return (
-        <div className="featured-events-container border-2 shadow-custom">
+        <div className="featured-events-container border-2 shadow-custom w-full max-w-[320px] whitespace-nowrap">
             <h2
                 style={{
                     fontWeight: "bold",
@@ -76,12 +76,8 @@ const FeaturedEvents = () => {
                     ))
                 )}
             </ul>
-            <hr
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-                className="underline"
-            />
             <a href="../calendar">
-                <button className="view-all-btn">
+                <button className="view-all-btn whitespace-nowrap">
                     VIEW ALL
                     <img
                         src={arrowRight}

@@ -65,18 +65,18 @@ export function ChosenEvent({ chosenEvent, onRemoveEvent }) {
             <div className="mt-5 text-sm font-semibold text-neutral-500">
                 Chosen
             </div>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-3 mt-2">
                 {chosenEvent.map((event) => (
                     <div
                         key={event.id}
-                        className="flex items-center gap-2 px-3 py-1 bg-[#EBF5FF] rounded-lg shadow-sm"
+                        className="flex items-center gap-2 px-3 py-1 bg-blue-100 rounded-lg shadow-sm"
                     >
                         <div className="text-neutral-800">{event.title}</div>
                         <img
                             loading="lazy"
                             src="assets/CloseIcon.svg"
                             alt="Close icon"
-                            className="cursor-pointer w-[14px] h-[14px] object-contain"
+                            className="cursor-pointer w-[14px] h-[14px] ml-1 object-contain"
                             onClick={() => onRemoveEvent(event.id)}
                         />
                     </div>
@@ -91,15 +91,15 @@ export function RecommendedEvent({ event, onAddEvent }) {
 
     return (
         <div
-            className="flex gap-4 mt-2.5 font-bold text-neutral-800 cursor-pointer"
+            className="flex mt-2.5 font-bold text-neutral-800 cursor-pointer"
             onClick={() => onAddEvent(event)}
         >
             <div className="flex-auto my-auto">{event.title}</div>
             <div className="">
-                {format(event.start_at, "yyyy.MM.dd")}
+                {format(event.start_at, "dd.MM.yyyy")}
                 {event.end_at &&
                     !isSameDay(event.start_at, event.end_at) &&
-                    ` – ${format(event.end_at, "yyyy.MM.dd")}`}
+                    ` – ${format(event.end_at, "dd.MM.yyyy")}`}
             </div>
         </div>
     );
@@ -130,7 +130,7 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
             <div
-                className="flex flex-col font-semibold rounded-2xl p-6 w-full max-w-[442px] bg-white"
+                className="flex flex-col font-semibold rounded-2xl p-6 w-[442px] max-md:w-full max-md:mx-6 bg-white"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex w-full justify-between items-center mb-6">
@@ -147,11 +147,6 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
                 </div>
                 <div className="flex flex-col">
                     <SearchEventInput onSearchResults={setSearchResults} />
-                    <ChosenEvent
-                        chosenEvent={selectedEvent}
-                        onRemoveEvent={handleRemoveEvent}
-                    />
-                    {/* <div className="mt-5 text-sm font-semibold text-neutral-500">Recommended</div> */}
                     <div className="max-h-[300px] overflow-y-auto">
                         {searchResults.map((event) => (
                             <RecommendedEvent
@@ -161,6 +156,10 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
                             />
                         ))}
                     </div>
+                    <ChosenEvent
+                        chosenEvent={selectedEvent}
+                        onRemoveEvent={handleRemoveEvent}
+                    />
                     <div className="flex gap-5 justify-between self-end text-sm mt-4 text-center whitespace-nowrap">
                         <div
                             className="my-auto font-semibold text-md text-neutral-800 cursor-pointer"
