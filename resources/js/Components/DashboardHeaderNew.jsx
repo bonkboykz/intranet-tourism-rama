@@ -159,7 +159,7 @@ export default function Header({ setSidebarOpen }) {
     const { settings } = useSettings();
 
     return (
-        <div className="fixed w-full lg:pr-16 top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
+        <div className="z-50 fixed w-full lg:pr-16 top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
             <button
                 type="button"
                 className="-m-2.5 p-2.5 text-gray-700 lg:hidden"

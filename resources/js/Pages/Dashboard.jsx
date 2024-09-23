@@ -120,7 +120,7 @@ const Dashboard = () => {
             </div>
 
             {/* center content */}
-            <div className="w-full flex flex-col justify-center min-w-[440px] max-w-[700px] pt-10 max-md:px-10">
+            <div className="w-full flex flex-col justify-center min-w-[440px] max-w-[700px] py-10 max-md:px-10">
                 <StoryNew userId={id} />
                 <ShareYourThoughts userId={id} onCreatePoll={handleCreatePoll} />
                 <Filter className="mr-10" onFilterChange={handleFilterChange} />
