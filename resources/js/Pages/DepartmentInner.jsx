@@ -93,7 +93,7 @@ const DepartmentInner = () => {
                         </div>
 
                         {/* main content */}
-                        <div className=" flex flex-col justify-start w-full max-w-[1200px] pt-10 mr-10 lg:mr-10 md:mr-0 md:px-10 lg:ml-10 max-md:px-10">
+                        <div className=" flex flex-col justify-start w-full max-w-[1200px] max-md:pl-10 max-md:pr-20">
                         <DepartmentWall
                             departmentID={getDepartmentIdFromQuery()}
                             departmentHeader={departmentData?.name}

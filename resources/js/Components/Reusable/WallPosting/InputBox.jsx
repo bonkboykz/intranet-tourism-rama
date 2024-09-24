@@ -737,7 +737,7 @@ function ShareYourThoughts({
                                                 <div className="flex justify-end max-md:w-full">
                                                     <button
                                                         onClick={handleClickSend}
-                                                        // className="flex send-button align-item justify-end"
+                                                        className="w-10 h-10 flex items-center justify-center"
                                                     >
                                                         {isSending ? (  
                                                             <Loader2 className="w-6 h-6 animate-spin" />

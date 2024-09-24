@@ -301,7 +301,7 @@ function Navigation({ userId, departmentID, departmentName }) {
 
                     {activeTab === "Post" && (
                         <div className="flex flex-col shadow-2xl pb-6 rounded-xl mt-6">
-                            <div className="px-20 w-full bg-gray-100 whitespace-nowrap absolute content-items pb-8">
+                            <div className="px-20 w-full whitespace-nowrap absolute content-items pb-8">
                                 {isMember && (
                                     <ShareYourThoughts
                                         userId={userId}
