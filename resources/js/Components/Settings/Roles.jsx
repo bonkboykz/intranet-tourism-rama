@@ -267,6 +267,14 @@ export default function Roles() {
             role.name.includes("community admin")
         );
 
+        if (
+            !superadminRole &&
+            departmentAdminRoles.length === 0 &&
+            communityAdminRoles.length === 0
+        ) {
+            return null;
+        }
+
         return (
             <>
                 {superadminRole && (
