@@ -48,7 +48,7 @@ export function useInfiniteScroll({
                         // add filter that matches part of the attachment mime_type
                         newFilter.push({
                             field: "attachments.mime_type",
-                            type: "like",
+                            type: "ilike",
                             value: "image/%",
                         });
                     }
@@ -57,7 +57,7 @@ export function useInfiniteScroll({
                         // add filter that matches part of the attachment mime_type
                         newFilter.push({
                             field: "attachments.mime_type",
-                            type: "like",
+                            type: "ilike",
                             value: "video/%",
                         });
                     }
@@ -72,7 +72,7 @@ export function useInfiniteScroll({
                     if (filter.postType === "file") {
                         newFilter.push({
                             field: "attachments.extension",
-                            type: "like",
+                            type: "ilike",
                             value: ["pdf", "doc", "docx", "xls", "xlsx"],
                         });
                     }

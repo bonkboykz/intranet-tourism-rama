@@ -53,6 +53,37 @@ trait QueryableApi
                             $query->where($filter['field'], 'like', '%' . $filter['value'] . '%');
                         }
                     }
+                } else if (!empty($filter['type']) && $filter['type'] == 'ilike') {
+                    // Check if we are filtering a relationship field
+                    if (strpos($filter['field'], '.') !== false) {
+                        [$relation, $column] = explode('.', $filter['field'], 2);
+                        $query->whereHas($relation, function ($q) use ($column, $filter) {
+                            // Handle multiple mime_types using whereIn()
+                            if (is_array($filter['value'])) {
+                                $q->where(function ($query) use ($column, $filter) {
+                                    foreach ($filter['value'] as $value) {
+                                        $query->orWhere($column, 'ilike', '%' . $value . '%');
+                                    }
+                                });
+                            } else {
+                                // Single value
+                                $q->where($column, 'ilike', '%' . $filter['value'] . '%');
+                            }
+                        });
+                    } else {
+                        // Direct field filter
+                        if (is_array($filter['value'])) {
+                            // Handle multiple mime_types using whereIn() for direct fields
+                            $query->where(function ($query) use ($filter) {
+                                foreach ($filter['value'] as $value) {
+                                    $query->orWhere($filter['field'], 'ilike', '%' . $value . '%');
+                                }
+                            });
+                        } else {
+                            // Single value
+                            $query->where($filter['field'], 'ilike', '%' . $filter['value'] . '%');
+                        }
+                    }
                 } else if (isset($filter['user_id'])) {
                     // Special case for filtering user_id
                     // use either user_id for auth or where user was mentioned
