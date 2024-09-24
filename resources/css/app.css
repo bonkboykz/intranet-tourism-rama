@@ -5,21 +5,21 @@
 
 .input-no-outline:focus {
     outline: none !important;
-    box-shadow: none !important; 
+    box-shadow: none !important;
 }
 
 .input-focus-style:focus {
     outline: none;
     border: 1px solid #4880FF;
-    border-radius: 1.5rem; 
-    box-shadow: none; 
+    border-radius: 1.5rem;
+    box-shadow: none;
   }
 
 /* For the 'File' and 'Date' columns */
 .th-file, .td-file, .th-date, .td-date {
   border: 2px solid #3182ce; /* Tailwind blue-500 */
 }
-  
+
 .avatar-hover:hover {
   filter: grayscale(100%); /* Converts the image to grayscale on hover */
 }
@@ -175,8 +175,15 @@
 }
 
 @layer base {
-  
+
   :primary {
 
   }
+}
+
+/* normalize */
+pre {
+    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
 }

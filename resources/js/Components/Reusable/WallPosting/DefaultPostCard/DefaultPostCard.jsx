@@ -341,13 +341,19 @@ export function DefaultPostCard({ post }) {
         }
     };
 
+    if (cachedPost.content?.includes("Some preform")) {
+        console.log(cachedPost.content);
+    }
+
     const renderBirhdayPost = () => {
         return (
             <>
                 {!cachedPost.attachments ||
                 cachedPost.attachments.length === 0 ? (
                     <>
-                        <div>{cachedPost.content}</div>
+                        <div>
+                            <pre>{cachedPost.content}</pre>
+                        </div>
                         <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
                             {cachedPost.mentions
                                 ? JSON.parse(cachedPost.mentions)
@@ -404,10 +410,12 @@ export function DefaultPostCard({ post }) {
         return (
             <>
                 <article className="post-content">
-                    {renderContentWithTags(
-                        cachedPost.content,
-                        cachedPost.mentions
-                    )}
+                    <pre className="whitespace-pre-wrap max-w-full overflow-x-auto">
+                        {renderContentWithTags(
+                            cachedPost.content,
+                            cachedPost.mentions
+                        )}
+                    </pre>
                 </article>
 
                 <PostAttachments attachments={post.attachments} />
