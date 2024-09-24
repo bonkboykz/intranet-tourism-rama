@@ -15,6 +15,10 @@ const getDepartmentOrCommunityBannerUrl = (group) => {
         return `/storage/${group.banner}`;
     }
 
+    if (group.banner.startsWith("banner/")) {
+        return `/storage/${group.banner}`;
+    }
+
     return group.banner;
 };
 
