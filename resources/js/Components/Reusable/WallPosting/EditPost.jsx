@@ -190,7 +190,9 @@ function EditPost({
                         placeholder="Edit caption"
                     />
                     <div>
-                        <div className="font-semibold text-lg mt-4">Edit album tag</div>
+                        <div className="font-semibold text-lg mt-4">
+                            Edit album tag
+                        </div>
                         <div className="flex flex-col gap-0">
                             <ChosenEvent
                                 chosenEvent={chosenEvent}
@@ -261,33 +263,25 @@ function EditPost({
                                 {attachment.mime_type &&
                                 attachment.mime_type.startsWith("image/") ? (
                                     <>
-                                        <button
-                                            type="button"
-                                            className="absolute top-2 right-2 text-red-500"
-                                            onClick={() =>
-                                                handleDeleteAttachment(index)
-                                            }
-                                        >
-                                            X
-                                        </button>
                                         <img
                                             src={`/storage/${attachment.path}`}
                                             alt="attachment"
                                             className="w-full h-auto rounded-lg"
                                         />
-                                    </>
-                                ) : attachment.mime_type &&
-                                  attachment.mime_type.startsWith("video/") ? (
-                                    <>
+
                                         <button
                                             type="button"
-                                            className="absolute top-2 right-2 text-red-500"
+                                            className="absolute top-2 right-2 text-red-500 border-red-500 w-8 h-8 bg-white cursor-pointer hover:bg-red-500 hover:text-white rounded-full"
                                             onClick={() =>
                                                 handleDeleteAttachment(index)
                                             }
                                         >
                                             X
                                         </button>
+                                    </>
+                                ) : attachment.mime_type &&
+                                  attachment.mime_type.startsWith("video/") ? (
+                                    <>
                                         <video
                                             controls
                                             className="grow shrink-0 max-w-full aspect-[1.19] w-full"
@@ -298,6 +292,16 @@ function EditPost({
                                             Your browser does not support the
                                             video tag.
                                         </video>
+
+                                        <button
+                                            type="button"
+                                            className="absolute top-2 right-2 text-red-500 border-red-500 w-8 h-8 bg-white cursor-pointer hover:bg-red-500 hover:text-white rounded-full"
+                                            onClick={() =>
+                                                handleDeleteAttachment(index)
+                                            }
+                                        >
+                                            X
+                                        </button>
                                     </>
                                 ) : (
                                     <div className="flex items-center w-full h-10 bg-gray-100 border-2 border-gray-300 rounded-xl px-2">

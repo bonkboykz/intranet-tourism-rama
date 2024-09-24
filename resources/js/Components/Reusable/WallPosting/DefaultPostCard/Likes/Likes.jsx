@@ -31,34 +31,34 @@ export function Likes({
         }
     };
 
-    // Function to handle unliking a post
-    const handleUnlike = async (postId) => {
-        try {
-            const response = await axios.post(
-                `/api/posts/posts/${postId}/unlike`
-            );
+    // // Function to handle unliking a post
+    // const handleUnlike = async (postId) => {
+    //     try {
+    //         const response = await axios.post(
+    //             `/api/posts/posts/${postId}/unlike`
+    //         );
 
-            if ([200, 201, 204].includes(response.status)) {
-                onUnlike(); // Refetch the data to update the post likes count
-            } else {
-                console.error("Failed to unlike the post");
-            }
-        } catch (error) {
-            console.error("Error unliking the post:", error);
-        }
-    };
+    //         if ([200, 201, 204].includes(response.status)) {
+    //             onUnlike(); // Refetch the data to update the post likes count
+    //         } else {
+    //             console.error("Failed to unlike the post");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error unliking the post:", error);
+    //     }
+    // };
 
     const likesCount = likes.length;
     const isPostLikedByUser = useMemo(() => {
         return likes && likes.includes(loggedInUserId);
-    }, [likes]);
+    }, [likes, loggedInUserId]);
 
     return (
         <>
             {isPostLikedByUser ? (
                 <button
                     className="like-button"
-                    onClick={() => handleUnlike(postId)}
+                    onClick={() => handleLike(postId)}
                 >
                     <img
                         src="/assets/Like.svg"
