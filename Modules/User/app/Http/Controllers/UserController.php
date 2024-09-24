@@ -84,8 +84,8 @@ class UserController extends Controller
 
     public function update(User $user)
     {
-        $validated = request()->validate(...User::rules('update'));
-        $user->update($validated);
+        // $validated = request()->validate(...User::rules('update'));
+        $user->update(request()->all());
 
         return response()->noContent();
     }

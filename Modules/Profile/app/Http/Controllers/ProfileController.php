@@ -108,6 +108,10 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             request()->merge(input: ['bio' => request('name')]);
+            if (!request()->has('phone_no')) {
+                request()->merge(input: ['phone_no' => null]);
+            }
+
             $validated = request()->validate(...Profile::rules('update'));
             $validatedUser = request()->validate(...User::rules('update'));
 
