@@ -16,4 +16,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     ]);
 
     Route::post('assign_superadmin', [RoleController::class, 'assignSuperadmin']);
+
+    Route::get('get-users-with-roles', [ModelHasRoleController::class, 'getUsersWithRoles']);
+
+    Route::post('{user}/demote-superadmin', [RoleController::class, 'demoteSuperadmin']);
 });

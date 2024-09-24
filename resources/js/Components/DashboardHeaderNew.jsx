@@ -181,7 +181,8 @@ export default function Header({ setSidebarOpen }) {
                     alt="Jomla Logo"
                 />
                 <form className="relative flex flex-1" action="#" method="GET">
-                    <label htmlFor="search-field" className="sr-only">
+                    {/* TODO: Return after implementation */}
+                    {/* <label htmlFor="search-field" className="sr-only">
                         Search
                     </label>
                     <MagnifyingGlassIcon
@@ -194,11 +195,11 @@ export default function Header({ setSidebarOpen }) {
                         placeholder="Search..."
                         type="search"
                         name="search"
-                    />
+                    /> */}
                 </form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
-                    {/* Birthday Notification */}
-                    <div className="relative" ref={birthdayNotificationRef}>
+                    {/* TODO: return after implementation */}
+                    {/* <div className="relative" ref={birthdayNotificationRef}>
                         <button
                             type="button"
                             className="birthday-icon -m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5"
@@ -218,10 +219,10 @@ export default function Header({ setSidebarOpen }) {
                                 onClose={() => setIsBirthdayPopupVisible(false)}
                             />
                         )}
-                    </div>
+                    </div> */}
 
-                    {/* Bell Notification */}
-                    <div className="relative" ref={notificationRef}>
+                    {/* TODO: return after implementation */}
+                    {/* <div className="relative" ref={notificationRef}>
                         <button
                             type="button"
                             className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5 relative"
@@ -244,7 +245,7 @@ export default function Header({ setSidebarOpen }) {
                             )}
                         </button>
                         {isNotificationPopupVisible && <NotificationPopup />}
-                    </div>
+                    </div> */}
 
                     <div
                         className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"

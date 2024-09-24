@@ -17,7 +17,7 @@ use Modules\Events\Http\Controllers\TaskItemController;
  * routes are loaded by the RouteServiceProvider within a group which
  * is assigned the "api" middleware group. Enjoy building your API!
  *
-*/
+ */
 
 // Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 //     Route::apiResource('crud', CrudController::class)->names('crud');
@@ -35,3 +35,5 @@ Route::apiResources([
 ], [
     'middleware' => 'auth:sanctum'
 ]);
+
+Route::get('get-upcoming-events', [EventController::class, 'getUpcomingEvents'])->middleware('auth:sanctum');

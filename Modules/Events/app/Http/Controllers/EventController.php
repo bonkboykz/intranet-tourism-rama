@@ -107,4 +107,17 @@ class EventController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Event created successfully']);
     }
+
+    public function getUpcomingEvents()
+    {
+        $query = Event::query();
+
+        $query->where('start_at', '>=', now());
+
+        $query->orderBy('start_at', 'asc');
+        // take only 5
+        $query->limit(5);
+
+        return response()->json(['data' => $query->get()]);
+    }
 }

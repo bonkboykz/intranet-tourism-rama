@@ -97,4 +97,15 @@ class RoleController extends Controller
             'message' => 'Super Admin role has been revoked successfully from the user.',
         ]);
     }
+
+
+    public function demoteSuperadmin(User $user)
+    {
+        $user->removeRole('superadmin');
+
+        return response()->json([
+            'data' => $user,
+            'message' => 'User has been demoted to a regular user.',
+        ]);
+    }
 }

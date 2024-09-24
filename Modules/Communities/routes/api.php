@@ -30,3 +30,4 @@ Route::get('communities/{community}/admins', [CommunityController::class, 'getAd
 Route::get('communities/{community}/members', [CommunityController::class, 'getMembers'])->name('community.getMembers');
 Route::put('communities/{community}/archive', [CommunityController::class, 'archive'])->name('community.archive');
 Route::put('communities/{community}/unarchive', [CommunityController::class, 'unarchive'])->name('community.unarchive');
+Route::get('get-latest-communities', [CommunityController::class, 'getLatestCommunities'])->name('community.getLatestCommunities');

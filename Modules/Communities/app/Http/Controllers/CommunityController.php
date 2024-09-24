@@ -295,4 +295,13 @@ class CommunityController extends Controller
             'message' => 'Community has been unarchived successfully.'
         ]);
     }
+
+    public function getLatestCommunities()
+    {
+        $communities = Community::query()->where('is_archived', false)->orderBy('created_at', 'desc')->limit(5)->get();
+
+        return response()->json([
+            'data' => $communities
+        ]);
+    }
 }

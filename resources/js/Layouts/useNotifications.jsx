@@ -53,8 +53,8 @@ export function useSetupNotifications() {
             async (notification) => {
                 console.log("Notification received:", notification);
 
-                const audio = new Audio("/assets/notification.wav");
-                audio.play();
+                // const audio = new Audio("/assets/notification.wav");
+                // audio.play();
 
                 setHasNewNotifications(true);
 

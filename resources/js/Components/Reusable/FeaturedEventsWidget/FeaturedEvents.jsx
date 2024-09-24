@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 import arrowRight from "../../../../../public/assets/viewAllArrow.png";
 import EventItem from "./EventItem";
@@ -11,17 +12,11 @@ const FeaturedEvents = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch("/api/events/events");
-                const data = await response.json();
-                console.log("DATEE", data);
-
-                const currentDate = new Date();
-                const sortedEvents = data.data.data
-                    .filter((event) => new Date(event.start_at) >= currentDate) // Filter events starting from today
-                    .sort(
-                        (a, b) => new Date(a.start_at) - new Date(b.start_at)
-                    ); // Sort events by start date
-                const upcomingEvents = sortedEvents.slice(0, 3);
+                const response = await axios.get(
+                    "/api/events/get-upcoming-events"
+                );
+                const data = response.data;
+                const upcomingEvents = data.data.slice(0, 3);
                 setFeaturedEvents(upcomingEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);

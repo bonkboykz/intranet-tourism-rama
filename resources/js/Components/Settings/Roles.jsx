@@ -1,8 +1,27 @@
-import React, { useState, useEffect } from "react";
-import "./Roles.css";
-import { useCsrf } from "@/composables";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+
+import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import { toastError } from "@/Utils/toast";
+
+import "./Roles.css";
+
+// const roleNameMap = {
+//     1: { name: "Super Admin", bgColor: "bg-red-100 text-red-700" },
+//     2: { name: "Department Admin", bgColor: "bg-blue-100 text-blue-700" },
+//     3: {
+//         name: "Community Admin",
+//         bgColor: "bg-yellow-100 text-yellow-700",
+//     },
+// };
+
+const roleColor = {
+    superadmin: "bg-red-100 text-red-700",
+    "department admin": "bg-blue-100 text-blue-700",
+    "community admin": "bg-yellow-100 text-yellow-700",
+};
 
 export default function Roles() {
     const { hasPermission } = usePermissions();
@@ -20,15 +39,6 @@ export default function Roles() {
     const [showDemotePopup, setShowDemotePopup] = useState(false);
     const [personToDemote, setPersonToDemote] = useState(null);
     const csrfToken = useCsrf();
-
-    const roleNameMap = {
-        1: { name: "Super Admin", bgColor: "bg-red-100 text-red-700" },
-        2: { name: "Department Admin", bgColor: "bg-blue-100 text-blue-700" },
-        3: {
-            name: "Community Admin",
-            bgColor: "bg-yellow-100 text-yellow-700",
-        },
-    };
 
     const fetchDepartmentName = async (id) => {
         try {
@@ -112,110 +122,31 @@ export default function Roles() {
         pageUrl = "/api/permission/model-has-roles"
     ) => {
         try {
-            const response = await fetch(pageUrl, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken || "",
-                },
-            });
+            const response = await axios.get(
+                "/api/permission/get-users-with-roles"
+            );
 
-            if (response.ok) {
-                const data = await response.json();
-                const usersMap = {};
-
-                await Promise.all(
-                    data.data.data.map(async (userRole) => {
-                        if ([1, 2, 3].includes(userRole.role_id)) {
-                            const userResponse = await fetch(
-                                `/api/users/users/${userRole.model_id}?with[]=profile&with[]=employmentPosts`,
-                                {
-                                    method: "GET",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        "X-CSRF-TOKEN": csrfToken || "",
-                                    },
-                                }
-                            );
-
-                            if (userResponse.ok) {
-                                const userData = await userResponse.json();
-
-                                const department =
-                                    Array.isArray(
-                                        userData.data.employment_posts
-                                    ) &&
-                                    userData.data.employment_posts.length > 0
-                                        ? await fetchDepartmentName(
-                                              userData.data.employment_posts[0]
-                                                  .department_id
-                                          )
-                                        : { name: "No department", id: null };
-
-                                const titleName =
-                                    Array.isArray(
-                                        userData.data.employment_posts
-                                    ) &&
-                                    userData.data.employment_posts.length > 0
-                                        ? await fetchTitleName(
-                                              userData.data.employment_posts[0]
-                                                  .business_post_id
-                                          )
-                                        : "No title";
-
-                                const userId = userData.data.id;
-
-                                if (!usersMap[userId]) {
-                                    usersMap[userId] = {
-                                        name: userData.data.name,
-                                        id: userId,
-                                        title: titleName,
-                                        department: department,
-                                        image:
-                                            userData.data.profile.staff_image ||
-                                            "/assets/dummyStaffPlaceHolder.jpg",
-                                        status: userData.data.is_active,
-                                        roles: [],
-                                    };
-                                }
-
-                                if (userRole.role_id === 3) {
-                                    const community = await fetchCommunityName(
-                                        userRole.community_id
-                                    );
-                                    usersMap[userId].community = community;
-                                }
-
-                                usersMap[userId].roles.push(
-                                    roleNameMap[userRole.role_id] || {
-                                        name: "Unknown Role",
-                                        bgColor: "bg-gray-100 text-gray-700",
-                                    }
-                                );
-                            } else {
-                                console.error(
-                                    `Failed to fetch user details for user ID ${userRole.model_id}:`,
-                                    userResponse.statusText
-                                );
-                            }
-                        }
-                    })
-                );
-
-                const usersWithRoles = Object.values(usersMap);
-                setPeople(usersWithRoles);
-                setLoading(false);
-            } else {
+            if (![200, 201, 204].includes(response.status)) {
                 console.error(
                     "Failed to fetch users with roles:",
                     response.statusText
                 );
-                setLoading(false);
+
+                throw new Error("Failed to fetch users with roles");
             }
+
+            const data = response.data.data;
+
+            console.log("Users with roles:", data);
+
+            setPeople(data);
         } catch (error) {
             console.error("Error fetching users with roles:", error);
-            setLoading(false);
+
+            toastError("Error fetching users with roles");
         }
+
+        setLoading(false);
     };
 
     const fetchAllSearchResults = async (query) => {
@@ -301,19 +232,11 @@ export default function Roles() {
 
     const handleDemoteToUser = async () => {
         try {
-            const response = await fetch("/api/permission/model-has-roles", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken || "",
-                },
-                body: JSON.stringify({
-                    role_id: [4],
-                    model_id: personToDemote.id,
-                }),
-            });
+            const response = await axios.post(
+                `/api/permission/${personToDemote.id}/demote-superadmin`
+            );
 
-            if (response.ok) {
+            if ([200, 201, 204].includes(response.status)) {
                 console.log("User demoted successfully.");
                 setShowDemotePopup(false);
                 setLoading(true);
@@ -424,45 +347,71 @@ export default function Roles() {
                                                 {person.roles.map(
                                                     (role, index) => {
                                                         if (
-                                                            role.name ===
-                                                            "Department Admin"
+                                                            role.name.includes(
+                                                                "department admin"
+                                                            )
                                                         ) {
+                                                            const departmentId =
+                                                                role.name.split(
+                                                                    " "
+                                                                )[2];
+
                                                             return (
                                                                 <a
                                                                     key={index}
-                                                                    href={`/departmentInner?departmentId=${person.department.id}`}
-                                                                    className={`flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full ${role.bgColor} hover:bg-blue-200 cursor-pointer`}
+                                                                    href={`/departmentInner?departmentId=${departmentId}`}
+                                                                    className={cn(
+                                                                        `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-blue-200 cursor-pointer`,
+                                                                        roleColor[
+                                                                            "department admin"
+                                                                        ]
+                                                                    )}
                                                                 >
-                                                                    {role.name}
+                                                                    Department
+                                                                    Admin of{" "}
+                                                                    {
+                                                                        departmentId
+                                                                    }
                                                                 </a>
                                                             );
                                                         } else if (
-                                                            role.name ===
-                                                                "Community Admin" &&
-                                                            person.community
+                                                            role.name.includes(
+                                                                "community admin"
+                                                            )
                                                         ) {
+                                                            const communityId =
+                                                                role.name.split(
+                                                                    " "
+                                                                )[2];
+
                                                             return (
                                                                 <div
                                                                     key={index}
-                                                                    className={`flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full ${role.bgColor} hover:bg-yellow-200 cursor-pointer`}
+                                                                    className={cn(
+                                                                        `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
+                                                                        roleColor[
+                                                                            "community admin"
+                                                                        ]
+                                                                    )}
                                                                 >
                                                                     <button
-                                                                        onClick={() =>
-                                                                            handleCommunityClick(
-                                                                                person.community
-                                                                            )
-                                                                        }
+                                                                        onClick={() => {
+                                                                            window.location.href = `/communityInner?communityId=${communityId}`;
+                                                                        }}
                                                                         className="flex items-center justify-center w-full h-full"
                                                                     >
+                                                                        Community
+                                                                        Admin of{" "}
                                                                         {
-                                                                            role.name
+                                                                            communityId
                                                                         }
                                                                     </button>
                                                                 </div>
                                                             );
                                                         } else if (
-                                                            role.name ===
-                                                            "Super Admin"
+                                                            role.name.includes(
+                                                                "superadmin"
+                                                            )
                                                         ) {
                                                             return (
                                                                 <div
@@ -470,11 +419,15 @@ export default function Roles() {
                                                                     className="flex flex-col items-center space-y-1 whitespace-nowrap"
                                                                 >
                                                                     <div
-                                                                        className={`flex items-center justify-center text-center w-full px-4 py-2 mt-2 text-xs font-medium rounded-full ${role.bgColor}`}
+                                                                        className={cn(
+                                                                            `flex items-center justify-center text-center w-full px-4 py-2 mt-2 text-xs font-medium rounded-full`,
+                                                                            roleColor[
+                                                                                "superadmin"
+                                                                            ]
+                                                                        )}
                                                                     >
-                                                                        {
-                                                                            role.name
-                                                                        }
+                                                                        Super
+                                                                        Admin
                                                                     </div>
                                                                     <button
                                                                         onClick={() =>
@@ -493,7 +446,12 @@ export default function Roles() {
                                                             return (
                                                                 <div
                                                                     key={index}
-                                                                    className={`flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full ${role.bgColor}`}
+                                                                    className={cn(
+                                                                        `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full`,
+                                                                        roleColor[
+                                                                            "superadmin"
+                                                                        ]
+                                                                    )}
                                                                 >
                                                                     {role.name}
                                                                 </div>
