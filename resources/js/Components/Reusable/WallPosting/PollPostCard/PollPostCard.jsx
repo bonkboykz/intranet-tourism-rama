@@ -363,8 +363,10 @@ export function PollPostCard({ post }) {
                         />
 
                         <button
-                            disabled={loading}
-                            className="rounded-3xl min-w-20 font-bold bg-red-500 hover:bg-red-700 text-white border-none disabled:opacity-40"
+                            disabled={feedbackText.length <= 0 || loading}
+                            className={cn(
+                                "rounded-3xl min-w-20 font-bold bg-red-500 hover:bg-red-700 text-white border-none disabled:opacity-40"
+                            )}
                             onClick={onSubmitFeedback}
                         >
                             Send
