@@ -3,6 +3,7 @@
 namespace Modules\Events\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Events\Models\Event;
 use Illuminate\Http\Request;
 use Modules\Events\Models\EventAttendance;
@@ -24,9 +25,40 @@ class EventController extends Controller
 
         // Handle search by title
         if ($request->has('search')) {
-            $search = $request->input('search');
-            $modelBuilder->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($search) . '%']);
-            $modelBuilder->select('id', 'title', 'start_at', 'end_at');
+            $searchTerm = strtolower($request->input('search'));
+
+            $modelBuilder->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(title) LIKE ?', ['%' . $searchTerm . '%'])
+                    ->orWhere(function ($query) use ($searchTerm) {
+                        // For PostgreSQL, use TO_CHAR() to convert timestamp to string for searching
+                        $query->whereRaw("TO_CHAR(start_at, 'YYYY-MM-DD') LIKE ?", ['%' . $searchTerm . '%'])
+                            ->orWhereRaw("TO_CHAR(end_at, 'YYYY-MM-DD') LIKE ?", ['%' . $searchTerm . '%'])
+                            ->orWhereRaw("TO_CHAR(start_at, 'YYYY MM DD') LIKE ?", ['%' . $searchTerm . '%'])
+                            ->orWhereRaw("TO_CHAR(end_at, 'YYYY MM DD') LIKE ?", ['%' . $searchTerm . '%']);
+                    });
+            });
+        }
+
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+
+        if ($startDate && $endDate) {
+            // Handle events that overlap with the start and end range
+            $modelBuilder->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start_at', [$startDate, $endDate])  // Events starting within the range
+                    ->orWhereBetween('end_at', [$startDate, $endDate])  // Events ending within the range
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        // Events spanning the entire range
+                        $query->where('start_at', '<', $startDate)
+                            ->where('end_at', '>', $endDate);
+                    });
+            });
+        } elseif ($startDate) {
+            // Handle filtering by start date only
+            $modelBuilder->where('start_at', '>=', $startDate);
+        } elseif ($endDate) {
+            // Handle filtering by end date only
+            $modelBuilder->where('end_at', '<=', $endDate);
         }
 
 
@@ -119,5 +151,62 @@ class EventController extends Controller
         $query->limit(5);
 
         return response()->json(['data' => $query->get()]);
+    }
+
+    public function generatePdf(Request $request)
+    {
+
+        $query = $request->query();
+        $modelBuilder = Event::queryable()->with('author');
+
+        // Handle search by title
+        if ($request->has('search')) {
+            $searchTerm = strtolower($request->input('search'));
+
+            $modelBuilder->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(title) LIKE ?', ['%' . $searchTerm . '%'])
+                    ->orWhere(function ($query) use ($searchTerm) {
+                        // For PostgreSQL, use TO_CHAR() to convert timestamp to string for searching
+                        $query->whereRaw("TO_CHAR(start_at, 'YYYY-MM-DD') LIKE ?", ['%' . $searchTerm . '%'])
+                            ->orWhereRaw("TO_CHAR(end_at, 'YYYY-MM-DD') LIKE ?", ['%' . $searchTerm . '%'])
+                            ->orWhereRaw("TO_CHAR(start_at, 'YYYY MM DD') LIKE ?", ['%' . $searchTerm . '%'])
+                            ->orWhereRaw("TO_CHAR(end_at, 'YYYY MM DD') LIKE ?", ['%' . $searchTerm . '%']);
+                    });
+            });
+        }
+
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+
+        if ($startDate && $endDate) {
+            // Handle events that overlap with the start and end range
+            $modelBuilder->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start_at', [$startDate, $endDate])  // Events starting within the range
+                    ->orWhereBetween('end_at', [$startDate, $endDate])  // Events ending within the range
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        // Events spanning the entire range
+                        $query->where('start_at', '<', $startDate)
+                            ->where('end_at', '>', $endDate);
+                    });
+            });
+        } elseif ($startDate) {
+            // Handle filtering by start date only
+            $modelBuilder->where('start_at', '>=', $startDate);
+        } elseif ($endDate) {
+            // Handle filtering by end date only
+            $modelBuilder->where('end_at', '<=', $endDate);
+        }
+
+        $events = $modelBuilder->get();
+
+        // Load the PDF view and pass the events data
+        $pdf = Pdf::loadView('events.pdf', [
+            'events' => $events,
+            'logoPath' => public_path('assets/logo.png'), // Path to the logo
+            'title' => 'Joomla Events List' // The title for the PDF
+        ]);
+
+        // Return the generated PDF for download
+        return $pdf->download('events.pdf');
     }
 }

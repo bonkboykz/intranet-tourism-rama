@@ -98,25 +98,25 @@ const Community = () => {
 
     const handleDelete = async (departmentId) => {
         try {
-            const resMembers = await axios.get(
-                `/api/communities/communities/${departmentId}/members`
-            );
+            // const resMembers = await axios.get(
+            //     `/api/communities/communities/${departmentId}/members`
+            // );
 
-            if (resMembers.data.data.length > 0) {
-                toastError("Cannot delete community with members");
+            // if (resMembers.data.data.length > 0) {
+            //     toastError("Cannot delete community with members");
 
-                return;
-            }
+            //     return;
+            // }
 
-            const resAdmins = await axios.get(
-                `/api/communities/communities/${departmentId}/admins`
-            );
+            // const resAdmins = await axios.get(
+            //     `/api/communities/communities/${departmentId}/admins`
+            // );
 
-            if (resAdmins.data.data.length > 0) {
-                toastError("Cannot delete community with admins");
+            // if (resAdmins.data.data.length > 0) {
+            //     toastError("Cannot delete community with admins");
 
-                return;
-            }
+            //     return;
+            // }
 
             const url = `/api/communities/communities/${departmentId}`;
             const options = {

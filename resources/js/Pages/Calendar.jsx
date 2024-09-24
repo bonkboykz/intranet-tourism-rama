@@ -19,8 +19,10 @@ import Popup from "@/Components/Reusable/Popup";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { getAvatarSource } from "@/Utils/getProfileImage";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
 import { isBirthdayDay } from "@/Utils/isBirthday";
+import { toastError } from "@/Utils/toast";
 
 import pencilIcon from "../../../public/assets/EditIcon.svg";
 import printIcon from "../../../public/assets/PrintPDF.svg";
@@ -30,16 +32,10 @@ import PrintCalendar from "./Calendar/PrintCalendar";
 import "./Calendar/index.css";
 import "rsuite/dist/rsuite-no-reset.min.css";
 
-const DayCellContent = ({ birthdays, ...dayInfo }) => {
-    // console.log(dayInfo);
-
+const DayCellContent = ({ birthdays, user, ...dayInfo }) => {
     const dayBirthdays = birthdays.filter((event) =>
         isBirthdayDay(event.date, dayInfo.date)
     );
-
-    if (dayBirthdays.length > 0) {
-        console.log("Birthdays found:", dayBirthdays);
-    }
 
     const handleMouseDown = (e) => {
         e.preventDefault();
@@ -48,8 +44,6 @@ const DayCellContent = ({ birthdays, ...dayInfo }) => {
 
     const [selectedBirthday, setSelectedBirthday] = useState(null);
     const [isBirthdayComOpen, setIsBirthdayComOpen] = useState(false);
-
-    const userData = useUserData();
 
     return (
         <div className="flex justify-between w-full relative">
@@ -93,7 +87,7 @@ const DayCellContent = ({ birthdays, ...dayInfo }) => {
                                                 onClick={() => {
                                                     if (
                                                         person.profileId ===
-                                                        userData.id
+                                                        user.id
                                                     ) {
                                                         return;
                                                     }
@@ -130,7 +124,7 @@ const DayCellContent = ({ birthdays, ...dayInfo }) => {
                         onClose={() => setIsBirthdayComOpen(false)}
                     >
                         <BirthdayCom
-                            loggedInUser={userData}
+                            loggedInUser={user}
                             profileImage={selectedBirthday.profileImage}
                             name={selectedBirthday.name}
                             selectedID={selectedBirthday.profileId}
@@ -175,59 +169,49 @@ function Calendar() {
     const toggleShowAllEvents = () => {
         setShowAllEvents(!showAllEvents);
     };
+
     useEffect(() => {
-        fetchEvents();
+        // fetchEvents();
         fetchBirthdayEvents(); // Fetch and add birthday events
     }, []);
 
-    useEffect(() => {
-        filterEvents();
-    }, [searchTerm, events]);
+    // useEffect(() => {
+    //     filterEvents();
+    // }, [searchTerm, events]);
 
-    const fetchEvents = async () => {
+    const fetchEvents = async (start, end) => {
         try {
-            let allEvents = [];
-            let currentPage = 1;
-            let totalPages = 1;
+            const response = await axios.get(`/api/events/events`, {
+                params: {
+                    with: ["author"],
+                    start: start.toISOString(),
+                    end: end.toISOString(),
+                    disabledPagination: true,
+                    ...(searchTerm.trim() && { search: searchTerm }),
+                },
+            });
+            const data = response.data;
 
-            while (currentPage <= totalPages) {
-                const response = await fetch(
-                    `/api/events/events?with[]=author&page=${currentPage}`
-                );
-                const data = await response.json();
-
-                if (data && data.data && Array.isArray(data.data.data)) {
-                    const formattedEvents = data.data.data.map((event) => ({
-                        id: event.id,
-                        title: event.title,
-                        start: event.start_at,
-                        end: event.end_at,
-                        description: event.description,
-                        venue: event.venue,
-                        color: event.color,
-                        userName: event.author.name,
-                        url: event.url,
-                    }));
-
-                    allEvents = [...allEvents, ...formattedEvents];
-
-                    totalPages = data.data.last_page;
-                    currentPage++;
-                } else {
-                    console.error("Error: Expected an array, but got:", data);
-                    break;
-                }
-            }
-
-            console.log("All Events:", allEvents);
+            const formattedEvents = data.data.map((event) => ({
+                id: event.id,
+                title: event.title,
+                start: event.start_at,
+                end: event.end_at,
+                description: event.description,
+                venue: event.venue,
+                color: event.color,
+                userName: event.author.name,
+                user: event.author,
+                url: event.url,
+            }));
 
             // Set events in state
-            setEvents((prevEvents) => [...prevEvents, ...allEvents]);
-            setFilteredEvents((prevEvents) => [...prevEvents, ...allEvents]);
+            setEvents(formattedEvents);
+            // setFilteredEvents(formattedEvents);
 
-            if (calendarRef.current) {
-                calendarRef.current.getApi().gotoDate(new Date());
-            }
+            // if (calendarRef.current) {
+            //     calendarRef.current.getApi().gotoDate(new Date());
+            // }
         } catch (error) {
             console.error("Error fetching events: ", error);
         }
@@ -270,41 +254,41 @@ function Calendar() {
         }
     };
 
-    const filterEvents = () => {
-        if (searchTerm.trim() === "") {
-            setFilteredEvents(events);
-            if (calendarRef.current) {
-                calendarRef.current.getApi().gotoDate(new Date());
-            }
-        } else {
-            const filtered = events.filter(
-                (event) =>
-                    event.title
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                    event.start
-                        ?.toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                    event.end
-                        ?.toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                    (event.start &&
-                        format(new Date(event.start), "yyyy MM dd")
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())) ||
-                    (event.end &&
-                        format(new Date(event.end), "yyyy MM dd")
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase()))
-            );
-            setFilteredEvents(filtered);
+    // const filterEvents = () => {
+    //     if (searchTerm.trim() === "") {
+    //         setFilteredEvents(events);
+    //         if (calendarRef.current) {
+    //             calendarRef.current.getApi().gotoDate(new Date());
+    //         }
+    //     } else {
+    //         const filtered = events.filter(
+    //             (event) =>
+    //                 event.title
+    //                     .toLowerCase()
+    //                     .includes(searchTerm.toLowerCase()) ||
+    //                 event.start
+    //                     ?.toLowerCase()
+    //                     .includes(searchTerm.toLowerCase()) ||
+    //                 event.end
+    //                     ?.toLowerCase()
+    //                     .includes(searchTerm.toLowerCase()) ||
+    //                 (event.start &&
+    //                     format(new Date(event.start), "yyyy MM dd")
+    //                         .toLowerCase()
+    //                         .includes(searchTerm.toLowerCase())) ||
+    //                 (event.end &&
+    //                     format(new Date(event.end), "yyyy MM dd")
+    //                         .toLowerCase()
+    //                         .includes(searchTerm.toLowerCase()))
+    //         );
+    //         setFilteredEvents(filtered);
 
-            if (filtered.length > 0 && calendarRef.current) {
-                const firstEventDate = new Date(filtered[0].start);
-                calendarRef.current.getApi().gotoDate(firstEventDate);
-            }
-        }
-    };
+    //         if (filtered.length > 0 && calendarRef.current) {
+    //             const firstEventDate = new Date(filtered[0].start);
+    //             calendarRef.current.getApi().gotoDate(firstEventDate);
+    //         }
+    //     }
+    // };
 
     const handleDateSelect = (info) => {
         const selectedDate = new Date(info.startStr);
@@ -416,29 +400,14 @@ function Calendar() {
         setIsPrintModalOpen(true);
     };
 
-    const handlePrintSubmit = () => {
-        const filteredEvents = events.filter((event) => {
-            const eventStart = new Date(event.start);
-            const eventEnd = new Date(event.end);
-            const rangeStart = new Date(printRange.startDate);
-            const rangeEnd = new Date(printRange.endDate);
-
-            return eventStart >= rangeStart && eventEnd <= rangeEnd;
-        });
-        setFilteredEvents(filteredEvents);
-        setShowPrint(true);
-        setTimeout(() => {
-            window.print();
-            setShowPrint(false);
-        }, 1000);
-        closePrintModal();
-    };
-
     // const handleEventClick = (eventInfo) => {
     //     eventInfo.jsEvent.preventDefault();
     //     // Trigger handleEditClick with the event data
     //     handleEditClick(eventInfo.event);
     // };
+
+    const user = useUserData();
+    const { hasRole } = usePermissions();
 
     const handleEventClick = (eventInfo) => {
         eventInfo.jsEvent.preventDefault();
@@ -554,20 +523,84 @@ function Calendar() {
         }
     };
 
+    const [currentRange, setCurrentRange] = useState({
+        start: null,
+        end: null,
+    });
+
+    const handleDatesSet = (dateInfo) => {
+        const newStart = dateInfo.start;
+        const newEnd = dateInfo.end;
+
+        // Only fetch events if the new range is different from the previous one
+        if (
+            !currentRange.start ||
+            !currentRange.end ||
+            newStart.toISOString() !== currentRange.start.toISOString() ||
+            newEnd.toISOString() !== currentRange.end.toISOString()
+        ) {
+            setCurrentRange({ start: newStart, end: newEnd }); // Update the visible range
+        }
+    };
+
+    // Effect to trigger when the currentRange changes
+    useEffect(() => {
+        if (currentRange.start && currentRange.end) {
+            fetchEvents(currentRange.start, currentRange.end); // Fetch events when range changes
+        }
+    }, [currentRange, searchTerm]);
+
+    const handlePrintSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.get("/api/events/generate-pdf", {
+                params: {
+                    start: printRange.startDate,
+                    end: printRange.endDate,
+                    search: searchTerm,
+                },
+                responseType: "blob",
+            });
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Error generating PDF");
+            }
+
+            // Create a Blob from the response and trigger a download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            // open in new page
+            // window.open(url, "_blank");
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "events.pdf"); // Set the file name
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+
+            toastError("Error generating PDF");
+        }
+
+        closePrintModal();
+    };
+
+    console.log("current range", currentRange);
+
     return (
         <Example>
-            <main
-                className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+            <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
                 <div
                     className="container mx-auto mt-4 bg-white"
-                    style={{maxWidth: "90%"}}
+                    style={{ maxWidth: "90%" }}
                 >
                     <h1 className="mb-3 font-sans text-4xl font-bold text-left">
                         Calendar
                     </h1>
                     <hr
                         className="mx-auto my-2"
-                        style={{borderColor: "#E4E4E4", borderWidth: "1px"}}
+                        style={{ borderColor: "#E4E4E4", borderWidth: "1px" }}
                     />
                     <div className="flex flex-col items-center w-full mt-3 mb-8">
                         <div className="flex items-center justify-between w-full">
@@ -594,8 +627,14 @@ function Calendar() {
                                     setEventData({
                                         title: "",
                                         venue: "",
-                                        startDate: format(new Date(), "yyyy-MM-dd"),
-                                        endDate: format(new Date(), "yyyy-MM-dd"),
+                                        startDate: format(
+                                            new Date(),
+                                            "yyyy-MM-dd"
+                                        ),
+                                        endDate: format(
+                                            new Date(),
+                                            "yyyy-MM-dd"
+                                        ),
                                         startTime: "",
                                         endTime: "",
                                         description: "",
@@ -616,6 +655,7 @@ function Calendar() {
                     </div>
 
                     <FullCalendar
+                        datesSet={handleDatesSet}
                         plugins={[
                             dayGridPlugin,
                             timeGridPlugin,
@@ -635,67 +675,29 @@ function Calendar() {
                             month: "Month",
                             day: "Day",
                         }}
-                        events={filteredEvents}
+                        events={events}
                         eventDidMount={(info) => {
-                            console.log(
-                                "eventDidMount called for event:",
-                                info.event
-                            );
-
                             if (info.event.extendedProps.isBirthday) {
-                                //     console.log(
-                                //         "Birthday event detected:",
-                                //         info.event.extendedProps.names
-                                //     );
-                                //     info.el.style.backgroundColor = "transparent";
-                                //     info.el.style.border = "none";
-                                //     info.el.style.color = "black";
-                                //     const namesArray = info.event.extendedProps.names;
-                                //     let namesList;
-                                //     if (namesArray.length > 1) {
-                                //         namesList = namesArray
-                                //             .map(
-                                //                 (name, index) =>
-                                //                     `<li>${index + 1}. ${name}</li>`
-                                //             )
-                                //             .join("");
-                                //     } else {
-                                //         namesList = `<li>${namesArray[0]}</li>`;
-                                //     }
-                                //     const popoverContent = `
-                                //     <div className="">
-                                //         <p class="event-title"><strong>Birthdays:</strong></p>
-                                //         <ul>${namesList}</ul>
-                                //     </div>
-                                // `;
-                                //     new bootstrap.Popover(info.el, {
-                                //         placement: "bottom",
-                                //         trigger: "hover",
-                                //         container: "body",
-                                //         customClass: "custom-popover",
-                                //         content: popoverContent,
-                                //         html: true,
-                                //         offset: "0,10",
-                                //     });
-                            } else {
-                                const formattedStartTime = new Date(
-                                    info.event.start
-                                ).toLocaleString("en-US", {
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                    hour12: true,
-                                });
+                                return;
+                            }
+                            const formattedStartTime = new Date(
+                                info.event.start
+                            ).toLocaleString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                            });
 
-                                const descContent = info.event.extendedProps
-                                    .description
-                                    ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
-                                    : "";
+                            const descContent = info.event.extendedProps
+                                .description
+                                ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
+                                : "";
 
-                                const venueContent = info.event.extendedProps.venue
-                                    ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
-                                    : "";
+                            const venueContent = info.event.extendedProps.venue
+                                ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
+                                : "";
 
-                                const popoverContent = `
+                            const popoverContent = `
                             <div>
                                 <p class="event-title"><strong>${info.event.title}</strong></p>
                                 <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
@@ -703,160 +705,73 @@ function Calendar() {
                                 ${descContent}
                             </div>`;
 
-                                new bootstrap.Popover(info.el, {
-                                    placement: "auto",
-                                    trigger: "hover",
-                                    container: "body",
-                                    customClass: "custom-popover",
-                                    content: popoverContent,
-                                    html: true,
-                                });
-                            }
+                            new bootstrap.Popover(info.el, {
+                                placement: "auto",
+                                trigger: "hover",
+                                container: "body",
+                                customClass: "custom-popover",
+                                content: popoverContent,
+                                html: true,
+                            });
                         }}
                         dayCellContent={(props) => (
-                            <DayCellContent {...props} birthdays={birthdays}/>
+                            <DayCellContent
+                                {...props}
+                                birthdays={birthdays}
+                                user={user}
+                            />
                         )}
-                        //                     dayCellDidMount={(props) => {
-                        //                         // console.log(props);
-                        //                         let popoverIsSet = false;
-
-                        //                         const setupPopover = () => {
-                        //                             if (popoverIsSet) {
-                        //                                 return;
-                        //                             }
-
-                        //                             console.log("setting popover");
-
-                        //                             const cakeEl = props.el.querySelector(
-                        //                                 ".fc-daygrid-day-top span:first-child"
-                        //                             );
-
-                        //                             if (!cakeEl) {
-                        //                                 return;
-                        //                             }
-
-                        //                             if (!cakeEl.dataset.names) {
-                        //                                 return;
-                        //                             }
-
-                        //                             const names = cakeEl.dataset.names.split(", ");
-
-                        //                             let namesList;
-
-                        //                             if (names.length > 1) {
-                        //                                 namesList = names
-                        //                                     .map(
-                        //                                         (name, index) =>
-                        //                                             `<li>${index + 1}. ${name}</li>`
-                        //                                     )
-                        //                                     .join("");
-                        //                             } else {
-                        //                                 namesList = `<li>${names[0]}</li>`;
-                        //                             }
-
-                        //                             const popoverContent = `
-                        // <div className="">
-                        //     <p class="event-title"><strong>Birthdays:</strong></p>
-                        //     <ul>${namesList}</ul>
-                        // </div>
-                        // `;
-
-                        //                             new bootstrap.Popover(cakeEl, {
-                        //                                 placement: "bottom",
-                        //                                 trigger: "hover",
-                        //                                 container: "body",
-                        //                                 customClass: "custom-popover",
-                        //                                 content: popoverContent,
-                        //                                 html: true,
-                        //                                 offset: "0,0",
-                        //                             });
-
-                        //                             popoverIsSet = true;
-                        //                         };
-
-                        //                         setTimeout(() => {
-                        //                             setupPopover();
-
-                        //                             if (!popoverIsSet) {
-                        //                                 console.log("retrying");
-
-                        //                                 setTimeout(() => {
-                        //                                     setupPopover();
-                        //                                 }, 1000);
-                        //                             }
-                        //                         }, 1000);
-                        //                     }}
                         eventContent={(eventInfo) => {
                             const isBirthday =
                                 eventInfo.event.extendedProps.isBirthday;
 
                             if (isBirthday) {
-                                const names =
-                                    eventInfo.event.extendedProps.names || [];
+                                return;
+                            }
+                            const borderColor =
+                                eventInfo.event.backgroundColor || "gray";
 
-                                return null;
-                                // return (
-                                //     <div
-                                //         key={eventInfo.event.id}
-                                //         style={{
-                                //             position: "relative",
-                                //             height: "100%",
-                                //             width: "100%",
-                                //         }}
-                                //     >
-                                //         <span
-                                //             role="img"
-                                //             aria-label="cake"
-                                //             style={{
-                                //                 position: "absolute",
-                                //                 bottom: "0",
-                                //                 left: "5px",
-                                //                 fontSize: "1.8em",
-                                //                 cursor: "pointer",
-                                //                 zIndex: 1,
-                                //             }}
-                                //             title={names.join(", ")}
-                                //         >
-                                //             🎂
-                                //         </span>
-                                //     </div>
-                                // );
-                            } else {
-                                const borderColor =
-                                    eventInfo.event.backgroundColor || "gray";
+                            const isAuthor =
+                                user.id ===
+                                    eventInfo.event.extendedProps.user.id ||
+                                hasRole("superadmin");
 
-                                return (
-                                    <div
-                                        key={eventInfo.event.id}
-                                        style={{
-                                            backgroundColor:
+                            return (
+                                <div
+                                    key={eventInfo.event.id}
+                                    style={{
+                                        backgroundColor:
                                             eventInfo.backgroundColor,
-                                            padding: "10px 15px",
-                                            borderRadius: "2px",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            height: "30px",
-                                            width: "100%",
-                                            whiteSpace: "nowrap",
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            border: `2px solid ${borderColor}`,
+                                        padding: "10px 15px",
+                                        borderRadius: "2px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        height: "30px",
+                                        width: "100%",
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        border: `2px solid ${borderColor}`,
+                                    }}
+                                    className="fc-event-title"
+                                >
+                                    <div
+                                        style={{
+                                            borderLeft: `5px solid ${eventInfo.event.backgroundColor}`,
+                                            height: "100%",
+                                            opacity: "50%",
                                         }}
-                                        className="fc-event-title"
+                                    />
+                                    <span
+                                        className="event-title"
+                                        style={{
+                                            color: "white",
+                                            flexGrow: 1,
+                                        }}
                                     >
-                                        <div
-                                            style={{
-                                                borderLeft: `5px solid ${eventInfo.event.backgroundColor}`,
-                                                height: "100%",
-                                                opacity: "50%",
-                                            }}
-                                        />
-                                        <span
-                                            className="event-title"
-                                            style={{color: "white", flexGrow: 1}}
-                                        >
                                         {eventInfo.event.title}
                                     </span>
+                                    {isAuthor && (
                                         <img
                                             src={pencilIcon}
                                             alt="Edit"
@@ -864,12 +779,14 @@ function Calendar() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 e.preventDefault();
-                                                handleEditClick(eventInfo.event);
+                                                handleEditClick(
+                                                    eventInfo.event
+                                                );
                                             }}
                                         />
-                                    </div>
-                                );
-                            }
+                                    )}
+                                </div>
+                            );
                         }}
                     />
 
@@ -960,7 +877,8 @@ function Calendar() {
                                                     name="color"
                                                     value={color}
                                                     checked={
-                                                        eventData.color === color
+                                                        eventData.color ===
+                                                        color
                                                     }
                                                     onChange={handleChange}
                                                     required
@@ -1068,7 +986,8 @@ function Calendar() {
                                                     onChange={handleChange}
                                                     required
                                                     checked={
-                                                        eventData.color === color
+                                                        eventData.color ===
+                                                        color
                                                     }
                                                 />
                                                 <span
@@ -1102,8 +1021,7 @@ function Calendar() {
 
                     {isPrintModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                            <div
-                                className="w-full max-w-md max-md:w-[340px] p-6 mx-auto bg-white rounded-2xl shadow-lg">
+                            <div className="w-full max-w-md max-md:w-[340px] p-6 mx-auto bg-white rounded-2xl shadow-lg">
                                 <h2 className="mb-4 text-xl font-bold">
                                     Select Date Range for Printing
                                 </h2>
@@ -1171,7 +1089,7 @@ function Calendar() {
                 </div>
             </main>
         </Example>
-);
+    );
 }
 
 export default Calendar;
