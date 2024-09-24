@@ -263,7 +263,7 @@ export default function Roles() {
             role.name.includes("department admin")
         );
 
-        const communityAdminRoles = person.roles.filter((role) =>
+        const communityAdminRoles = person.rolesWithCommunities.filter((role) =>
             role.name.includes("community admin")
         );
 
@@ -313,10 +313,13 @@ export default function Roles() {
                                     `w-full flex items-center justify-center text-center px-6 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
                                     roleColor["community admin"]
                                 )}
+                                onChange={(e) => {
+                                    const communityId = e.target.value;
+                                    window.location.href = `/communityInner?communityId=${communityId}`;
+                                }}
                             >
+                                <option>Select community</option>
                                 {communityAdminRoles.map((role, index) => {
-                                    const communityId = role.name.split(" ")[2];
-
                                     return (
                                         <option
                                             key={index}
@@ -324,11 +327,10 @@ export default function Roles() {
                                                 `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
                                                 roleColor["community admin"]
                                             )}
-                                            // onSelect={() => {
-                                            //     window.location.href = `/communityInner?communityId=${communityId}`;
-                                            // }}
+                                            value={role.community.id}
                                         >
-                                            Community Admin (ID: {communityId})
+                                            Community Admin (
+                                            {role.community.name.slice(0, 20)})
                                         </option>
                                     );
                                 })}

@@ -3,6 +3,7 @@
 namespace Modules\Permission\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Communities\Models\Community;
 use Modules\User\Models\User;
 use Modules\Permission\Models\ModelHasRole;
 use Spatie\Permission\Models\Role;
@@ -196,15 +197,6 @@ class ModelHasRoleController extends Controller
 
     public function getUsersWithRoles()
     {
-        /*
-department: {name: 'No department', id: null}
-id: 1
-image: "/assets/dummyStaffPlaceHolder.jpg"
-name: "Admin"
-roles: [{…}]
-status: false
-title: "No title"
-        */
         // users who have roles
         $users = User::with(relations: 'roles')->whereHas('roles')->get();
 
@@ -238,6 +230,17 @@ title: "No title"
 
             // remove unneded fields
             unset($user->password);
+
+            $user->rolesWithCommunities = $user->roles->map(function ($role) {
+                // if role name includes community
+                if (strpos($role->name, 'community') !== false) {
+                    // role name will be like community admin 3, we need to get the community id
+                    $role->community_id = explode(' ', $role->name)[2];
+                    $role->community = Community::find($role->community_id);
+                }
+
+                return $role;
+            });
         });
 
 
