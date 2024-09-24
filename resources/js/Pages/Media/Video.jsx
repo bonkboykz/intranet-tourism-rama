@@ -99,20 +99,28 @@ import "yet-another-react-lightbox/styles.css";
 export function VideoGallery({ videos }) {
     const [index, setIndex] = useState(-1);
 
-    const slides = useMemo(
-        () =>
-            videos.map((video) => ({
-                id: video.id,
-                asset: video.path,
-                width: 640,
-                height: 480,
-                type: "video",
-                controls: true,
-                sources: [{ src: video.path, type: "video/mp4" }],
-                autoPlay: true,
-            })),
-        [videos]
-    );
+    const size = useWindowSize();
+
+    const slides = useMemo(() => {
+        if (!size.width) {
+            return [];
+        }
+
+        const videoWidth = size.width - 200;
+        // aspect ratio 1.19
+        const videoHeight = videoWidth / 1.19;
+
+        return videos.map((video) => ({
+            id: video.id,
+            asset: video.path,
+            width: videoWidth,
+            height: videoHeight,
+            type: "video",
+            controls: true,
+            sources: [{ src: video.path, type: "video/mp4" }],
+            autoPlay: true,
+        }));
+    }, [videos, size]);
 
     return (
         <>
