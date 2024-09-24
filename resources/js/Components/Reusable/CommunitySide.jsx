@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { memo } from "react";
 import { FaLock } from "react-icons/fa"; // Import the lock icon
 import axios from "axios";
 
@@ -36,7 +37,7 @@ const CommunityItem = ({
     </a>
 );
 
-function MyComponent() {
+function CommunitySide() {
     const [communities, setCommunities] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -69,8 +70,9 @@ function MyComponent() {
             setCommunities(communityData);
         } catch (error) {
             console.error("Error fetching communities:", error);
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -127,4 +129,4 @@ function MyComponent() {
     );
 }
 
-export default MyComponent;
+export default memo(CommunitySide);
