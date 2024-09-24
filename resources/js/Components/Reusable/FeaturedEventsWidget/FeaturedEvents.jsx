@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { memo } from "react";
 import axios from "axios";
 
 import arrowRight from "../../../../../public/assets/viewAllArrow.png";
@@ -85,4 +86,4 @@ const FeaturedEvents = () => {
     );
 };
 
-export default FeaturedEvents;
+export default memo(FeaturedEvents);

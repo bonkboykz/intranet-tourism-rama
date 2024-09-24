@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { memo } from "react";
 import { createPortal } from "react-dom";
 
 import { useWhosOnline } from "@/Layouts/useWhosOnline";
@@ -130,4 +131,4 @@ const WhosOnline = () => {
     );
 };
 
-export default WhosOnline;
+export default memo(WhosOnline);
