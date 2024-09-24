@@ -7,7 +7,7 @@ import { VideoGallery } from "./Video";
 
 import "react-photo-view/dist/react-photo-view.css";
 
-export function Gallery({ filteredPosts, selectedTag }) {
+export function Gallery({ selectedTag }) {
     const {
         data: images,
         hasMore: hasMoreImages,

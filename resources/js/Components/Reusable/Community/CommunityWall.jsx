@@ -521,18 +521,8 @@ function Navigation({ departmentName, type }) {
 
                     {activeTab === "Gallery" && (
                         <section>
-                            <ImageProfile
-                                selectedItem="All"
-                                accessableType="Community"
-                                accessableId={communityID}
-                                filterBy="community"
-                            />
-                            <VideoProfile
-                                selectedItem="All"
-                                accessableType="Community"
-                                accessableId={communityID}
-                                filterBy="community"
-                            />
+                            <ImageProfile communityId={communityID} />
+                            <VideoProfile communityId={communityID} />
                         </section>
                     )}
 

@@ -788,4 +788,76 @@ class PostController extends Controller
             'data' => $posts
         ]);
     }
+
+
+    public function getMedia()
+    {
+        $query = Post::query();
+
+        // Apply eager loading for attachments
+        $query->with('attachments');
+
+
+        // Apply filters for image and video MIME types
+
+        if (request()->has('only_video')) {
+            $query->whereHas('attachments', function ($query) {
+                $query->where('mime_type', 'like', 'video/%');
+            });
+        } else if (request()->has('only_image')) {
+            $query->whereHas('attachments', function ($query) {
+                $query->where('mime_type', 'like', 'image/%');
+            });
+        } else {
+            $query->whereHas('attachments', function ($query) {
+                $query->where(function ($query) {
+                    $query->where('mime_type', 'like', 'image/%')
+                        ->orWhere('mime_type', 'like', 'video/%');
+                });
+            });
+        }
+
+        if (request()->has('community_id')) {
+            $query->where('community_id', request('community_id'));
+        } else if (request()->has('department_id')) {
+            $query->where('department_id', request('department_id'));
+        } else if (request()->has('user_id')) {
+            $query->where('user_id', request('user_id'));
+        }
+
+        $user = Auth::user();
+
+        // if (!$user->hasRole('superadmin')) {
+        //     $query->where(function ($query) use ($user) {
+        //         $query->where(function ($query) use ($user) {
+        //             $query->whereNull('community_id')
+        //                 ->orWhereHas('community', function ($query) use ($user) {
+        //                     $query->whereHas('members', function ($query) use ($user) {
+        //                         $query->where('user_id', $user->id);
+        //                     });
+        //                 });
+        //         })
+        //             ->where(function ($query) use ($user) {
+        //                 $query->whereNull('department_id')
+        //                     ->orWhereHas('department', function ($query) use ($user) {
+        //                         $query->whereHas('employmentPosts', function ($query) use ($user) {
+        //                             $query->where('user_id', $user->id);
+        //                         });
+        //                     });
+        //             });
+        //     });
+        // }
+
+        // not birthday, or story
+        $query->where('type', '!=', 'birthday')
+            ->where('type', '!=', 'story');
+
+        // $posts = $query->paginate(20);
+        $posts = $query->get();
+
+        // Return the result as JSON
+        return response()->json([
+            'data' => $posts
+        ]);
+    }
 }
