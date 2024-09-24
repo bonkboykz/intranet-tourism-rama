@@ -739,7 +739,7 @@ function ShareYourThoughts({
                                                         onClick={handleClickSend}
                                                         // className="flex send-button align-item justify-end"
                                                     >
-                                                        {isSending ? (  
+                                                        {isSending ? (
                                                             <Loader2 className="w-6 h-6 animate-spin" />
                                                         ) : (
                                                             <img

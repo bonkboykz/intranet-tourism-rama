@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS new_users_data_offiria (
 );
 
 -- If on client machine, comment out this line --
-COPY new_users_data_offiria(user_id, name, username, email, image_file_name, title, gred, division, unit, lokasi, work_phone, ordering, taraf_jawatan, active_status)
-FROM '<absolute_path>/seed/new_user_data.csv'
+\copy new_users_data_offiria(user_id, name, username, email, image_file_name, title, gred, division, unit, lokasi, work_phone, ordering, taraf_jawatan, active_status)
+FROM 'C:\Users\Алихан\Desktop\intranet-tourism-rama\seed\new_user_data.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS updated_staff_data (
 );
 
 -- If on client machine, comment out this line --
-COPY updated_staff_data(url, image_name, user_id, user_name, work_phone, active_status)
-FROM '<absolute_path>/seed/UpdatedListAvatarExtract.csv'
+\copy updated_staff_data(url, image_name, user_id, user_name, work_phone, active_status)
+FROM 'C:\Users\Алихан\Desktop\intranet-tourism-rama\seed\UpdatedListAvatarExtract.csv'
 DELIMITER ','
 CSV HEADER;
 

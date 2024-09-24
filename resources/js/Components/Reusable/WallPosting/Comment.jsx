@@ -357,7 +357,6 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                     post.mentions
                                 )}
                             </div>
-                            <PostAttachments attachments={post.attachments} />
                             <hr className="my-6 border-1 border-gray-200" />
                         </div>
                     </div>
