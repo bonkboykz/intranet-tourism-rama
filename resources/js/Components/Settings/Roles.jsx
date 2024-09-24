@@ -139,7 +139,31 @@ export default function Roles() {
 
             console.log("Users with roles:", data);
 
-            setPeople(data);
+            const filteredPersons = data.filter((person) => {
+                const superadminRole = person.roles.find(
+                    (role) => role.name === "superadmin"
+                );
+
+                const departmentAdminRoles = person.roles.filter((role) =>
+                    role.name.includes("department admin")
+                );
+
+                const communityAdminRoles = person.rolesWithCommunities.filter(
+                    (role) => role.name.includes("community admin")
+                );
+
+                if (
+                    !superadminRole &&
+                    departmentAdminRoles.length === 0 &&
+                    communityAdminRoles.length === 0
+                ) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            setPeople(filteredPersons);
         } catch (error) {
             console.error("Error fetching users with roles:", error);
 
