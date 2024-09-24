@@ -42,7 +42,7 @@ const Dashboard = () => {
                 <div className="flex-row w-full">
                     <main className="z-0 min-h-screen bg-gray-100 flex-row flex justify-center gap-20 md:gap-12">
                         {/* left widgets */}
-                        <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden lg:block no-scrollbar order-1">
+                        <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden lg:block no-scrollbar lg:order-1">
                             <div className="file-directory-header">
                                 <PageTitle title="My Wall" />
                             </div>
@@ -54,14 +54,14 @@ const Dashboard = () => {
                         </div>
 
                         {/* right widgets */}
-                        <div className="flex-col pr-10 pt-10 pb-20 w-full max-w-[330px] max-h-[100vh] overflow-y-auto sticky top-0 hidden lg:block no-scrollbar order-3">
+                        <div className="flex-col pr-10 pt-10 pb-20 w-full max-w-[330px] max-h-[100vh] overflow-y-auto sticky top-0 hidden lg:block no-scrollbar lg:order-3">
                             <CommunitySide />
                             <AdvertisementDashboard />
                             <InfoGraphic />
                         </div>
 
                         {/* center content */}
-                        <div className="w-full flex flex-col justify-center min-w-[440px] max-w-[700px] py-10 max-md:px-10 order-2">
+                        <div className="w-full flex flex-col justify-center min-w-[440px] max-w-[700px] py-10 max-md:px-10 lg:order-2">
                             <StoryNew userId={id} />
                             <ShareYourThoughts
                                 userId={id}
