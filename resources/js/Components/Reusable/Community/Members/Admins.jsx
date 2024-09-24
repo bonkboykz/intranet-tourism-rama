@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { MemberCard } from "./MemberCard";
 
-export function Admins({ admins, communityID, onRefetch }) {
+export function Admins({ admins, communityID, onRefetch, loggedInID }) {
     const [activePopupId, setActivePopupId] = useState(null);
     const closePopup = () => {
         setActivePopupId(null);
@@ -25,6 +25,12 @@ export function Admins({ admins, communityID, onRefetch }) {
                     "Failed to demote user:",
                     rolesResponse.statusText
                 );
+            }
+
+            if (admin.id === loggedInID) {
+                window.location.reload();
+
+                return;
             }
 
             console.log("User demoted successfully.");

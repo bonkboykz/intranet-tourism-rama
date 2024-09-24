@@ -1,13 +1,19 @@
 import React from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { Loader2 } from "lucide-react";
 
 import { VideoGallery } from "@/Pages/Media/Video";
-import { useLoading } from "@/Utils/hooks/useLazyLoading";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
 import "react-photo-view/dist/react-photo-view.css";
 
 const ImageProfile = ({ userId, communityId, departmentId }) => {
-    const { data: posts } = useLoading("/api/posts/get_media", {
+    const {
+        data: posts,
+        hasMore: hasMoreImages,
+        isLoading: isImagesLoading,
+        nextPage: loadMoreImages,
+    } = useLazyLoading("/api/posts/get_media", {
         only_image: true,
         user_id: userId,
         community_id: communityId,
@@ -49,13 +55,32 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
                         {renderImages()}
                     </div>
                 </PhotoProvider>
+
+                {hasMoreImages && (
+                    <button
+                        disabled={isImagesLoading}
+                        onClick={loadMoreImages}
+                        className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-blue-500 hover:bg-blue-700 flex align-center justify-center"
+                    >
+                        {isImagesLoading ? (
+                            <Loader2 className="w-6 h-6 animate-spin" />
+                        ) : (
+                            "Load More"
+                        )}
+                    </button>
+                )}
             </section>
         </section>
     );
 };
 
 const VideoProfile = ({ userId, communityId, departmentId }) => {
-    const { data: posts } = useLoading("/api/posts/get_media", {
+    const {
+        data: posts,
+        hasMore: hasMoreVideo,
+        isLoading: isVideoLoading,
+        nextPage: loadMoreVideo,
+    } = useLazyLoading("/api/posts/get_media", {
         only_video: true,
         user_id: userId,
         community_id: communityId,
@@ -84,6 +109,20 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
             </header>
             <section className="mt-8 max-md:max-w-full">
                 <VideoGallery videos={videos} />
+
+                {hasMoreVideo && (
+                    <button
+                        disabled={isVideoLoading}
+                        onClick={loadMoreVideo}
+                        className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-blue-500 hover:bg-blue-700 flex align-center justify-center"
+                    >
+                        {isVideoLoading ? (
+                            <Loader2 className="w-6 h-6 animate-spin" />
+                        ) : (
+                            "Load More"
+                        )}
+                    </button>
+                )}
             </section>
         </section>
     );

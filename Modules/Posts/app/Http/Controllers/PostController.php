@@ -244,7 +244,6 @@ class PostController extends Controller
                     }
                 }
 
-                $output = new ConsoleOutput();
                 // Handle the JSON object attachments (preserve these)
                 $existingAttachments = $post->attachments->pluck('id')->toArray();
                 $preserveAttachments = array_intersect($existingAttachments, $jsonAttachments);
@@ -904,7 +903,7 @@ class PostController extends Controller
             ->where('type', '!=', 'story');
 
         // $posts = $query->paginate(20);
-        $posts = $query->get();
+        $posts = $query->paginate(5);
 
         // Return the result as JSON
         return response()->json([

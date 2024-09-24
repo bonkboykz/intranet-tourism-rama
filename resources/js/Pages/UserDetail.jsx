@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { usePage } from "@inertiajs/react";
 
 import { FileTable } from "@/Components/FileManagement";
@@ -161,11 +162,12 @@ function UserDetailContent() {
     console.log("PDATA", profileData);
 
     const openSaveNotification = () => {
+        toast.success("Changes saved successfully");
         setIsSaveNotificationOpen(true);
     };
 
     const closeSaveNotification = () => {
-        setIsSaveNotificationOpen(false);
+        // setIsSaveNotificationOpen(false);
         window.location.reload();
     };
 
@@ -436,7 +438,7 @@ function UserDetailContent() {
                     {/* main content */}
                     <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                         <div>
-                            <div className="profile-header w-full bg-white h-[485px] max-md:h-[385px] shadow-custom rounded-lg ml-8">
+                            <div className="profile-header w-full bg-white max-md:h-[385px] shadow-custom rounded-lg ml-8">
                                 <ProfileHeader
                                     backgroundImage={
                                         profileData.backgroundImage
@@ -672,12 +674,12 @@ function UserDetailContent() {
                         </div>
                     </div>
                 </main>
-                {isSaveNotificationOpen && (
+                {/* {isSaveNotificationOpen && (
                     <SaveNotification
                         title="Changes saved successfully"
                         onClose={closeSaveNotification}
                     />
-                )}
+                )} */}
                 {isPopupOpen && (
                     <Popup
                         title="Edit Banner Photo"

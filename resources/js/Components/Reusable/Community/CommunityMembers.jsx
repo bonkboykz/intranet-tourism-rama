@@ -24,7 +24,6 @@ function CommunityMembers({ communityID, loggedInID }) {
             }
 
             const adminsData = response.data.data || [];
-            console.log(response);
             setAdmins(adminsData);
         } catch (e) {
             console.error("Error fetching admins:", e);
@@ -46,8 +45,6 @@ function CommunityMembers({ communityID, loggedInID }) {
 
             const membersData = response.data;
 
-            console.log(membersData);
-
             const fetchedMembers = membersData || [];
             fetchedMembers.sort((a, b) => a.order - b.order);
 
@@ -64,9 +61,6 @@ function CommunityMembers({ communityID, loggedInID }) {
         fetchAdmins();
         fetchMembers();
     }, []);
-
-    console.log("MEMBERS", members);
-    console.log("ADMINS", admins);
 
     const handleSearchChange = (e) => {
         setSearchInput(e.target.value);
@@ -127,6 +121,7 @@ function CommunityMembers({ communityID, loggedInID }) {
                     fetchAdmins();
                     fetchMembers();
                 }}
+                loggedInID={loggedInID}
             />
 
             <Members
