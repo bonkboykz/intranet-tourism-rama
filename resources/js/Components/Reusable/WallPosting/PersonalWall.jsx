@@ -13,7 +13,7 @@ export function PersonalWall({ posts, onLoad, hasMore }) {
             hasMore={hasMore}
             loader={
                 <div
-                    className="loader h-full w-full min-h-32 flex items-center justify-center"
+                    className="loader min-h-32 flex items-center justify-center"
                     key={0}
                 >
                     <Loader2 className="w-12 h-12 animate-spin" />
