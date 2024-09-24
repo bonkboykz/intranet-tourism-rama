@@ -37,7 +37,11 @@ export function SendAs({ postAs, onChange, departmentId, communityId }) {
                 onClick={togglePostAsDropdown}
                 className="px-4 py-2 text-sm font-medium rounded-md focus:outline-none"
             >
-                {postAs}
+                {postAs.includes("member") || postAs.includes("admin")
+                    ? postAs.includes("admin")
+                        ? "Admin"
+                        : "Member"
+                    : "Post as"}
                 <span className="ml-2">▼</span>
             </button>
             {postAsOpen && (
