@@ -62,7 +62,7 @@ class PostController extends Controller
 
         // Sort posts by announcement status and updated_at
         $query->orderByRaw("CASE WHEN announced = true THEN 0 ELSE 1 END")
-            ->orderBy('updated_at', 'desc');
+            ->orderBy('created_at', 'desc');
 
         // Paginate the results
         $data = $this->shouldPaginate($query);
