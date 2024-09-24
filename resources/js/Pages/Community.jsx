@@ -37,39 +37,30 @@ const Community = () => {
         try {
             setIsLoading(true);
 
-            let currentPage = 1;
-            let totalPages = 1;
-
             const allCommunities = [];
 
-            while (currentPage <= totalPages) {
-                const url = `/api/communities/communities?page=${currentPage}&perpage=100`;
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: { Accept: "application/json" },
-                });
+            const url = `/api/communities/communities?all=true`;
+            const response = await fetch(url, {
+                method: "GET",
+                headers: { Accept: "application/json" },
+            });
 
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
-                const data = await response.json();
-                const departmentData = data.data.data.map((community) => ({
-                    id: community.id,
-                    name: community.name,
-                    type: community.type,
-                    imageUrl:
-                        community.banner || "/assets/defaultCommunity.png", // Use banner if available
-                    isArchived: community.is_archived,
-                    isMember: community.is_member,
-                    role: community.role,
-                }));
-
-                allCommunities.push(...departmentData);
-
-                totalPages = data.data.last_page;
-                currentPage++;
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
+
+            const data = await response.json();
+            const departmentData = data.data.map((community) => ({
+                id: community.id,
+                name: community.name,
+                type: community.type,
+                imageUrl: community.banner || "/assets/defaultCommunity.png", // Use banner if available
+                isArchived: community.is_archived,
+                isMember: community.is_member,
+                role: community.role,
+            }));
+
+            allCommunities.push(...departmentData);
 
             setDepartmentsList(
                 allCommunities.sort((a, b) => {
@@ -231,21 +222,21 @@ const Community = () => {
 
     return (
         <Example>
-        <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
-            {/* left widgets */}
-            <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
-                <div className="file-directory-header">
-                    <PageTitle title="Communities" />
+            <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                {/* left widgets */}
+                <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                    <div className="file-directory-header">
+                        <PageTitle title="Communities" />
+                    </div>
+                    <hr className="file-directory-underline" />
+                    <div>
+                        <FeaturedEvents />
+                        <WhosOnline />
+                    </div>
                 </div>
-                <hr className="file-directory-underline" />
-                <div>
-                    <FeaturedEvents />
-                    <WhosOnline />
-                </div>
-            </div>
 
-            {/* main content */}
-            <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                {/* main content */}
+                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                     <CommunitySearchBar
                         onSearch={(value) => setSearchTerm(value)}
                         toggleCreateCommunity={toggleCreateCommunity}

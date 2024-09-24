@@ -60,7 +60,7 @@ class CommunityController extends Controller
 
         // $output->writeln($fullSql);
 
-        $data = $this->shouldPaginate($query);
+        $data = request()->has('all') ? $query->get() : $this->shouldPaginate($query);
 
         $data->map(function ($item) use ($user) {
             $is_member = $item->members()->where('user_id', Auth::id())->exists();
