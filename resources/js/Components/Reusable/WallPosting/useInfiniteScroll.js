@@ -80,7 +80,7 @@ export function useInfiniteScroll({
                     if (filter.postType === "announcement") {
                         newFilter.push({
                             field: "announced",
-                            type: "like",
+                            type: "=",
                             value: "true",
                         });
                     }
@@ -88,7 +88,7 @@ export function useInfiniteScroll({
                     if (filter.postType === "poll") {
                         newFilter.push({
                             field: "type",
-                            type: "like",
+                            type: "=",
                             value: "poll",
                         });
                     }
@@ -106,7 +106,7 @@ export function useInfiniteScroll({
             if (communityId) {
                 newFilter.push({
                     field: "community_id",
-                    type: "like",
+                    type: "=",
                     value: communityId,
                 });
             }
@@ -114,7 +114,7 @@ export function useInfiniteScroll({
             if (departmentId) {
                 newFilter.push({
                     field: "department_id",
-                    type: "like",
+                    type: "=",
                     value: departmentId,
                 });
             }
@@ -124,7 +124,7 @@ export function useInfiniteScroll({
             if (["profile", "user-wall"].includes(variant) && !isSuperAdmin) {
                 newFilter.push({
                     field: "announced",
-                    type: "like",
+                    type: "=",
                     value: "false",
                 });
             }
@@ -151,7 +151,7 @@ export function useInfiniteScroll({
                     filter: [
                         {
                             field: "type",
-                            type: "like",
+                            type: "=",
                             value: [
                                 "post",
                                 "poll",
