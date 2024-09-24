@@ -129,10 +129,12 @@ const AddMemberPopup = ({
             const response = await fetch(
                 `/api/department/employment_posts?department_id=${departmentId}`
             );
+
             if (!response.ok) {
                 throw new Error(`Failed to fetch: ${response.statusText}`);
             }
             const data = await response.json();
+            console.log("data", data);
             const fetchedMembers = data.members || [];
             setCurrentMembers(fetchedMembers.map((member) => member.user_id));
         } catch (error) {
@@ -288,7 +290,6 @@ const AddMemberPopup = ({
         // If the user has exactly one employment post, pre-fill form fields
         if (person.employment_posts && person.employment_posts.length === 1) {
             const employmentPost = person.employment_posts[0];
-            console.log("employmentPost", employmentPost);
             setTitle(employmentPost.business_post?.title || "");
             setTitleId(employmentPost.business_post_id || "");
             setSelectedGrade(employmentPost.business_grade?.code || "");

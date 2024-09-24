@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf"; // Make sure you install jspdf using npm or yarn
+
+import { toastError } from "@/Utils/toast";
 
 function ProfileIcons({
     icon1,
@@ -63,99 +67,136 @@ function ProfileIcons({
         };
     }, [isPopupOpen]);
 
-    const handleDownload = async (e) => {
-        e.stopPropagation();
-        e.preventDefault();
+    // const handleDownload = async (e) => {
+    //     e.stopPropagation();
+    //     e.preventDefault();
 
-        if (!qrCodeSvg) {
-            console.error("QR code SVG is not available.");
-            return;
-        }
+    //     console.log("Downloading QR code...");
 
-        const pdf = new jsPDF();
+    //     if (!qrCodeSvg) {
+    //         console.error("QR code SVG is not available.");
 
-        // Load the logo image
-        const logo = new Image();
-        logo.src = "/assets/logo_tourism.png";
+    //         toastError("QR code is not available for download.");
+    //         return;
+    //     }
 
-        const leftMargin = 40; // Left margin
-        const rightMargin = 40; // Right margin
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const maxWidth = pageWidth - leftMargin - rightMargin; // Adjusted max width for text wrapping
+    //     const pdf = new jsPDF();
 
-        const nameLines = pdf.splitTextToSize(`${user_name}`, maxWidth);
+    //     return new Promise((resolve, reject) => {
+    //         console.log("Creating PDF...");
+    //         // Load the logo image
+    //         const logo = new Image();
+    //         logo.src = "/assets/logo_tourism.png";
 
-        const lineHeight = 10; // Adjust line height as needed
+    //         const leftMargin = 40; // Left margin
+    //         const rightMargin = 40; // Right margin
+    //         const pageWidth = pdf.internal.pageSize.getWidth();
+    //         const maxWidth = pageWidth - leftMargin - rightMargin; // Adjusted max width for text wrapping
 
-        logo.onload = () => {
-            const logoWidth = 70; // Adjust logo size as needed
-            const logoHeight = 30;
-            const logoXPosition = (pageWidth - logoWidth) / 2;
-            const logoYPosition = 20;
+    //         const nameLines = pdf.splitTextToSize(`${user_name}`, maxWidth);
 
-            pdf.addImage(
-                logo,
-                "PNG",
-                logoXPosition,
-                logoYPosition,
-                logoWidth,
-                logoHeight
-            );
+    //         const lineHeight = 10; // Adjust line height as needed
 
-            const marginTop = 40; // Adjust margin as needed
-            let yPosition = logoYPosition + logoHeight + marginTop;
+    //         logo.onload = () => {
+    //             const logoWidth = 70; // Adjust logo size as needed
+    //             const logoHeight = 30;
+    //             const logoXPosition = (pageWidth - logoWidth) / 2;
+    //             const logoYPosition = 20;
 
-            pdf.setFontSize(24); // Larger font size for name
-            pdf.setFont("helvetica", "bold"); // Bold font style
+    //             pdf.addImage(
+    //                 logo,
+    //                 "PNG",
+    //                 logoXPosition,
+    //                 logoYPosition,
+    //                 logoWidth,
+    //                 logoHeight
+    //             );
 
-            // Add each line of the name text centered, with line spacing
-            nameLines.forEach((line) => {
-                pdf.text(line, pageWidth / 2, yPosition, { align: "center" });
-                yPosition += lineHeight; // Move down for the next line
-            });
+    //             const marginTop = 40; // Adjust margin as needed
+    //             let yPosition = logoYPosition + logoHeight + marginTop;
 
-            pdf.setFontSize(16);
-            pdf.setFont("helvetica", "normal");
-            pdf.text(`${user_title}`, pageWidth / 2, yPosition + 10, {
-                align: "center",
-            });
+    //             pdf.setFontSize(24); // Larger font size for name
+    //             pdf.setFont("helvetica", "bold"); // Bold font style
 
-            const imageYPosition = yPosition + 40;
+    //             // Add each line of the name text centered, with line spacing
+    //             nameLines.forEach((line) => {
+    //                 pdf.text(line, pageWidth / 2, yPosition, {
+    //                     align: "center",
+    //                 });
+    //                 yPosition += lineHeight; // Move down for the next line
+    //             });
 
-            const canvas = document.createElement("canvas");
-            const svgBlob = new Blob([qrCodeSvg], {
-                type: "image/svg+xml;charset=utf-8",
-            });
-            const url = URL.createObjectURL(svgBlob);
+    //             pdf.setFontSize(16);
+    //             pdf.setFont("helvetica", "normal");
+    //             pdf.text(`${user_title}`, pageWidth / 2, yPosition + 10, {
+    //                 align: "center",
+    //             });
 
-            const img = new Image();
-            img.onload = () => {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0);
+    //             const imageYPosition = yPosition + 40;
 
-                const imgData = canvas.toDataURL("image/png");
+    //             const canvas = document.createElement("canvas");
+    //             const svgBlob = new Blob([qrCodeSvg], {
+    //                 type: "image/svg+xml;charset=utf-8",
+    //             });
+    //             const url = URL.createObjectURL(svgBlob);
 
-                const imageWidth = img.width / 2;
-                const imageHeight = img.height / 2;
-                const imageXPosition = (pageWidth - imageWidth) / 2;
+    //             const img = new Image();
+    //             img.onload = () => {
+    //                 canvas.width = img.width;
+    //                 canvas.height = img.height;
+    //                 const ctx = canvas.getContext("2d");
+    //                 ctx.drawImage(img, 0, 0);
 
-                pdf.addImage(
-                    imgData,
-                    "PNG",
-                    imageXPosition,
-                    imageYPosition,
-                    imageWidth,
-                    imageHeight
-                );
+    //                 const imgData = canvas.toDataURL("image/png");
 
-                pdf.save(`${user_name} QR-Code.pdf`);
+    //                 const imageWidth = img.width / 2;
+    //                 const imageHeight = img.height / 2;
+    //                 const imageXPosition = (pageWidth - imageWidth) / 2;
 
-                URL.revokeObjectURL(url);
-            };
-            img.src = url;
-        };
+    //                 pdf.addImage(
+    //                     imgData,
+    //                     "PNG",
+    //                     imageXPosition,
+    //                     imageYPosition,
+    //                     imageWidth,
+    //                     imageHeight
+    //                 );
+
+    //                 pdf.save(`${user_name} QR-Code.pdf`);
+
+    //                 URL.revokeObjectURL(url);
+    //             };
+    //             img.src = url;
+
+    //             resolve();
+    //         };
+
+    //         logo.onerror = (error) => {
+    //             console.error("Failed to load logo:", error);
+    //             reject(error);
+    //         };
+    //     });
+    // };
+
+    const handleDownload = async () => {
+        const element = document.getElementById("qr-code");
+        const canvas = await html2canvas(element, {
+            width: 256,
+            height: 256,
+            // windowHeight: 256,
+            // windowWidth: 256,
+            scrollX: -window.scrollX,
+            scrollY: -window.scrollY,
+            x: 0,
+            y: 0,
+            // windowWidth: document.documentElement.offsetWidth,
+            // windowHeight: document.documentElement.offsetHeight,
+        });
+        const image = canvas.toDataURL("image/png"); // Convert canvas to image format
+        const link = document.createElement("a"); // Create a link element
+        link.href = image; // Set the image as the link's href
+        link.download = "qr-code.png"; // Set the download attribute with filename
+        link.click(); // Programmatically trigger the link click
     };
 
     const handleCopyLink = () => {
@@ -168,7 +209,7 @@ function ProfileIcons({
             .writeText(qrCodeLink)
             .then(() => {
                 console.log("QR code link copied to clipboard:", qrCodeLink);
-                window.alert("QR code link copied to clipboard!");
+                toast.success("QR code link copied to clipboard.");
             })
             .catch((error) => {
                 console.error("Failed to copy QR code link:", error);
@@ -215,26 +256,43 @@ function ProfileIcons({
                                 </span>
                             </p>
 
-                            <div className="relative">
-                                <img
-                                    src="/assets/logo_tourism.png"
-                                    alt="Tourism Logo"
-                                    className="w-[80px] mt-[4px] h-auto align-middle absolute"
-                                    style={{
-                                        left: "50%",
-                                        top: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                    }}
-                                />
-
+                            <div
+                                className="relative"
+                                id="qr-code"
+                                style={{
+                                    position: "relative",
+                                    width: "256px",
+                                    height: "256px",
+                                }}
+                            >
                                 {qrCodeSvg ? (
                                     <img
                                         src={qrCodeSvg}
-                                        className="h-auto w-[256px]"
+                                        alt="QR Code"
+                                        style={{
+                                            width: 256,
+                                            height: 256,
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                        }}
                                     />
                                 ) : (
                                     <p>Loading QR code...</p>
                                 )}
+                                <img
+                                    src="/assets/logo_tourism.png"
+                                    alt="Tourism Logo"
+                                    style={{
+                                        position: "absolute",
+                                        width: "80px",
+                                        height: "32px",
+                                        left: "50%",
+                                        top: "50%",
+                                        transform: "translate(-50%, -50%)",
+                                        zIndex: 1,
+                                    }}
+                                />
                             </div>
                         </div>
 
@@ -251,7 +309,7 @@ function ProfileIcons({
                                 />
                             </button>
                             <button
-                                onClick={handleDownload}
+                                onClick={handleCopyLink}
                                 className="bg-white hover:bg-blue-100 rounded-lg py-2 px-auto whitespace-nowrap flex w-full justify-center items-center"
                             >
                                 <img
