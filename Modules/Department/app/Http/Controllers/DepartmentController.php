@@ -131,6 +131,18 @@ class DepartmentController extends Controller
 
     public function destroy(Department $department)
     {
+        // revoke permission from all admins
+        $admins = $department->admins;
+
+        foreach ($admins as $admin) {
+            Department::revokeCommunityAdminPermissions($admin, $department);
+        }
+
+        // remove all members and admins
+        $department->admins()->detach();
+        $department->employmentPosts()->delete();
+
+
         $department->delete();
 
         return response()->noContent();

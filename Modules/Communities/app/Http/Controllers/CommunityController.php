@@ -161,8 +161,16 @@ class CommunityController extends Controller
 
     public function destroy(Community $community)
     {
-        $user = User::findOrFail(auth()->id());
-        CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
+        // revoke permission from all admins
+        $admins = $community->admins;
+
+        foreach ($admins as $admin) {
+            CommunityPermissionsHelper::revokeCommunityAdminPermissions($admin, $community);
+        }
+
+        // remove all members and admins
+        $community->admins()->detach();
+        $community->members()->detach();
 
         $community->delete();
 
