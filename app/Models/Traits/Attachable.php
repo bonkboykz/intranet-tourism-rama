@@ -22,8 +22,8 @@ trait Attachable
     {
         if ($resources = request()->file('attachments')) {
             foreach ($resources as $resource) {
-                $output = new ConsoleOutput();
-                $output->writeln('Resource: ' . $resource);
+                // $output = new ConsoleOutput();
+                // $output->writeln('Resource: ' . $resource);
                 $resourceRef = uploadFile($resource);
                 $this->attachments()->create(array_merge($resourceRef, [
                     'user_id' => auth()->id() ?? '1',
