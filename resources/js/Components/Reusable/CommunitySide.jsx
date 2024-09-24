@@ -43,28 +43,15 @@ function MyComponent() {
     const fetchCommunities = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`/api/communities/communities`, {
-                params: {
-                    // ?perpage=5&page=1&limit=1&sort=created_at&order=desc
-                    perpage: 5,
-                    page: 1,
-                    limit: 5,
-                    sort: [{ created_at: "desc" }],
-                    filter: [
-                        {
-                            field: "is_archived",
-                            type: "like",
-                            value: false,
-                        },
-                    ],
-                },
-            });
+            const response = await axios.get(
+                `/api/communities/get-latest-communities`
+            );
             if (![200, 201, 204].includes(response.status)) {
                 throw new Error("Network response was not ok");
             }
             const data = response.data;
 
-            const communityData = data.data.data.map((community) => {
+            const communityData = data.data.map((community) => {
                 return {
                     id: community.id,
                     name: community.name,
@@ -99,7 +86,7 @@ function MyComponent() {
                         fontSize: "24px",
                         fontFamily: "Nunito Sans",
                         marginTop: "10px",
-                        textAlign: "start"
+                        textAlign: "start",
                     }}
                 >
                     Communities
