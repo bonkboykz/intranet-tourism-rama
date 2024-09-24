@@ -99,7 +99,7 @@ const FileTable = ({
                 newFilter.push({
                     field: "metadata",
                     subfield: "mime_type",
-                    operator: "ilike",
+                    type: "ilike",
                     value: searchTerm,
                 });
             }
@@ -107,7 +107,7 @@ const FileTable = ({
             if (communityId) {
                 newFilter.push({
                     field: "attachable.community_id",
-                    type: "like",
+                    type: "=",
                     value: communityId,
                 });
             }
@@ -115,7 +115,7 @@ const FileTable = ({
             if (departmentId) {
                 newFilter.push({
                     field: "attachable.department_id",
-                    type: "like",
+                    type: "=",
                     value: departmentId,
                 });
             }
@@ -123,7 +123,7 @@ const FileTable = ({
             if (userId) {
                 newFilter.push({
                     field: "user_id",
-                    type: "like",
+                    type: "=",
                     value: userId,
                 });
             }

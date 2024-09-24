@@ -112,6 +112,37 @@ trait QueryableApi
                     $query->whereHas('albums', function ($q) use ($filter) {
                         $q->whereIn('album_id', $filter['value']);
                     });
+                } else if (!empty($filter['type']) && $filter['type'] == '=') {
+                    // Check if we are filtering a relationship field
+                    if (strpos($filter['field'], '.') !== false) {
+                        [$relation, $column] = explode('.', $filter['field'], 2);
+                        $query->whereHas($relation, function ($q) use ($column, $filter) {
+                            // Handle multiple mime_types using whereIn()
+                            if (is_array($filter['value'])) {
+                                $q->where(function ($query) use ($column, $filter) {
+                                    foreach ($filter['value'] as $value) {
+                                        $query->orWhere($column, '=', $value);
+                                    }
+                                });
+                            } else {
+                                // Single value
+                                $q->where($column, '=', $filter['value']);
+                            }
+                        });
+                    } else {
+                        // Direct field filter
+                        if (is_array($filter['value'])) {
+                            // Handle multiple mime_types using whereIn() for direct fields
+                            $query->where(function ($query) use ($filter) {
+                                foreach ($filter['value'] as $value) {
+                                    $query->orWhere($filter['field'], '=', $value);
+                                }
+                            });
+                        } else {
+                            // Single value
+                            $query->where($filter['field'], '=', $filter['value']);
+                        }
+                    }
                 } else {
                     foreach ($filter as $filterBy => $value) {
                         if (is_array($value)) {
