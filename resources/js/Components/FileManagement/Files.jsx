@@ -63,7 +63,9 @@ const FileTable = ({
     const csrfToken = useCsrf();
     const inputRef = useRef(null);
 
+    console.log("SEARCHTERM", currentSearchTerm);
     const searchTerm = useDebounce(currentSearchTerm, 500);
+    console.log("DEBOUNCED SEARCHTERM", searchTerm);
 
     useEffect(() => {
         setCurrentPage(1);

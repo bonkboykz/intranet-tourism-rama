@@ -30,6 +30,11 @@ class ProfileController extends Controller
     public function profileQr($id)
     {
         $user = User::findOrFail($id);
-        return $user->vcard;
+
+        $user->employment_posts = $user->employmentPosts()->get();
+        $user->employment_post = $user->employmentPosts()->first();
+
+        unset($user->password);
+        return Inertia::render('ProfileQrPage', ['user' => $user, 'qr' => $user->vcard]);
     }
 }
