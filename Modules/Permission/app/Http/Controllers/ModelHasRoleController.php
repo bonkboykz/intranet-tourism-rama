@@ -193,4 +193,56 @@ class ModelHasRoleController extends Controller
 
         return response()->noContent();
     }
+
+    public function getUsersWithRoles()
+    {
+        /*
+department: {name: 'No department', id: null}
+id: 1
+image: "/assets/dummyStaffPlaceHolder.jpg"
+name: "Admin"
+roles: [{…}]
+status: false
+title: "No title"
+        */
+        // users who have roles
+        $users = User::with(relations: 'roles')->whereHas('roles')->get();
+
+        $users->map(callback: function ($user) {
+            $user->department = $user->employmentPosts()->first();
+
+            if ($user->department) {
+                $user->department = $user->department->department;
+                $user->title = $user->employmentPosts()->first()->position;
+            } else {
+                $user->department = ['id' => null, 'name' => 'No department'];
+                $user->title = 'No title';
+            }
+
+            $user->roles = $user->roles()->get();
+
+            $user->image = $user->profile->image;
+
+            if (!$user->image) {
+                $user->image = $user->profile->staff_image;
+            }
+
+            if (!$user->image) {
+                $user->image = '/assets/dummyStaffPlaceHolder.jpg';
+            }
+
+            // if image includes avatar place / at the start
+            if (strpos($user->image, 'avatar') === 0) {
+                $user->image = '/storage/' . $user->image;
+            }
+
+            // remove unneded fields
+            unset($user->password);
+        });
+
+
+        return response()->json([
+            'data' => $users,
+        ]);
+    }
 }
