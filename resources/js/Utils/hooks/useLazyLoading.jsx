@@ -30,6 +30,17 @@ export const useLoading = (url, params) => {
         fetchData();
     }, []);
 
+    const prevParams = useRef(params);
+    useEffect(() => {
+        if (JSON.stringify(prevParams.current) !== JSON.stringify(params)) {
+            setData([]);
+
+            fetchData();
+
+            prevParams.current = params;
+        }
+    }, [params]);
+
     return {
         isLoading,
         data,
@@ -49,7 +60,6 @@ export const useLazyLoading = (url, params = {}) => {
         setIsLoading(true);
 
         try {
-            console.log("PARAMS", params);
             const response = await axios.get(url, {
                 params: {
                     page: currentPage,
@@ -84,8 +94,6 @@ export const useLazyLoading = (url, params = {}) => {
     const prevParams = useRef(params);
 
     useEffect(() => {
-        console.log("Current page", currentPage);
-
         fetchData();
     }, [currentPage]);
 
