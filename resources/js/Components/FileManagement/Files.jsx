@@ -84,19 +84,19 @@ const FileTable = ({
                 newFilter.push({
                     field: "metadata",
                     subfield: "extension",
-                    type: "like",
+                    type: "ilike",
                     value: searchTerm,
                 });
                 newFilter.push({
                     field: "metadata",
                     subfield: "original_name",
-                    type: "like",
+                    type: "ilike",
                     value: searchTerm,
                 });
                 newFilter.push({
                     field: "metadata",
                     subfield: "mime_type",
-                    operator: "like",
+                    operator: "ilike",
                     value: searchTerm,
                 });
             }
@@ -124,8 +124,6 @@ const FileTable = ({
                     value: userId,
                 });
             }
-
-            console.log(newFilter);
 
             const response = await axios.get(
                 `/api/resources/public-resources`,
@@ -320,57 +318,57 @@ const FileTable = ({
             <div className="flow-root mt-8">
                 <div className="max-h-auto max-w-[1100px] overflow-auto p-4 rounded-2xl bg-white">
                     <div className="overflow-x-auto">
-                    <table className="w-full min-w-[600px] border-separate table-fixed rounded-2xl shadow-custom border-spacing-1">
-                        <thead>
-                            <tr>
-                                <th className="w-1/3 md:w-3/4 lg:w-3/4 rounded-full bg-blue-200 px-3 py-3.5 text-center text-sm max-md:text-xs font-semibold text-blue-500 sm:pl-1 shadow-custom">
-                                    File Name
-                                </th>
-                                <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
-                                    Uploaded By
-                                </th>
-                                <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
-                                    Date Created
-                                </th>
-                                <th className="w-1/12 relative py-3.5 ">
-                                    <span className="sr-only">Edit</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-center divide-y-reverse rounded-full divide-neutral-300 mt-1">
-                            {files.map((item, index) => {
-                                const canEdit =
-                                    hasRole("superadmin") ||
-                                    isCommunityAdmin ||
-                                    isDepartmentAdmin ||
-                                    item.author.id === user.id;
+                        <table className="w-full min-w-[600px] border-separate table-fixed rounded-2xl shadow-custom border-spacing-1">
+                            <thead>
+                                <tr>
+                                    <th className="w-1/3 md:w-3/4 lg:w-3/4 rounded-full bg-blue-200 px-3 py-3.5 text-center text-sm max-md:text-xs font-semibold text-blue-500 sm:pl-1 shadow-custom">
+                                        File Name
+                                    </th>
+                                    <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
+                                        Uploaded By
+                                    </th>
+                                    <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
+                                        Date Created
+                                    </th>
+                                    <th className="w-1/12 relative py-3.5 ">
+                                        <span className="sr-only">Edit</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-center divide-y-reverse rounded-full divide-neutral-300 mt-1">
+                                {files.map((item, index) => {
+                                    const canEdit =
+                                        hasRole("superadmin") ||
+                                        isCommunityAdmin ||
+                                        isDepartmentAdmin ||
+                                        item.author.id === user.id;
 
-                                const isEditing = editingIndex === index;
+                                    const isEditing = editingIndex === index;
 
-                                return (
-                                    <FileRow
-                                        key={item.id}
-                                        item={item}
-                                        canEdit={canEdit}
-                                        isEditing={isEditing}
-                                        onStartEditing={startEditing}
-                                        onSaveEditing={saveEditing}
-                                        setEditingName={setEditingName}
-                                        onKeyDown={handleKeyDown}
-                                        index={index}
-                                        editingName={editingName}
-                                        indexOfFirstItem={indexOfFirstItem}
-                                        setEditingIndex={setEditingIndex}
-                                        onRename={handleRename}
-                                        onDelete={() =>
-                                            handleDelete(item.id, index)
-                                        }
-                                        onFileSelect={setSelectedFile}
-                                    />
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                                    return (
+                                        <FileRow
+                                            key={item.id}
+                                            item={item}
+                                            canEdit={canEdit}
+                                            isEditing={isEditing}
+                                            onStartEditing={startEditing}
+                                            onSaveEditing={saveEditing}
+                                            setEditingName={setEditingName}
+                                            onKeyDown={handleKeyDown}
+                                            index={index}
+                                            editingName={editingName}
+                                            indexOfFirstItem={indexOfFirstItem}
+                                            setEditingIndex={setEditingIndex}
+                                            onRename={handleRename}
+                                            onDelete={() =>
+                                                handleDelete(item.id, index)
+                                            }
+                                            onFileSelect={setSelectedFile}
+                                        />
+                                    );
+                                })}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div className="mt-8 flex justify-center">
