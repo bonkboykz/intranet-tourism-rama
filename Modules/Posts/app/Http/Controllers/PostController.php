@@ -233,8 +233,10 @@ class PostController extends Controller
                 // $resources = Resource::where('attachable_id', $post->id)->first();
                 $post->storeAttachments();
                 // $resources->delete();
-
+            } else {
+                $post->attachments()->delete();
             }
+
             if (request()->has('accessibilities')) {
                 $currentAccessibilities = $post->accessibilities()->get();
 

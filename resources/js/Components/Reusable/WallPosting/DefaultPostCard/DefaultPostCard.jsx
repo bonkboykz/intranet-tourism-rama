@@ -204,16 +204,6 @@ export function DefaultPostCard({ post }) {
                 },
             });
 
-            // const userProfileData = await axios.get(
-            //     `/api/users/users/${post.user_id}`,
-            //     {
-            //         params: {
-            //             with: ["profile"],
-            //         },
-            //     }
-            // );
-            // updatedPost.userProfile = userProfileData.data;
-
             updatedPost.attachments = Array.isArray(updatedPost.attachments)
                 ? updatedPost.attachments
                 : [updatedPost.attachments];
@@ -250,11 +240,6 @@ export function DefaultPostCard({ post }) {
         try {
             // Fetch the post to check if it has accessibilities
             const postToDelete = post;
-
-            // console.log("LLLL", postToDelete.comments.pivot.id);
-            //   postToDelete.comments.forEach(comment => {
-            //     console.log("LLLL", comment.pivot.comment_id);
-            // });
 
             if (!post.id) {
                 console.error(`Post with ID ${post.id} not found.`);
@@ -341,10 +326,6 @@ export function DefaultPostCard({ post }) {
         }
     };
 
-    if (cachedPost.content?.includes("Some preform")) {
-        console.log(cachedPost.content);
-    }
-
     const renderBirhdayPost = () => {
         return (
             <>
@@ -418,7 +399,7 @@ export function DefaultPostCard({ post }) {
                     </pre>
                 </article>
 
-                <PostAttachments attachments={post.attachments} />
+                <PostAttachments attachments={cachedPost.attachments} />
                 <p className="taging px-2 py-0 bg-blue-100 rounded-md my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
                     {/* {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""} */}
                     {cachedPost.albums?.map((album) => album.name).join(", ")}
