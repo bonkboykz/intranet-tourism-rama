@@ -144,3 +144,18 @@ make storage_link
 ```
 php artisan sentry:publish --dsn=https://606ee5aaf4f4903535aa74fb16ed8ef4@o4505386622910464.ingest.us.sentry.io/4507952806821888
 ```
+
+### Setup development environment
+
+```
+# Pusher (Soketi)
+docker run -p 6001:6001 -d  quay.io/soketi/soketi:latest-16-alpine
+
+#  Redis
+docker run --name redis -e ALLOW_EMPTY_PASSWORD=yes -p 6379:6379 -d bitnami/redis:latest
+
+# Postgresql
+docker run \
+    -v /path/to/postgresql-persistence:/bitnami/postgresql \
+    bitnami/postgresql:latest
+```
