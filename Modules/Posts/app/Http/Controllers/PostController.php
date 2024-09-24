@@ -903,7 +903,7 @@ class PostController extends Controller
             ->where('type', '!=', 'story');
 
         // $posts = $query->paginate(20);
-        $posts = $query->get();
+        $posts = $query->paginate(5);
 
         // Return the result as JSON
         return response()->json([
