@@ -97,4 +97,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/api/birthday-templates/{birthdayTemplate}/toggle-enabled', [BirthdayTemplateController::class, 'toggleEnabled']);
 });
 
+Route::get('/user/{id}/qr', [ProfileController::class, 'profileQr'])->name('profileQr');
+
 require __DIR__ . '/auth.php';

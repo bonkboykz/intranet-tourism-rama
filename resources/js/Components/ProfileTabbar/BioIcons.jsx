@@ -15,7 +15,7 @@ function ProfileIcons({
 }) {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [qrCodeSvg, setQrCodeSvg] = useState(null);
-    const [qrCodeLink, setQrCodeLink] = useState(null); // Store the QR code link
+    // const [qrCodeLink, setQrCodeLink] = useState(null); // Store the QR code link
 
     useEffect(() => {
         if (isPopupOpen) {
@@ -25,7 +25,7 @@ function ProfileIcons({
                 },
             })
                 .then((response) => {
-                    setQrCodeLink(response.url); // Save the link to use later
+                    // setQrCodeLink(response.url); // Save the link to use later
                     return response.text();
                 })
                 .then((svgData) => {
@@ -255,15 +255,17 @@ function ProfileIcons({
     };
 
     const handleCopyLink = () => {
-        if (!qrCodeLink) {
-            console.error("QR code link is not available.");
-            return;
-        }
+        // if (!qrCodeLink) {
+        //     console.error("QR code link is not available.");
+        //     return;
+        // }
+
+        // get current URL from window
+        const url = window.location.origin;
 
         navigator.clipboard
-            .writeText(qrCodeLink)
+            .writeText(`${url}/user/${user_id}/qr`)
             .then(() => {
-                console.log("QR code link copied to clipboard:", qrCodeLink);
                 toast.success("QR code link copied to clipboard.");
             })
             .catch((error) => {
