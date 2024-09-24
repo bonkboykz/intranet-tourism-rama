@@ -32,7 +32,6 @@ class EmploymentPostController extends Controller
                         'staff_image' => $profile && $profile->staff_image ? $profile->staff_image : '/assets/dummyStaffPlaceHolder.jpg',
                         'work_phone' => $employmentPost->work_phone,
                         'phone_no' => $profile ? $profile->phone_no : 'N/A', // Check if profile exists
-                        'employment_post' => $employmentPost,
                     ];
                 });
 
