@@ -233,6 +233,7 @@ class User extends Authenticatable implements AuditableContract
             'drawCircularModules' => true,
             'circleRadius' => 0.45,
             'keepAsSquare' => [QRMatrix::M_FINDER, QRMatrix::M_FINDER_DOT],
+            'outputType' => QRCode::OUTPUT_IMAGE_PNG
         ]);
 
         $svg = (new QRCode($options))->render(data: $vcard);
