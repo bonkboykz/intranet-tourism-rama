@@ -278,24 +278,37 @@ class PostController extends Controller
 
     public function like(Post $post)
     {
-        abort_unless(Auth::check(), 403);
+        // Ensure likes is an array
+        if ($post->likes === null) {
+            $post->likes = [];
+        }
 
-        $post->likes = collect($post->likes)->push(Auth::id())->unique()->toArray();
+        $user_id = Auth::id();
+        $user_already_liked = in_array($user_id, $post->likes);
+
+        if ($user_already_liked) {
+            // Filter out the user id and ensure it's cast back to an array
+            $post->likes = array_values(array_filter($post->likes, fn($id) => $id != $user_id));
+            $post->save();
+
+            return response()->noContent();
+        }
+
+        // Add the user id and make sure to cast back to an array after pushing
+        $post->likes = array_unique(array_merge($post->likes, [$user_id]));
         $post->save();
 
         return response()->noContent();
     }
 
 
-    public function unlike(Post $post)
-    {
-        abort_unless(Auth::check(), 403);
+    // public function unlike(Post $post)
+    // {
+    //     $post->likes = collect($post->likes)->filter(fn($id) => $id != Auth::id())->unique()->toArray();
+    //     $post->save();
 
-        $post->likes = collect($post->likes)->filter(fn($id) => $id != Auth::id())->unique()->toArray();
-        $post->save();
-
-        return response()->noContent();
-    }
+    //     return response()->noContent();
+    // }
 
     public function comment(Post $post)
     {
