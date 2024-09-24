@@ -385,22 +385,22 @@ function ProfileContent() {
             value={{ loggedInUserId: id, variant: "profile" }}
         >
             <Example>
-            <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
-                {/* left widgets */}
-                <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
-                    <div className="file-directory-header">
-                        <PageTitle title="Your Profile" />
+                <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                    {/* left widgets */}
+                    <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                        <div className="file-directory-header">
+                            <PageTitle title="Your Profile" />
+                        </div>
+                        <hr className="file-directory-underline" />
+                        <div>
+                            <FeaturedEvents />
+                            <WhosOnline />
+                        </div>
                     </div>
-                    <hr className="file-directory-underline" />
-                    <div>
-                        <FeaturedEvents />
-                        <WhosOnline />
-                    </div>
-                </div>
 
-                {/* main content */}
-                <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
-                        <div className="profile-header ml-9 h-[400px] max-md:h-[385px] bg-white shadow-custom rounded-b-lg">
+                    {/* main content */}
+                    <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                        <div className="profile-header ml-9 max-md:h-[385px] bg-white shadow-custom rounded-b-lg">
                             <div className="flex-col w-full flex bg-white h-auto rounded-b-lg">
                                 <ProfileHeader
                                     backgroundImage={
