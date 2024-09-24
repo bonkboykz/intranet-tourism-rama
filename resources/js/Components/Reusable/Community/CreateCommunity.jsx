@@ -33,7 +33,7 @@ function Avatar({ src, alt, onImageChange }) {
                     loading="lazy"
                     src={src}
                     alt={alt}
-                    className="aspect-square w-[400px] h-[133px] rounded-xl border-4 border-gray-200 object-cover object-center"
+                    className="aspect-square w-[400px] h-[300px] rounded-xl border-4 border-gray-200 object-cover object-center"
                 />
             </div>
             <input
@@ -183,7 +183,7 @@ function Card({
                     alt={imgAlt}
                     onImageChange={handleImageChange}
                 />
-                {imageSrc && (
+                {/* {imageSrc && (
                     <div className="relative w-full h-[300px] mt-3">
                         <Cropper
                             image={originalImageSrc}
@@ -196,6 +196,7 @@ function Card({
                         />
                     </div>
                 )}
+                */}
                 <button
                     className="justify-center px-4 py-2 mt-4 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
                     onClick={showCroppedImage}

@@ -60,7 +60,7 @@ class CommunityController extends Controller
 
         // $output->writeln($fullSql);
 
-        $data = $this->shouldPaginate($query);
+        $data = request()->has('all') ? $query->get() : $this->shouldPaginate($query);
 
         $data->map(function ($item) use ($user) {
             $is_member = $item->members()->where('user_id', Auth::id())->exists();
@@ -161,8 +161,16 @@ class CommunityController extends Controller
 
     public function destroy(Community $community)
     {
-        $user = User::findOrFail(auth()->id());
-        CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
+        // revoke permission from all admins
+        $admins = $community->admins;
+
+        foreach ($admins as $admin) {
+            CommunityPermissionsHelper::revokeCommunityAdminPermissions($admin, $community);
+        }
+
+        // remove all members and admins
+        $community->admins()->detach();
+        $community->members()->detach();
 
         $community->delete();
 

@@ -192,11 +192,66 @@ function ProfileIcons({
             // windowWidth: document.documentElement.offsetWidth,
             // windowHeight: document.documentElement.offsetHeight,
         });
-        const image = canvas.toDataURL("image/png"); // Convert canvas to image format
-        const link = document.createElement("a"); // Create a link element
-        link.href = image; // Set the image as the link's href
-        link.download = "qr-code.png"; // Set the download attribute with filename
-        link.click(); // Programmatically trigger the link click
+
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        // add info about user
+        const leftMargin = 40; // Left margin
+        const rightMargin = 40; // Right margin
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const maxWidth = pageWidth - leftMargin - rightMargin; // Adjusted max width for text wrapping
+
+        const nameLines = pdf.splitTextToSize(`${user_name}`, maxWidth);
+
+        const lineHeight = 10;
+
+        const marginTop = 40; // Adjust margin as needed
+        let yPosition = marginTop;
+
+        pdf.setFontSize(24); // Larger font size for name
+        pdf.setFont("helvetica", "bold"); // Bold font style
+
+        // Add each line of the name text centered, with line spacing
+        nameLines.forEach((line) => {
+            pdf.text(line, pageWidth / 2, yPosition, {
+                align: "center",
+            });
+            yPosition += lineHeight; // Move down for the next line
+        });
+
+        pdf.setFontSize(16);
+        pdf.setFont("helvetica", "normal");
+        pdf.text(`${user_title}`, pageWidth / 2, yPosition + 10, {
+            align: "center",
+        });
+
+        const imageYPosition = yPosition + 40;
+
+        const imgData = canvas.toDataURL("image/png");
+
+        const imageWidth = 256 / 2;
+        const imageHeight = 256 / 2;
+        const imageXPosition = (pageWidth - imageWidth) / 2;
+
+        pdf.addImage(
+            imgData,
+            "PNG",
+            imageXPosition,
+            imageYPosition,
+            imageWidth,
+            imageHeight
+        );
+
+        // add qr code
+        // pdf.addImage(imgData, "PNG", 50, 40, 110, 110);
+
+        pdf.save(`${user_name} QR-Code.pdf`);
+
+        // const image = canvas.toDataURL("image/png"); // Convert canvas to image format
+        // const link = document.createElement("a"); // Create a link element
+        // link.href = image; // Set the image as the link's href
+        // link.download = "qr-code.png"; // Set the download attribute with filename
+        // link.click(); // Programmatically trigger the link click
     };
 
     const handleCopyLink = () => {
