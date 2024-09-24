@@ -91,8 +91,8 @@ class EventController extends Controller
 
     public function update(Event $event)
     {
-        $validated = request()->validate(...Event::rules('update'));
-        $event->update($validated);
+        // $validated = request()->validate(...Event::rules('update'));
+        $event->update(request()->all());
 
         return response()->noContent();
     }
