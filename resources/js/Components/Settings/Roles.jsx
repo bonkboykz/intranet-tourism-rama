@@ -254,6 +254,92 @@ export default function Roles() {
         setShowDemotePopup(true);
     };
 
+    const renderRoles = (person) => {
+        const superadminRole = person.roles.find(
+            (role) => role.name === "superadmin"
+        );
+
+        const departmentAdminRoles = person.roles.filter((role) =>
+            role.name.includes("department admin")
+        );
+
+        const communityAdminRoles = person.roles.filter((role) =>
+            role.name.includes("community admin")
+        );
+
+        return (
+            <>
+                {superadminRole && (
+                    <div className="flex flex-col items-center space-y-1 whitespace-nowrap">
+                        <div
+                            className={cn(
+                                `flex items-center justify-center text-center w-full px-4 py-2 mt-2 text-xs font-medium rounded-full`,
+                                roleColor["superadmin"]
+                            )}
+                        >
+                            Super Admin
+                        </div>
+                        <button
+                            onClick={() => handleDemoteClick(person)}
+                            className="text-xs font-medium text-blue-600 hover:underline"
+                        >
+                            Demote to User
+                        </button>
+                    </div>
+                )}
+
+                {departmentAdminRoles.map((role, index) => {
+                    const departmentId = role.name.split(" ")[2];
+
+                    return (
+                        <a
+                            key={index}
+                            href={`/departmentInner?departmentId=${departmentId}`}
+                            className={cn(
+                                `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-blue-200 cursor-pointer`,
+                                roleColor["department admin"]
+                            )}
+                        >
+                            Department Admin
+                        </a>
+                    );
+                })}
+
+                {communityAdminRoles.length > 0 && (
+                    <>
+                        {
+                            <select
+                                className={cn(
+                                    `w-full flex items-center justify-center text-center px-6 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
+                                    roleColor["community admin"]
+                                )}
+                            >
+                                {communityAdminRoles.map((role, index) => {
+                                    const communityId = role.name.split(" ")[2];
+
+                                    return (
+                                        <option
+                                            key={index}
+                                            className={cn(
+                                                `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
+                                                roleColor["community admin"]
+                                            )}
+                                            // onSelect={() => {
+                                            //     window.location.href = `/communityInner?communityId=${communityId}`;
+                                            // }}
+                                        >
+                                            Community Admin (ID: {communityId})
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        }
+                    </>
+                )}
+            </>
+        );
+    };
+
     return (
         <div className="flow-root">
             <div className="container p-8 mx-auto">
@@ -344,121 +430,7 @@ export default function Roles() {
                                                 {person.department.name}
                                             </td>
                                             <td className="px-3 py-5 text-sm text-gray-500 whitespace-nowrap">
-                                                {person.roles.map(
-                                                    (role, index) => {
-                                                        if (
-                                                            role.name.includes(
-                                                                "department admin"
-                                                            )
-                                                        ) {
-                                                            const departmentId =
-                                                                role.name.split(
-                                                                    " "
-                                                                )[2];
-
-                                                            return (
-                                                                <a
-                                                                    key={index}
-                                                                    href={`/departmentInner?departmentId=${departmentId}`}
-                                                                    className={cn(
-                                                                        `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-blue-200 cursor-pointer`,
-                                                                        roleColor[
-                                                                            "department admin"
-                                                                        ]
-                                                                    )}
-                                                                >
-                                                                    Department
-                                                                    Admin of{" "}
-                                                                    {
-                                                                        departmentId
-                                                                    }
-                                                                </a>
-                                                            );
-                                                        } else if (
-                                                            role.name.includes(
-                                                                "community admin"
-                                                            )
-                                                        ) {
-                                                            const communityId =
-                                                                role.name.split(
-                                                                    " "
-                                                                )[2];
-
-                                                            return (
-                                                                <div
-                                                                    key={index}
-                                                                    className={cn(
-                                                                        `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
-                                                                        roleColor[
-                                                                            "community admin"
-                                                                        ]
-                                                                    )}
-                                                                >
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            window.location.href = `/communityInner?communityId=${communityId}`;
-                                                                        }}
-                                                                        className="flex items-center justify-center w-full h-full"
-                                                                    >
-                                                                        Community
-                                                                        Admin of{" "}
-                                                                        {
-                                                                            communityId
-                                                                        }
-                                                                    </button>
-                                                                </div>
-                                                            );
-                                                        } else if (
-                                                            role.name.includes(
-                                                                "superadmin"
-                                                            )
-                                                        ) {
-                                                            return (
-                                                                <div
-                                                                    key={index}
-                                                                    className="flex flex-col items-center space-y-1 whitespace-nowrap"
-                                                                >
-                                                                    <div
-                                                                        className={cn(
-                                                                            `flex items-center justify-center text-center w-full px-4 py-2 mt-2 text-xs font-medium rounded-full`,
-                                                                            roleColor[
-                                                                                "superadmin"
-                                                                            ]
-                                                                        )}
-                                                                    >
-                                                                        Super
-                                                                        Admin
-                                                                    </div>
-                                                                    <button
-                                                                        onClick={() =>
-                                                                            handleDemoteClick(
-                                                                                person
-                                                                            )
-                                                                        }
-                                                                        className="text-xs font-medium text-blue-600 hover:underline"
-                                                                    >
-                                                                        Demote
-                                                                        to User
-                                                                    </button>
-                                                                </div>
-                                                            );
-                                                        } else {
-                                                            return (
-                                                                <div
-                                                                    key={index}
-                                                                    className={cn(
-                                                                        `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full`,
-                                                                        roleColor[
-                                                                            "superadmin"
-                                                                        ]
-                                                                    )}
-                                                                >
-                                                                    {role.name}
-                                                                </div>
-                                                            );
-                                                        }
-                                                    }
-                                                )}
+                                                {renderRoles(person)}
                                             </td>
                                         </tr>
                                     ))}
