@@ -49,6 +49,7 @@ const FileTable = ({
     communityId,
     departmentId,
     userId,
+    isManagement,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -129,6 +130,7 @@ const FileTable = ({
                 `/api/resources/public-resources`,
                 {
                     params: {
+                        isManagement,
                         page: currentPage,
                         perpage: itemsPerPage,
                         filter: [
