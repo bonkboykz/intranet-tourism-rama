@@ -79,21 +79,21 @@ const DepartmentInner = () => {
             }}
         >
             <Example>
-                    <main className="z-0 min-h-screen w-full flex-row flex justify-center items-start gap-20 md:gap-12">
-                        {/* left widgets */}
-                        <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
-                            <div className="file-directory-header">
-                                <PageTitle title="Departments" />
-                            </div>
-                            <hr className="file-directory-underline" />
-                            <div>
-                                <FeaturedEvents />
-                                <WhosOnline />
-                            </div>
+                <main className="z-0 bg-gray-100 min-h-screen w-full flex-row flex justify-center items-start gap-20 md:gap-12">
+                    {/* left widgets */}
+                    <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                        <div className="file-directory-header">
+                            <PageTitle title="Departments" />
                         </div>
+                        <hr className="file-directory-underline" />
+                        <div>
+                            <FeaturedEvents />
+                            <WhosOnline />
+                        </div>
+                    </div>
 
-                        {/* main content */}
-                        <div className=" flex flex-col justify-start w-full max-w-[1200px] max-md:pl-10 max-md:pr-20">
+                    {/* main content */}
+                    <div className=" flex flex-col justify-start w-full max-w-[1200px] max-md:pl-10 max-md:pr-20">
                         <DepartmentWall
                             departmentID={getDepartmentIdFromQuery()}
                             departmentHeader={departmentData?.name}
