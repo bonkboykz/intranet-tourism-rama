@@ -1,50 +1,33 @@
-import React, { Fragment } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useRef } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import {
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    Transition,
-} from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
 
 import deleteIcon from "../../../../public/assets/deleteicon.svg";
 import downloadIcon from "../../../../public/assets/downloadicon.svg";
 import renameIcon from "../../../../public/assets/renameicon.svg";
 import threeDotsIcon from "../../../../public/assets/threedots.svg";
 import ViewIcon from "../../../../public/assets/ViewIcon.svg";
-import ViewAdminPopup from "../Reusable/ViewAdminPopup";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
 
 const PopupContent = ({
-    file,
-    onRename,
-    onDelete,
-    onFileSelect,
-    canEdit = true,
-    onClose,
-}) => {
-    // console.log("FILE", file);
-
+                          file,
+                          onRename,
+                          onDelete,
+                          onFileSelect,
+                          canEdit = true,
+                          onClose,
+                      }) => {
     const [showModal, setShowModal] = useState(false);
     const modalRef = useRef(null);
 
     useEffect(() => {
-        if (!showModal) {
-            return;
-        }
+        if (!showModal) return;
 
         const handleClickOutside = (event) => {
-            const isClickedInsideOfModal = modalRef.current?.contains(
-                event.target
-            );
-
+            const isClickedInsideOfModal = modalRef.current?.contains(event.target);
             if (!isClickedInsideOfModal) {
                 setShowModal(false);
             }
@@ -58,13 +41,13 @@ const PopupContent = ({
 
     if (!file || !file.id) {
         console.error("No file selected or file ID is missing.");
-        return null; // or return some placeholder content
+        return null;
     }
 
     const handleRename = (e, close) => {
         e.preventDefault();
         onRename();
-        close(); // Close the popup
+        close();
     };
 
     const handleDelete = (e) => {
@@ -76,41 +59,26 @@ const PopupContent = ({
         e.preventDefault();
         try {
             const response = await fetch(`/api/resources/resources/${file.id}`);
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
+            if (!response.ok) throw new Error("Network response was not ok");
+
             const data = await response.json();
-            console.log("API response:", data); // Log the entire API response to check its structure
-
             const fileObject = data.data;
+            if (!fileObject) throw new Error("File not found in the API response");
 
-            if (!fileObject) {
-                throw new Error("File not found in the API response");
-            }
+            const metadata = typeof fileObject.metadata === "string"
+                ? JSON.parse(fileObject.metadata)
+                : fileObject.metadata;
 
-            // Check if metadata is a string and parse it if necessary
-            const metadata =
-                typeof fileObject.metadata === "string"
-                    ? JSON.parse(fileObject.metadata)
-                    : fileObject.metadata;
-
-            // If the path or original_name is undefined, log an error or handle it accordingly
             if (!metadata.path || !metadata.original_name) {
-                throw new Error(
-                    "Invalid metadata format: missing path or original_name"
-                );
+                throw new Error("Invalid metadata format: missing path or original_name");
             }
 
-            const fileUrl = `/storage/${metadata.path}`; // Use the metadata for the file path
-            console.log("File path:", fileUrl); // Log the file path to verify
-
-            // Access the original_name from the metadata object
+            const fileUrl = `/storage/${metadata.path}`;
             const originalName = metadata.original_name || "default_filename";
-            console.log("Original name:", originalName);
 
             const link = document.createElement("a");
-            link.href = fileUrl; // Ensure this URL is correct
-            link.download = originalName; // Use the correct name or a fallback
+            link.href = fileUrl;
+            link.download = originalName;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -128,7 +96,7 @@ const PopupContent = ({
         }
     };
 
-    const isPdf = file.metadata.path.endsWith(".pdf"); // Check if the file is a PDF
+    const isPdf = file.metadata.path.endsWith(".pdf");
 
     return (
         <>
@@ -151,19 +119,15 @@ const PopupContent = ({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems className="absolute right-0 z-10 mr-10 mt-[-103px] w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
                             {canEdit && (
                                 <MenuItem>
                                     {({ active, close }) => (
                                         <button
-                                            onClick={(e) =>
-                                                handleRename(e, close)
-                                            }
+                                            onClick={(e) => handleRename(e, close)}
                                             className={classNames(
-                                                active
-                                                    ? "bg-blue-100 text-gray-900"
-                                                    : "text-gray-700",
+                                                active ? "bg-blue-100 text-gray-900" : "text-gray-700",
                                                 "group flex items-center px-4 py-2 text-sm w-full"
                                             )}
                                         >
@@ -182,9 +146,7 @@ const PopupContent = ({
                                     <button
                                         onClick={handleDownload}
                                         className={classNames(
-                                            active
-                                                ? "bg-blue-100 text-gray-900"
-                                                : "text-gray-700",
+                                            active ? "bg-blue-100 text-gray-900" : "text-gray-700",
                                             "group flex items-center px-4 py-2 text-sm w-full"
                                         )}
                                     >
@@ -201,13 +163,9 @@ const PopupContent = ({
                                 <MenuItem>
                                     {({ active }) => (
                                         <button
-                                            onClick={() => {
-                                                setShowModal(true);
-                                            }}
+                                            onClick={() => setShowModal(true)}
                                             className={classNames(
-                                                active
-                                                    ? "bg-blue-100 text-gray-900"
-                                                    : "text-gray-700",
+                                                active ? "bg-blue-100 text-gray-900" : "text-gray-700",
                                                 "group flex items-center px-4 py-2 text-sm w-full"
                                             )}
                                         >
@@ -227,9 +185,7 @@ const PopupContent = ({
                                         <button
                                             onClick={handleViewClick}
                                             className={classNames(
-                                                active
-                                                    ? "bg-blue-100 text-gray-900"
-                                                    : "text-gray-700",
+                                                active ? "bg-blue-100 text-gray-900" : "text-gray-700",
                                                 "group flex items-center px-4 py-2 text-sm w-full"
                                             )}
                                         >

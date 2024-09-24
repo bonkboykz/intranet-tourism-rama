@@ -78,7 +78,7 @@ export const FileRow = ({
             <td className="px-3 py-4 overflow-hidden text-sm border-b border-r border-neutral-300 whitespace-nowrap text-neutral-800 text-ellipsis">
                 {new Date(item.created_at).toLocaleDateString()}
             </td>
-            <td className="relative mt-6 flex">
+            <td className="relative mt-6 z-100 flex">
                 <PopupContent
                     file={item}
                     canEdit={canEdit}
