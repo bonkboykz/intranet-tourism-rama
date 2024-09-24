@@ -333,7 +333,9 @@ export function DefaultPostCard({ post }) {
                 cachedPost.attachments.length === 0 ? (
                     <>
                         <div>
-                            <pre>{cachedPost.content}</pre>
+                            <pre className="whitespace-pre-wrap max-w-full overflow-x-auto">
+                                {cachedPost.content}
+                            </pre>
                         </div>
                         <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
                             {cachedPost.mentions

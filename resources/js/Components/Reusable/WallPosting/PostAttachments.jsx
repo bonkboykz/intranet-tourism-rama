@@ -172,8 +172,8 @@ function PostAttachments({ attachments }) {
                 {attachments
                     .filter(
                         (att) =>
-                            !att.mime_type.startsWith("image/") &&
-                            !att.mime_type.startsWith("video/")
+                            !att.metadata.mime_type.startsWith("image/") &&
+                            !att.metadata.mime_type.startsWith("video/")
                     )
                     .map(renderDocument)}
             </div>

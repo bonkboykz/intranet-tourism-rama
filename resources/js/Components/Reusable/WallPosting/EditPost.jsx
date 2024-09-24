@@ -59,10 +59,10 @@ function EditPost({
         try {
             const formData = new FormData();
             formData.append("_method", "PUT");
-            formData.append("user_id", loggedInUserId);
+            // formData.append("user_id", loggedInUserId);
 
-            formData.append("type", post.type);
-            formData.append("visibility", post.visibility);
+            // formData.append("type", post.type);
+            // formData.append("visibility", post.visibility);
 
             // Check if content is not empty or just whitespace before adding to FormData
             if (content.trim()) {
@@ -96,7 +96,7 @@ function EditPost({
                 if (file instanceof File) {
                     formData.append(`attachments[${index}]`, file);
                 } else {
-                    formData.append(`attachments[${index}]`, file);
+                    formData.append(`attachments[${index}]`, file.id);
                 }
             });
 

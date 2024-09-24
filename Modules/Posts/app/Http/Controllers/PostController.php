@@ -193,12 +193,12 @@ class PostController extends Controller
         return response()->noContent();
     }
 
-    public function update(Post $post)
+    public function update(Request $request, Post $post)
     {
         $output = new ConsoleOutput();
         $output->writeln('PostController@update');
-        $validated = request()->validate(...Post::rules('update'));
-        $validated = request()->validate(...Post::rules());
+        // $validated = request()->validate(...Post::rules('update'));
+        // $validated = request()->validate(...Post::rules());
         $validatedAccessibilities = [];
 
         if (request()->has('accessibilities')) {
@@ -225,14 +225,50 @@ class PostController extends Controller
         DB::beginTransaction();
         try {
 
-            $post->update($validated);
+            $post->update(request()->all());
+
 
             if (request()->has('attachments')) {
+                // Handle JSON objects (if any)
+                $jsonAttachments = [];
+                $binaryAttachments = [];
 
-                // $resources = Resource::where('attachable_id', $post->id)->first();
-                // $resources = Resource::where('attachable_id', $post->id)->first();
-                $post->storeAttachments();
-                // $resources->delete();
+                // Check if attachments are binary or JSON objects
+                foreach ($request->attachments as $attachment) {
+                    // If it's a string (JSON object ID), add it to jsonAttachments
+                    if (is_string($attachment)) {
+                        $jsonAttachments[] = $attachment;
+                    } else {
+                        // Otherwise, it's a binary file
+                        $binaryAttachments[] = $attachment;
+                    }
+                }
+
+                $output = new ConsoleOutput();
+                // Handle the JSON object attachments (preserve these)
+                $existingAttachments = $post->attachments->pluck('id')->toArray();
+                $preserveAttachments = array_intersect($existingAttachments, $jsonAttachments);
+
+                // Delete any previous attachments that were not in JSON objects
+                $deleteAttachments = array_diff($existingAttachments, $preserveAttachments);
+                if (!empty($deleteAttachments)) {
+                    $post->attachments()->whereIn('id', $deleteAttachments)->delete();
+                }
+
+                // Handle the binary file attachments (upload new files)
+                if (!empty($binaryAttachments)) {
+                    foreach ($binaryAttachments as $resource) {
+                        // Upload the binary file
+                        $resourceRef = uploadFile($resource);
+                        // Save the new attachment
+                        $post->attachments()->create(array_merge($resourceRef, [
+                            'user_id' => auth()->id() ?? 1, // default user ID 1 if no auth
+                            'for' => $request->input('for'), // assuming 'for' comes from the request
+                            'metadata' => $resourceRef,
+                        ]));
+                    }
+                }
+
             } else {
                 $post->attachments()->delete();
             }

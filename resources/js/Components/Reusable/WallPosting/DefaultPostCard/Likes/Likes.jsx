@@ -49,9 +49,7 @@ export function Likes({
     // };
 
     const likesCount = likes.length;
-    const isPostLikedByUser = useMemo(() => {
-        return likes && likes.includes(loggedInUserId);
-    }, [likes, loggedInUserId]);
+    const isPostLikedByUser = likes && likes.includes(loggedInUserId);
 
     return (
         <>

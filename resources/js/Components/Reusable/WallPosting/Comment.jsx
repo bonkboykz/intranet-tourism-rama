@@ -34,7 +34,7 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                 const sortedComments = data.comments.sort(
                     (a, b) => new Date(a.created_at) - new Date(b.created_at)
                 );
-                console.log("SORTED COMMENTS", sortedComments);
+                // console.log("SORTED COMMENTS", sortedComments);
 
                 setComments(sortedComments); // Set the sorted comments
 
@@ -352,10 +352,12 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                         </header>
                         <div className="mt-4">
                             <div className="text-lg mb-4">
-                                {renderContentWithTags(
-                                    post.content,
-                                    post.mentions
-                                )}
+                                <pre className="whitespace-pre-wrap max-w-full overflow-x-auto">
+                                    {renderContentWithTags(
+                                        post.content,
+                                        post.mentions
+                                    )}
+                                </pre>
                             </div>
                             <PostAttachments attachments={post.attachments} />
                             <hr className="my-6 border-1 border-gray-200" />
