@@ -37,10 +37,6 @@ function OutputData({
         },
     });
 
-    const user = useUserData();
-
-    const userHasBirthday = user.dob && isBirthdayDay(user.dob, new Date());
-
     const renderWall = () => {
         switch (variant) {
             case "profile":
