@@ -49,21 +49,21 @@ const Media = () => {
 
     return (
         <Example>
-        <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
-            {/* left widgets */}
-            <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
-                <div className="file-directory-header">
-                    <PageTitle title="Media" />
+            <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                {/* left widgets */}
+                <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                    <div className="file-directory-header">
+                        <PageTitle title="Media" />
+                    </div>
+                    <hr className="file-directory-underline" />
+                    <div>
+                        <FeaturedEvents />
+                        <WhosOnline />
+                    </div>
                 </div>
-                <hr className="file-directory-underline" />
-                <div>
-                    <FeaturedEvents />
-                    <WhosOnline />
-                </div>
-            </div>
 
-            {/* main content */}
-            <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                {/* main content */}
+                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                     <div className="w-full flex flex-row justify-between items-center">
                         <div className="relative flex flex-col justify-center max-w-full text-sm text-neutral-800">
                             <div

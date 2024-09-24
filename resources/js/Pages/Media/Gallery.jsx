@@ -34,22 +34,18 @@ export function Gallery({ selectedTag }) {
 
     const renderImages = () => {
         return images.map((post) =>
-            post.attachments
-                ?.filter((attachment) =>
-                    attachment.mime_type.startsWith("image/")
-                )
-                .map((imageAttachment) => (
-                    <PhotoView
-                        key={imageAttachment.id}
+            post.attachments.map((imageAttachment) => (
+                <PhotoView
+                    key={imageAttachment.id}
+                    src={`/storage/${imageAttachment.path}`}
+                >
+                    <img
                         src={`/storage/${imageAttachment.path}`}
-                    >
-                        <img
-                            src={`/storage/${imageAttachment.path}`}
-                            alt="Image Attachment"
-                            className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                        />
-                    </PhotoView>
-                ))
+                        alt="Image Attachment"
+                        className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                    />
+                </PhotoView>
+            ))
         );
     };
 
@@ -103,11 +99,6 @@ export function Gallery({ selectedTag }) {
                                 .filter((post) => post.attachments)
                                 .map((post) => post.attachments)
                                 .flat()
-                                .filter((attachment) => {
-                                    return attachment.mime_type.startsWith(
-                                        "video/"
-                                    );
-                                })
                                 .map((attachment) => ({
                                     ...attachment,
                                     path: `/storage/${attachment.path}`,
