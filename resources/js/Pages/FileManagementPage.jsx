@@ -22,28 +22,28 @@ const FileManage = ({ requiredData, onFileUploaded }) => {
 
     return (
         <Example>
-        <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
-            {/* left widgets */}
-            <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
-                <div className="file-directory-header">
-                    <PageTitle title="Files" />
+            <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
+                {/* left widgets */}
+                <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
+                    <div className="file-directory-header">
+                        <PageTitle title="Files" />
+                    </div>
+                    <hr className="file-directory-underline" />
+                    <div>
+                        <FeaturedEvents />
+                        <WhosOnline />
+                    </div>
                 </div>
-                <hr className="file-directory-underline" />
-                <div>
-                    <FeaturedEvents />
-                    <WhosOnline />
-                </div>
-            </div>
 
-            {/* main content */}
-            <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                {/* main content */}
+                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                     <SearchFile
                         userId={id}
                         onSearch={setSearchTerm}
                         requiredData={requiredData}
                         onFileUploaded={onFileUploaded}
                     />
-                    <FileTable searchTerm={searchTerm} />
+                    <FileTable searchTerm={searchTerm} isManagement />
                 </div>
             </main>
             {/* <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">

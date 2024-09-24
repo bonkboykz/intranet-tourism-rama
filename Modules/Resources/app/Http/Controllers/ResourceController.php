@@ -99,7 +99,7 @@ class ResourceController extends Controller
         }
 
 
-        if (!$user->hasRole('superadmin') && !$is_community && !$is_department && !$is_user) {
+        if ((request()->has('isManagement') && !$user->hasRole('superadmin')) && !$is_community && !$is_department && !$is_user) {
             $query->where(function ($query) use ($user) {
                 // User's own files (where they are the author)
                 $query->where('user_id', $user->id) // User's own files
