@@ -37,3 +37,4 @@ Route::apiResources([
 ]);
 
 Route::get('get-upcoming-events', [EventController::class, 'getUpcomingEvents'])->middleware('auth:sanctum');
+Route::get('generate-pdf', [EventController::class, 'generatePdf'])->middleware('auth:sanctum');
