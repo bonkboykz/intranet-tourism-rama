@@ -244,7 +244,6 @@ class PostController extends Controller
                     }
                 }
 
-                $output = new ConsoleOutput();
                 // Handle the JSON object attachments (preserve these)
                 $existingAttachments = $post->attachments->pluck('id')->toArray();
                 $preserveAttachments = array_intersect($existingAttachments, $jsonAttachments);

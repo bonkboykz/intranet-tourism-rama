@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import { ShareYourThoughts } from "@/Components/Reusable/WallPosting";
 import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
 
 import LikesPopup from "./LikesPopup";
@@ -298,6 +299,34 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
         return replaceContent(content);
     };
 
+    const [results, setResults] = useState({});
+
+    const fetchResults = async () => {
+        if (!post.poll) {
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                `/api/posts/posts/${post.id}/calculatePollResults`
+            );
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to calculate poll results");
+            }
+
+            const responseData = response.data.data;
+
+            setResults(responseData);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    useEffect(() => {
+        fetchResults();
+    }, []);
+
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-2xl shadow-lg w-[600px] mx-2 overflow-hidden max-h-[90vh] max-w-[90vw] flex flex-col">
@@ -360,6 +389,65 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                 </pre>
                             </div>
                             <PostAttachments attachments={post.attachments} />
+
+                            {/* Poll Section */}
+                            {post.type === "poll" && post.poll && (
+                                <div className="mt-4">
+                                    <div className="text-lg mb-4">
+                                        <pre className="whitespace-pre-wrap max-w-full overflow-x-auto">
+                                            {post.poll.question.question_text}
+                                        </pre>
+                                    </div>
+                                    <div className="flex flex-col gap-4">
+                                        {post.poll.question.options?.map(
+                                            (option) => {
+                                                const percentagesMap =
+                                                    results.percentages?.reduce(
+                                                        (acc, cur) => {
+                                                            acc[cur.option_id] =
+                                                                cur.percentage;
+                                                            return acc;
+                                                        },
+                                                        {}
+                                                    ) ?? {};
+
+                                                return (
+                                                    <div
+                                                        key={option.id}
+                                                        className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12"
+                                                    >
+                                                        <div
+                                                            className={cn(
+                                                                `flex flex-auto gap-3 px-4   bg-gray-100 rounded-3xl max-md:flex-wrap items-center  transition `
+                                                            )}
+                                                        >
+                                                            <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
+                                                            <button
+                                                                disabled
+                                                                className="py-2 flex-auto outline-none border-none cursor-pointer text-start disabled:cursor-default"
+                                                            >
+                                                                {
+                                                                    option.option_text
+                                                                }
+                                                            </button>
+
+                                                            <div className="flex gap-2">
+                                                                {(
+                                                                    percentagesMap[
+                                                                        option
+                                                                            .id
+                                                                    ] ?? 0
+                                                                ).toFixed(2)}
+                                                                %
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                             <hr className="my-6 border-1 border-gray-200" />
                         </div>
                     </div>
