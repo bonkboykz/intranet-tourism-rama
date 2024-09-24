@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import "react-phone-input-2/lib/style.css";
 
 function ProfileDepartment({
@@ -236,6 +238,10 @@ function ProfileDepartment({
         </tr>
     );
 
+    const { hasRole } = usePermissions();
+
+    const isSuperAdmin = hasRole("superadmin");
+
     return (
         <div className="flex-auto p-4 my-auto">
             <div className="flex gap-5 sm:flex-col md:flex-col lg:flex-col sm:gap-4 lg:gap-6">
@@ -263,7 +269,7 @@ function ProfileDepartment({
                                 "jobtitle",
                                 localFormData.jobtitle,
                                 jobTitleOptions,
-                                true,
+                                isSuperAdmin,
                                 handleInputChange
                             )}
                             {renderField(
@@ -271,7 +277,7 @@ function ProfileDepartment({
                                 "position",
                                 localFormData.position,
                                 positionOptions,
-                                true,
+                                isSuperAdmin,
                                 handleInputChange
                             )}
                             {renderField(
@@ -279,7 +285,7 @@ function ProfileDepartment({
                                 "grade",
                                 localFormData.grade,
                                 gradeOptions,
-                                true,
+                                isSuperAdmin,
                                 handleInputChange
                             )}
                             <tr>

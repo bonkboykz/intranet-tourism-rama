@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
@@ -21,6 +22,7 @@ import {
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
 import PageTitle from "../Components/Reusable/PageTitle";
@@ -226,6 +228,11 @@ function ProfileContent() {
             ) {
                 const blob = await (await fetch(newFormData.photo)).blob();
                 FfData.append("staff_image", blob, "profile_image.png");
+
+                // TODO: Implement requests
+                toast.success("The request has been sent to the admin");
+
+                return;
             }
 
             const [profileResponse, userResponse] = await Promise.all([
@@ -278,6 +285,19 @@ function ProfileContent() {
             FfData.append("work_phone", employmentPost.work_phone);
             FfData.append("position", employmentPost.position);
             FfData.append("user_id", id);
+
+            if (!isSuperAdmin) {
+                // TODO: Implement in requests
+                toast.success("The request has been sent to the admin");
+
+                setIsEditingDepartments((prev) =>
+                    prev.map((isEditing, i) =>
+                        i === index ? false : isEditing
+                    )
+                );
+
+                return;
+            }
 
             const response = await fetch(
                 `/api/department/employment_posts/${employmentPost.id}`,
@@ -379,6 +399,10 @@ function ProfileContent() {
     };
 
     const [fileSearchTerm, setFileSearchTerm] = useState("");
+
+    const { hasRole } = usePermissions();
+
+    const isSuperAdmin = hasRole("superadmin");
 
     return (
         <WallContext.Provider
