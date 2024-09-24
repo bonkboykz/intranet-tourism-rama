@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 function ProfileBio({
     formData,
     isEditing,
@@ -50,13 +52,13 @@ function ProfileBio({
         setIsPhotoChangeNotificationOpen(false);
     };
 
-    const renderField = (label, name, value, type) => (
+    const renderField = (label, name, value, type, editable = true) => (
         <tr key={name}>
             <td className="py-2 align-center font-semibold capitalize text-neutral-800 w-1/3">
                 {label}
             </td>
             <td className="py-2 align-center w-2/3 ">
-                {isEditing ? (
+                {isEditing && editable ? (
                     <input
                         type={type}
                         name={name}
@@ -96,6 +98,10 @@ function ProfileBio({
         const name = bioFormData.name || "Staff"; // Use 'Staff' as a fallback if name is not available
         source = `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(name)}`;
     }
+
+    const { hasRole } = usePermissions();
+
+    const isSuperAdmin = hasRole("superadmin");
 
     return (
         <div ref={formRef} className="flex-auto my-auto p-4">
@@ -142,13 +148,15 @@ function ProfileBio({
                                 "Name",
                                 "name",
                                 bioFormData.name,
-                                "text"
+                                "text",
+                                isSuperAdmin
                             )}
                             {renderField(
                                 "E-mail",
                                 "email",
                                 bioFormData.email,
-                                "email"
+                                "email",
+                                isSuperAdmin
                             )}
                             {renderField(
                                 "Date of Birth",
