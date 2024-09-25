@@ -79,8 +79,10 @@ const StaffMemberCard = ({
         };
     };
 
-    const isPhoneNumberAvailable = () => phoneNo != null;
-    const isWorkNumberAvailable = () => workNo != null;
+    const isPhoneNumberAvailable = () =>
+        phoneNo != null || phoneNo !== "null" || !phoneNo;
+    const isWorkNumberAvailable = () =>
+        workNo != null || workNo !== "null" || !workNo;
 
     // console.log("imageUrl", imageUrl);
 
