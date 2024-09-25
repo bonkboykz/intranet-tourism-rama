@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { InertiaLink } from "@inertiajs/inertia-react";
 
 import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import deactivateButton from "../../../../public/assets/activatedButton.svg";
@@ -79,10 +80,8 @@ const StaffMemberCard = ({
         };
     };
 
-    const isPhoneNumberAvailable = () =>
-        phoneNo != null || phoneNo !== "null" || !phoneNo;
-    const isWorkNumberAvailable = () =>
-        workNo != null || workNo !== "null" || !workNo;
+    const isPhoneNumberAvailable = phoneNo !== null && phoneNo !== "null";
+    const isWorkNumberAvailable = workNo !== null && workNo !== "null";
 
     // console.log("imageUrl", imageUrl);
 
@@ -148,15 +147,18 @@ const StaffMemberCard = ({
             </div>
             <div className="card-footer">
                 <button
-                    className={`call-button ${isWorkNumberAvailable() && !isDeactivated ? "" : "disabled"}`}
+                    className={cn(
+                        `call-button`,
+                        (!isWorkNumberAvailable || isDeactivated) && "disabled"
+                    )}
                     onClick={handleCall}
-                    disabled={isDeactivated || !isWorkNumberAvailable()}
+                    disabled={isDeactivated || !isWorkNumberAvailable}
                 >
                     <img
                         src={
                             isDeactivated
                                 ? callIcon
-                                : isWorkNumberAvailable()
+                                : isWorkNumberAvailable
                                   ? phoneActiveIcon
                                   : callIcon
                         }
@@ -164,15 +166,18 @@ const StaffMemberCard = ({
                     />
                 </button>
                 <button
-                    className={`whatsapp-button ${isPhoneNumberAvailable() && !isDeactivated ? "" : "disabled"}`}
+                    className={cn(
+                        `whatsapp-button`,
+                        (!isPhoneNumberAvailable || isDeactivated) && "disabled"
+                    )}
                     onClick={handleWhatsApp}
-                    disabled={isDeactivated || !isPhoneNumberAvailable()}
+                    disabled={isDeactivated || !isPhoneNumberAvailable}
                 >
                     <img
                         src={
                             isDeactivated
                                 ? whatsappIcon
-                                : isPhoneNumberAvailable()
+                                : isPhoneNumberAvailable
                                   ? whatsappActiveIcon
                                   : whatsappIcon
                         }
