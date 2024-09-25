@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
+import { getAvatarSource, getProfileImage } from "@/Utils/getProfileImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import { toastError } from "@/Utils/toast";
 
@@ -438,13 +439,10 @@ export default function Roles() {
                                                     <div className="flex-shrink-0 h-11 w-11">
                                                         <img
                                                             alt=""
-                                                            src={
-                                                                person.image.startsWith(
-                                                                    "staff_image/"
-                                                                )
-                                                                    ? `/storage/${person.image}`
-                                                                    : person.image
-                                                            }
+                                                            src={getProfileImage(
+                                                                person.profile,
+                                                                person.name
+                                                            )}
                                                             className="h-12 rounded-full w-11"
                                                         />
                                                     </div>
