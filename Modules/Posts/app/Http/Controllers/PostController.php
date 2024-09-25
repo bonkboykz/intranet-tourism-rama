@@ -339,13 +339,13 @@ class PostController extends Controller
     }
 
 
-    // public function unlike(Post $post)
-    // {
-    //     $post->likes = collect($post->likes)->filter(fn($id) => $id != Auth::id())->unique()->toArray();
-    //     $post->save();
+    public function unlike(Post $post)
+    {
+        $post->likes = array_values(array_filter($post->likes, fn($id) => $id != $user_id));
+        $post->save();
 
-    //     return response()->noContent();
-    // }
+        return response()->noContent();
+    }
 
     public function comment(Post $post)
     {
