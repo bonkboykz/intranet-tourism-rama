@@ -1,6 +1,12 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
+import {
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+    Transition,
+} from "@headlessui/react";
 
 import deleteIcon from "../../../../public/assets/deleteicon.svg";
 import downloadIcon from "../../../../public/assets/downloadicon.svg";
@@ -13,13 +19,13 @@ function classNames(...classes) {
 }
 
 const PopupContent = ({
-                          file,
-                          onRename,
-                          onDelete,
-                          onFileSelect,
-                          canEdit = true,
-                          onClose,
-                      }) => {
+    file,
+    onRename,
+    onDelete,
+    onFileSelect,
+    canEdit = true,
+    onClose,
+}) => {
     const [showModal, setShowModal] = useState(false);
     const modalRef = useRef(null);
 
@@ -27,7 +33,9 @@ const PopupContent = ({
         if (!showModal) return;
 
         const handleClickOutside = (event) => {
-            const isClickedInsideOfModal = modalRef.current?.contains(event.target);
+            const isClickedInsideOfModal = modalRef.current?.contains(
+                event.target
+            );
             if (!isClickedInsideOfModal) {
                 setShowModal(false);
             }
@@ -63,14 +71,18 @@ const PopupContent = ({
 
             const data = await response.json();
             const fileObject = data.data;
-            if (!fileObject) throw new Error("File not found in the API response");
+            if (!fileObject)
+                throw new Error("File not found in the API response");
 
-            const metadata = typeof fileObject.metadata === "string"
-                ? JSON.parse(fileObject.metadata)
-                : fileObject.metadata;
+            const metadata =
+                typeof fileObject.metadata === "string"
+                    ? JSON.parse(fileObject.metadata)
+                    : fileObject.metadata;
 
             if (!metadata.path || !metadata.original_name) {
-                throw new Error("Invalid metadata format: missing path or original_name");
+                throw new Error(
+                    "Invalid metadata format: missing path or original_name"
+                );
             }
 
             const fileUrl = `/storage/${metadata.path}`;
@@ -119,15 +131,19 @@ const PopupContent = ({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <MenuItems className="absolute right-0 z-10 mr-10 mt-[-103px] w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems className="absolute right-0 z-10 mr-9 mt-[-103px] w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
                             {canEdit && (
                                 <MenuItem>
                                     {({ active, close }) => (
                                         <button
-                                            onClick={(e) => handleRename(e, close)}
+                                            onClick={(e) =>
+                                                handleRename(e, close)
+                                            }
                                             className={classNames(
-                                                active ? "bg-blue-100 text-gray-900" : "text-gray-700",
+                                                active
+                                                    ? "bg-blue-100 text-gray-900"
+                                                    : "text-gray-700",
                                                 "group flex items-center px-4 py-2 text-sm w-full"
                                             )}
                                         >
@@ -146,7 +162,9 @@ const PopupContent = ({
                                     <button
                                         onClick={handleDownload}
                                         className={classNames(
-                                            active ? "bg-blue-100 text-gray-900" : "text-gray-700",
+                                            active
+                                                ? "bg-blue-100 text-gray-900"
+                                                : "text-gray-700",
                                             "group flex items-center px-4 py-2 text-sm w-full"
                                         )}
                                     >
@@ -165,7 +183,9 @@ const PopupContent = ({
                                         <button
                                             onClick={() => setShowModal(true)}
                                             className={classNames(
-                                                active ? "bg-blue-100 text-gray-900" : "text-gray-700",
+                                                active
+                                                    ? "bg-blue-100 text-gray-900"
+                                                    : "text-gray-700",
                                                 "group flex items-center px-4 py-2 text-sm w-full"
                                             )}
                                         >
@@ -185,7 +205,9 @@ const PopupContent = ({
                                         <button
                                             onClick={handleViewClick}
                                             className={classNames(
-                                                active ? "bg-blue-100 text-gray-900" : "text-gray-700",
+                                                active
+                                                    ? "bg-blue-100 text-gray-900"
+                                                    : "text-gray-700",
                                                 "group flex items-center px-4 py-2 text-sm w-full"
                                             )}
                                         >
