@@ -48,6 +48,11 @@ class CompleteRawSQLSeeder extends Seeder
             $data = array_map('str_getcsv', file($csvFile));
 
             foreach ($data as $row) {
+                // skip first row
+                if ($row[0] === 'id') {
+                    continue;
+                }
+
                 DB::table('new_users_data_offiria')->insert([
                     'user_id' => $row[0],
                     'name' => $row[1],
@@ -91,6 +96,16 @@ class CompleteRawSQLSeeder extends Seeder
             $data = array_map('str_getcsv', file($csvFile));
 
             foreach ($data as $row) {
+                // skip first row
+                if (strpos($row[0], ('URL Picture Jomla')) !== false) {
+                    continue;
+                }
+
+                if (!$row[3] || !is_numeric($row[3])) {
+                    continue;
+                }
+
+
                 DB::table('updated_staff_data')->insert([
                     'url' => $row[0],
                     'image_name' => $row[1],
