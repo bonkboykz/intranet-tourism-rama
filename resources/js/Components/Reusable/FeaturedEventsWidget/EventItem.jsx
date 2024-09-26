@@ -2,7 +2,7 @@ import React from "react";
 
 import "../css/EventItem.css";
 
-const EventItem = ({ start_date, end_date, title }) => {
+const EventItem = ({ start_date, end_date, title, eventId }) => {
     const monthAbbreviations = {
         January: "JAN",
         February: "FEB",
@@ -29,8 +29,15 @@ const EventItem = ({ start_date, end_date, title }) => {
     // Check if the event starts and ends in the same month
     const isSameMonth = start_month === end_month && start_year === end_year;
 
+    const onClick = () => {
+        window.location.href = `/calendar?event=${eventId}`;
+    };
+
     return (
-        <li className="event-item flex items-start justify-start">
+        <li
+            className="event-item flex items-start justify-start cursor-pointer"
+            onClick={onClick}
+        >
             <div className="event-date-box">
                 <div className="event-day">{start_day}</div>
                 <div className="event-month">{abbreviatedMonth}</div>
