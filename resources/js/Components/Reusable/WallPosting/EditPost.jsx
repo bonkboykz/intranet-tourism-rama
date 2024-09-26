@@ -191,13 +191,15 @@ function EditPost({
                     />
                     <div>
                         <div className="font-semibold text-lg mt-4">
-                            Edit album tag
+                            Edit event tag
                         </div>
                         <div className="flex flex-col gap-0">
                             <ChosenEvent
                                 chosenEvent={chosenEvent}
                                 onRemoveEvent={handleRemoveEvent}
                             />
+
+                            <div className="my-1"></div>
 
                             <SearchEventInput
                                 onSearchResults={setSearchEventResults}
@@ -214,6 +216,9 @@ function EditPost({
                             </div>
                         </div>
                         <div className="tags-container mt-3">
+                            <div className="font-semibold text-lg mt-4">
+                                Edit album tag
+                            </div>
                             {allAlbums.map((allAlbum, index) => (
                                 <div
                                     key={allAlbum.id}
