@@ -567,7 +567,7 @@ const AddMemberPopup = ({
     return (
         <div>
             {isAddMemberPopupOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black px-4 bg-opacity-50">
+                <div className="fixed inset-0 z-50 flex items-center justify-center z-10 bg-black px-4 bg-opacity-50">
                     <div className="bg-white rounded-2xl pt-7 px-4 max-md:w-full max-md:mx-8 w-[400px]">
                         <h1 className="flex justify-start mx-2 mb-4 text-2xl font-bold text-neutral-800">
                             Add staff
