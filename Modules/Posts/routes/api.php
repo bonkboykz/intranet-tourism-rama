@@ -55,4 +55,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('get_media', [PostController::class, 'getMedia'])->name('post.getMedia');
     Route::put('{post}/announce', [PostController::class, 'announce'])->name('post.announce');
     Route::put('{post}/unannounce', [PostController::class, 'unannounce'])->name('post.unannounce');
+    Route::put('{post}/close-poll', [PostController::class, 'closePoll'])->name('post.closePoll');
+    Route::get('{post}/export-poll', [PostController::class, 'exportPoll'])->name('post.exportPoll');
 });
