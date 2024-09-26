@@ -7,6 +7,8 @@ import Excel from "../../../../../public/assets/ExcellIcon.svg";
 import PDF from "../../../../../public/assets/PDFIcon.svg";
 import PowerPoint from "../../../../../public/assets/PowerPointIcon.svg";
 import TXT from "../../../../../public/assets/TXTIcon.png";
+import RAR from "../../../../../public/assets/Raricon.png";
+import ZIP from "../../../../../public/assets/Zipicon.png";
 
 function PostAttachments({ attachments }) {
     const [showPopup, setShowPopup] = useState(false);
@@ -102,6 +104,10 @@ function PostAttachments({ attachments }) {
                                   ? PowerPoint
                                   : attachment.extension === "txt"
                                     ? TXT
+                                            : attachment.extension === "rar"
+                                                ? RAR
+                                                : attachment.extension === "zip"
+                                                    ? ZIP
                                     : "path/to/default-icon.png"
                     }
                     style={{

@@ -359,7 +359,7 @@ function ShareYourThoughts({
     const handleClickImg = createFileInputHandler("image/*");
     const handleClickVid = createFileInputHandler("video/*");
     const handleClickDoc = createFileInputHandler(
-        "application/pdf, .doc, .docx, .txt, .xlsx, .ppt, .pptx"
+        "application/pdf, .doc, .docx, .txt, .xlsx, .ppt, .pptx, .rar, .zip"
     );
 
     const handleClickPoll = () => {
