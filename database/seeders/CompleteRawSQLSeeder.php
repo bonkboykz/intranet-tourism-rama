@@ -322,6 +322,74 @@ class CompleteRawSQLSeeder extends Seeder
                 ('Writer');
         ");
 
+        DB::statement("
+            INSERT INTO business_schemes (title, code)
+VALUES
+    ('Test Business Scheme', 'BS');
+        ");
+
+        DB::statement("
+
+
+INSERT INTO business_units (department_id, name)
+SELECT DISTINCT d.id AS department_id, u.unit AS name
+FROM new_users_data_offiria u
+JOIN departments d ON u.division = d.name
+WHERE u.unit IS NOT NULL
+  AND u.unit <> ''
+  AND (d.id, u.unit) NOT IN (
+    SELECT department_id, name
+    FROM business_units
+  );
+        ");
+
+        DB::statement("
+
+INSERT INTO employment_posts (
+    department_id,
+    business_unit_id,
+    business_post_id,
+    business_grade_id,
+    business_scheme_id,
+    user_id,
+    location,
+    order,
+    work_phone,
+    position
+)
+SELECT
+    d.id AS department_id,
+    COALESCE(bu.id, 1) AS business_unit_id,
+    COALESCE(bp.id, 1) AS business_post_id,
+    COALESCE(bg.id, 1) AS business_grade_id,
+    1 AS business_scheme_id,
+    u.id AS user_id,
+    n.lokasi AS location,
+    COALESCE(CAST(n.ordering AS integer), 0) AS order,
+    n.work_phone AS work_phone,
+    n.taraf_jawatan as position
+FROM
+    new_users_data_offiria n
+INNER JOIN
+    departments d ON n.division = d.name
+LEFT JOIN
+    business_units bu ON d.id = bu.department_id AND n.unit = bu.name
+LEFT JOIN
+    business_posts bp ON LOWER(n.title) = LOWER(bp.title)
+LEFT JOIN
+    business_grades bg ON n.gred = bg.code
+LEFT JOIN
+    users u ON n.email = u.email
+WHERE
+    n.email IS NOT NULL;
+        ");
+
+
+        DB::statement("
+-- Update id 1 for title to 'no title'
+UPDATE business_posts SET title = 'No title' WHERE id = 1;
+        ");
+
         // Raw SQL to insert into external_links table
         DB::statement("
             INSERT INTO external_links (label, url) VALUES
