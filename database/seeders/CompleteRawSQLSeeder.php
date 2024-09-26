@@ -53,6 +53,10 @@ class CompleteRawSQLSeeder extends Seeder
                     continue;
                 }
 
+                if (!$row[0] || !is_numeric($row[0])) {
+                    continue;
+                }
+
                 DB::table('new_users_data_offiria')->insert([
                     'user_id' => $row[0],
                     'name' => $row[1],
@@ -329,8 +333,6 @@ VALUES
         ");
 
         DB::statement("
-
-
 INSERT INTO business_units (department_id, name)
 SELECT DISTINCT d.id AS department_id, u.unit AS name
 FROM new_users_data_offiria u
@@ -344,45 +346,45 @@ WHERE u.unit IS NOT NULL
         ");
 
         DB::statement("
+        INSERT INTO employment_posts (
+            department_id,
+            business_unit_id,
+            business_post_id,
+            business_grade_id,
+            business_scheme_id,
+            user_id,
+            location,
+            \"order\",
+            work_phone,
+            position
+        )
+        SELECT
+            d.id AS department_id,
+            COALESCE(bu.id, 1) AS business_unit_id,
+            COALESCE(bp.id, 1) AS business_post_id,
+            COALESCE(bg.id, 1) AS business_grade_id,
+            1 AS business_scheme_id,
+            u.id AS user_id,
+            n.lokasi AS location,
+            COALESCE(NULLIF(n.ordering, '')::integer, 0) AS \"order\",
+            n.work_phone AS work_phone,
+            n.taraf_jawatan AS position
+        FROM
+            new_users_data_offiria n
+        INNER JOIN
+            departments d ON n.division = d.name
+        LEFT JOIN
+            business_units bu ON d.id = bu.department_id AND n.unit = bu.name
+        LEFT JOIN
+            business_posts bp ON LOWER(n.title) = LOWER(bp.title)
+        LEFT JOIN
+            business_grades bg ON n.gred = bg.code
+        LEFT JOIN
+            users u ON n.email = u.email
+        WHERE
+            n.email IS NOT NULL;
+    ");
 
-INSERT INTO employment_posts (
-    department_id,
-    business_unit_id,
-    business_post_id,
-    business_grade_id,
-    business_scheme_id,
-    user_id,
-    location,
-    order,
-    work_phone,
-    position
-)
-SELECT
-    d.id AS department_id,
-    COALESCE(bu.id, 1) AS business_unit_id,
-    COALESCE(bp.id, 1) AS business_post_id,
-    COALESCE(bg.id, 1) AS business_grade_id,
-    1 AS business_scheme_id,
-    u.id AS user_id,
-    n.lokasi AS location,
-    COALESCE(CAST(n.ordering AS integer), 0) AS order,
-    n.work_phone AS work_phone,
-    n.taraf_jawatan as position
-FROM
-    new_users_data_offiria n
-INNER JOIN
-    departments d ON n.division = d.name
-LEFT JOIN
-    business_units bu ON d.id = bu.department_id AND n.unit = bu.name
-LEFT JOIN
-    business_posts bp ON LOWER(n.title) = LOWER(bp.title)
-LEFT JOIN
-    business_grades bg ON n.gred = bg.code
-LEFT JOIN
-    users u ON n.email = u.email
-WHERE
-    n.email IS NOT NULL;
-        ");
 
 
         DB::statement("
@@ -426,8 +428,10 @@ UPDATE business_posts SET title = 'No title' WHERE id = 1;
             UPDATE profiles SET staff_image = '2587.jpg' WHERE user_id = 1229;
         ");
 
-        DB::statement("
-                ALTER SEQUENCE public.users_id_seq RESTART WITH (SELECT MAX(id) FROM users);
-        ");
+        // Step 1: Get the max id from the users table
+        $maxId = DB::table('users')->max('id') + 1;
+
+        // Step 2: Restart the sequence with the max id value
+        DB::statement("ALTER SEQUENCE public.users_id_seq RESTART WITH $maxId;");
     }
 }
