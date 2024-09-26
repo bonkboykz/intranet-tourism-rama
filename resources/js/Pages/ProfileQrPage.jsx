@@ -8,8 +8,6 @@ const ProfileQRPage = () => {
         props: { user, qr },
     } = usePage();
 
-    console.log(user);
-
     return (
         <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-gray-100 p-4">
             {/* Left side: QR Code */}
@@ -78,7 +76,7 @@ const ProfileQRPage = () => {
                             "No department"}
                     </p>
                     <p className="text-gray-600">
-                        <span className="font-semibold">Phone: </span>
+                        <span className="font-semibold">WhatsApp: </span>
                         {user.profile.phone_no !== null
                             ? user.profile.phone_no !== "null"
                                 ? user.profile.phone_no
