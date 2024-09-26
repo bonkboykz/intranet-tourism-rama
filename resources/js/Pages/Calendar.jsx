@@ -20,6 +20,7 @@ import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { getAvatarSource } from "@/Utils/getProfileImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 import useUserData from "@/Utils/hooks/useUserData";
 import { isBirthdayDay } from "@/Utils/isBirthday";
 import { toastError } from "@/Utils/toast";
@@ -253,6 +254,8 @@ function Calendar() {
             console.error("Error fetching birthdays: ", error);
         }
     };
+
+    const { searchParams } = useSearchParams();
 
     // const filterEvents = () => {
     //     if (searchTerm.trim() === "") {
@@ -592,8 +595,6 @@ function Calendar() {
         closePrintModal();
     };
 
-    console.log("current range", currentRange);
-
     return (
         <Example>
             <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
@@ -759,7 +760,7 @@ function Calendar() {
                                         whiteSpace: "nowrap",
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
-                                        border: `2px solid ${borderColor}`,
+                                        border: `2px solid ${searchParams.get("event") === eventInfo.event.id ? "blue" : borderColor}`,
                                     }}
                                     className="fc-event-title"
                                 >

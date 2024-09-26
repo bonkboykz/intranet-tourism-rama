@@ -66,6 +66,7 @@ const FeaturedEvents = () => {
                                     }
                                 )}
                                 title={event.title}
+                                eventId={event.id}
                             />
                         </React.Fragment>
                     ))
