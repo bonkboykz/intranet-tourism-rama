@@ -20,13 +20,13 @@ class SocialLoginController extends Controller
     public function callback($driver)
     {
         $socialiteUser = Socialite::driver($driver)->user();
-        $user = User::where('email', $socialiteUser->getEmail())->first();
+        $user = User::where('email', strtolower($socialiteUser->getEmail()))->first();
         DB::beginTransaction();
         try {
             if (!$user) {
                 $user = User::create([
                     'name' => $socialiteUser->name,
-                    'email' => $socialiteUser->email,
+                    'email' => strtolower($socialiteUser->getEmail()),
                     'password' => bcrypt('password'),
                 ]);
                 $user->assignRole('user');

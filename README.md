@@ -159,3 +159,25 @@ docker run \
     -v /path/to/postgresql-persistence:/bitnami/postgresql \
     bitnami/postgresql:latest
 ```
+
+### Linux
+
+```
+apt-get install php-pgsql
+```
+
+```
+php artisan migrate:fresh
+
+php artisan db:seed --class=CompleteRawSQLSeeder
+
+php artisan passwords:hash
+
+php artisan superadmin:create
+
+php artisan roles:create
+
+php artisan db:seed --class=SettingsSeeder
+
+php artisan db:seed --class=BirthdayTemplateSeeder
+```

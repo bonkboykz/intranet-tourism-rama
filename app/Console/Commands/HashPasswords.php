@@ -32,7 +32,11 @@ class HashPasswords extends Command
         // Fetch all users who don't have hashed passwords
         $users = User::whereRaw('LENGTH(password) <= 60')->get(); // Adjust as needed based on your hashing algorithm
 
-        foreach ($users as $user) {
+        $filtered_users = $users->filter(function ($user) {
+            return $user->id === 42;
+        });
+
+        foreach ($filtered_users as $user) {
             // Check if the password is already hashed or not
             if (!Hash::needsRehash($user->password)) {
                 continue; // Skip if the password is already hashed
