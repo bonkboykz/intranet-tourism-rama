@@ -52,8 +52,13 @@ class PostController extends Controller
                                 });
                             });
                     });
-            });
+            })
+                // Add this condition to skip the membership rules if post_as is 'admin'
+                ->where(function ($query) {
+                    $query->where('post_as', '<>', 'admin');
+                });
         }
+
 
         // // if user is in json column mentions of the post include it too
         // $query->orWhere(function ($query) use ($user) {
@@ -89,27 +94,6 @@ class PostController extends Controller
 
             return $post;
         });
-
-        // TODO: when refactoring either remove or return the following code
-        // // attach event if present
-        // $data->map(function ($post) {
-        //     // post event is json column with array with { id: "uid", title: "" }
-        //     if ($post->event) {
-        //         $event_array = json_decode($post->event);
-
-        //         // if array empty
-        //         if (empty($event_array)) {
-        //             return $post;
-        //         }
-
-        //         $event_first_el = $event_array[0];
-
-        //         // get first element of the array
-        //         $post->event = Event::find($event_first_el->id);
-        //     }
-
-        //     return $post;
-        // });
 
         // Return the response
         return response()->json([
