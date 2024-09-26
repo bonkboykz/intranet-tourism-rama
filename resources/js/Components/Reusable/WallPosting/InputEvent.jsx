@@ -34,7 +34,7 @@ export function SearchEventInput({ onSearchResults }) {
             }
 
             const data = await response.json();
-            console.log("DATAAAA", data);
+            // console.log("DATAAAA", data);
 
             allResults = data.data;
             // currentPage++;
