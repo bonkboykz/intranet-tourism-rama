@@ -167,6 +167,8 @@ apt-get install php-pgsql
 ```
 
 ```
+php artisan migrate:fresh
+
 php artisan db:seed --class=CompleteRawSQLSeeder
 
 php artisan passwords:hash

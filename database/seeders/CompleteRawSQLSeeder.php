@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use File;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CompleteRawSQLSeeder extends Seeder
 {
@@ -40,7 +41,7 @@ class CompleteRawSQLSeeder extends Seeder
         DB::table('new_users_data_offiria')->truncate();
 
         // Path to the CSV file
-        $csvFile = public_path('seed/new_user_data.csv');
+        $csvFile = base_path('seed/new_user_data.csv');
 
         // Read the CSV file and insert data
         if (File::exists($csvFile)) {
@@ -83,7 +84,7 @@ class CompleteRawSQLSeeder extends Seeder
         DB::table('updated_staff_data')->truncate();
 
         // Path to the CSV file
-        $csvFile = public_path('seed/UpdatedListAvatarExtract.csv');
+        $csvFile = base_path('seed/UpdatedListAvatarExtract.csv');
 
         // Read the CSV file and insert data
         if (File::exists($csvFile)) {
