@@ -119,8 +119,6 @@ export function useInfiniteScroll({
                 });
             }
 
-            const isDashboardWall = variant === "dashboard";
-
             if (["profile", "user-wall"].includes(variant) && !isSuperAdmin) {
                 newFilter.push({
                     field: "announced",
@@ -148,6 +146,7 @@ export function useInfiniteScroll({
                     limit: postsPerScroll,
                     offset: (currentPage.current - 1) * postsPerScroll,
                     user_id: userId,
+                    variant,
                     filter: [
                         {
                             field: "type",

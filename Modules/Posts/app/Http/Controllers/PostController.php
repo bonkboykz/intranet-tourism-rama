@@ -33,41 +33,100 @@ class PostController extends Controller
         // Get the authenticated user
         $user = Auth::user();
 
-        // Apply filter if user is not superadmin
-        if (!$user->hasRole('superadmin')) {
-            $query->where(function ($query) use ($user) {
+        // Get the variant input from the request
+        $variant = $request->input('variant');
+
+        $output = new ConsoleOutput();
+        $output->writeln('PostController@index');
+        $output->writeln($variant);
+
+        // Apply different logic based on variant
+        if ($variant === 'dashboard') {
+            // For 'dashboard' variant: Don't show posts from departments/communities unless they are post_as=admin
+            // Private communities should check for membership, public communities should skip membership checks
+            if (!$user->hasRole('superadmin')) {
                 $query->where(function ($query) use ($user) {
-                    $query->whereNull('community_id')
-                        ->orWhereHas('community', function ($query) use ($user) {
-                            $query->whereHas('members', function ($query) use ($user) {
-                                $query->where('user_id', $user->id);
-                            });
-                        });
-                })
-                    ->where(function ($query) use ($user) {
-                        $query->whereNull('department_id')
-                            ->orWhereHas('department', function ($query) use ($user) {
-                                $query->whereHas('employmentPosts', function ($query) use ($user) {
-                                    $query->where('user_id', $user->id);
+                    // Public communities or posts where post_as is admin
+                    $query->where(function ($query) use ($user) {
+                        $query->whereNull('community_id')
+                            ->orWhereHas('community', function ($query) use ($user) {
+                                // For public communities, no membership check is needed
+                                $query->where(['type' => 'public', 'post_as' => 'admin'])
+                                    // For private communities, check if user is a member
+                                    ->orWhere(function ($query) use ($user) {
+                                    $query->where('type', 'private')
+                                        ->whereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id);
+                                        });
                                 });
                             });
-                    });
-            })
-                // Add this condition to skip the membership rules if post_as is 'admin'
-                ->where(function ($query) {
-                    $query->where('post_as', '<>', 'admin');
+
+                    })
+                        // Private departments require membership, post_as admin bypasses checks
+                        ->where(function ($query) use ($user) {
+                            $query->whereNull('department_id')
+                                ->orWhereHas('department', function ($query) use ($user) {
+                                    // Check if the post is admin or user is a member of the department
+                                    $query->where('post_as', 'admin');
+                                });
+                        });
                 });
+            }
+        } else {
+            // For other variants: Show all posts, but private communities and departments should check for membership
+            if (!$user->hasRole('superadmin')) {
+                $query->where(function ($query) use ($user) {
+                    $query->where(function ($query) use ($user) {
+                        // Private communities should check for membership, public communities skip membership checks
+                        $query->whereNull('community_id')
+                            ->orWhereHas('community', function ($query) use ($user) {
+                                // Public communities
+                                $query->where('type', 'public')
+                                    // For private communities, check if user is a member
+                                    ->orWhere(function ($query) use ($user) {
+                                    $query->where('type', 'private')
+                                        ->whereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id);
+                                        });
+                                });
+                            });
+                    })
+                        // Departments should also check membership, post_as admin bypasses checks
+                        ->where(function ($query) use ($user) {
+                            $query->whereNull('department_id')
+                                ->orWhereHas('department', function ($query) use ($user) {
+                                    // Check for admin posts or user being part of the department
+                                    $query->where('post_as', 'admin')
+                                        ->orWhereHas('employmentPosts', function ($query) use ($user) {
+                                        $query->where('user_id', $user->id);
+                                    });
+                                });
+                        });
+                });
+            }
         }
-
-
-        // // if user is in json column mentions of the post include it too
-        // $query->orWhere(function ($query) use ($user) {
-        //     $query->where('mentions', 'LIKE', '%"id": "' . $user->id . '"%');
-        // });
 
         // Sort posts by announcement status and updated_at
         $query->orderByRaw("CASE WHEN announced = true THEN 0 ELSE 1 END")
             ->orderBy('created_at', 'desc');
+
+        // $output = new ConsoleOutput();
+
+        // function replaceBindings($sql, $bindings)
+        // {
+        //     foreach ($bindings as $binding) {
+        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+        //         $sql = preg_replace('/\?/', $value, $sql, 1);
+        //     }
+        //     return $sql;
+        // }
+
+        // $sql = $query->toSql(); // Get the raw SQL query
+        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
+        // // Show the full SQL query with bindings replaced
+        // $fullSql = replaceBindings($sql, $bindings);
+
+        // $output->writeln($fullSql);
 
         // Paginate the results
         $data = $this->shouldPaginate($query);
@@ -100,6 +159,7 @@ class PostController extends Controller
             'data' => $data,
         ]);
     }
+
 
 
 
