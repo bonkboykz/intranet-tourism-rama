@@ -357,5 +357,9 @@ class CompleteRawSQLSeeder extends Seeder
         DB::statement("
             UPDATE profiles SET staff_image = '2587.jpg' WHERE user_id = 1229;
         ");
+
+        DB::statement("
+                ALTER SEQUENCE public.users_id_seq RESTART WITH (SELECT MAX(id) FROM users);
+        ");
     }
 }
