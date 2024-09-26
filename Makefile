@@ -43,6 +43,9 @@ seed_settings:
 seed_birthday_templates:
 	php artisan db:seed --class=BirthdayTemplateSeeder
 
+seed_offiria:
+	php artisan db:seed --class=CompleteRawSQLSeeder
+
 # Run tests
 test:
 	$(PHPUNIT)

@@ -159,3 +159,9 @@ docker run \
     -v /path/to/postgresql-persistence:/bitnami/postgresql \
     bitnami/postgresql:latest
 ```
+
+### Linux
+
+```
+apt-get install php-pgsql
+```
