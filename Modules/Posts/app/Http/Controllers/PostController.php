@@ -341,6 +341,7 @@ class PostController extends Controller
 
     public function unlike(Post $post)
     {
+        $user_id = Auth::id();
         $post->likes = array_values(array_filter($post->likes, fn($id) => $id != $user_id));
         $post->save();
 
