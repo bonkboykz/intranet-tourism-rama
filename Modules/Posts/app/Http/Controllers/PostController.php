@@ -402,9 +402,9 @@ class PostController extends Controller
         $output = new ConsoleOutput();
         $output->writeln('PostController@getRecentStories');
 
-        // get all stories that were created in the last 72 hours
+        // get all stories that were created in the last 24 hours
         $stories = Post::where('type', 'story')
-            ->where('created_at', '>', now()->subHours(72))
+            ->where('created_at', '>', now()->subHours(24))
             ->get();
 
 
