@@ -424,7 +424,7 @@ function ProfileContent() {
 
                     {/* main content */}
                     <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
-                        <div className="profile-header ml-9 max-md:h-[385px] bg-white shadow-custom rounded-b-lg">
+                        <div className="profile-header ml-9 h-0 max-md:h-[385px] bg-red-300 shadow-custom rounded-b-lg">
                             <div className="flex-col w-full flex bg-white h-auto rounded-b-lg">
                                 <ProfileHeader
                                     backgroundImage={

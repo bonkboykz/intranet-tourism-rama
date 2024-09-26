@@ -606,51 +606,53 @@ function Calendar() {
                         <div className="flex items-center justify-between w-full">
                             <input
                                 type="search"
-                                className="flex-grow px-6 py-3 mt-2 bg-gray-100 border-gray-100 rounded-full input-no-outline"
+                                className="flex w-full xs:w-fit px-6 max-md:pl-4 py-3 mt-2 bg-gray-100 border-gray-100 rounded-full input-no-outline"
                                 placeholder="Search for events"
                                 aria-label="Search"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <button
-                                onClick={handlePrint}
-                                className="flex items-center justify-center px-3 py-3 mx-3 mt-2 bg-red-500 rounded-full hover:bg-red-700"
-                            >
-                                <img
-                                    src={printIcon}
-                                    alt="Print"
-                                    className="w-6 h-6"
-                                />
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setEventData({
-                                        title: "",
-                                        venue: "",
-                                        startDate: format(
-                                            new Date(),
-                                            "yyyy-MM-dd"
-                                        ),
-                                        endDate: format(
-                                            new Date(),
-                                            "yyyy-MM-dd"
-                                        ),
-                                        startTime: "",
-                                        endTime: "",
-                                        description: "",
-                                        color: "purple",
-                                    });
+                            <div className="flex w-fit justify-end flex-row mt-2 ml-2 max-md:gap-2 gap-3">
+                                <button
+                                    onClick={handlePrint}
+                                    className="flex items-center justify-center px-3 py-3 max-md:px-1 bg-red-500 rounded-full hover:bg-red-700"
+                                >
+                                    <img
+                                        src={printIcon}
+                                        alt="Print"
+                                        className="w-6 h-6 max-md:mx-4"
+                                    />
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setEventData({
+                                            title: "",
+                                            venue: "",
+                                            startDate: format(
+                                                new Date(),
+                                                "yyyy-MM-dd"
+                                            ),
+                                            endDate: format(
+                                                new Date(),
+                                                "yyyy-MM-dd"
+                                            ),
+                                            startTime: "",
+                                            endTime: "",
+                                            description: "",
+                                            color: "purple",
+                                        });
 
-                                    setIsModalOpen(true);
-                                }}
-                                className="flex items-center text-white bg-blue-500 hover:bg-blue-700 mt-2 px-3.5 py-3.5 rounded-full"
-                            >
-                                <img
-                                    src="/assets/plus.svg"
-                                    alt="Plus icon"
-                                    className="w-5 h-5"
-                                />
-                            </button>
+                                        setIsModalOpen(true);
+                                    }}
+                                    className="flex items-center justify-center text-white bg-blue-500 hover:bg-blue-700 px-3.5 py-3.5 max-md:px-1 max-md:py-1 rounded-full"
+                                >
+                                    <img
+                                        src="/assets/plus.svg"
+                                        alt="Plus icon"
+                                        className="w-5 h-5 max-md:mx-4"
+                                    />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -857,7 +859,7 @@ function Calendar() {
                                         className="form-control h-36 overflow-y-auto"
                                         placeholder="Description"
                                     />
-                                    <div className="color-picker justify-between">
+                                    <div className="flex flex-wrap max-md::flex-nowrap justify-between mb-4">
                                         {[
                                             "red",
                                             "blue",
@@ -868,18 +870,12 @@ function Calendar() {
                                             "black",
                                             "gray",
                                         ].map((color) => (
-                                            <label
-                                                key={color}
-                                                className="color-option mb-4"
-                                            >
+                                            <label key={color} className="color-option max-md:mx-2 mb-2">
                                                 <input
                                                     type="radio"
                                                     name="color"
                                                     value={color}
-                                                    checked={
-                                                        eventData.color ===
-                                                        color
-                                                    }
+                                                    checked={eventData.color === color}
                                                     onChange={handleChange}
                                                     required
                                                 />
@@ -892,7 +888,6 @@ function Calendar() {
                                             </label>
                                         ))}
                                     </div>
-
                                     <button
                                         type="submit"
                                         className="modal-submit-button font-bold"

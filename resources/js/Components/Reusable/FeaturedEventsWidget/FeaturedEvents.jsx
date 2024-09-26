@@ -67,11 +67,11 @@ const FeaturedEvents = () => {
                                 )}
                                 title={event.title}
                             />
-                            <hr className="event-separator" />
                         </React.Fragment>
                     ))
                 )}
             </ul>
+            <hr className="event-separator" />
             <a href="../calendar">
                 <button className="view-all-btn whitespace-nowrap">
                     VIEW ALL
