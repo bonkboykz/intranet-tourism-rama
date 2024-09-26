@@ -955,4 +955,20 @@ class PostController extends Controller
             'data' => $posts
         ]);
     }
+
+    public function announce(Post $post)
+    {
+        $post->announced = true;
+        $post->save();
+
+        return response()->noContent();
+    }
+
+    public function unannounce(Post $post)
+    {
+        $post->announced = false;
+        $post->save();
+
+        return response()->noContent();
+    }
 }
