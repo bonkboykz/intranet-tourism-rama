@@ -10,6 +10,7 @@ import { useSettings } from "@/Layouts/useSettings";
 import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
+import { toastError } from "@/Utils/toast";
 
 import Emoji from "../../../../../public/assets/EmojiIcon.svg";
 import EventTag from "../../../../../public/assets/EventTagIcon.svg";
@@ -341,7 +342,7 @@ function ShareYourThoughts({
             }
 
             if (!areAllUnderLimit) {
-                toast.error(`File size should be less than ${baseMaxSize}MB`, {
+                toastError(`File size should be less than ${baseMaxSize}MB`, {
                     icon: <CircleXIcon className="w-6 h-6 text-white" />,
                     theme: "colored",
                 });
@@ -533,30 +534,32 @@ function ShareYourThoughts({
                                                 </span>
                                             )}
                                         </button> */}
-                                        <button
-                                            className="tooltip"
-                                            onClick={toggleReactionPicker}
-                                        >
-                                            <img
-                                                loading="lazy"
-                                                src={Emoji}
-                                                alt="Emoji Icon"
-                                                className="w-[16px] h-[16px]"
-                                            />
-                                            <span className="tooltiptext">
-                                                React 😀🤣😤
-                                            </span>
-                                        </button>
-                                        {showReactionPicker && (
-                                            <div
-                                                ref={emojiPickerRef}
-                                                className="emoji-picker-container-comment"
+                                            <button
+                                                className="tooltip"
+                                                onClick={toggleReactionPicker}
                                             >
-                                                <Picker
-                                                    onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
+                                                <img
+                                                    loading="lazy"
+                                                    src={Emoji}
+                                                    alt="Emoji Icon"
+                                                    className="w-[16px] h-[16px]"
                                                 />
-                                            </div>
-                                        )}
+                                                <span className="tooltiptext">
+                                                    React 😀🤣😤
+                                                </span>
+                                            </button>
+                                            {showReactionPicker && (
+                                                <div
+                                                    ref={emojiPickerRef}
+                                                    className="emoji-picker-container-comment"
+                                                >
+                                                    <Picker
+                                                        onEmojiClick={
+                                                            handleReactionClick
+                                                        } // Ensure this correctly triggers the handler
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                         <button
                                             onClick={handleClickSend}
@@ -600,7 +603,9 @@ function ShareYourThoughts({
                                                     className="emoji-picker-container-input-box"
                                                 >
                                                     <Picker
-                                                        onEmojiClick={handleReactionClick} // Ensure this correctly triggers the handler
+                                                        onEmojiClick={
+                                                            handleReactionClick
+                                                        } // Ensure this correctly triggers the handler
                                                     />
                                                 </div>
                                             )}
@@ -708,7 +713,8 @@ function ShareYourThoughts({
                                                     canSetAnnouncement && (
                                                         <div className="w-full flex items-center justify-end max-md:justify-start">
                                                             <label className="text-sm mr-3">
-                                                                Set as Announcement?
+                                                                Set as
+                                                                Announcement?
                                                             </label>
                                                             <label className="switch">
                                                                 <input
@@ -736,7 +742,9 @@ function ShareYourThoughts({
                                                 />
                                                 <div className="flex justify-end max-md:w-full">
                                                     <button
-                                                        onClick={handleClickSend}
+                                                        onClick={
+                                                            handleClickSend
+                                                        }
                                                         className="w-10 h-10 flex items-center justify-center"
                                                     >
                                                         {isSending ? (

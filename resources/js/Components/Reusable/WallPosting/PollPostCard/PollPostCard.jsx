@@ -19,11 +19,11 @@ import { CardHeader } from "../DefaultPostCard/CardHeader/CardHeader";
 import { CardImage } from "../DefaultPostCard/CardImage/CardImage";
 import { Comments } from "../DefaultPostCard/Comments/Comments";
 import { Likes } from "../DefaultPostCard/Likes/Likes";
-import { PostDetails } from "../DefaultPostCard/PostDetails/PostDetails";
 import { DeletePopup } from "../DeletePopup";
 import EditPost from "../EditPost";
 import LikesPopup from "../LikesPopup";
 import { WallContext } from "../WallContext";
+import { PostDetails } from "./PostDetails/PostDetails";
 import { usePolls } from "./usePolls";
 
 export function PollPostCard({ post }) {
@@ -112,6 +112,55 @@ export function PollPostCard({ post }) {
         }
     };
 
+    const handleClosePoll = async (post) => {
+        try {
+            const response = await axios.put(
+                `/api/posts/${post.id}/close-poll`
+            );
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to close poll");
+            }
+
+            refetchPost();
+        } catch (error) {
+            console.error("Error closing poll:", error);
+            toastError("Failed to close poll");
+        }
+    };
+
+    const handleExportPoll = async (post) => {
+        try {
+            const response = await axios.get(
+                `/api/posts/${post.id}/export-poll`,
+                {
+                    responseType: "blob",
+                }
+            );
+
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Error generating PDF");
+            }
+
+            // Create a Blob from the response and trigger a download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            // open in new page
+            // window.open(url, "_blank");
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `poll_results_${post.poll.id}.pdf`); // Set the file name
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            toast.success("Poll exported successfully");
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+
+            toastError("Error generating PDF");
+        }
+    };
+
     const [showCommentsModal, setShowCommentsModal] = useState(false);
 
     const [showLikesPopup, setShowLikesPopup] = useState(false);
@@ -184,6 +233,10 @@ export function PollPostCard({ post }) {
 
                     {showDetails && canEdit && (
                         <PostDetails
+                            isClosed={
+                                cachedPost.poll.end_date &&
+                                new Date(cachedPost.poll.end_date) < new Date()
+                            }
                             popupRef={popupRef}
                             onEdit={() => {
                                 setShowDetails(false);
@@ -194,6 +247,14 @@ export function PollPostCard({ post }) {
                                 handleAnnouncement(cachedPost)
                             }
                             isAnnounced={cachedPost.announced}
+                            onClose={() => {
+                                setShowDetails(false);
+                                handleClosePoll(cachedPost);
+                            }}
+                            onExport={() => {
+                                setShowDetails(false);
+                                handleExportPoll(cachedPost);
+                            }}
                         />
                     )}
                 </header>

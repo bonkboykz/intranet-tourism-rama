@@ -4,6 +4,7 @@ namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\NewPollCreatedNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Events\Models\Event;
 use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
@@ -955,4 +956,121 @@ class PostController extends Controller
             'data' => $posts
         ]);
     }
+
+    public function announce(Post $post)
+    {
+        $post->announced = true;
+        $post->save();
+
+        return response()->noContent();
+    }
+
+    public function unannounce(Post $post)
+    {
+        $post->announced = false;
+        $post->save();
+
+        return response()->noContent();
+    }
+
+    public function closePoll(Post $post)
+    {
+        $poll = $post->poll;
+        $poll->end_date = now();
+        $poll->save();
+
+        return response()->noContent();
+    }
+
+    public function exportPoll(Post $post)
+    {
+
+        $poll = $post->poll;
+
+        if (!$poll) {
+            return response()->json([
+                'data' => null,
+            ]);
+        }
+
+        // calculate map of presentages per each option_id
+        $all_responses = $poll->responses;
+
+        $total_responses = $all_responses->count();
+
+        // get all options
+        if (!$poll->question) {
+            return response()->json([
+                'data' => null,
+            ]);
+        }
+
+        $options = $poll->question->options;
+
+        // get count of answers from all responses from json
+        $count_map = $options->map(function ($option) use ($all_responses) {
+            $count = $all_responses->filter(function ($response) use ($option) {
+                return in_array($option->id, $response->answers);
+            })->count();
+
+            return [
+                'option_id' => $option->id,
+                'count' => $count,
+            ];
+        });
+
+        // calculate percentages
+        // $percentages_map = $count_map->map(function ($count) use ($total_responses) {
+        //     return [
+        //         'option_id' => $count['option_id'],
+        //         'percentage' => $total_responses > 0 ? ($count['count'] / $total_responses) * 100 : 0,
+        //     ];
+        // });
+        // calculate percentages based on total responses so if user puts 1, 1 on two options it should have 50 50 percents
+        $total_count_of_votes = $count_map->sum('count');
+
+        if (!$total_count_of_votes) {
+            $percentages_map = $count_map->map(function ($count) {
+                return [
+                    'option_id' => $count['option_id'],
+                    'percentage' => 0,
+                ];
+            });
+        } else {
+            $percentages_map = $count_map->map(function ($count) use ($total_count_of_votes) {
+                return [
+                    'option_id' => $count['option_id'],
+                    'percentage' => $total_count_of_votes > 0 ? ($count['count'] / $total_count_of_votes) * 100 : 0,
+                ];
+            });
+        }
+
+        // options with name, count, percentage
+        $options = $options->map(function ($option) use ($count_map, $percentages_map) {
+            $count = $count_map->firstWhere('option_id', $option->id)['count'];
+            $percentage = $percentages_map->firstWhere('option_id', $option->id)['percentage'];
+
+            return [
+                'option_id' => $option->id,
+                'option_text' => $option->option_text,
+                'count' => $count,
+                'percentage' => $percentage,
+            ];
+        });
+
+        $output = new ConsoleOutput();
+        $output->writeln('PostController@exportPoll');
+        // stringify options and output
+        $output->writeln(json_encode($options));
+
+        // Load the PDF view and pass the events data
+        $pdf = Pdf::loadView('polls.pdf', [
+            'options' => $options,
+            'logoPath' => public_path('assets/logo.png'), // Path to the logo
+            'title' => 'Joomla Poll Results' // The title for the PDF
+        ]);
+
+        return $pdf->download('events.pdf');
+    }
+
 }

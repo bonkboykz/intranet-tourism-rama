@@ -309,11 +309,11 @@ export function DefaultPostCard({ post }) {
 
     const handleAnnouncement = async (post) => {
         try {
-            const response = await axios.put(`/api/posts/posts/${post.id}`, {
-                announced: !post.announced,
-                user_id: String(post.user.id),
-                visibility: "public",
-            });
+            const response = await axios.put(
+                `/api/posts/${post.id}/${
+                    post.announced ? "unannounce" : "announce"
+                }`
+            );
 
             if (![200, 201, 204].includes(response.status)) {
                 throw new Error("Failed to announce post");
