@@ -412,6 +412,12 @@ function Calendar() {
     const handleEventClick = (eventInfo) => {
         eventInfo.jsEvent.preventDefault();
 
+        const isAuthor = user.id === eventInfo.event.extendedProps.user.id;
+
+        if (!isAuthor) {
+            return;
+        }
+
         // Check if the event is a birthday event
         if (eventInfo.event.extendedProps.isBirthday) {
             // If it's a birthday event, do nothing (or you could add custom behavior here)
