@@ -133,7 +133,7 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
         setCommentIdToDelete(comment.pivot.id);
         setPostIdToDelete(comment.pivot.comment_id);
         setShowDeletePopup(true);
-        // console.log("HAHAHA", commentIdToDelete);
+        setIsCommentPopupOpen(false);
     };
 
     const handleDelete = async () => {
@@ -493,14 +493,15 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                                 comment.pivot
                                             ),
                                             (
-                                                <div className="absolute bg-white border-2 rounded-xl p-1 shadow-lg w-[160px] h-auto z-10 right-0 top-full -mt-10">
+                                                <div
+                                                    className="absolute bg-white border-2 rounded-xl p-1 shadow-lg w-[160px] h-auto z-10 right-0 top-full -mt-10">
                                                     <p
                                                         className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
-                                                        onClick={() =>
+                                                        onClick={() =>{
                                                             confirmDelete(
                                                                 comment
                                                             )
-                                                        }
+                                                        }}
                                                     >
                                                         <img
                                                             className="w-6 h-6 mr-2"
