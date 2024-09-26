@@ -14,6 +14,7 @@ const StoryViewer = ({
     onViewed,
     onDelete,
     onAllStoriesEnd,
+    canDeleteStory,
 }) => {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
@@ -164,31 +165,33 @@ const StoryViewer = ({
                                 {user.fullName ? user.fullName : "Your Story"}
                             </div>
                         </div>
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.preventDefault();
+                        {canDeleteStory && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
 
-                                setIsPaused(true);
+                                    setIsPaused(true);
 
-                                setShowDeletePopup(true);
-                            }}
-                            style={{
-                                border: "none",
-                                background: "none",
-                                cursor: "pointer",
-                            }}
-                        >
-                            <img
-                                src={DeleteIcon}
-                                alt="Delete icon"
-                                style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    marginTop: "-10px",
+                                    setShowDeletePopup(true);
                                 }}
-                            />
-                        </button>
+                                style={{
+                                    border: "none",
+                                    background: "none",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                <img
+                                    src={DeleteIcon}
+                                    alt="Delete icon"
+                                    style={{
+                                        width: "30px",
+                                        height: "30px",
+                                        marginTop: "-10px",
+                                    }}
+                                />
+                            </button>
+                        )}
                         <button
                             style={{
                                 border: "none",

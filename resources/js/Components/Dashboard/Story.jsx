@@ -357,6 +357,7 @@ const StoryNew = ({ userId }) => {
                         fetchStories();
                     }}
                     onAllStoriesEnd={handleNextGroup}
+                    canDeleteStory={selectedUser.id === id}
                 />
             )}
             {isPopupOpen &&

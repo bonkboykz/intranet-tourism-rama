@@ -117,6 +117,7 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                         id="file-upload"
                         style={{ display: "none" }}
                         onChange={handleFileChange}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z,.mp3,.csv,.css,.js,.html"
                     />
                     <div className="flex items-center bg-blue-500 hover:bg-blue-700 px-4 py-2 max-md:px-5 max-md:py-0 h-full rounded-full ml-3 mr-2">
                         <img

@@ -34,6 +34,13 @@ class ProfileController extends Controller
         $user->employment_posts = $user->employmentPosts()->get();
         $user->employment_post = $user->employmentPosts()->first();
 
+        if ($user->employment_post) {
+            $user->employment_post->business_post = $user->employment_post->businessPost()->first();
+            if ($user->employment_post->business_post) {
+                $user->position = $user->employment_post->business_post->title;
+            }
+        }
+
         unset($user->password);
         return Inertia::render('ProfileQrPage', ['user' => $user, 'qr' => $user->vcard]);
     }
