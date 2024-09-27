@@ -4,6 +4,8 @@ import { createPortal } from "react-dom";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import CreateImageStory from "./CreateImageStory";
 import Popup from "./CreateStoryPopup";
 import { PersonalStory } from "./Story/PersonalStory";
@@ -304,6 +306,9 @@ const StoryNew = ({ userId }) => {
         }
     };
 
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
+
     return (
         <div
             style={{
@@ -357,7 +362,7 @@ const StoryNew = ({ userId }) => {
                         fetchStories();
                     }}
                     onAllStoriesEnd={handleNextGroup}
-                    canDeleteStory={selectedUser.id === id}
+                    canDeleteStory={selectedUser.id === id || isSuperAdmin}
                 />
             )}
             {isPopupOpen &&

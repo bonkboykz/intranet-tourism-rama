@@ -486,10 +486,12 @@ export function DefaultPostCard({ post }) {
                         <PostDetails
                             popupRef={popupRef}
                             onEdit={() => {
-                                // setShowDetails(false);
+                                setShowDetails(false);
                                 setShowModal(true);
                             }}
-                            onDelete={() => setShowDeletePopup(true)}
+                            onDelete={() => {
+                                setShowDetails(false);
+                                setShowDeletePopup(true)}}
                             onAnnouncement={() =>
                                 handleAnnouncement(cachedPost)
                             }

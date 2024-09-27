@@ -233,7 +233,10 @@ export function PollCard({ post }) {
                                 setShowDetails(false);
                                 setShowModal(true);
                             }}
-                            onDelete={() => setShowDeletePopup(true)}
+                            onDelete={() => {
+                                setShowDetails(false);
+                                setShowDeletePopup(true
+                            )}}
                         />
                     )}
                 </header>

@@ -30,6 +30,7 @@ const PopupContent = ({
     const modalRef = useRef(null);
 
     useEffect(() => {
+
         if (!showModal) return;
 
         const handleClickOutside = (event) => {
