@@ -491,7 +491,8 @@ export function DefaultPostCard({ post }) {
                             }}
                             onDelete={() => {
                                 setShowDetails(false);
-                                setShowDeletePopup(true)}}
+                                setShowDeletePopup(true);
+                            }}
                             onAnnouncement={() =>
                                 handleAnnouncement(cachedPost)
                             }
@@ -570,6 +571,8 @@ export function DefaultPostCard({ post }) {
                                 image: userData?.profile?.image,
                             },
                         }}
+                        onCommentPosted={refetchPost}
+                        onCommentDeleted={refetchPost}
                     />,
                     document.body
                 )}

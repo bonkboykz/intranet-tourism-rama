@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
 
 export const usePermissions = () => {
@@ -19,11 +20,14 @@ export const usePermissions = () => {
         router.reload();
     };
 
+    const isSuperAdmin = hasRole("superadmin");
+
     return {
         hasPermission,
         hasRole,
         updatePermissions,
         permissions: auth.permissions,
         roles: auth.roles,
+        isSuperAdmin,
     };
 };

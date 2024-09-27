@@ -331,6 +331,8 @@ export function PollPostCard({ post }) {
                                 image: userData?.profile?.image,
                             },
                         }}
+                        onCommentPosted={refetchPost}
+                        onCommentDeleted={refetchPost}
                     />,
                     document.body
                 )}
