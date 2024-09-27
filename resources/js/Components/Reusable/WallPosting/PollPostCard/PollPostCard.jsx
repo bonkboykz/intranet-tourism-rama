@@ -1,42 +1,42 @@
-import {useState} from "react";
-import {useContext} from "react";
-import {useEffect} from "react";
-import {createPortal} from "react-dom";
-import {toast} from "react-toastify";
+import { useState } from "react";
+import { useContext } from "react";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
-import {Volume2} from "lucide-react";
+import { Volume2 } from "lucide-react";
 
-import {CommunityContext} from "@/Pages/CommunityContext";
-import {DepartmentContext} from "@/Pages/DepartmentContext";
-import {cn} from "@/Utils/cn";
-import {useClickOutside} from "@/Utils/hooks/useClickOutside";
-import {usePermissions} from "@/Utils/hooks/usePermissions";
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { cn } from "@/Utils/cn";
+import { useClickOutside } from "@/Utils/hooks/useClickOutside";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
-import {toastError} from "@/Utils/toast";
+import { toastError } from "@/Utils/toast";
 
 import Comment from "../Comment";
-import {CardHeader} from "../DefaultPostCard/CardHeader/CardHeader";
-import {CardImage} from "../DefaultPostCard/CardImage/CardImage";
-import {Comments} from "../DefaultPostCard/Comments/Comments";
-import {Likes} from "../DefaultPostCard/Likes/Likes";
-import {DeletePopup} from "../DeletePopup";
+import { CardHeader } from "../DefaultPostCard/CardHeader/CardHeader";
+import { CardImage } from "../DefaultPostCard/CardImage/CardImage";
+import { Comments } from "../DefaultPostCard/Comments/Comments";
+import { Likes } from "../DefaultPostCard/Likes/Likes";
+import { DeletePopup } from "../DeletePopup";
 import EditPost from "../EditPost";
 import LikesPopup from "../LikesPopup";
-import {WallContext} from "../WallContext";
-import {PostDetails} from "./PostDetails/PostDetails";
-import {usePolls} from "./usePolls";
+import { WallContext } from "../WallContext";
+import { PostDetails } from "./PostDetails/PostDetails";
+import { usePolls } from "./usePolls";
 
-export function PollPostCard({post}) {
+export function PollPostCard({ post }) {
     const [cachedPost, setCachedPost] = useState(post);
     const [showDetails, setShowDetails] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-    const {variant, loggedInUserId} = useContext(WallContext);
+    const { variant, loggedInUserId } = useContext(WallContext);
 
     const refetchPost = async () => {
         try {
             const {
-                data: {data: updatedPost},
+                data: { data: updatedPost },
             } = await axios.get(`/api/posts/posts/${post.id}`, {
                 params: {
                     with: [
@@ -83,10 +83,10 @@ export function PollPostCard({post}) {
         }
     };
 
-    const {hasRole} = usePermissions();
+    const { hasRole } = usePermissions();
 
-    const {isAdmin: isCommunityAdmin} = useContext(CommunityContext);
-    const {isAdmin: isDepartmentAdmin} = useContext(DepartmentContext);
+    const { isAdmin: isCommunityAdmin } = useContext(CommunityContext);
+    const { isAdmin: isDepartmentAdmin } = useContext(DepartmentContext);
 
     const canEdit =
         cachedPost.user_id === loggedInUserId ||
@@ -97,7 +97,6 @@ export function PollPostCard({post}) {
     const [isDeleted, setIsDeleted] = useState(false);
 
     const handleDelete = async () => {
-
         try {
             const response = await axios.delete(`/api/posts/posts/${post.id}`);
 
@@ -168,12 +167,12 @@ export function PollPostCard({post}) {
 
     const userData = useUserData();
 
-    const {buttonRef, popupRef, modalRef} = useClickOutside(() => {
+    const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
         setShowDetails(false);
         setShowModal(false);
     });
 
-    const {renderPoll, question} = usePolls(cachedPost, {
+    const { renderPoll, question } = usePolls(cachedPost, {
         refetchPost,
         loggedInUserId,
     });
@@ -194,15 +193,15 @@ export function PollPostCard({post}) {
                     "w-full max-w-[700px]",
                     "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
                     cachedPost.announced &&
-                    (cachedPost.community_id || cachedPost.department_id
-                        ? "relative pt-20"
-                        : "relative pt-16")
+                        (cachedPost.community_id || cachedPost.department_id
+                            ? "relative pt-20"
+                            : "relative pt-16")
                 )}
             >
                 {cachedPost.announced && (
                     <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl  pl-6">
                         <div className="flex items-center gap-1 w-full h-full">
-                            <Volume2 className="w-6 h-6 text-white"/>
+                            <Volume2 className="w-6 h-6 text-white" />
                             <div className="text-white text-center font-bold text-lg	ml-2">
                                 Announcement
                             </div>
@@ -212,9 +211,9 @@ export function PollPostCard({post}) {
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
-                        <CardHeader post={cachedPost}/>
+                        <CardHeader post={cachedPost} />
                         <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
-                            <CardImage post={cachedPost}/>
+                            <CardImage post={cachedPost} />
                             <div className="flex items-center gap-2">
                                 {canEdit && (
                                     <img
@@ -244,8 +243,8 @@ export function PollPostCard({post}) {
                                 setShowModal(true);
                             }}
                             onDelete={() => {
-                                setShowDetails(false)
-                                setShowDeletePopup(true)
+                                setShowDetails(false);
+                                setShowDeletePopup(true);
                             }}
                             onAnnouncement={() =>
                                 handleAnnouncement(cachedPost)
@@ -282,8 +281,7 @@ export function PollPostCard({post}) {
                                     post={cachedPost}
                                     loggedInUserId={loggedInUserId}
                                     onClose={() => setShowModal(false)}
-                                    onClosePopup={() => {
-                                    }}
+                                    onClosePopup={() => {}}
                                     refetchPost={refetchPost}
                                 />
                             </div>
@@ -333,6 +331,8 @@ export function PollPostCard({post}) {
                                 image: userData?.profile?.image,
                             },
                         }}
+                        onCommentPosted={refetchPost}
+                        onCommentDeleted={refetchPost}
                     />,
                     document.body
                 )}

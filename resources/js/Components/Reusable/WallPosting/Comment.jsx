@@ -7,13 +7,22 @@ import { ShareYourThoughts } from "@/Components/Reusable/WallPosting";
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
 import { formatTimeAgo } from "@/Utils/format";
+import { getProfileImage } from "@/Utils/getProfileImage";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import LikesPopup from "./LikesPopup";
 import MentionedName from "./MentionedName";
 import { usePolls } from "./PollPostCard/usePolls";
 import PostAttachments from "./PostAttachments";
 
-const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
+const Comment = ({
+    post,
+    onClose,
+    loggedInUserId,
+    currentUser,
+    onCommentPosted,
+    onCommentDeleted,
+}) => {
     const [isCommentPopupOpen, setIsCommentPopupOpen] = useState(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [commentIdToDelete, setCommentIdToDelete] = useState(null);
@@ -163,6 +172,10 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                 );
                 if (DeleteInsidePostTable.ok) {
                     fetchComments();
+
+                    if (onCommentDeleted) {
+                        onCommentDeleted();
+                    }
                 } else {
                     console.error(
                         `Failed to delete post with ID ${postIdToDelete}.`
@@ -305,6 +318,12 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
         loggedInUserId,
     });
 
+    const { isSuperAdmin } = usePermissions();
+
+    const canDeleteComment = (commentUserId) => {
+        return commentUserId === loggedInUserId || isSuperAdmin;
+    };
+
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-2xl shadow-lg w-[600px] mx-2 overflow-hidden max-h-[90vh] max-w-[90vw] flex flex-col">
@@ -329,20 +348,10 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                     <div className="my-4 px-6">
                         <header className="flex items-center">
                             <img
-                                src={
-                                    post.user.profile?.image
-                                        ? post.user.profile.image ===
-                                          "/assets/dummyStaffPlaceHolder.jpg"
-                                            ? post.user.profile.image
-                                            : post.user.profile.image.startsWith(
-                                                    "avatar/"
-                                                )
-                                              ? `/storage/${post.user.profile.image}`
-                                              : `/avatar/${post.user.profile.image}`
-                                        : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
-                                              post.user.name
-                                          )}&rounded=true`
-                                }
+                                src={getProfileImage(
+                                    post.user.profile,
+                                    post.user.name
+                                )}
                                 alt={post.user.name}
                                 className="w-[53px] rounded-full"
                             />
@@ -475,43 +484,39 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                                                     </span>
                                                 )}
                                             </div>
-                                            <img
-                                                loading="lazy"
-                                                src="/assets/wallpost-dotbutton.svg"
-                                                alt="Options"
-                                                className="absolute top-2 right-4 w-5 h-5 cursor-pointer"
-                                                onClick={() =>
-                                                    handleClickTreeDots(
-                                                        comment.id
-                                                    )
-                                                }
-                                            />
+                                            {canDeleteComment(
+                                                comment.user_id
+                                            ) && (
+                                                <img
+                                                    loading="lazy"
+                                                    src="/assets/wallpost-dotbutton.svg"
+                                                    alt="Options"
+                                                    className="absolute top-2 right-4 w-5 h-5 cursor-pointer"
+                                                    onClick={() =>
+                                                        handleClickTreeDots(
+                                                            comment.id
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                         </div>
-                                        {isCommentPopupOpen === comment.id &&
-                                            (console.log(
-                                                "COMMENT",
-                                                comment.pivot
-                                            ),
-                                            (
-                                                <div
-                                                    className="absolute bg-white border-2 rounded-xl p-1 shadow-lg w-[160px] h-auto z-10 right-0 top-full -mt-10">
-                                                    <p
-                                                        className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
-                                                        onClick={() =>{
-                                                            confirmDelete(
-                                                                comment
-                                                            )
-                                                        }}
-                                                    >
-                                                        <img
-                                                            className="w-6 h-6 mr-2"
-                                                            src="/assets/deleteicon.svg"
-                                                            alt="Delete"
-                                                        />
-                                                        Delete
-                                                    </p>
-                                                </div>
-                                            ))}
+                                        {isCommentPopupOpen === comment.id && (
+                                            <div className="absolute bg-white border-2 rounded-xl p-1 shadow-lg w-[160px] h-auto z-10 right-0 top-full -mt-10">
+                                                <p
+                                                    className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
+                                                    onClick={() => {
+                                                        confirmDelete(comment);
+                                                    }}
+                                                >
+                                                    <img
+                                                        className="w-6 h-6 mr-2"
+                                                        src="/assets/deleteicon.svg"
+                                                        alt="Delete"
+                                                    />
+                                                    Delete
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
@@ -542,7 +547,13 @@ const Comment = ({ post, onClose, loggedInUserId, currentUser }) => {
                     <ShareYourThoughts
                         variant="comment"
                         postedId={post.id}
-                        onCommentPosted={fetchComments}
+                        onCommentPosted={() => {
+                            fetchComments();
+
+                            if (onCommentPosted) {
+                                onCommentPosted();
+                            }
+                        }}
                     />
                 </div>
 
