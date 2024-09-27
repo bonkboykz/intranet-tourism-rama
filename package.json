@@ -7,7 +7,7 @@
         "lint": "eslint 'resources/js/**/*.{js,jsx}'",
         "format": "prettier --write 'resources/js/**/*.{js,jsx}'",
         "test:e2e": "playwright test",
-        "prepare": "husky",
+        "prepare": "husky || true",
         "lint-staged": "lint-staged"
     },
     "devDependencies": {
