@@ -6,7 +6,9 @@
         "build": "vite build",
         "lint": "eslint 'resources/js/**/*.{js,jsx}'",
         "format": "prettier --write 'resources/js/**/*.{js,jsx}'",
-        "test:e2e": "playwright test"
+        "test:e2e": "playwright test",
+        "prepare": "husky",
+        "lint-staged": "lint-staged"
     },
     "devDependencies": {
         "@eslint/js": "^9.10.0",
@@ -27,8 +29,10 @@
         "eslint-plugin-react-hooks": "^4.6.2",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "globals": "^15.9.0",
+        "husky": "^9.1.6",
         "laravel-echo": "^1.16.1",
         "laravel-vite-plugin": "^1.0",
+        "lint-staged": "^15.2.10",
         "playwright": "^1.47.1",
         "postcss": "^8.4.31",
         "prettier": "^3.3.3",
@@ -89,5 +93,11 @@
         "tailwindcss-animate": "^1.0.7",
         "use-debounce": "^10.0.3",
         "yet-another-react-lightbox": "^3.21.5"
+    },
+    "lint-staged": {
+        "*.{js,jsx}": [
+            "prettier --write",
+            "eslint --fix"
+        ]
     }
 }
