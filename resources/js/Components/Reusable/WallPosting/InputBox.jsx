@@ -333,7 +333,7 @@ function ShareYourThoughts({
             for (const file of e.target.files) {
                 // 20MB
                 // const maxSize = 20971520;
-                const maxSize = baseMaxSize * 1024 * 1024;
+                const maxSize = baseMaxSize * 1000000;
 
                 if (file.size > maxSize) {
                     areAllUnderLimit = false;
