@@ -814,27 +814,29 @@ class PostController extends Controller
     {
         $query = Post::query();
 
-        // Apply eager loading for attachments
-        $query->with('attachments');
-
-
         // Apply filters for image and video MIME types
-
         if (request()->has('only_video')) {
-            $query->whereHas('attachments', function ($query) {
-                $query->where('mime_type', 'like', 'video/%');
-            });
-        } else if (request()->has('only_image')) {
-            $query->whereHas('attachments', function ($query) {
-                $query->where('mime_type', 'like', 'image/%');
-            });
+            $query->with([
+                'attachments' => function ($query) {
+                    $query->where('mime_type', 'like', 'video/%');
+                }
+            ]);
+        } elseif (request()->has('only_image')) {
+            $query->with([
+                'attachments' => function ($query) {
+                    $query->where('mime_type', 'like', 'image/%');
+                }
+            ]);
         } else {
-            $query->whereHas('attachments', function ($query) {
-                $query->where(function ($query) {
-                    $query->where('mime_type', 'like', 'image/%')
-                        ->orWhere('mime_type', 'like', 'video/%');
-                });
-            });
+            // Load both images and videos
+            $query->with([
+                'attachments' => function ($query) {
+                    $query->where(function ($query) {
+                        $query->where('mime_type', 'like', 'image/%')
+                            ->orWhere('mime_type', 'like', 'video/%');
+                    });
+                }
+            ]);
         }
 
         if (request()->has('album_id')) {
@@ -843,7 +845,7 @@ class PostController extends Controller
             });
         }
 
-        // Filter by either user is superadmin or post has albums, our user is author
+        // Filter by either user is superadmin or post has albums, or user is author
         $query->where(function ($query) {
             $query->whereHas('albums') // Posts with albums
                 ->orWhereHas('user.roles', function ($query) {
@@ -884,6 +886,7 @@ class PostController extends Controller
             'data' => $posts
         ]);
     }
+
 
 
     public function getMedia()
