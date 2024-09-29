@@ -56,7 +56,7 @@ export const useLazyLoading = (url, params = {}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const fetchData = async () => {
+    const fetchData = async (toDeduplicate = true) => {
         setIsLoading(true);
 
         try {
@@ -75,11 +75,16 @@ export const useLazyLoading = (url, params = {}) => {
             const { last_page } = fetchedData;
             const items = fetchedData.data;
 
-            const deduplicatedItems = items.filter((item) => {
-                return !data.some((d) => d.id === item.id);
-            });
+            if (toDeduplicate) {
+                const deduplicatedItems = items.filter((item) => {
+                    return !data.some((d) => d.id === item.id);
+                });
 
-            setData((prevData) => [...prevData, ...deduplicatedItems]);
+                setData((prevData) => [...prevData, ...deduplicatedItems]);
+            } else {
+                setData(items);
+            }
+
             setTotalPages(last_page);
         } catch (error) {
             console.error(error);
@@ -104,7 +109,7 @@ export const useLazyLoading = (url, params = {}) => {
             setTotalPages(1);
 
             if (currentPage === 1) {
-                fetchData();
+                fetchData(false);
             } else {
                 setCurrentPage(1);
             }

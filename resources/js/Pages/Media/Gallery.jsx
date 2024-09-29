@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Loader2 } from "lucide-react";
 
@@ -32,22 +33,43 @@ export function Gallery({ selectedTag }) {
         only_video: true,
     });
 
-    const renderImages = () => {
-        return images.map((post) =>
-            post.attachments.map((imageAttachment) => (
-                <PhotoView
-                    key={imageAttachment.id}
-                    src={`/storage/${imageAttachment.path}`}
-                >
-                    <img
-                        src={`/storage/${imageAttachment.path}`}
-                        alt="Image Attachment"
-                        className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                    />
-                </PhotoView>
-            ))
+    const renderImages = useCallback(() => {
+        return (
+            <PhotoProvider maskOpacity={0.8} maskClassName="backdrop">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
+                    {images.map((post) =>
+                        post.attachments.map((imageAttachment) => (
+                            <PhotoView
+                                key={imageAttachment.id}
+                                src={`/storage/${imageAttachment.path}`}
+                            >
+                                <img
+                                    src={`/storage/${imageAttachment.path}`}
+                                    alt="Image Attachment"
+                                    className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                                />
+                            </PhotoView>
+                        ))
+                    )}
+                </div>
+            </PhotoProvider>
         );
-    };
+    }, [images]);
+
+    const renderVideos = useCallback(() => {
+        return (
+            <VideoGallery
+                videos={videos
+                    .filter((post) => post.attachments)
+                    .map((post) => post.attachments)
+                    .flat()
+                    .map((attachment) => ({
+                        ...attachment,
+                        path: `/storage/${attachment.path}`,
+                    }))}
+            />
+        );
+    }, [videos]);
 
     return (
         <>
@@ -60,14 +82,7 @@ export function Gallery({ selectedTag }) {
                         <hr className="underline" />
                     </header>
                     <section className="mt-4 max-md:max-w-full">
-                        <PhotoProvider
-                            maskOpacity={0.8}
-                            maskClassName="backdrop"
-                        >
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
-                                {renderImages()}
-                            </div>
-                        </PhotoProvider>
+                        {renderImages()}
 
                         {hasMoreImages && (
                             <button
@@ -94,16 +109,7 @@ export function Gallery({ selectedTag }) {
                         <hr className="underline" />
                     </header>
                     <section className="mt-4 max-md:max-w-full">
-                        <VideoGallery
-                            videos={videos
-                                .filter((post) => post.attachments)
-                                .map((post) => post.attachments)
-                                .flat()
-                                .map((attachment) => ({
-                                    ...attachment,
-                                    path: `/storage/${attachment.path}`,
-                                }))}
-                        />
+                        {renderVideos()}
 
                         {hasMoreVideo && (
                             <button
