@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useLayoutEffect } from "react";
 import { useEffect } from "react";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useClickAway } from "@uidotdev/usehooks";
 import axios from "axios";
@@ -34,87 +35,111 @@ import { PostDetails } from "./PostDetails/PostDetails";
 import "rsuite/dist/rsuite-no-reset.min.css";
 
 function EventTag({ event }) {
-    const firstEvent = JSON.parse(event)[0];
+    const events = useMemo(() => {
+        return JSON.parse(event);
+    }, [event]);
 
-    const [eventDetails, setEventDetails] = useState(null);
+    const [eventDetails, setEventDetails] = useState({});
 
     const fetchEventDetails = async () => {
         try {
-            const response = await axios.get(
-                `/api/events/events/${firstEvent.id}`
-            );
+            const data = (
+                await Promise.all(
+                    events.map(async (event) => {
+                        const response = await axios.get(
+                            `/api/events/events/${event.id}`
+                        );
 
-            if (![200, 201, 204].includes(response.status)) {
-                throw new Error("Failed to fetch event details");
-            }
+                        return response.data.data;
+                    })
+                )
+            ).reduce((acc, event) => {
+                acc[event.id] = event;
+                return acc;
+            }, {});
 
-            console.log(response.data);
-
-            setEventDetails(response.data.data);
+            setEventDetails(data);
         } catch (error) {
             console.error("Error fetching event details:", error);
         }
     };
 
     useEffect(() => {
-        if (!firstEvent) {
+        if (events.length <= 0) {
             return;
         }
 
         fetchEventDetails();
-    }, [event]);
+    }, [events]);
 
-    if (!firstEvent) {
+    if (events.length <= 0) {
         return null;
     }
 
     return (
-        <div className="flex">
-            <Whisper
-                placement="right"
-                trigger="hover"
-                enterable
-                speaker={
-                    <Popover
-                        arrow={false}
-                        style={{
-                            borderRadius: 10,
-                        }}
+        <div className="flex gap-2">
+            {events.map((event) => {
+                return (
+                    <Whisper
+                        placement="top"
+                        trigger="hover"
+                        enterable
+                        key={event.id}
+                        speaker={
+                            <Popover
+                                arrow={false}
+                                style={{
+                                    borderRadius: 10,
+                                }}
+                            >
+                                {eventDetails[event.id] && (
+                                    <div className="p-2">
+                                        <div className="text-sm font-semibold text-blue-500">
+                                            {eventDetails[event.id].title}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                            {format(
+                                                new Date(
+                                                    eventDetails[
+                                                        event.id
+                                                    ].start_at
+                                                ),
+                                                "dd.MM.yyyy"
+                                            )}
+                                            {eventDetails[event.id].end_at &&
+                                                !isSameDay(
+                                                    new Date(
+                                                        eventDetails.start_at
+                                                    ),
+                                                    new Date(
+                                                        eventDetails.end_at
+                                                    )
+                                                ) &&
+                                                ` – ${format(new Date(eventDetails[event.id].end_at), "dd.MM.yyyy")}`}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                            {eventDetails[event.id].location}
+                                        </div>
+                                        <div>
+                                            {truncate(
+                                                eventDetails[event.id]
+                                                    .description,
+                                                50
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </Popover>
+                        }
                     >
-                        {eventDetails && (
-                            <div className="p-2">
-                                <div className="text-sm font-semibold text-blue-500">
-                                    {eventDetails.title}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                    {format(
-                                        new Date(eventDetails.start_at),
-                                        "dd.MM.yyyy"
-                                    )}
-                                    {eventDetails.end_at &&
-                                        !isSameDay(
-                                            new Date(eventDetails.start_at),
-                                            new Date(eventDetails.end_at)
-                                        ) &&
-                                        ` – ${format(new Date(eventDetails.end_at), "dd.MM.yyyy")}`}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                    {eventDetails.location}
-                                </div>
-                                <div>
-                                    {truncate(eventDetails.description, 50)}
-                                </div>
-                            </div>
-                        )}
-                    </Popover>
-                }
-            >
-                <div className="px-2 py-0 rounded-md bg-red-100">
-                    <p className="mt-0 text-xs font-semibold leading-6 text-red-500 max-md:max-w-full cursor-pointer">
-                        {firstEvent.title}
-                    </p>
-                </div>
-            </Whisper>
+                        <div className="px-2 py-0 rounded-md bg-red-100">
+                            <p className="mt-0 text-xs font-semibold leading-6 text-red-500 max-md:max-w-full cursor-pointer">
+                                {event.title}
+                            </p>
+                        </div>
+                    </Whisper>
+                );
+            })}
         </div>
     );
 }
