@@ -146,16 +146,19 @@ function EditPost({
     const [searchEventResults, setSearchEventResults] = useState([]);
 
     const handleAddEvent = (event) => {
-        setChosenEvent([
-            {
-                id: event.id,
-                title: event.title,
-            },
-        ]);
+        if (!chosenEvent.some((p) => p.id === event.id)) {
+            setChosenEvent([
+                ...chosenEvent,
+                {
+                    id: event.id,
+                    title: event.title,
+                },
+            ]);
+        }
     };
 
     const handleRemoveEvent = (id) => {
-        setChosenEvent([]);
+        setChosenEvent(chosenEvent.filter((event) => event.id !== id));
     };
 
     return (
