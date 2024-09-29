@@ -171,7 +171,7 @@ class DepartmentController extends Controller
         });
 
         return response()->json([
-            'data' => $department->admins,
+            'data' => $data
         ]);
     }
 
