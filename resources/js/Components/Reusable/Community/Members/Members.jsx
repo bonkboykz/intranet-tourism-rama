@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+import { getProfileImage } from "@/Utils/getProfileImage";
+
 import AddMemberPopup from "../AddMemberPopup";
 import { MemberCard } from "./MemberCard";
 
@@ -102,10 +104,10 @@ export function Members({ members, communityID, onRefetch, loggedInID }) {
                             id={member.user_id}
                             flag={member.flag}
                             employment_post_id={member.employment_post_id}
-                            imageUrl={
-                                member.staff_image ||
-                                "/assets/dummyStaffPlaceHolder.jpg"
-                            }
+                            imageUrl={getProfileImage(
+                                member.profile,
+                                member.name
+                            )}
                             name={member.name}
                             titles={
                                 member.business_post_titles

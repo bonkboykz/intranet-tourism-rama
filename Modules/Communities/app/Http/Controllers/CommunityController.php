@@ -209,15 +209,25 @@ class CommunityController extends Controller
 
     public function getAdmins(Community $community)
     {
+        // get admins with profile
+        $data = $community->admins;
+
+        $data->load('profile');
+
         return response()->json([
-            'data' => $community->admins,
+            'data' => $data
         ]);
     }
 
     public function getMembers(Community $community)
     {
+        // get members with profile
+        $data = $community->members;
+
+        $data->load('profile');
+
         return response()->json([
-            'data' => $community->members
+            'data' => $data
         ]);
     }
 

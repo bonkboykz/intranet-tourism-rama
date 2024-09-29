@@ -4,6 +4,7 @@ import axios from "axios";
 
 import AddMemberPopup from "@/Components/Reusable/AddMemberPopup";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
+import { getProfileImage } from "@/Utils/getProfileImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import { toastError } from "@/Utils/toast";
 
@@ -119,10 +120,10 @@ export const Members = ({
                             id={member.user_id}
                             flag={member.flag}
                             employment_post_id={member.employment_post_id}
-                            imageUrl={
-                                member.staff_image ||
-                                "/assets/dummyStaffPlaceHolder.jpg"
-                            }
+                            imageUrl={getProfileImage(
+                                member.profile,
+                                member.name
+                            )}
                             name={member.name}
                             title={member.business_post_title}
                             isActive={member.is_active}

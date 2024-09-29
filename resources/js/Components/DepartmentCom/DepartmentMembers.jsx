@@ -42,7 +42,7 @@ function DepartmentMembers({ departmentID, loggedInID }) {
         setIsLoading(true);
         const membersUrl = `/api/department/employment_posts?department_id=${departmentID}`;
 
-        console.log(membersUrl);
+        // console.log(membersUrl);
 
         try {
             const response = await axios.get(membersUrl);

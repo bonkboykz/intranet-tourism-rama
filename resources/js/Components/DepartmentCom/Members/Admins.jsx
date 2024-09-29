@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+import { getProfileImage } from "@/Utils/getProfileImage";
+
 import { MemberCard } from "./MemberCard";
 
 export const Admins = ({ admins, departmentID, onRefetch, searchInput }) => {
@@ -55,10 +57,7 @@ export const Admins = ({ admins, departmentID, onRefetch, searchInput }) => {
                     id={admin.id}
                     flag="admin"
                     employment_post_id={admin.employment_post_id}
-                    imageUrl={
-                        admin.profile?.staff_image ||
-                        "/assets/dummyStaffPlaceHolder.jpg"
-                    }
+                    imageUrl={getProfileImage(admin.profile, admin.name)}
                     name={admin.name}
                     title={admin.business_post_title}
                     isActive={admin.is_active}

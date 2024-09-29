@@ -85,6 +85,12 @@ class CommunityMemberController extends Controller
                 )
                 ->get();
 
+            // attach profiles
+            $communityMembers->each(function ($communityMember) {
+                $communityMember->profile = $communityMember->user->profile;
+            });
+
+
             return response()->json($communityMembers);
         } else {
             $communityMembers = $query->get();

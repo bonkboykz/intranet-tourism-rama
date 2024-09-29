@@ -3,12 +3,15 @@ export function Avatar({ src, alt, className, status }) {
 
     if (src.startsWith("staff_image/")) {
         source = `/storage/${src}`;
+    } else if (src.startsWith("https") || src.startsWith("/")) {
+        source = src;
     } else {
         source =
             src === "/assets/dummyStaffPlaceHolder.jpg"
                 ? src
                 : `/avatar/${src}`;
     }
+
     // const imageUrl = src === '/assets/dummyStaffPlaceHolder.jpg' ? src : `/avatar/full/${src}`;
     return (
         <div className="relative items-center justify-end h-16">
