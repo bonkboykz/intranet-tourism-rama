@@ -20,9 +20,9 @@ import { CardImage } from "../DefaultPostCard/CardImage/CardImage";
 import { Comments } from "../DefaultPostCard/Comments/Comments";
 import { Likes } from "../DefaultPostCard/Likes/Likes";
 import { DeletePopup } from "../DeletePopup";
-import EditPost from "../EditPost";
 import LikesPopup from "../LikesPopup";
 import { WallContext } from "../WallContext";
+import { EditPollPost } from "./EditPost";
 import { PostDetails } from "./PostDetails/PostDetails";
 import { usePolls } from "./usePolls";
 
@@ -277,7 +277,7 @@ export function PollPostCard({ post }) {
                                 className="relative bg-white py-6 px-4 max-h-screen min-h-[auto] lg:my-8 rounded-2xl shadow-lg w-[500px] max-md:w-[300px]"
                                 ref={modalRef}
                             >
-                                <EditPost
+                                <EditPollPost
                                     post={cachedPost}
                                     loggedInUserId={loggedInUserId}
                                     onClose={() => setShowModal(false)}

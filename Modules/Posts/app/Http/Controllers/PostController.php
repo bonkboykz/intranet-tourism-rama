@@ -1076,4 +1076,36 @@ class PostController extends Controller
         return $pdf->download('events.pdf');
     }
 
+    public function updatePoll(Request $request, Post $post)
+    {
+        // edit question_text and end_date
+        $poll = $post->poll;
+
+        if (!$poll) {
+            return response()->json([
+                'data' => null,
+            ]);
+        }
+
+        $question = $poll->question;
+
+        $validated = request()->validate([
+            'question' => ['required', 'string'],
+        ]);
+
+        $question->question_text = $validated['question'];
+
+        if (request()->has('end_date')) {
+            $poll->end_date = request('end_date');
+        }
+
+        $question->save();
+
+        $poll->save();
+
+        return response()->json([
+            'data' => $question,
+        ]);
+    }
+
 }

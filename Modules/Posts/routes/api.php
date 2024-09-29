@@ -57,4 +57,5 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('{post}/unannounce', [PostController::class, 'unannounce'])->name('post.unannounce');
     Route::put('{post}/close-poll', [PostController::class, 'closePoll'])->name('post.closePoll');
     Route::get('{post}/export-poll', [PostController::class, 'exportPoll'])->name('post.exportPoll');
+    Route::put('{post}/update-poll', [PostController::class, 'updatePoll'])->name('post.updatePoll');
 });
