@@ -11,21 +11,57 @@ function SearchButton({ children }) {
     );
 }
 
-function Dropdown({ label }) {
+
+function Dropdown({ options, onChange }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(options[0].label); // Use label for display
+
+    const handleClickSelect = (option) => {
+        setSelectedOption(option.label); // Display label
+        setIsOpen(false);
+        onChange(option.value); // Pass the value to the parent component
+    };
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
     return (
-        <div className="flex flex-col justify-center text-xs whitespace-nowrap text-neutral-800 w-[130px]">
-            <div className="flex gap-5 justify-between px-3.5 py-2.5 bg-white rounded-2xl shadow-custom">
-                <div>{label}</div>
+        <div className="relative flex flex-col justify-center text-xs whitespace-nowrap text-neutral-800 w-[130px]">
+            <div
+                onClick={toggleDropdown}
+                className="flex gap-5 justify-between px-3.5 py-2.5 bg-white rounded-2xl shadow-custom cursor-pointer"
+            >
+                <div>{selectedOption}</div>
                 <img
                     loading="lazy"
                     src="/assets/Dropdownarrow.svg"
-                    className="shrink-0 self-center border-black border-solid aspect-[1.85] stroke-[2px] stroke-black w-auto"
-                    alt=""
+                    className={`shrink-0 self-center transition-transform ${
+                        isOpen ? 'rotate-180' : ''
+                    } w-auto`}
+                    alt="dropdown arrow"
                 />
             </div>
+
+            {isOpen && (
+                <ul className="absolute top-full left-0 mt-2 w-full bg-white rounded-2xl shadow-custom z-10">
+                    {options.map((option, index) => (
+                        <li
+                            key={index}
+                            className={`px-3.5 py-2.5 hover:bg-gray-100 cursor-pointer ${
+                                selectedOption === option.label ? 'bg-gray-100' : ''
+                            }`}
+                            onClick={() => handleClickSelect(option)}
+                        >
+                            {option.label} {/* Display label */}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }
+
+export default Dropdown;
+
 
 export function AuditTrailSearch({
     search,
@@ -35,7 +71,10 @@ export function AuditTrailSearch({
     setStartDate,
     endDate,
     setEndDate,
+    options = [],
+    onChange = () => {},
 }) {
+
     return (
         <main className="flex flex-col w-full px-8 py-6 bg-white rounded-2xl shadow-custom max-md:px-5">
             <form className="flex gap-5 text-sm whitespace-nowrap max-md:flex-wrap max-md:max-w-full">
@@ -59,7 +98,7 @@ export function AuditTrailSearch({
                     setStartDate={setStartDate}
                     setEndDate={setEndDate}
                 />
-                <Dropdown label="All" />
+                <Dropdown options={options} onChange={onChange}/>
             </section>
         </main>
     );
