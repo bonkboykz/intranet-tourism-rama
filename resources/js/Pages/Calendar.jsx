@@ -577,15 +577,19 @@ function Calendar() {
             }
 
             // Create a Blob from the response and trigger a download
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const url = window.URL.createObjectURL(
+                new Blob([response.data], {
+                    type: "application/pdf",
+                })
+            );
             // open in new page
-            // window.open(url, "_blank");
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "events.pdf"); // Set the file name
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            window.open(url, "_blank");
+            // const link = document.createElement("a");
+            // link.href = url;
+            // link.setAttribute("download", "events.pdf"); // Set the file name
+            // document.body.appendChild(link);
+            // link.click();
+            // document.body.removeChild(link);
         } catch (error) {
             console.error("Error generating PDF:", error);
 
