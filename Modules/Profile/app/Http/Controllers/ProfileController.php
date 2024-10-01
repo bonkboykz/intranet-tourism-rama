@@ -166,9 +166,11 @@ class ProfileController extends Controller
 
     public function updateProfileCover(Profile $profile)
     {
+        $originalCoverPhotoPath = uploadFile(request()->file('original_cover_photo'), null, 'original_cover_photo')['path'];
         $coverPhotoPath = uploadFile(request()->file('cover_photo'), null, 'cover_photo')['path'];
 
         $profile->update([
+            'original_cover_photo' => $originalCoverPhotoPath,
             'cover_photo' => $coverPhotoPath,
         ]);
 

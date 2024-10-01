@@ -32,6 +32,7 @@ class Profile extends Model implements AuditableContract
         'phone_no',
         'dob',
         'staff_image',
+        'original_cover_photo'
     ];
 
     public static function rules($scenario = 'create')
