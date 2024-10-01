@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useState } from "react";
 import Cropper from "react-easy-crop";
 import { toast } from "react-toastify";
+import { useClickAway } from "@uidotdev/usehooks";
 
 import { useCsrf } from "@/composables";
 import {
@@ -243,6 +244,11 @@ function ProfileHeader({
         }
     };
 
+    const ref = useClickAway(() => {
+        setSelectedFile(null);
+        setIsPopupOpen(false);
+    });
+
     return (
         <>
             <OnlineUsersProvider>
@@ -295,7 +301,10 @@ function ProfileHeader({
                 </header>
                 {selectedFile && !croppedImage && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="relative bg-white p-6 rounded-2xl w-full max-w-3xl">
+                        <div
+                            className="relative bg-white p-6 rounded-2xl w-full max-w-3xl"
+                            ref={ref}
+                        >
                             <div className="cropper-wrapper">
                                 <Cropper
                                     image={currentProfileImage}
