@@ -197,6 +197,8 @@ class EventController extends Controller
             $modelBuilder->where('end_at', '<=', $endDate);
         }
 
+        $modelBuilder->orderBy('start_at', 'asc');
+
         $events = $modelBuilder->get();
 
         // Load the PDF view and pass the events data
