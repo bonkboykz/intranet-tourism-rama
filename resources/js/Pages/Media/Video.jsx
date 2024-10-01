@@ -11,6 +11,8 @@ export function VideoGallery({ videos }) {
 
     const size = useWindowSize();
 
+    console.log(videos);
+
     const slides = useMemo(() => {
         if (!size.width) {
             return [];
@@ -22,6 +24,7 @@ export function VideoGallery({ videos }) {
 
         return videos.map((video) => ({
             id: video.id,
+            key: video.id,
             asset: video.path,
             width: videoWidth,
             height: videoHeight,

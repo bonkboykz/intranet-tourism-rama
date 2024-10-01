@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Posts\Models\PostComment;
 use Modules\Resources\Models\Resource;
+use Str;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Modules\User\Models\User;
 
@@ -814,29 +815,24 @@ class PostController extends Controller
     {
         $query = Post::query();
 
+        $query->with(relations: 'attachments');
+
         // Apply filters for image and video MIME types
         if (request()->has('only_video')) {
-            $query->with([
-                'attachments' => function ($query) {
-                    $query->where('mime_type', 'like', 'video/%');
-                }
-            ]);
-        } elseif (request()->has('only_image')) {
-            $query->with([
-                'attachments' => function ($query) {
-                    $query->where('mime_type', 'like', 'image/%');
-                }
-            ]);
+            $query->whereHas('attachments', function ($query) {
+                $query->where('mime_type', 'like', 'video/%');
+            });
+        } else if (request()->has('only_image')) {
+            $query->whereHas('attachments', function ($query) {
+                $query->where('mime_type', 'like', 'image/%');
+            });
         } else {
-            // Load both images and videos
-            $query->with([
-                'attachments' => function ($query) {
-                    $query->where(function ($query) {
-                        $query->where('mime_type', 'like', 'image/%')
-                            ->orWhere('mime_type', 'like', 'video/%');
-                    });
-                }
-            ]);
+            $query->whereHas('attachments', function ($query) {
+                $query->where(function ($query) {
+                    $query->where('mime_type', 'like', 'image/%')
+                        ->orWhere('mime_type', 'like', 'video/%');
+                });
+            });
         }
 
         if (request()->has('album_id')) {
@@ -879,6 +875,25 @@ class PostController extends Controller
             });
         }
 
+        // $output = new ConsoleOutput();
+
+        // $output->writeln(request()->has('only_video') ? 'true' : 'false');
+        // function replaceBindings($sql, $bindings)
+        // {
+        //     foreach ($bindings as $binding) {
+        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+        //         $sql = preg_replace('/\?/', $value, $sql, 1);
+        //     }
+        //     return $sql;
+        // }
+
+        // $sql = $query->toSql(); // Get the raw SQL query
+        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
+        // // Show the full SQL query with bindings replaced
+        // $fullSql = replaceBindings($sql, $bindings);
+
+        // $output->writeln($fullSql);
+
         $posts = $query->paginate(20);
 
         // Return the result as JSON
@@ -894,7 +909,7 @@ class PostController extends Controller
         $query = Post::query();
 
         // Apply eager loading for attachments
-        $query->with('attachments');
+        $query->with(relations: 'attachments');
 
 
         // Apply filters for image and video MIME types

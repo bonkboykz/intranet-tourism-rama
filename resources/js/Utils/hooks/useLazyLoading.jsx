@@ -99,7 +99,7 @@ export const useLazyLoading = (url, params = {}) => {
     const prevParams = useRef(params);
 
     useEffect(() => {
-        fetchData();
+        fetchData(currentPage !== 1);
     }, [currentPage]);
 
     useEffect(() => {
