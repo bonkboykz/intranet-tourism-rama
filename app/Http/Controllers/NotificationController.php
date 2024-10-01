@@ -31,7 +31,7 @@ class NotificationController extends Controller
     public function apiIndex()
     {
         $user = User::find(auth()->id());
-        $notifications = $user->notifications()->latest()->get();
+        $notifications = $user->notifications()->with('notifiable.profile')->latest()->get();
 
         return response()->json([
             'data' => $notifications,
@@ -41,7 +41,7 @@ class NotificationController extends Controller
     public function getRecentNotifications()
     {
         $user = User::find(auth()->id());
-        $notifications = $user->notifications()->latest()->take(10)->get();
+        $notifications = $user->notifications()->with('notifiable.profile')->latest()->take(10)->get();
 
         return response()->json([
             'data' => $notifications,

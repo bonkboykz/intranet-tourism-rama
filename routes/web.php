@@ -89,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/getGroupJoinRequests', [RequestController::class, 'getGroupJoinRequests'])->name('getGroupJoinRequests');
     Route::post('/api/approveGroupJoinRequest', [RequestController::class, 'approveGroupJoinRequest'])->name('approveGroupJoinRequest');
     Route::post('/api/rejectGroupJoinRequest', [RequestController::class, 'rejectGroupJoinRequest'])->name('rejectGroupJoinRequest');
+    Route::post('/api/createChangeStaffImageRequest', [RequestController::class, 'createChangeStaffImageRequest'])->name('createChangeStaffImageRequest');
+    Route::get('/api/getChangeStaffImageRequests', [RequestController::class, 'getChangeStaffImageRequests'])->name('getChangeStaffImageRequests');
+    Route::post('/api/approveChangeStaffImageRequest', [RequestController::class, 'approveChangeStaffImageRequest'])->name('approveChangeStaffImageRequest');
+    Route::post('/api/rejectChangeStaffImageRequest', [RequestController::class, 'rejectChangeStaffImageRequest'])->name('rejectChangeStaffImageRequest');
 
     Route::get('/api/audits', [AuditController::class, 'index'])->name('audits');
     Route::post('/api/birthday-templates', [BirthdayTemplateController::class, 'store']);

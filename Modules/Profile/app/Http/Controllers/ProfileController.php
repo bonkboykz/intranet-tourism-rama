@@ -136,6 +136,11 @@ class ProfileController extends Controller
                 'staff_image' => $staffImagePath,
             ]));
 
+            if ($validated['phone_no'] && $validated['phone_no'] === 'null') {
+                $profile->phone_no = null;
+                $profile->save();
+            }
+
             $profile->user()->update($validatedUser);
             DB::commit();
         } catch (\Throwable $th) {

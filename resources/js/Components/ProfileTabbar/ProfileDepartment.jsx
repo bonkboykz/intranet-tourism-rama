@@ -58,16 +58,18 @@ function ProfileDepartment({
             "Job Title"
         );
         fetchData("/api/department/business_grades", setGradeOptions, "Grades");
-        fetchData(
-            "/api/department/employment_posts",
-            setLocationOptions,
-            "Location"
-        );
-        fetchData(
-            "/api/department/employment_posts",
-            setPhoneOptions,
-            "Phones"
-        );
+        // TODO: get the list of location options
+        // fetchData(
+        //     "/api/department/employment_posts",
+        //     setLocationOptions,
+        //     "Location"
+        // );
+        // TODO: get the list of phone options
+        // fetchData(
+        //     "/api/department/employment_posts",
+        //     setPhoneOptions,
+        //     "Phones"
+        // );
     }, []);
 
     const fetchData = async (API_URL, setOptions, label) => {
@@ -79,7 +81,7 @@ function ProfileDepartment({
             // TODO: refactor this, too many requests
             while (currentPage <= lastPage) {
                 const response = await fetch(
-                    `${API_URL}?page=${currentPage}&perpage=20`,
+                    `${API_URL}?page=${currentPage}&perpage=100`,
                     {
                         method: "GET",
                         headers: {

@@ -139,5 +139,7 @@ export const useLazyLoading = (url, params = {}) => {
         hasMore: currentPage < totalPages,
         nextPage: handleNextPage,
         prevPage: handlePrevPage,
+        fetchData,
+        setCurrentPage,
     };
 };

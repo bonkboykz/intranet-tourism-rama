@@ -1,3 +1,16 @@
+export const getStaffImage = (profile, name = "User") => {
+    if (!profile || !profile.staff_image) {
+        return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
+            name
+        )}&rounded=true`;
+    }
+
+    return profile.staff_image.startsWith("avatar/") ||
+        profile.staff_image.startsWith("staff_image/")
+        ? `/storage/${profile.staff_image}`
+        : `/avatar/${profile.staff_image}`;
+};
+
 export const getProfileImage = (
     profile,
     name = "User",

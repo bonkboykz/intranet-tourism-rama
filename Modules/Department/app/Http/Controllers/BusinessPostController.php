@@ -9,8 +9,10 @@ class BusinessPostController extends Controller
 {
     public function index()
     {
+        $limit = request()->get('perpage', 15);
+
         return response()->json([
-            'data' => BusinessPost::queryable()->paginate(),
+            'data' => BusinessPost::queryable()->paginate($limit),
         ]);
     }
 

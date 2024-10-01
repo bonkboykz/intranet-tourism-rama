@@ -9,22 +9,7 @@ import "./NotificationPopup.css";
 
 const NotificationPopup = () => {
     const [activeTab, setActiveTab] = useState("all");
-    // const [notifications, setNotifications] = useState([
-    //     // ... Your notifications array
-    //     {
-    //         id: 1,
-    //         imageSrc: "/assets/smile.jpg",
-    //         miniIcon: "",
-    //         users: "Jonathan and sarep",
-    //         orangeball: "/assets/orangeball.png",
-    //         message:
-    //             "also commented on your post hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee. ",
-    //         timeAgo: "10 mins ago",
-    //         notiView: 0,
-    //         status: 3,
-    //         read: true,
-    //     },
-    // ]);
+
     const { notifications, fetchNotifications } = useNotifications();
 
     const [isPopupOpen, setIsPopupOpen] = useState(true);
