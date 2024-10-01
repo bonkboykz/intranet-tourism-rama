@@ -42,8 +42,6 @@ class CommunityController extends Controller
 
         // $output = new ConsoleOutput();
 
-        // $output->writeln(CommunityPermissionsHelper::checkPermission($user, 'view all groups') ? "true" : "false");
-
         // function replaceBindings($sql, $bindings)
         // {
         //     foreach ($bindings as $binding) {
