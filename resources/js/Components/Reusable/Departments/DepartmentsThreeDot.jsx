@@ -27,7 +27,7 @@ const ThreeDotButton = ({ selectedDepartmentId }) => {
     }
 
     return (
-        <div className="relative">
+        <div className="">
             <button onClick={togglePopup} className="p-2 mt-1">
                 <img
                     src="/assets/threedots.svg"

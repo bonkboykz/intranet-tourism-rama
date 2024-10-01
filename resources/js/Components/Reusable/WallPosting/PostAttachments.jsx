@@ -6,8 +6,8 @@ import DOC from "../../../../../public/assets/Docs.svg";
 import Excel from "../../../../../public/assets/ExcellIcon.svg";
 import PDF from "../../../../../public/assets/PDFIcon.svg";
 import PowerPoint from "../../../../../public/assets/PowerPointIcon.svg";
-import TXT from "../../../../../public/assets/TXTIcon.png";
 import RAR from "../../../../../public/assets/Raricon.png";
+import TXT from "../../../../../public/assets/TXTIcon.png";
 import ZIP from "../../../../../public/assets/Zipicon.png";
 
 function PostAttachments({ attachments }) {
@@ -104,11 +104,11 @@ function PostAttachments({ attachments }) {
                                   ? PowerPoint
                                   : attachment.extension === "txt"
                                     ? TXT
-                                            : attachment.extension === "rar"
-                                                ? RAR
-                                                : attachment.extension === "zip"
-                                                    ? ZIP
-                                    : "path/to/default-icon.png"
+                                    : attachment.extension === "rar"
+                                      ? RAR
+                                      : attachment.extension === "zip"
+                                        ? ZIP
+                                        : "path/to/default-icon.png"
                     }
                     style={{
                         width: "18px",
@@ -185,9 +185,15 @@ function PostAttachments({ attachments }) {
             </div>
 
             {showPopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div
+                    onClick={closePopup}
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+                >
                     <div className="flex flex-row w-full justify-center items-start px-8">
-                        <div className="bg-white lg:p-6 p-4 rounded-2xl max-w-3xl max-h-screen relative max-md:mx-4 max-md:w-full mx-6">
+                        <div
+                            className="bg-white lg:p-6 p-4 rounded-2xl max-w-3xl max-h-screen relative max-md:mx-4 max-md:w-full mx-6"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             <button
                                 onClick={closePopup}
                                 className="absolute top-2 right-2"
@@ -216,6 +222,7 @@ function PostAttachments({ attachments }) {
                                                 imagesAndVideos.length === 1 &&
                                                     "w-full h-auto"
                                             )}
+                                            onClick={(e) => e.stopPropagation()}
                                         />
                                     ) : (
                                         <video
@@ -226,6 +233,7 @@ function PostAttachments({ attachments }) {
                                             } // Unique key for video
                                             controls
                                             className="w-[500px] h-[500px] object-curtain rounded-lg" // Fixed width and height
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             <source
                                                 src={`/storage/${imagesAndVideos[currentMediaIndex].path}`}

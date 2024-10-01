@@ -81,6 +81,8 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
         }
     };
 
+    document.body.style.overflow = "scroll";
+
     const CancelButton = ({ onClick }) => (
         <button
             className="self-end px-6 py-2 font-bold text-gray-400 bg-white hover:bg-gray-400 hover:text-white rounded-full border-2 border-gray-400"
