@@ -212,7 +212,7 @@ function ProfileContent() {
                 FfData.append("dob", newFormData.dateofbirth);
             // if (newFormData.whatsapp) FfData.append('phone_no', newFormData.whatsapp);
 
-            if (newFormData.whatsapp) {
+            if (newFormData.whatsapp && newFormData.whatsapp !== "null") {
                 FfData.append("phone_no", newFormData.whatsapp);
             } else {
                 FfData.append("phone_no", "null");
@@ -220,19 +220,24 @@ function ProfileContent() {
 
             if (newFormData.name) FfData.append("name", newFormData.name);
 
+            let isChangedStaffImage = false;
+
+            console.log("newFormData.photo", newFormData.photo);
+
             if (newFormData.photo instanceof File) {
+                // TODO: does not map to anything on the backend, need to fix
                 FfData.append("photo", newFormData.photo);
             } else if (
                 newFormData.photo &&
                 newFormData.photo.startsWith("data:image")
             ) {
-                const blob = await (await fetch(newFormData.photo)).blob();
-                FfData.append("staff_image", blob, "profile_image.png");
-
-                // TODO: Implement requests
-                toast.success("The request has been sent to the admin");
-
-                return;
+                if (!isSuperAdmin) {
+                    console.log("isChangedStaffImage");
+                    isChangedStaffImage = true;
+                } else {
+                    const blob = await (await fetch(newFormData.photo)).blob();
+                    FfData.append("staff_image", blob, "profile_image.png");
+                }
             }
 
             const [profileResponse, userResponse] = await Promise.all([
@@ -243,7 +248,25 @@ function ProfileContent() {
                 updateUsername(newFormData),
             ]);
 
-            if (profileResponse.ok && userResponse.ok) {
+            if (
+                [200, 201, 204].includes(profileResponse.status) &&
+                userResponse.ok
+            ) {
+                if (isChangedStaffImage) {
+                    const formData = new FormData();
+                    const blob = await (await fetch(newFormData.photo)).blob();
+                    formData.append("staff_image", blob, "profile_image.png");
+
+                    await axios.post(
+                        `/api/createChangeStaffImageRequest`,
+                        formData
+                    );
+
+                    toast.success(
+                        "The request to change staff photo has been sent to the admin"
+                    );
+                }
+
                 setOriginalFormData(newFormData);
                 openSaveNotification();
                 setTimeout(closeSaveNotification, 1200);
@@ -257,6 +280,7 @@ function ProfileContent() {
         } catch (error) {
             console.error("Error updating data:", error);
         }
+
         window.location.reload();
     };
 

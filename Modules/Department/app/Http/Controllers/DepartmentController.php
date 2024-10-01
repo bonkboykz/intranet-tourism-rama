@@ -16,7 +16,8 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $query = Department::queryable()->paginate();
+        $limit = request()->get('perpage', 15);
+        $query = Department::queryable()->paginate($limit);
 
         $user = Auth::user();
         // attach is_member if the user either superadmin, or is member through employment post, or is admin

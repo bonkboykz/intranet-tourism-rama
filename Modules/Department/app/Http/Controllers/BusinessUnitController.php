@@ -10,6 +10,8 @@ class BusinessUnitController extends Controller
 {
     public function index(Request $request)
     {
+        $limit = request()->get('perpage', 15);
+
         $query = BusinessUnit::query();
 
         if ($request->has('department_id')) {
@@ -17,7 +19,7 @@ class BusinessUnitController extends Controller
             $query->where('department_id', $departmentId);
         }
 
-        return response()->json($query->paginate());
+        return response()->json($query->paginate($limit));
     }
 
     public function show($id)

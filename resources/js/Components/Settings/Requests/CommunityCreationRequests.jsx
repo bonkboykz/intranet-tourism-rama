@@ -1,7 +1,8 @@
-import thomasImage from "../../../../../public/assets/thomasImage.png";
+import { formatTime } from "@/Utils/format";
+
 import aishaImage from "../../../../../public/assets/aishaImage.png";
 import community1 from "../../../../../public/assets/community1.png";
-import { formatTime } from "@/Utils/format";
+import thomasImage from "../../../../../public/assets/thomasImage.png";
 
 const communityCreationData = [
     {

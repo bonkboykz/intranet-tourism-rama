@@ -222,7 +222,7 @@ export default function Header({ setSidebarOpen }) {
                     </div> */}
 
                     {/* TODO: return after implementation */}
-                    {/* <div className="relative" ref={notificationRef}>
+                    <div className="relative" ref={notificationRef}>
                         <button
                             type="button"
                             className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5 relative"
@@ -245,7 +245,7 @@ export default function Header({ setSidebarOpen }) {
                             )}
                         </button>
                         {isNotificationPopupVisible && <NotificationPopup />}
-                    </div> */}
+                    </div>
 
                     <div
                         className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"

@@ -9,8 +9,10 @@ class BusinessGradeController extends Controller
 {
     public function index()
     {
+        $limit = request()->get('perpage', 15);
+
         return response()->json([
-            'data' => BusinessGrade::queryable()->paginate(),
+            'data' => BusinessGrade::queryable()->paginate($limit),
         ]);
     }
 

@@ -20,7 +20,7 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
     };
 
     const filteredNotifications = useMemo(() => {
-        if (!shouldSlice && activeTab === "alll") {
+        if (!shouldSlice && activeTab === "all") {
             return notifications;
         }
 
@@ -48,12 +48,13 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                         key={notification.id}
                         onMouseOver={() => markAsRead(notification.id)}
                     >
-                        <div className="flex items-center bg-gray h-16">
+                        <div className="flex items-center bg-gray h-16 relative">
                             <img
                                 className="h-10 w-10 ml-2"
-                                src={getProfileImage({
-                                    image: notification.imageSrc,
-                                })}
+                                src={getProfileImage(
+                                    notification.notifiable.profile,
+                                    notification.notifiable.name
+                                )}
                                 alt=""
                                 style={{
                                     height: "60px",
@@ -63,21 +64,21 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                             />
                             {notification.status === 1 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14"
+                                    className="absolute h-5 w-5 right-0 bottom-0"
                                     src="/assets/noti-icon-react/birthday_I.png"
                                     alt=""
                                 />
                             )}
                             {notification.status === 2 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/calendar_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 3 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/comment_I.svg"
                                     alt=""
                                 />
@@ -85,70 +86,71 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                             {notification.type ===
                                 "App\\Notifications\\GroupJoinRequestNotification" && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/community_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 6 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/filemanagement_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 7 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/home_I.png"
                                     alt=""
                                 />
                             )}
                             {notification.status === 8 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/like.png"
                                     alt=""
                                 />
                             )}
                             {notification.status === 9 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/link_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 10 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/media_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 11 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/noti_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 12 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/setting_I.svg"
                                     alt=""
                                 />
                             )}
                             {notification.status === 13 && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/share_I.svg"
                                     alt=""
                                 />
                             )}
-                            {notification.status === 14 && (
+                            {notification.type ===
+                                "App\\Notifications\\PhotoChangeRequestNotification" && (
                                 <img
-                                    className="absolute h-5 w-5 left-20 mt-14 bg-blue"
+                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/staffdirectory_I.svg"
                                     alt=""
                                 />

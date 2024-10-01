@@ -1,12 +1,21 @@
 import React from "react";
-import { useSetupNotifications } from "@/Layouts/useNotifications";
-import Example from "@/Layouts/DashboardLayoutNew";
+
 import NotificationsList from "@/Components/NotificationsList";
+import Example from "@/Layouts/DashboardLayoutNew";
+import { useSetupNotifications } from "@/Layouts/useNotifications";
 import { getProfileImage } from "@/Utils/getProfileImage";
+import { useLoading } from "@/Utils/hooks/useLazyLoading";
 
 import icon_noti_orange from "../../../public/assets/icon/notification/Ellipse-orange.png";
 
-const NotificationItem = ({ imageSrc, message, users, miniIcon, timeAgo, notiView }) => {
+const NotificationItem = ({
+    imageSrc,
+    message,
+    users,
+    miniIcon,
+    timeAgo,
+    notiView,
+}) => {
     return (
         <div className="w-full">
             <a href="#" className="block mt-2 text-xs text-blue-500">
@@ -34,7 +43,10 @@ const NotificationItem = ({ imageSrc, message, users, miniIcon, timeAgo, notiVie
                     </div>
                     {notiView === 1 && (
                         <div className="flex items-center justify-end ml-auto">
-                            <img src={icon_noti_orange} alt="Notification Icon" />
+                            <img
+                                src={icon_noti_orange}
+                                alt="Notification Icon"
+                            />
                         </div>
                     )}
                 </div>
@@ -100,109 +112,57 @@ const notificationData = [
 ];
 
 const AllNotificationsPage = () => {
-    const { notifications } = useSetupNotifications();
+    const { data: notifications } = useLoading(`/api/notifications`);
 
     return (
-        // <Layout>
-    //    <Example>
-    //      <div className="w-full min-h-screen bg-slate-100">
-    //     <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
-
-    //         <div className="flex flex-col px-5 w-full justify-center items-center">
-    //         <header className="flex justify-between items-center w-full">
-    //                 <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
-    //                     My Notifications
-    //                     <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
-    //                 </div>
-    //         </header>
-    //             <div className="border-2 rounded-xl shadow-sm max-w-full mb-10 w-full">
-    //                 <section className="flex flex-col gap-5 pt-7 w-full bg-white rounded-2xl shadow-2xl">
-    //                     <div className="flex flex-col pb-5">
-    //                         <h2 className="text-4xl font-extrabold text-neutral-800 pl-6 pr-6 flex justify-between">
-    //                             <span>All Notifications</span>
-    //                             <button
-    //                                 onClick={() => (window.location.href = "/dashboard")}
-    //                                 className="text-blue-500 hover:text-blue-700 font-bold py-2 px-4 rounded mt-10 sm:mt-0"
-    //                             >
-    //                                 Back
-    //                             </button>
-    //                         </h2>
-    //                         <nav className="flex gap-5 justify-between self-start pl-6 pr-6 pb-5 mt-6 text-lg font-semibold whitespace-nowrap text-neutral-800">
-    //                             <a href="#" className="underline">
-    //                                 All
-    //                             </a>
-    //                             <a
-    //                                 href="/profile/unread-notifications"
-    //                                 className="text-gray-500 relative"
-    //                             >
-    //                                 Unread
-    //                                 <span className="absolute h-2 w-2 bg-orange-200 rounded-full top-1/2 transform -translate-y-1/2 ml-2"></span>
-    //                             </a>
-    //                         </nav>
-    //                         <div>
-    //                             <NotificationsList
-    //                                 notifications={notifications}
-    //                                 shouldSlice={false}
-    //                                 activeTab="all"
-    //                             />
-    //                         </div>
-    //                     </div>
-    //                 </section>
-                    
-    //             </div>
-    //         </div>
-    //         </section>
-    //         </div>
-    //     </Example>
-
-    <Example>
-        <div className="w-full min-h-screen bg-slate-100">
-            <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
-            
-             <header className="flex justify-between items-center w-full">
-                     <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
-                         My Notifications
-                         <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
-                     </div>
-             </header>
-                 <div className=" rounded-xl shadow-sm max-w-full mb-10 w-full">
-                 <section className="flex flex-col gap-5 pt-7 w-full bg-white rounded-2xl shadow-2xl">
-                         <div className="flex flex-col pb-5">
-                             <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-800 pl-6 pr-6 flex justify-between">
-                                 <span>All Notifications</span>
-                                 <button
-                                    onClick={() => (window.location.href = "/dashboard")}
-                                    className="text-blue-500 hover:text-blue-700 font-bold text-lg"
-                                >
-                                    Back
-                                </button>
-                            </h2>
-                            <nav className="flex gap-5 justify-between self-start pl-6 pr-6 pb-5 mt-6 text-lg font-semibold whitespace-nowrap text-neutral-800">
-                                <a href="#" className="underline">
-                                    All
-                                </a>
-                                <a
-                                    href="/profile/unread-notifications"
-                                    className="text-gray-500 relative"
-                                >
-                                    Unread
-                                    <span className="absolute h-2 w-2 bg-orange-200 rounded-full top-1/2 transform -translate-y-1/2 ml-2"></span>
-                                </a>
-                            </nav>
-                            <div>
-                                <NotificationsList
-                                    notifications={notifications}
-                                    shouldSlice={false}
-                                    activeTab="all"
-                                />
-                            </div>
+        <Example>
+            <div className="w-full min-h-screen bg-slate-100">
+                <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
+                    <header className="flex justify-between items-center w-full">
+                        <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
+                            My Notifications
+                            <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
                         </div>
-                    </section>
-                    
-                </div>
-          
-            </section>
-        </div>
+                    </header>
+                    <div className=" rounded-xl shadow-sm max-w-full mb-10 w-full">
+                        <section className="flex flex-col gap-5 pt-7 w-full bg-white rounded-2xl shadow-2xl">
+                            <div className="flex flex-col pb-5">
+                                <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-800 pl-6 pr-6 flex justify-between">
+                                    <span>All Notifications</span>
+                                    <button
+                                        onClick={() =>
+                                            (window.location.href =
+                                                "/dashboard")
+                                        }
+                                        className="text-blue-500 hover:text-blue-700 font-bold text-lg"
+                                    >
+                                        Back
+                                    </button>
+                                </h2>
+                                <nav className="flex gap-5 justify-between self-start pl-6 pr-6 pb-5 mt-6 text-lg font-semibold whitespace-nowrap text-neutral-800">
+                                    <a href="#" className="underline">
+                                        All
+                                    </a>
+                                    <a
+                                        href="/profile/unread-notifications"
+                                        className="text-gray-500 relative"
+                                    >
+                                        Unread
+                                        <span className="absolute h-2 w-2 bg-orange-200 rounded-full top-1/2 transform -translate-y-1/2 ml-2"></span>
+                                    </a>
+                                </nav>
+                                <div>
+                                    <NotificationsList
+                                        notifications={notifications}
+                                        shouldSlice={false}
+                                        activeTab="all"
+                                    />
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+            </div>
         </Example>
     );
 };

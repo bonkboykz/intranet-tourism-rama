@@ -1,8 +1,9 @@
-import { formatTime } from "@/Utils/format";
-import { getProfileImage } from "@/Utils/getProfileImage";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+
+import { formatTime } from "@/Utils/format";
+import { getProfileImage } from "@/Utils/getProfileImage";
 
 // Reusable Row Components
 const GroupJoinRow = ({
@@ -144,7 +145,7 @@ export const GroupJoinRequests = () => {
                     data: { data },
                 } = response.data;
 
-                console.log(data);
+                // console.log(data);
 
                 setRequests(data);
             }

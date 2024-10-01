@@ -5,32 +5,10 @@ import axios from "axios";
 import { formatTime } from "@/Utils/format";
 
 import aishaImage from "../../../../public/assets/aishaImage.png";
-import benImage from "../../../../public/assets/benImage.png";
-import community1 from "../../../../public/assets/community1.png";
-import community2 from "../../../../public/assets/community2.png";
-import community3 from "../../../../public/assets/community3.png";
-import changeImage2 from "../../../../public/assets/lambo2.jpeg";
-import changeImage1 from "../../../../public/assets/lambo5.jpeg";
 import thomasImage from "../../../../public/assets/thomasImage.png";
 import { CommunityCreationRequests } from "./Requests/CommunityCreationRequests";
 import { GroupJoinRequests } from "./Requests/GroupJoinRequests";
-
-const orgChartPhotoChangeData = [
-    {
-        name: "Thomas",
-        department: "Department",
-        time: "2024-06-20T02:00:00Z",
-        currentImage: thomasImage,
-        changeImage: changeImage1,
-    },
-    {
-        name: "Aisha Binti",
-        department: "Department",
-        time: "2024-06-19T04:00:00Z",
-        currentImage: aishaImage,
-        changeImage: changeImage2,
-    },
-];
+import { StaffPhotoChangeRequests } from "./Requests/StaffPhotoChangeRequests";
 
 const profileInformationData = [
     {
@@ -52,75 +30,6 @@ const profileInformationData = [
         newValue: "Tingkat 22",
     },
 ];
-
-const OrgChartPhotoChangeRow = ({
-    name,
-    department,
-    time,
-    currentImage,
-    changeImage,
-}) => {
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-
-    return (
-        <>
-            <div className="relative flex items-center justify-between py-4 border-t border-gray-200">
-                <div className="flex items-center w-1/4">
-                    <img
-                        className="w-10 h-10 rounded-full"
-                        src={currentImage}
-                        alt="User profile"
-                    />
-                    <div className="ml-3">
-                        <p className="text-sm font-bold text-black">
-                            {name} ({department})
-                        </p>
-                        <p className="text-xs font-semibold text-black">
-                            {formatTime(time)}
-                        </p>
-                    </div>
-                </div>
-                <p className="w-1/4 text-xs font-semibold text-center text-black">
-                    change to
-                </p>
-                <div className="flex items-center w-1/4">
-                    <img
-                        className="w-10 h-10 rounded-full cursor-pointer"
-                        src={changeImage}
-                        alt="Change"
-                        onClick={() => setIsPopupVisible(true)}
-                    />
-                </div>
-                <div className="flex justify-end w-1/4">
-                    <button className="px-4 py-1 text-sm font-bold text-white bg-blue-500 rounded-full">
-                        Approve
-                    </button>
-                    <button className="px-4 py-1 ml-2 text-sm font-bold text-white bg-[#FF5436] rounded-full">
-                        Reject
-                    </button>
-                </div>
-            </div>
-
-            {isPopupVisible && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 bg-grey-100 backdrop-blur-sm"
-                    onClick={() => setIsPopupVisible(false)}
-                >
-                    <div
-                        className="relative p-4 bg-white rounded-lg shadow-custom"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <img
-                            className="object-cover rounded-lg w-96 h-96"
-                            src={changeImage}
-                            alt="Change"
-                        />
-                    </div>
-                </div>
-            )}
-        </>
-    );
-};
 
 const ProfileInformationRow = ({
     name,
@@ -221,14 +130,7 @@ const Requests = () => {
         <div>
             <GroupJoinRequests />
             <CommunityCreationRequests />
-            <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
-                <h2 className="mb-4 text-2xl font-bold text-blue-500">
-                    Organisational Chart Photo Change
-                </h2>
-                {orgChartPhotoChangeData.map((data, index) => (
-                    <OrgChartPhotoChangeRow key={index} {...data} />
-                ))}
-            </section>
+            <StaffPhotoChangeRequests />
             <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px]">
                 <h2 className="mb-4 text-2xl font-bold text-blue-500">
                     Profile Information
