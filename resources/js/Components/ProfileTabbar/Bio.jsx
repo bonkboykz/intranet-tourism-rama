@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useCallback } from "react";
+import Cropper from "react-easy-crop";
 import PhoneInput from "react-phone-input-2";
+import { useClickAway } from "@uidotdev/usehooks";
 
+import getCroppedImg from "@/Utils/cropImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 function ProfileBio({
@@ -49,17 +53,18 @@ function ProfileBio({
                 ...prevData,
                 photo: reader.result, // Update the photo in bioFormData
             }));
-            onPhotoChange(reader.result); // Pass the updated photo back to the parent component
-            setIsPhotoChangeNotificationOpen(true); // Show the photo change notification popup
+            // onPhotoChange(reader.result); // Pass the updated photo back to the parent component
+            // setIsPhotoChangeNotificationOpen(true); // Show the photo change notification popup
         };
         if (file) {
             reader.readAsDataURL(file); // Read the file and trigger the onloadend event
+            setSelectedFile(file);
         }
     };
 
-    const handleCloseNotification = () => {
-        setIsPhotoChangeNotificationOpen(false);
-    };
+    // const handleCloseNotification = () => {
+    //     setIsPhotoChangeNotificationOpen(false);
+    // };
 
     const renderField = (label, name, value, type, editable = true) => (
         <tr key={name}>
@@ -89,28 +94,93 @@ function ProfileBio({
         </tr>
     );
 
-    let source = null;
+    const getSource = () => {
+        let source = null;
 
-    if (bioFormData.photo) {
-        if (bioFormData.photo.startsWith("staff_image/")) {
-            source = `/storage/${bioFormData.photo}`;
+        if (bioFormData.photo) {
+            if (bioFormData.photo.startsWith("staff_image/")) {
+                source = `/storage/${bioFormData.photo}`;
+            } else {
+                source =
+                    bioFormData.photo === "/assets/dummyStaffPlaceHolder.jpg"
+                        ? bioFormData.photo
+                        : bioFormData.photo.startsWith("data:image")
+                          ? bioFormData.photo
+                          : `/avatar/${bioFormData.photo}`;
+            }
         } else {
-            source =
-                bioFormData.photo === "/assets/dummyStaffPlaceHolder.jpg"
-                    ? bioFormData.photo
-                    : bioFormData.photo.startsWith("data:image")
-                      ? bioFormData.photo
-                      : `/avatar/${bioFormData.photo}`;
+            const name = bioFormData.name || "Staff"; // Use 'Staff' as a fallback if name is not available
+            source = `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
+                name
+            )}`;
         }
-    } else {
-        const name = bioFormData.name || "Staff"; // Use 'Staff' as a fallback if name is not available
-        source = `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
-            name
-        )}`;
-    }
+
+        setSource(source);
+    };
+
+    const [source, setSource] = useState(null);
+
+    useEffect(() => {
+        getSource();
+    }, [bioFormData.photo]);
 
     const { hasRole } = usePermissions();
     const isSuperAdmin = hasRole("superadmin");
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(null);
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+    const handleCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    }, []);
+
+    const handleCropImage = async () => {
+        try {
+            const croppedImage = await getCroppedImg(source, croppedAreaPixels);
+            setCroppedImage(croppedImage);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleSaveCroppedImage = async () => {
+        try {
+            if (croppedImage) {
+                const response = await fetch(croppedImage);
+                const blob = await response.blob();
+                const file = new File([blob], "staff_image.jpg", {
+                    type: blob.type,
+                });
+
+                await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setBioFormData((prevData) => ({
+                            ...prevData,
+                            photo: reader.result,
+                        }));
+                        onPhotoChange(reader.result);
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+                setSelectedFile(null); // Clear selected file after saving
+                setCroppedImage(null); // Clear cropped image after saving
+            }
+        } catch (e) {
+            console.error("Error saving cropped image:", e);
+            window.location.reload();
+        }
+    };
+
+    const ref = useClickAway(() => {
+        setBioFormData(formData);
+        setSelectedFile(null);
+        setCroppedImage(null);
+    });
 
     return (
         <div ref={formRef} className="flex-auto my-auto p-4">
@@ -139,7 +209,7 @@ function ProfileBio({
                                         <img
                                             loading="lazy"
                                             src={source}
-                                            className="aspect-square rounded-md sm:w-[90px] sm:h-[120px] md:w-[90px] md:h-[120px] lg:w-[90px] lg:h-[120px] object-cover flex-wrap"
+                                            className="aspect-[3/4] rounded-md sm:w-[90px] sm:h-[120px] md:w-[90px] md:h-[120px] lg:w-[90px] lg:h-[120px] object-cover flex-wrap"
                                             alt="Staff's photo"
                                         />
                                         {isEditing && (
@@ -231,6 +301,54 @@ function ProfileBio({
                     >
                         Save
                     </button>
+                </div>
+            )}
+
+            {selectedFile && !croppedImage && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div
+                        className="relative bg-white p-6 rounded-2xl w-full max-w-3xl"
+                        ref={ref}
+                    >
+                        <div className="cropper-wrapper">
+                            <Cropper
+                                image={source}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={3 / 4}
+                                onCropChange={setCrop}
+                                onCropComplete={handleCropComplete}
+                                onZoomChange={setZoom}
+                            />
+                        </div>
+                        <div className="flex justify-end mt-4">
+                            <button
+                                onClick={handleCropImage}
+                                className="bg-blue-500 text-white px-4 py-2 rounded-full"
+                            >
+                                Crop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {croppedImage && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="relative bg-white p-6 rounded-lg w-full max-w-md">
+                        <img
+                            src={croppedImage}
+                            alt="Cropped"
+                            className="w-full mb-4"
+                        />
+                        <div className="flex justify-end mt-4">
+                            <button
+                                onClick={handleSaveCroppedImage}
+                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
             {/* {isPhotoChangeNotificationOpen && (
