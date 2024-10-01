@@ -27,6 +27,9 @@ function Popup({
         profileData.backgroundImage
     );
     const fileInputRef = useRef(null);
+    const [originalImage, setOriginalImage] = useState(
+        profileData.originalBackgroundImage
+    );
 
     const handleClickImg = () => {
         fileInputRef.current.click();
@@ -36,6 +39,7 @@ function Popup({
         const file = event.target.files[0];
         if (file) {
             const fileUrl = URL.createObjectURL(file);
+            setOriginalImage(fileUrl);
             setSelectedFile(file);
             setCroppedImage(fileUrl); // Set the file URL as the initial cropped image
         }
@@ -54,7 +58,7 @@ function Popup({
         try {
             // Crop the image
             const croppedImg = await getCroppedImg(
-                croppedImage,
+                originalImage,
                 croppedAreaPixels
             );
 
@@ -62,8 +66,17 @@ function Popup({
             const response = await fetch(croppedImg);
             const blob = await response.blob();
             const file = new File([blob], "profile.jpg", { type: blob.type });
+            // original file
+            const responseOriginal = await fetch(originalImage);
+            const blobOriginal = await responseOriginal.blob();
+            const fileOriginal = new File(
+                [blobOriginal],
+                "profile_original.jpg",
+                { type: blobOriginal.type }
+            );
 
             const FfData = new FormData();
+            FfData.append("original_cover_photo", fileOriginal);
             FfData.append("cover_photo", file);
             FfData.append("user_id", id);
             FfData.append("_method", "PUT");
@@ -104,6 +117,8 @@ function Popup({
         }
     };
 
+    const croppedDisabled = croppedImage === profileData.backgroundImage;
+
     return (
         <div
             className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -123,7 +138,7 @@ function Popup({
                                 {" "}
                                 {/* Adjusted cropper area to match aspect ratio */}
                                 <Cropper
-                                    image={croppedImage}
+                                    image={originalImage}
                                     crop={crop}
                                     zoom={zoom}
                                     aspect={3 / 1} // Set to a rectangular aspect ratio, e.g., 16:9
@@ -192,11 +207,10 @@ function Popup({
                         Cancel
                     </button>
                     <button
-                        disabled={croppedImage === profileData.backgroundImage}
+                        // disabled={croppedDisabled}
                         className={cn(
                             "bg-blue-500 text-sm text-white px-4 py-2 rounded-full  opacity-50",
-                            croppedImage !== profileData.backgroundImage &&
-                                "hover:bg-blue-700 opacity-100"
+                            "hover:bg-blue-700 opacity-100"
                         )}
                         onClick={handleCropAndSave} // Combined Crop and Save function
                     >

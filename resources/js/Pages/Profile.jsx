@@ -85,6 +85,7 @@ function ProfileContent() {
             : "Offline", // Set initial status based on context
         icon1: "/assets/EditButton.svg",
         icon2: "https://cdn.builder.io/api/v1/image/assets/TEMP/c509bd2e6bfcd3ab7723a08c590219ec47ac648338970902ce5e506f7e419cb7?",
+        originalBackgroundImage: "",
     });
     const [filterType, setFilterType] = useState(null);
 
@@ -107,6 +108,11 @@ function ProfileContent() {
                             ? `/storage/${data.profile.cover_photo}`
                             : "https://cdn.builder.io/api/v1/image/assets/TEMP/51aef219840e60eadf3805d1bd5616298ec00b2df42d036b6999b052ac398ab5?",
                     profileImage: data.profile?.image || "",
+                    originalBackgroundImage:
+                        data.profile && data.profile.original_cover_photo
+                            ? `/storage/${data.profile.original_cover_photo}`
+                            : data.profile?.cover_photo ||
+                              "https://cdn.builder.io/api/v1/image/assets/TEMP/51aef219840e60eadf3805d1bd5616298ec00b2df42d036b6999b052ac398ab5?",
                 }));
 
                 const sortedEmploymentPosts =
