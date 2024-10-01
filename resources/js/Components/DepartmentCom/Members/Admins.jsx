@@ -57,7 +57,7 @@ export const Admins = ({ admins, departmentID, onRefetch, searchInput }) => {
                     id={admin.id}
                     flag="admin"
                     employment_post_id={admin.employment_post_id}
-                    imageUrl={getProfileImage(admin.profile, admin.name)}
+                    imageUrl={getProfileImage(admin.profile, admin.name, true)}
                     name={admin.name}
                     title={admin.business_post_title}
                     isActive={admin.is_active}

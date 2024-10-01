@@ -3,10 +3,12 @@
 namespace Modules\Department\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Department\Helpers\DepartmentPermissionsHelper;
 use Modules\Department\Models\Department;
 use Modules\Department\Models\EmploymentPost;
 use Illuminate\Http\Request;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Modules\User\Models\User;
 
 class EmploymentPostController extends Controller
 {
@@ -86,6 +88,14 @@ class EmploymentPostController extends Controller
     public function destroy(EmploymentPost $employment_post)
     {
         $employment_post->delete();
+
+        // if user is admin revoke
+        $user = User::where('id', $employment_post->user_id)->first();
+        $department = Department::where('id', $employment_post->department_id)->first();
+
+        if ($user) {
+            DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($user, $department);
+        }
 
         return response()->noContent();
     }

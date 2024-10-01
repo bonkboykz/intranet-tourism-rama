@@ -122,7 +122,8 @@ export const Members = ({
                             employment_post_id={member.employment_post_id}
                             imageUrl={getProfileImage(
                                 member.profile,
-                                member.name
+                                member.name,
+                                true
                             )}
                             name={member.name}
                             title={member.business_post_title}

@@ -1,4 +1,8 @@
-export const getProfileImage = (profile, name = "User") => {
+export const getProfileImage = (
+    profile,
+    name = "User",
+    isStaffFirst = false
+) => {
     if (!profile) {
         return `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
             name
@@ -6,7 +10,21 @@ export const getProfileImage = (profile, name = "User") => {
     }
 
     if (!profile.image && profile.staff_image) {
-        if (profile.staff_image.startsWith("avatar/")) {
+        if (
+            profile.staff_image.startsWith("avatar/") ||
+            profile.staff_image.startsWith("staff_image/")
+        ) {
+            return `/storage/${profile.staff_image}`;
+        }
+
+        return `/avatar/${profile.staff_image}`;
+    }
+
+    if (profile.staff_image && isStaffFirst) {
+        if (
+            profile.staff_image.startsWith("avatar/") ||
+            profile.staff_image.startsWith("staff_image/")
+        ) {
             return `/storage/${profile.staff_image}`;
         }
 
