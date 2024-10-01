@@ -228,7 +228,7 @@ class User extends Authenticatable implements AuditableContract
             'addLogoSpace' => true,
             'logoSpaceWidth' => 32,
             'logoSpaceHeight' => 32,
-            'scale' => 6,
+            'scale' => 10,
             'imageTransparent' => false,
             'drawCircularModules' => true,
             'circleRadius' => 0.45,
