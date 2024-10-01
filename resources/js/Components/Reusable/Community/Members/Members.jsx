@@ -106,7 +106,8 @@ export function Members({ members, communityID, onRefetch, loggedInID }) {
                             employment_post_id={member.employment_post_id}
                             imageUrl={getProfileImage(
                                 member.profile,
-                                member.name
+                                member.name,
+                                true
                             )}
                             name={member.name}
                             titles={

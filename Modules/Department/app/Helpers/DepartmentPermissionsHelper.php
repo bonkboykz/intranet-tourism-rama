@@ -70,7 +70,6 @@ class DepartmentPermissionsHelper
 
         // remove from list of department admins
         $department->admins()->detach($user->id);
-
     }
 
     public static function checkSpecificPermission(User $user, string $permission, string $community_id)

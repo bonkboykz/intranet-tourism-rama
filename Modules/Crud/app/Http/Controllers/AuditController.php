@@ -11,7 +11,8 @@ class AuditController extends Controller
     {
         $query = Audit::queryable();
 
-        $query->with(['user']);
+        // Загружаем пользователей и их роли
+        $query->with(['user.roles']);
 
         if (request()->has('search')) {
             $query->where('event', 'like', '%' . request('search') . '%')
@@ -32,6 +33,8 @@ class AuditController extends Controller
             'data' => $data,
         ]);
     }
+
+
 
     public function show($id)
     {
