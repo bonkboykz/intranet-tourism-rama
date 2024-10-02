@@ -112,6 +112,10 @@ class ProfileController extends Controller
                 request()->merge(input: ['phone_no' => null]);
             }
 
+            if (!request()->has('dob') || request('dob') === 'null') {
+                request()->merge(input: ['dob' => null]);
+            }
+
             $validated = request()->validate(...Profile::rules('update'));
             $validatedUser = request()->validate(...User::rules('update'));
 

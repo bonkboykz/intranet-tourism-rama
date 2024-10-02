@@ -68,7 +68,7 @@ function ProfileContent() {
         grade: "",
         location: "",
         phone: "",
-        dateofbirth: "",
+        dob: "",
         whatsapp: "",
         photo: "",
         employmentPosts: [], // Initialize with an empty array
@@ -124,7 +124,7 @@ function ProfileContent() {
                     name: data.name,
                     username: data.username || "N/A",
                     email: data.email,
-                    dateofbirth: data.profile?.dob || "",
+                    dob: data.profile?.dob || "",
                     phone: data.profile?.work_phone || "",
                     whatsapp: data.profile?.phone_no || "",
                     photo: data.profile?.staff_image,
@@ -135,7 +135,7 @@ function ProfileContent() {
                     name: data.name,
                     username: data.username || "N/A",
                     email: data.email,
-                    dateofbirth: data.profile?.dob || "",
+                    dob: data.profile?.dob || "",
                     phone: data.profile?.work_phone || "",
                     whatsapp: data.profile?.phone_no || "",
                     photo: data.profile?.staff_image,
@@ -180,6 +180,7 @@ function ProfileContent() {
             ...prevFormData,
             employmentPosts: updatedEmploymentPosts,
             phone: newData.phone || prevFormData.phone,
+            // dob: newData.dob || prevFormData.dob,
         }));
     };
 
@@ -214,8 +215,11 @@ function ProfileContent() {
             FfData.append("_method", "PUT");
 
             if (newFormData.email) FfData.append("email", newFormData.email);
-            if (newFormData.dateofbirth)
-                FfData.append("dob", newFormData.dateofbirth);
+            if (newFormData.dob && newFormData.dob !== "null") {
+                FfData.append("dob", newFormData.dob);
+            } else {
+                FfData.append("dob", "null");
+            }
             // if (newFormData.whatsapp) FfData.append('phone_no', newFormData.whatsapp);
 
             if (newFormData.whatsapp && newFormData.whatsapp !== "null") {
@@ -287,7 +291,7 @@ function ProfileContent() {
             console.error("Error updating data:", error);
         }
 
-        window.location.reload();
+        // window.location.reload();
     };
 
     const handleSaveDepartment = async (index) => {
