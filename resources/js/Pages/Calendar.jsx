@@ -198,21 +198,16 @@ function Calendar() {
                 title: event.title,
                 start: event.start_at,
                 end: event.end_at,
-                description: event.description,
-                venue: event.venue,
-                color: event.color,
+                description: event.description || "",
+                venue: event.venue || "",
+                color: event.color || "purple",
                 userName: event.author.name,
                 user: event.author,
-                url: event.url,
+                url: event.url || "",
             }));
 
             // Set events in state
             setEvents(formattedEvents);
-            // setFilteredEvents(formattedEvents);
-
-            // if (calendarRef.current) {
-            //     calendarRef.current.getApi().gotoDate(new Date());
-            // }
         } catch (error) {
             console.error("Error fetching events: ", error);
         }
