@@ -92,7 +92,7 @@ function FeedbackForm() {
                 ref={textAreaRef}
                 value={inputValue}
                 onChange={handleChange}
-                placeholder="Your feedback will only be seen by the poll creator"
+                placeholder="Give your feedback"
                 className="grow justify-center items-start px-5 py-3 text-sm leading-5 rounded-md border border-gray-100 border-solid text-neutral-800 text-opacity-50 w-fit max-md:px-5 max-md:max-w-full"
                 rows="4"
                 style={{ maxHeight: "30px", overflowY: "auto" }}
