@@ -30,7 +30,6 @@ const PopupContent = ({
     const modalRef = useRef(null);
 
     useEffect(() => {
-
         if (!showModal) return;
 
         const handleClickOutside = (event) => {
@@ -119,7 +118,7 @@ const PopupContent = ({
                         <img
                             src={threeDotsIcon}
                             alt="Options"
-                            className="h-auto w-auto"
+                            className="h-6 w-6"
                         />
                     </MenuButton>
                 </div>
@@ -132,7 +131,7 @@ const PopupContent = ({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <MenuItems className="absolute right-0 z-10 mr-9 mt-[-103px] w-40 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems className="absolute right-6 z-10 left-4 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
                             {canEdit && (
                                 <MenuItem>
@@ -143,9 +142,9 @@ const PopupContent = ({
                                             }
                                             className={classNames(
                                                 active
-                                                    ? "bg-blue-100 text-gray-900"
+                                                    ? "bg-blue-50 text-gray-900"
                                                     : "text-gray-700",
-                                                "group flex items-center px-4 py-2 text-sm w-full"
+                                                "group flex items-center px-2 py-2 text-sm w-full"
                                             )}
                                         >
                                             <img
@@ -164,9 +163,9 @@ const PopupContent = ({
                                         onClick={handleDownload}
                                         className={classNames(
                                             active
-                                                ? "bg-blue-100 text-gray-900"
+                                                ? "bg-blue-50 text-gray-900"
                                                 : "text-gray-700",
-                                            "group flex items-center px-4 py-2 text-sm w-full"
+                                            "group flex items-center px-2 py-2 text-sm w-full"
                                         )}
                                     >
                                         <img
@@ -185,9 +184,9 @@ const PopupContent = ({
                                             onClick={() => setShowModal(true)}
                                             className={classNames(
                                                 active
-                                                    ? "bg-blue-100 text-gray-900"
+                                                    ? "bg-blue-50 text-gray-900"
                                                     : "text-gray-700",
-                                                "group flex items-center px-4 py-2 text-sm w-full"
+                                                "group flex items-center px-2 py-2 text-sm w-full"
                                             )}
                                         >
                                             <img
@@ -207,9 +206,9 @@ const PopupContent = ({
                                             onClick={handleViewClick}
                                             className={classNames(
                                                 active
-                                                    ? "bg-blue-100 text-gray-900"
+                                                    ? "bg-blue-50 text-gray-900"
                                                     : "text-gray-700",
-                                                "group flex items-center px-4 py-2 text-sm w-full"
+                                                "group flex items-center px-2 py-2 text-sm w-full"
                                             )}
                                         >
                                             <img
@@ -226,11 +225,12 @@ const PopupContent = ({
                     </MenuItems>
                 </Transition>
             </Menu>
+
             {showModal &&
                 createPortal(
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                         <div
-                            className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
+                            className="relative p-8 bg-white shadow-lg rounded-2xl w-96 z-50"
                             ref={modalRef}
                         >
                             <h2 className="mb-4 text-xl font-bold text-center">

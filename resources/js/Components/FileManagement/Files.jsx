@@ -334,7 +334,7 @@ const FileTable = ({
                                     <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
                                         Date Created
                                     </th>
-                                    <th className="w-1/12 relative py-3.5 ">
+                                    <th className="w-1/6 relative py-3.5 ">
                                         <span className="sr-only">Edit</span>
                                     </th>
                                 </tr>
