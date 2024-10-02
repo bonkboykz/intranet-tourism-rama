@@ -11,7 +11,6 @@ function SearchButton({ children }) {
     );
 }
 
-
 function Dropdown({ options, onChange }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(options[0].label); // Use label for display
@@ -35,7 +34,7 @@ function Dropdown({ options, onChange }) {
                     loading="lazy"
                     src="/assets/Dropdownarrow.svg"
                     className={`shrink-0 self-center transition-transform ${
-                        isOpen ? 'rotate-180' : ''
+                        isOpen ? "rotate-180" : ""
                     } w-auto`}
                     alt="dropdown arrow"
                 />
@@ -47,7 +46,9 @@ function Dropdown({ options, onChange }) {
                         <li
                             key={index}
                             className={`px-3.5 py-2.5 hover:bg-gray-100 cursor-pointer ${
-                                selectedOption === option.label ? 'bg-gray-100' : ''
+                                selectedOption === option.label
+                                    ? "bg-gray-100"
+                                    : ""
                             }`}
                             onClick={() => handleClickSelect(option)}
                         >
@@ -62,6 +63,13 @@ function Dropdown({ options, onChange }) {
 
 export default Dropdown;
 
+const options = [
+    { value: "All", label: "All" },
+    { value: "superadmin", label: "SuperAdmin" },
+    { value: "department admin", label: "Department Admin" },
+    { value: "community admin", label: "Community Admin" },
+    { value: "user", label: "User" },
+];
 
 export function AuditTrailSearch({
     search,
@@ -71,10 +79,8 @@ export function AuditTrailSearch({
     setStartDate,
     endDate,
     setEndDate,
-    options = [],
-    onChange = () => {},
+    setRole = () => {},
 }) {
-
     return (
         <main className="flex flex-col w-full px-8 py-6 bg-white rounded-2xl shadow-custom max-md:px-5">
             <form className="flex gap-5 text-sm whitespace-nowrap max-md:flex-wrap max-md:max-w-full">
@@ -98,7 +104,7 @@ export function AuditTrailSearch({
                     setStartDate={setStartDate}
                     setEndDate={setEndDate}
                 />
-                <Dropdown options={options} onChange={onChange}/>
+                <Dropdown options={options} onChange={setRole} />
             </section>
         </main>
     );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
     ArrowLongLeftIcon,
     ArrowLongRightIcon,
@@ -9,7 +9,12 @@ import { format } from "date-fns";
 
 const ITEMS_PER_PAGE = 25;
 
-export function AuditTrailTable({ search = "", startDate = "", endDate = "", userRoles = "All" }) {
+export function AuditTrailTable({
+    search = "",
+    startDate = "",
+    endDate = "",
+    role,
+}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [items, setItems] = useState([]);
@@ -25,20 +30,20 @@ export function AuditTrailTable({ search = "", startDate = "", endDate = "", use
                     ...(debouncedSearch && { search: debouncedSearch }),
                     ...(startDate && { start_date: startDate }),
                     ...(endDate && { end_date: endDate }),
-                    ...(userRoles.value || userRoles !== "All" && { user_roles: userRoles.value || userRoles }),
+                    ...(role !== "All" && { role: role }),
                 },
             });
             const data = response.data.data;
-            console.log(data)
+            console.log(data);
 
-            const roles = data.data.flatMap(item => item?.user?.roles.map(role => role?.name))
-            console.log(roles)
             setTotalPages(data.last_page);
             setItems(
                 data.data.map((item) => ({
                     ...item,
-                    auditable_type: item.auditable_type.replace(/Modules\\.*\\Models\\/, ""),
-                    user_roles: roles,
+                    auditable_type: item.auditable_type.replace(
+                        /Modules\\.*\\Models\\/,
+                        ""
+                    ),
                 }))
             );
         } catch (e) {
@@ -48,7 +53,7 @@ export function AuditTrailTable({ search = "", startDate = "", endDate = "", use
 
     useEffect(() => {
         fetchItems();
-    }, [currentPage, debouncedSearch, startDate, endDate, userRoles]); // Add userType as a dependency
+    }, [currentPage, debouncedSearch, startDate, endDate, role]); // Add userType as a dependency
 
     const handlePageChange = (newPage) => {
         if (newPage > totalPages || newPage < 1) return;
@@ -60,40 +65,83 @@ export function AuditTrailTable({ search = "", startDate = "", endDate = "", use
             <div className="overflow-x-auto">
                 <table className="min-w-full border border-gray-300 divide-y divide-gray-200 table-fixed">
                     <thead>
-                    <tr>
-                        <th scope="col" className="w-1/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900">#</th>
-                        <th scope="col" className="w-2/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900">Date/Time</th>
-                        <th scope="col" className="w-2/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900">Username</th>
-                        <th scope="col" className="w-7/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900">Action made</th>
-                    </tr>
+                        <tr>
+                            <th
+                                scope="col"
+                                className="w-1/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900"
+                            >
+                                #
+                            </th>
+                            <th
+                                scope="col"
+                                className="w-2/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900"
+                            >
+                                Date/Time
+                            </th>
+                            <th
+                                scope="col"
+                                className="w-2/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900"
+                            >
+                                Username
+                            </th>
+                            <th
+                                scope="col"
+                                className="w-7/12 px-2 py-3 font-medium text-left border border-gray-300 text-md text-neutral-900"
+                            >
+                                Action made
+                            </th>
+                        </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                    {items.map((item) => (
-                        <tr key={item.id}>
-                            <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">{item.id}</td>
-                            <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">{format(new Date(item.created_at), "PPpp")}</td>
-                            <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">{item.user?.name}</td>
-                            <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">{item.user?.name} {item.event} {item.auditable_type}</td>
-                        </tr>
-                    ))}
+                        {items.map((item) => (
+                            <tr key={item.id}>
+                                <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">
+                                    {item.id}
+                                </td>
+                                <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">
+                                    {format(new Date(item.created_at), "PPpp")}
+                                </td>
+                                <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">
+                                    {item.user?.name}
+                                </td>
+                                <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">
+                                    {item.user?.name} {item.event}{" "}
+                                    {item.auditable_type}
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
 
             <nav className="flex items-center justify-between px-4 mt-4 border-t border-gray-200 sm:px-0">
                 <div className="flex flex-1 w-0 -mt-px">
-                    <button onClick={() => handlePageChange(currentPage - 1)} className="inline-flex items-center pt-4 pr-1 text-sm font-medium border-t-2 border-transparent text-neutral-900 hover:border-gray-300 hover:text-gray-700">
-                        <ArrowLongLeftIcon className="w-5 h-5 mr-3 text-gray-400" aria-hidden="true" />
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        className="inline-flex items-center pt-4 pr-1 text-sm font-medium border-t-2 border-transparent text-neutral-900 hover:border-gray-300 hover:text-gray-700"
+                    >
+                        <ArrowLongLeftIcon
+                            className="w-5 h-5 mr-3 text-gray-400"
+                            aria-hidden="true"
+                        />
                         Previous
                     </button>
                 </div>
                 <div className="hidden md:-mt-px md:flex">
-                    <span className="inline-flex items-center pt-4 pr-4 text-sm font-medium text-neutral-900">Page {currentPage} of {totalPages}</span>
+                    <span className="inline-flex items-center pt-4 pr-4 text-sm font-medium text-neutral-900">
+                        Page {currentPage} of {totalPages}
+                    </span>
                 </div>
                 <div className="flex justify-end flex-1 w-0 -mt-px">
-                    <button onClick={() => handlePageChange(currentPage + 1)} className="inline-flex items-center pt-4 pl-1 text-sm font-medium border-t-2 border-transparent text-neutral-900 hover:border-gray-300 hover:text-gray-700">
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="inline-flex items-center pt-4 pl-1 text-sm font-medium border-t-2 border-transparent text-neutral-900 hover:border-gray-300 hover:text-gray-700"
+                    >
                         Next
-                        <ArrowLongRightIcon className="w-5 h-5 ml-3 text-gray-400" aria-hidden="true" />
+                        <ArrowLongRightIcon
+                            className="w-5 h-5 ml-3 text-gray-400"
+                            aria-hidden="true"
+                        />
                     </button>
                 </div>
             </nav>
