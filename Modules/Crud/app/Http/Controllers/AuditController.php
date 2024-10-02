@@ -11,7 +11,6 @@ class AuditController extends Controller
     {
         $query = Audit::queryable();
 
-        // Загружаем пользователей и их роли
         $query->with(['user.roles']);
 
         if (request()->has('search')) {
@@ -26,6 +25,29 @@ class AuditController extends Controller
         if (request()->has('end_date')) {
             $query->where('created_at', '<=', request('end_date'));
         }
+        if (request()->has('role')) {
+            $role = request('role');
+
+            if ($role === 'superadmin') {
+                $query->whereHas('user.roles', function ($q) {
+                    $q->where('name', 'superadmin');
+                });
+            } elseif ($role === 'community admin') {
+                $query->whereHas('user.roles', function ($q) {
+                    $q->where('name', 'like', 'community admin%');
+                });
+            } elseif ($role === 'department admin') {
+                $query->whereHas('user.roles', function ($q) {
+                    $q->where('name', 'like', 'department admin%');
+                });
+            } elseif ($role === 'user') {
+                $query->whereHas('user.roles', function ($q) {
+                    $q->where('name', 'user');
+                });
+            }
+        }
+
+
 
         $data = $query->paginate();
 
