@@ -30,12 +30,28 @@ function ProfileBio({
     }, [formData, isEditing]);
 
     const handleInputChange = (e) => {
+        e.preventDefault();
         const { name, value } = e.target;
+
+        // Clear the date field when it's empty
+        // if (name === "dob" && value === "") {
+        //     setBioFormData((prevState) => ({
+        //         ...prevState,
+        //         [name]: "", // Empty string instead of null
+        //     }));
+        // } else {
         setBioFormData((prevData) => ({
             ...prevData,
-            [name]: value, // Directly update the bioFormData
+            [name]: value, // Directly update bioFormData
         }));
+        // }
+        console.log(bioFormData); // This might be delayed, check in useEffect or after setState
     };
+
+    useEffect(() => {
+        console.log("UPDATED", typeof bioFormData.dob);
+        console.log("UPDATED", bioFormData);
+    }, [bioFormData]);
 
     const handlePhoneChange = (value) => {
         console.log("Phone number changed:", value); // Log the new phone number
@@ -172,7 +188,7 @@ function ProfileBio({
             }
         } catch (e) {
             console.error("Error saving cropped image:", e);
-            window.location.reload();
+            // window.location.reload();
         }
     };
 
@@ -239,10 +255,11 @@ function ProfileBio({
                             )}
                             {renderField(
                                 "Date of Birth",
-                                "dateofbirth",
-                                bioFormData.dateofbirth,
+                                "dob",
+                                bioFormData.dob,
                                 "date"
                             )}
+
                             <tr>
                                 <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                     WhatsApp Number

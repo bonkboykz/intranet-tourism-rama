@@ -57,7 +57,7 @@ class Profile extends Model implements AuditableContract
                     'image' => ['file'],
                     'cover_photo' => ['file'],
                     'phone_no' => ['string', 'nullable'],
-                    'dob' => ['string'],
+                    'dob' => ['string', 'nullable'],
                     'staff_image' => ['file'],
                 ],
                 // [],
