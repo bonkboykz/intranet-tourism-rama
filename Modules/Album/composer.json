@@ -9,9 +9,7 @@
     ],
     "extra": {
         "laravel": {
-            "providers": [
-                "Modules\\Album\\app\\Providers\\AlbumServiceProvider"
-            ],
+            "providers": [],
             "aliases": {}
         }
     },
