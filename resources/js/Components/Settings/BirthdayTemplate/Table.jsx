@@ -1,39 +1,13 @@
-import { useEffect } from "react";
-import { useState } from "react";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import { Switch } from "@headlessui/react";
-import axios from "axios";
 
 import { cn } from "@/Utils/cn";
 
-export const BirthdayTemplateTable = () => {
-    const [birthdayTemplates, setBirthdayTemplates] = useState([]);
-
-    const fetchBirthdayTemplates = () => {
-        axios.get("/api/birthday-templates").then((response) => {
-            const data = response.data.data.map((template) => ({
-                ...template,
-                background: template.background.includes("assets")
-                    ? template.background
-                    : `/storage/${template.background}`,
-            }));
-
-            setBirthdayTemplates(data);
-        });
-    };
-
-    const handleSwitchChange = (template) => {
-        axios
-            .put(`/api/birthday-templates/${template.id}/toggle-enabled`)
-            .then(() => {
-                fetchBirthdayTemplates();
-            });
-    };
-
-    useEffect(() => {
-        fetchBirthdayTemplates();
-    }, []);
-
+export const BirthdayTemplateTable = ({
+    birthdayTemplates,
+    handleSwitchChange,
+    isDeletePopupOpen,
+}) => {
     return (
         <div
             className="grid grid-cols-4 gap-4"
@@ -51,6 +25,7 @@ export const BirthdayTemplateTable = () => {
                             alt={`image ${template.id}`}
                         />
                     </div>
+
                     <div>
                         <Switch
                             checked={template.is_enabled}
@@ -74,13 +49,13 @@ export const BirthdayTemplateTable = () => {
                         </Switch>
                     </div>
                     <div>
-                        {/* <button>
+                        <button onClick={() => isDeletePopupOpen(template.id)}>
                             <img
                                 className="w-6 h-6 mr-2"
                                 src="/assets/deleteicon.svg"
                                 alt="Delete"
                             />
-                        </button> */}
+                        </button>
                     </div>
                 </Fragment>
             ))}
