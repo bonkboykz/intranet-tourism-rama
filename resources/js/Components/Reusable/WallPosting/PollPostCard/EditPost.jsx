@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { add, format, startOfDay } from "date-fns";
 import { Loader2 } from "lucide-react";
@@ -19,6 +19,43 @@ export function EditPollPost({
     );
     const [loading, setLoading] = useState(false);
 
+    const [options, setOptions] = useState(
+        post.poll.question.options.map((option) => option.option_text) || []
+    );
+
+    const [endDate, setEndDate] = useState(
+        post.poll.end_date ? new Date(post.poll.end_date) : new Date()
+    );
+
+    const [includeEndDate, setIncludeEndDate] = useState(
+        Boolean(post.poll.end_date)
+    );
+
+    // Обновление текста вопроса
+    const handleQuestionChange = (event) => {
+        setQuestionText(event.target.value);
+    };
+
+    // Обновление текста варианта ответа
+    const handleOptionChange = (index, event) => {
+        const newOptions = [...options];
+        newOptions[index] = event.target.value;
+        setOptions(newOptions);
+    };
+
+    // Добавление нового варианта
+    const addOption = () => {
+        setOptions([...options, ""]); // Добавляем пустую строку для нового варианта
+    };
+
+    // Удаление варианта
+    const removeOption = (index) => {
+        const newOptions = [...options];
+        newOptions.splice(index, 1);
+        setOptions(newOptions);
+    };
+
+    // Обработчик отправки формы
     const handleFormSubmit = async (event) => {
         event.preventDefault();
 
@@ -26,16 +63,14 @@ export function EditPollPost({
         try {
             const data = {
                 question: questionText,
+                options: options.map((option) => ({ option_text: option })),
             };
 
             if (includeEndDate) {
                 data["end_date"] = endDate;
             }
 
-            const response = await axios.put(
-                `/api/posts/${post.id}/update-poll`,
-                data
-            );
+            await axios.put(`/api/posts/${post.id}/update-poll`, data);
 
             onClose();
             onClosePopup();
@@ -46,14 +81,6 @@ export function EditPollPost({
 
         setLoading(false);
     };
-
-    const [endDate, setEndDate] = useState(
-        post.poll.end_date ? new Date(post.poll.end_date) : new Date()
-    );
-
-    const [includeEndDate, setIncludeEndDate] = useState(
-        Boolean(post.poll.end_date)
-    );
 
     return (
         <>
@@ -81,13 +108,42 @@ export function EditPollPost({
                 <form onSubmit={handleFormSubmit} className="mt-4">
                     <textarea
                         value={questionText}
-                        onChange={(event) =>
-                            setQuestionText(event.target.value)
-                        }
+                        onChange={handleQuestionChange}
                         className="w-full p-2 border rounded-md"
                         rows="4"
                         placeholder="Edit question"
                     />
+
+                    <div className="mt-4">
+                        <h3 className="text-lg font-semibold">Poll Options</h3>
+                        {options.map((option, index) => (
+                            <div key={index} className="flex mt-2">
+                                <input
+                                    type="text"
+                                    value={option}
+                                    onChange={(event) =>
+                                        handleOptionChange(index, event)
+                                    }
+                                    className="w-full p-2 border rounded-md"
+                                    placeholder={`Option ${index + 1}`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeOption(index)}
+                                    className="ml-2 text-red-500"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={addOption}
+                            className="mt-2 p-2 bg-blue-500 text-white rounded-md"
+                        >
+                            Add Option
+                        </button>
+                    </div>
                 </form>
 
                 <div className="flex relative w-full flex-row max-md:flex-col justify-between max-md:justify-start items-center my-8 gap-4 max-md:gap-2">

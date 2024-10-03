@@ -48,7 +48,7 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
 
     const isSingleChoice = poll?.question?.question_type === "single";
 
-    const noMoreOptions = isSingleChoice && chosenAnswers.length >= 1;
+    // const noMoreOptions = isSingleChoice && chosenAnswers.length >= 1;
 
     const onClick = (option) => {
         let newChosenAnswers = [];
@@ -119,7 +119,7 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
                 throw new Error("Failed to submit poll feedback");
             }
 
-            const responseData = response.data.data;
+            // const responseData = response.data.data;
 
             toast.success("Feedback submitted successfully");
 
@@ -240,7 +240,7 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
                         <input
                             className="border-slate-300 rounded-md px-4 py-2 flex flex-1"
                             type="text"
-                            placeholder="Give Your Feedback"
+                            placeholder="Your feedback will only be seen by the poll creator"
                             value={feedbackText}
                             onChange={(e) => setFeedbackText(e.target.value)}
                         />

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePage } from "@inertiajs/react";
 
 // function userid({ setSidebarOpen }) {
@@ -10,27 +10,27 @@ import { usePage } from "@inertiajs/react";
 //         profileImage: "",
 //     });}
 
-function Avatar({ src, alt }) {
-    return (
-        <img
-            loading="lazy"
-            src={src}
-            alt={alt}
-            className="shrink-0 aspect-square w-[53px]"
-        />
-    );
-}
+// function Avatar({ src, alt }) {
+//     return (
+//         <img
+//             loading="lazy"
+//             src={src}
+//             alt={alt}
+//             className="shrink-0 aspect-square w-[53px]"
+//         />
+//     );
+// }
 
-function UserInfo({ name, timestamp }) {
-    return (
-        <div className="flex flex-col my-auto">
-            <div className="text-base font-bold text-neutral-800">{name}</div>
-            <div className="mt-3 text-xs text-neutral-800 text-opacity-50">
-                {timestamp}
-            </div>
-        </div>
-    );
-}
+// function UserInfo({ name, timestamp }) {
+//     return (
+//         <div className="flex flex-col my-auto">
+//             <div className="text-base font-bold text-neutral-800">{name}</div>
+//             <div className="mt-3 text-xs text-neutral-800 text-opacity-50">
+//                 {timestamp}
+//             </div>
+//         </div>
+//     );
+// }
 
 function FeedbackOption({ optionText, onVote }) {
     return (
@@ -92,7 +92,7 @@ function FeedbackForm() {
                 ref={textAreaRef}
                 value={inputValue}
                 onChange={handleChange}
-                placeholder="Give Your Feedback"
+                placeholder="Give your feedback"
                 className="grow justify-center items-start px-5 py-3 text-sm leading-5 rounded-md border border-gray-100 border-solid text-neutral-800 text-opacity-50 w-fit max-md:px-5 max-md:max-w-full"
                 rows="4"
                 style={{ maxHeight: "30px", overflowY: "auto" }}
@@ -152,20 +152,20 @@ function OutputDataDepart({ polls }) {
             });
     }, [id]);
 
-    const handleLogout = (event) => {
-        event.preventDefault();
-        fetch("/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-        })
-            .then(() => {
-                window.location.href = "/";
-            })
-            .catch((err) => console.error(err));
-    }; //------------------------//
+    // const handleLogout = (event) => {
+    //     event.preventDefault();
+    //     fetch("/logout", {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "X-CSRF-Token": csrfToken,
+    //         },
+    //     })
+    //         .then(() => {
+    //             window.location.href = "/";
+    //         })
+    //         .catch((err) => console.error(err));
+    // }; //------------------------//
 
     useEffect(() => {
         fetch("/api/posts/posts?with[]=attachments", {
@@ -242,7 +242,7 @@ function OutputDataDepart({ polls }) {
 
     return (
         <>
-            {polls.map((poll, index) => (
+            {polls.map((poll) => (
                 <div
                     className="input-box-container"
                     style={{ height: "auto", marginTop: "-10px" }}
