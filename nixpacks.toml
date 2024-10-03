@@ -1,8 +1,5 @@
 providers = ["...", "php"]
 
-[build]
-nixpacksVersion = "1.28.1"
-
 [variables]
 UPLOAD_MAX_FILESIZE = '1024M'
 POST_MAX_SIZE = '1024M'
