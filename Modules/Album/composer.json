@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/album",
+    "name": "nwidart/crud",
     "description": "",
     "authors": [
         {
@@ -22,7 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\Album\\Tests\\": "tests/"
+            "Modules\\Crud\\Tests\\": "tests/"
         }
     }
 }
