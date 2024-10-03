@@ -57,6 +57,12 @@ class BirthdayTemplateController extends Controller
         return response()->json(['message' => 'Birthday template updated successfully!']);
     }
 
+    public function destroy(BirthdayTemplate $birthdayTemplate)
+    {
+        $birthdayTemplate->delete();
+        return response()->json(['message' => 'Birthday template deleted successfully!']);
+    }
+
     public function toggleEnabled(BirthdayTemplate $birthdayTemplate)
     {
         $birthdayTemplate->update([

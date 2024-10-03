@@ -14,26 +14,23 @@ import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import Feedback from "./Feedback";
-
 function PollOptionAnswered({ option, percentage }) {
     return (
         <div className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12">
-            <div
-                className={cn(
-                    `flex flex-auto gap-3 px-4   bg-gray-100 rounded-3xl max-md:flex-wrap items-center  transition `
-                )}
-            >
-                <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
+            <div className="relative flex flex-auto gap-3 px-4 rounded-3xl bg-gray-100 max-md:flex-wrap items-center transition">
+                <div
+                    className="absolute top-0 left-0 h-full bg-gray-400 bg-dark-100 rounded-3xl"
+                    style={{ width: `${percentage}%` }}
+                ></div>
+                <div className="relative flex gap-2 items-center z-10">
+                    <div>{percentage}%</div>
+                </div>
                 <button
                     disabled
-                    className="py-2 flex-auto outline-none border-none  text-start "
+                    className="relative py-2 flex-auto outline-none border-none text-start z-10"
                 >
                     {option}
                 </button>
-
-                <div className="flex gap-2">
-                    <div>{percentage.toFixed(2)}%</div>
-                </div>
             </div>
         </div>
     );
@@ -235,8 +232,8 @@ export function PollCard({ post }) {
                             }}
                             onDelete={() => {
                                 setShowDetails(false);
-                                setShowDeletePopup(true
-                            )}}
+                                setShowDeletePopup(true);
+                            }}
                         />
                     )}
                 </header>

@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/birthday-templates', [BirthdayTemplateController::class, 'store']);
     Route::get('/api/birthday-templates', [BirthdayTemplateController::class, 'index']);
     Route::put('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'update']);
+    Route::delete('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'destroy']);
     Route::put('/api/birthday-templates/{birthdayTemplate}/toggle-enabled', [BirthdayTemplateController::class, 'toggleEnabled']);
 });
 

@@ -58,18 +58,22 @@ export function Gallery({ selectedTag }) {
                                                 "image/"
                                             )
                                         )
-                                        .map((imageAttachment) => (
-                                            <PhotoView
-                                                key={imageAttachment.id}
-                                                src={`/storage/${imageAttachment.path}`}
-                                            >
-                                                <img
-                                                    src={`/storage/${imageAttachment.path}`}
-                                                    alt="Image Attachment"
-                                                    className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                                                />
-                                            </PhotoView>
-                                        ))
+                                        .map((imageAttachment) => {
+                                            return (
+                                                <div key={imageAttachment.id}>
+                                                    <PhotoView
+                                                        key={imageAttachment.id}
+                                                        src={`/storage/${imageAttachment.path}`}
+                                                    >
+                                                        <img
+                                                            src={`/storage/${imageAttachment.path}`}
+                                                            alt="Image Attachment"
+                                                            className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                                                        />
+                                                    </PhotoView>
+                                                </div>
+                                            );
+                                        })
                                 )}
                             </div>
                         </PhotoProvider>

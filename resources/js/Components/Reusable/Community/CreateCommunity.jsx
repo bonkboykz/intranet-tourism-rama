@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Cropper from "react-easy-crop";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { CircleXIcon } from "lucide-react";
@@ -135,6 +134,8 @@ function Card({
         if (communityDescription) {
             data.description = communityDescription;
         }
+
+        console.log(data.banner.length);
 
         try {
             console.log("Creating community:", data);
