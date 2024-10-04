@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { useUser } from "@/Layouts/useUser";
@@ -25,7 +24,11 @@ export function Polls() {
 
             console.log(responseData);
 
-            setUserPolls(responseData);
+            const sortedPolls = responseData.sort(
+                (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            );
+
+            setUserPolls(sortedPolls);
         } catch (error) {
             console.error(error);
         }

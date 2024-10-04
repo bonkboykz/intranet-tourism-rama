@@ -4,15 +4,15 @@ import Pautan from "@/Components/Settings/LinkComponent";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
-import PageTitle from "../Components/Reusable/PageTitle";
+// import PageTitle from "../Components/Reusable/PageTitle";
 
 const Settings = () => {
     const handleLinkNavigation = () => {
-        window.location.href = route("manage-links");
+        window.location.href = "manage-links";
     };
 
     const handleFolderNavigation = () => {
-        window.location.href = route("manage-folders");
+        window.location.href = "manage-folders";
     };
 
     const { hasRole } = usePermissions();
@@ -31,9 +31,15 @@ const Settings = () => {
                     {/* Top section for Department Links */}
                     <div className="flex flex-col w-full md:w-1/2 p-4 sm:p-6 lg:p-8 md:border-r border-gray-300">
                         <div className="flex items-center justify-between mb-4">
-                            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-                                Systems
-                            </h1>
+                            <div className="flex flex-col">
+                                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
+                                    Systems
+                                </h1>
+                                {/* Add description for Systems */}
+                                <p className="text-gray-600 text-sm sm:text-base">
+                                    Links to external sources
+                                </p>
+                            </div>
                             {isSuperAdmin && (
                                 <button
                                     className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
@@ -50,10 +56,15 @@ const Settings = () => {
                     {/* Bottom section for Non-Department Links */}
                     <div className="flex flex-col w-full md:w-1/2 p-4 sm:p-6 lg:p-8">
                         <div className="flex items-center justify-between mb-4">
-                            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-                                Official File
-                            </h1>
-
+                            <div className="flex flex-col">
+                                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
+                                    Official File
+                                </h1>
+                                {/* Add description for Official File */}
+                                <p className="text-gray-600 text-sm sm:text-base">
+                                    User can access certain files from here
+                                </p>
+                            </div>
                             {isSuperAdmin && (
                                 <button
                                     className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
