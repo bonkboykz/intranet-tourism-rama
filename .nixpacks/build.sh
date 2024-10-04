@@ -1,0 +1,1 @@
+docker build . -f ./.nixpacks/Dockerfile -t 432f7fe1-94b1-438e-9c79-718e46f23d80 --build-arg IS_LARAVEL=yes --build-arg MEMORY_LIMIT=2048M --build-arg NIXPACKS_METADATA=php,php --build-arg NIXPACKS_PHP_ROOT_DIR=/app/public --build-arg PORT=80 --build-arg POST_MAX_SIZE=1024M --build-arg UPLOAD_MAX_FILESIZE=1024M
