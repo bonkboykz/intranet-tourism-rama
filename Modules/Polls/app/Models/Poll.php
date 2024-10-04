@@ -5,7 +5,7 @@ namespace Modules\Polls\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
-use Modules\Crud\Models\Post;
+use Modules\Posts\Models\Post;
 use Modules\User\Models\User;
 use Illuminate\Support\Str;
 

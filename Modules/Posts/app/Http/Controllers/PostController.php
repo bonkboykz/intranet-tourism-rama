@@ -4,6 +4,7 @@ namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\NewPollCreatedNotification;
+use App\Notifications\PollFeedbackNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Events\Models\Event;
 use Modules\Polls\Models\Feedback;
@@ -660,6 +661,17 @@ class PostController extends Controller
                 'poll_id' => $request->poll_id,
                 'feedback_text' => $request->feedbackText,
             ]);
+
+
+            $poll = Poll::where('id', $request->poll_id)->with(['user', 'post'])->firstOrFail();
+
+            $author = $poll->user;
+            $post = $poll->post;
+
+            // get user with profile
+            $user = User::query()->where('id', $user->id)->with('profile')->firstOrFail();
+
+            $author->notify(new PollFeedbackNotification($post, $user));
 
             DB::commit();
         } catch (\Exception $e) {
