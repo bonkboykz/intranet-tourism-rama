@@ -31,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) {
         // Schedule::command('telescope:prune')->daily();
         $schedule->command('telescope:prune')->daily();
-        $schedule->job(new UpdateSearchIndex)->hourly();
+        $schedule->job(new UpdateSearchIndex)->everyFiveMinutes();
     })
     // ->withBroadcasting(
     //     __DIR__ . '/../routes/channels.php',
