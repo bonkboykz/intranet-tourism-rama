@@ -5,6 +5,8 @@ namespace Modules\Communities\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use Laravel\Scout\Searchable;
+use Modules\Posts\Models\Post;
 use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Settings\Models\CommunityPreference;
@@ -13,7 +15,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Community extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi;
+    use Auditable, Authorizable, HasFactory, QueryableApi, Searchable;
 
     protected $table = 'communities';
 
@@ -76,5 +78,14 @@ class Community extends Model implements AuditableContract
     public function admins()
     {
         return $this->belongsToMany(User::class, 'community_admins');
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+        ];
     }
 }

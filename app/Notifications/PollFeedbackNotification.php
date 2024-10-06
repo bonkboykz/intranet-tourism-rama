@@ -6,17 +6,33 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Posts\Models\Post;
+use Modules\User\Models\User;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
-class PollFeedbackNotification extends Notification
+class PollFeedbackNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public $post;
+    public $user;
+
+    public $user_avatar;
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(Post $post, User $user)
     {
-        //
+        $this->post = $post;
+        $this->user = $user;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     /**
@@ -24,20 +40,9 @@ class PollFeedbackNotification extends Notification
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via($notifiable)
     {
-        return ['mail'];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -49,6 +54,28 @@ class PollFeedbackNotification extends Notification
     {
         return [
             //
+        ];
+    }
+
+    public function toDatabase($notifiable)
+    {
+        return [
+            'message' => 'New feedback on your poll.',
+            'post_id' => $this->post->id,
+            'user_id' => $this->user->id,
+            'user_name' => $this->user->name,
+            'user_avatar' => $this->user_avatar,
+        ];
+    }
+
+    public function toBroadcast($notifiable)
+    {
+        return [
+            'message' => 'New feedback on your poll.',
+            'post_id' => $this->post->id,
+            'user_id' => $this->user->id,
+            'user_name' => $this->user->name,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 }

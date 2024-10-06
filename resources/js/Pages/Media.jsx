@@ -102,25 +102,6 @@ const Media = () => {
                     <Gallery selectedTag={selectedTag} />
                 </div>
             </main>
-            {/* <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
-                <style>
-                    {`
-            aside::-webkit-scrollbar {
-                width: 0px;
-                background: transparent;
-            }
-            `}
-                </style>
-                <div className="file-directory-header">
-                    <PageTitle title="Media" />
-                </div>
-                <hr className="file-directory-underline" />
-
-                <div>
-                    <FeaturedEvents />
-                    <WhosOnline />
-                </div>
-            </aside> */}
         </Example>
     );
 };

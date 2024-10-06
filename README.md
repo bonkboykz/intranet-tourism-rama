@@ -158,6 +158,12 @@ docker run --name redis -e ALLOW_EMPTY_PASSWORD=yes -p 6379:6379 -d bitnami/redi
 docker run \
     -v /path/to/postgresql-persistence:/bitnami/postgresql \
     bitnami/postgresql:latest
+
+# Meilisearch
+docker run -d \
+  -p 7700:7700 \
+  -v $(pwd)/meili_data:/meili_data \
+  getmeili/meilisearch:v1.10
 ```
 
 ### Linux
@@ -180,4 +186,8 @@ php artisan roles:create
 php artisan db:seed --class=SettingsSeeder
 
 php artisan db:seed --class=BirthdayTemplateSeeder
+
+php artisan scout:import "Modules\Posts\Models\Post"
+php artisan scout:import "Modules\User\Models\User"
+php artisan scout:import "Modules\Communities\Models\Community"
 ```

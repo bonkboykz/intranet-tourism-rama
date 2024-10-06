@@ -3,8 +3,11 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\CommentNotification;
 use App\Notifications\NewPollCreatedNotification;
+use App\Notifications\PollFeedbackNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Notifications\LikeNotification;
 use Modules\Events\Models\Event;
 use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
@@ -24,6 +27,7 @@ use Modules\Resources\Models\Resource;
 use Str;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Modules\User\Models\User;
+use function Pest\Laravel\get;
 
 class PostController extends Controller
 {
@@ -381,6 +385,13 @@ class PostController extends Controller
         $post->likes = array_unique(array_merge($post->likes, [$user_id]));
         $post->save();
 
+
+        $currentUser = User::where('id', $user_id)->firstOrFail();
+
+
+        $post->user->notify(new LikeNotification($currentUser, $post));
+
+
         return response()->noContent();
     }
 
@@ -407,6 +418,13 @@ class PostController extends Controller
             'comment_id' => $comment->id,
         ]);
 
+        $user_id = Auth::id();
+
+        $currentUser = User::where('id', $user_id)->firstOrFail();
+
+
+        $post->user->notify(new CommentNotification( $currentUser, $post));
+
         return response()->noContent();
     }
 
@@ -424,6 +442,7 @@ class PostController extends Controller
         // get all users who liked the post
 
         $users = User::whereIn('id', $post->likes)->get();
+
 
         // contsuct object with only name and image
         $users = $users->map(function ($user) {
@@ -660,6 +679,17 @@ class PostController extends Controller
                 'poll_id' => $request->poll_id,
                 'feedback_text' => $request->feedbackText,
             ]);
+
+
+            $poll = Poll::where('id', $request->poll_id)->with(['user', 'post'])->firstOrFail();
+
+            $author = $poll->user;
+            $post = $poll->post;
+
+            // get user with profile
+            $user = User::query()->where('id', $user->id)->with('profile')->firstOrFail();
+
+            $author->notify(new PollFeedbackNotification($post, $user));
 
             DB::commit();
         } catch (\Exception $e) {

@@ -1,20 +1,42 @@
 version: "3.8"
 services:
-    app:
-        image: bonkboykz/intranet-tourism:latest
+    web:
+        build:
+            context: .
+            dockerfile: .nixpacks/Dockerfile
         container_name: laravel_app
         restart: unless-stopped
         working_dir: /var/www
         volumes:
             - ./:/var/www
+            - ./storage:/app/storage/app
         env_file:
             - .env
         ports:
             - "8000:8000"
         depends_on:
             - db
-        networks:
-            - laravel
+            - redis
+            - soketi
+
+    worker:
+        build:
+            context: .
+            dockerfile: .nixpacks/Dockerfile
+        container_name: laravel_worker
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./storage:/app/storage/app
+        command: php artisan queue:work
+        env_file:
+            - .env
+        depends_on:
+            - app
+            - db
+            - redis
+            - soketi
 
     db:
         image: postgres:15
@@ -23,16 +45,22 @@ services:
         environment:
             - POSTGRES_DB=laravel
             - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=dilliponz123
+            - POSTGRES_PASSWORD=postgres
         volumes:
             - postgres_data:/var/lib/postgresql/data
 
-    node:
-        image: node:20
-        container_name: laravel_node
-        working_dir: /var/www
-        volumes:
-            - ./:/var/www
+    soketi:
+        image: quay.io/soketi/soketi:latest-16-alpine
+        container_name: laravel_soketi
+        restart: unless-stopped
+        ports:
+            - "6001:6001"
+
+    redis:
+        image: bitnami/redis:latest
+        container_name: laravel_redis
+        ports:
+            - "6379:6379"
 
 volumes:
     postgres_data:
