@@ -9,9 +9,11 @@ use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\Data\QRMatrix;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
 use Modules\Department\Models\Department;
@@ -44,7 +46,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements AuditableContract
 {
-    use Auditable, HasFactory, HasApiTokens, Notifiable, HasRoles, HasPermissions;
+    use Auditable, HasFactory, HasApiTokens, Notifiable, HasRoles, HasPermissions, Searchable;
 
     protected $table = 'users';
 
@@ -262,4 +264,17 @@ class User extends Authenticatable implements AuditableContract
     {
         return $this->belongsToMany(Community::class, 'community_admins');
     }
+
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone_no' => $this->profile->phone_no,
+            'department' => $this->employmentPost->department->name ?? null,
+            'business_unit' => $this->employmentPost->businessUnit->name ?? null,
+            'position' => $this->employmentPost->businessPost->title ?? null,
+        ];
+    }
+
 }

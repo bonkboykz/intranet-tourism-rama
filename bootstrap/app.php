@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\UpdateSearchIndex;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) {
         // Schedule::command('telescope:prune')->daily();
         $schedule->command('telescope:prune')->daily();
+        $schedule->job(new UpdateSearchIndex)->hourly();
     })
     // ->withBroadcasting(
     //     __DIR__ . '/../routes/channels.php',

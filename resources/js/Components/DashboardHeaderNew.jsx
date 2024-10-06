@@ -9,6 +9,7 @@ import axios from "axios";
 
 import { useNotifications } from "@/Layouts/useNotifications";
 import { useSettings } from "@/Layouts/useSettings";
+import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 
 import BirthdayNotificationPopup from "../Components/BirthdayNotificationPopup";
 import NotificationPopup from "./NotificationPopup";
@@ -158,6 +159,16 @@ export default function Header({ setSidebarOpen }) {
 
     const { settings } = useSettings();
 
+    const { searchParams } = useSearchParams();
+
+    const q = searchParams.get("q");
+
+    const onSearch = (event) => {
+        event.preventDefault();
+        const search = event.target.value;
+        window.location.href = `/search?q=${search}`;
+    };
+
     return (
         <div className="z-50 fixed w-full lg:pr-16 top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
             <button
@@ -181,8 +192,7 @@ export default function Header({ setSidebarOpen }) {
                     alt="Jomla Logo"
                 />
                 <form className="relative flex flex-1" action="#" method="GET">
-                    {/* TODO: Return after implementation */}
-                    {/* <label htmlFor="search-field" className="sr-only">
+                    <label htmlFor="search-field" className="sr-only">
                         Search
                     </label>
                     <MagnifyingGlassIcon
@@ -195,7 +205,13 @@ export default function Header({ setSidebarOpen }) {
                         placeholder="Search..."
                         type="search"
                         name="search"
-                    /> */}
+                        defaultValue={q}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                onSearch(e);
+                            }
+                        }}
+                    />
                 </form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
                     {/* TODO: return after implementation */}

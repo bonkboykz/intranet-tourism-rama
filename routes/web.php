@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentOrdering;
 use App\Http\Controllers\departments;
 use App\Http\Controllers\FileManagementController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PusherController;
@@ -100,6 +101,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'update']);
     Route::delete('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'destroy']);
     Route::put('/api/birthday-templates/{birthdayTemplate}/toggle-enabled', [BirthdayTemplateController::class, 'toggleEnabled']);
+
+    Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
+    Route::get('/api/search', [GlobalSearchController::class, 'search'])->name('search.results');
 });
 
 Route::get('/user/{id}/qr', [ProfileController::class, 'profileQr'])->name('profileQr');

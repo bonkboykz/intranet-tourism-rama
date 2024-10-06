@@ -5,6 +5,8 @@ namespace Modules\Posts\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use Illuminate\Database\Eloquent\Builder;
+use Laravel\Scout\Searchable;
 use Modules\Album\Models\Album;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
@@ -22,7 +24,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Post extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi, HasUuids, Attachable;
+    use Auditable, Authorizable, HasFactory, QueryableApi, HasUuids, Attachable, Searchable;
 
     protected $table = 'posts';
 
@@ -144,4 +146,24 @@ class Post extends Model implements AuditableContract
     {
         return $this->hasOne(related: Poll::class);
     }
+
+    public function toSearchableArray()
+    {
+        $albums = $this->albums->pluck('name')->toArray();
+
+        $question_text = null;
+
+        if ($this->poll && $this->poll->question) {
+            $question_text = $this->poll->question->question_text;
+        }
+
+        return [
+            'title' => $this->title,
+            'content' => $this->content,
+            'albums' => $albums,
+            'event' => $this->event,
+            'question_text' => $question_text,
+        ];
+    }
+
 }
