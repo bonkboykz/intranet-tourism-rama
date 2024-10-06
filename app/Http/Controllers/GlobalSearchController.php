@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\UpdateSearchIndex;
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Inertia\Inertia;
 use Modules\Communities\Models\Community;
 use Modules\Posts\Models\Post;
 use Modules\User\Models\User;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class GlobalSearchController extends Controller
 {
@@ -66,6 +68,16 @@ class GlobalSearchController extends Controller
                 'communities' => $communities,
             ]
         ]);
+    }
+
+    public function updateSearchIndex()
+    {
+        $output = new ConsoleOutput();
+        $output->writeln('Updating search index');
+        dispatch(new UpdateSearchIndex);
+        $output->writeln('Job dispatched');
+
+        return response()->json(['message' => 'Search index updated']);
     }
 }
 
