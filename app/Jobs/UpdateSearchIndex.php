@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class UpdateSearchIndex implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, Dispatchable;
 
     /**
      * Create a new job instance.
