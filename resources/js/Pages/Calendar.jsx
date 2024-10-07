@@ -676,6 +676,7 @@ function Calendar() {
                         ref={calendarRef}
                         select={handleDateSelect}
                         eventClick={handleEventClick}
+                        selectLongPressDelay={100}
                         height={650}
                         buttonText={{
                             today: "Today",
