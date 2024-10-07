@@ -39,11 +39,7 @@ const DepartmentSearchBar = ({ onSearch, toggleCreateCommunity }) => {
                             className="flex items-center text-sm font-bold px-4 py-3 bg-red-500 text-white rounded-full hover:bg-red-700"
                             onClick={toggleCreateCommunity}
                         >
-                            <img
-                                src="/assets/plus.svg"
-                                alt="Plus icon"
-                                className="w-3 h-3 my-1.5 mr-2"
-                            />
+                            <span className="w-3 text-2xl mr-2">+</span>{" "}
                             Department
                         </button>
                     </div>
