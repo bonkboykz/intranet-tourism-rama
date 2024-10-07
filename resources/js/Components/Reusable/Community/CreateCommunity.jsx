@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
+import Cropper from "react-easy-crop";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
+import { getProfileImage } from "@/Utils/getProfileImage";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+import useUserData from "@/Utils/hooks/useUserData";
 
 import getCroppedImg from "./cropImgCommunity";
 
@@ -119,6 +123,9 @@ function Card({
         }
     }, [imageSrc, croppedAreaPixels]);
 
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
+
     const handleSubmit = async () => {
         const data = {
             name: communityName,
@@ -135,17 +142,32 @@ function Card({
             data.description = communityDescription;
         }
 
-        console.log(data.banner.length);
+        // console.log(data.banner.length);
 
         try {
-            console.log("Creating community:", data);
+            // console.log("Creating community:", data);
+
+            if (!isSuperAdmin) {
+                const response = await axios.post(
+                    `/api/createCommunityCreateRequest`,
+                    data
+                );
+
+                if ([200, 201, 204].includes(response.status)) {
+                    toast.success("Community create request sent");
+
+                    onCreate();
+                }
+
+                return;
+            }
 
             const response = await axios.post(
                 "/api/communities/communities",
                 data
             );
             // const text = await response.text();
-            const responseData = response.data;
+            // const responseData = response.data;
 
             if (![200, 201, 204].includes(response.status)) {
                 // console.error("Server response not OK:", text);
@@ -154,7 +176,7 @@ function Card({
 
             // const responseData = text ? JSON.parse(text) : {};
             // console.log("Community created:", responseData.data);
-            onCreate(responseData.data);
+            onCreate();
             // window.location.reload();
         } catch (error) {
             console.error("Error creating community:", error.message);
@@ -184,7 +206,7 @@ function Card({
                     alt={imgAlt}
                     onImageChange={handleImageChange}
                 />
-                {/* {imageSrc && (
+                {imageSrc && (
                     <div className="relative w-full h-[300px] mt-3">
                         <Cropper
                             image={originalImageSrc}
@@ -197,7 +219,7 @@ function Card({
                         />
                     </div>
                 )}
-                */}
+
                 <button
                     className="justify-center px-4 py-2 mt-4 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
                     onClick={showCroppedImage}
@@ -252,43 +274,7 @@ function Card({
 }
 
 export default function CreateCommunity({ id, onCancel, onCreate }) {
-    const [user, setUserData] = useState({
-        name: "",
-        role: "Admin",
-        profileImage: "",
-    });
-
-    const fetchUser = async () => {
-        try {
-            const response = await fetch(
-                `/api/users/users/${id}?with[]=profile`,
-                {
-                    method: "GET",
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const { data } = await response.json();
-            setUserData((pv) => ({
-                ...pv,
-                ...data,
-                name: data.name,
-                profileImage:
-                    data.profile && data.profile.image
-                        ? `/storage/${data.profile.image}`
-                        : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${data.name}&rounded=true`,
-            }));
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUser();
-    }, [id]);
+    const user = useUserData();
 
     return (
         <div className="scrollable-container">
@@ -296,7 +282,11 @@ export default function CreateCommunity({ id, onCancel, onCreate }) {
                 title="Create New Community"
                 imgSrc="/assets/uploadAnImage.svg"
                 imgAlt="Community Header Photo"
-                user={user}
+                user={{
+                    name: user.name,
+                    role: "Admin",
+                    profileImage: getProfileImage(user.profile, user.name),
+                }}
                 type="Type"
                 description="Description"
                 cancelText="Cancel"

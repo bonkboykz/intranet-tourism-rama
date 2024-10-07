@@ -41,7 +41,7 @@ class NotificationController extends Controller
     public function getRecentNotifications()
     {
         $user = User::find(auth()->id());
-        $notifications = $user->notifications()->with('notifiable.profile')->latest()->take(10)->get();
+        $notifications = $user->notifications()->with('notifiable.profile')->latest()->take(5)->get();
 
         return response()->json([
             'data' => $notifications,

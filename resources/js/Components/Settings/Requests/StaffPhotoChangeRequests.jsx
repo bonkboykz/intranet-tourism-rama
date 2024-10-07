@@ -6,28 +6,6 @@ import { formatTime } from "@/Utils/format";
 import { getProfileImage, getStaffImage } from "@/Utils/getProfileImage";
 import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
 
-import aishaImage from "../../../../../public/assets/aishaImage.png";
-import changeImage2 from "../../../../../public/assets/lambo2.jpeg";
-import changeImage1 from "../../../../../public/assets/lambo5.jpeg";
-import thomasImage from "../../../../../public/assets/thomasImage.png";
-
-const orgChartPhotoChangeData = [
-    {
-        name: "Thomas",
-        department: "Department",
-        time: "2024-06-20T02:00:00Z",
-        currentImage: thomasImage,
-        changeImage: changeImage1,
-    },
-    {
-        name: "Aisha Binti",
-        department: "Department",
-        time: "2024-06-19T04:00:00Z",
-        currentImage: aishaImage,
-        changeImage: changeImage2,
-    },
-];
-
 const OrgChartPhotoChangeRow = ({
     id,
     name,
@@ -200,16 +178,25 @@ export const StaffPhotoChangeRequests = () => {
             <h2 className="mb-4 text-2xl font-bold text-blue-500">
                 Organisational Chart Photo Change
             </h2>
-            {preparedRequests.map((data, index) => (
-                <OrgChartPhotoChangeRow
-                    key={index}
-                    {...data}
-                    onUpdate={() => {
-                        setCurrentPage(1);
-                        fetchData(false);
-                    }}
-                />
-            ))}
+
+            {preparedRequests.length > 0 ? (
+                preparedRequests.map((data, index) => (
+                    <OrgChartPhotoChangeRow
+                        key={index}
+                        {...data}
+                        onUpdate={() => {
+                            setCurrentPage(1);
+                            fetchData(false);
+                        }}
+                    />
+                ))
+            ) : (
+                <div className="flex items-center justify-center w-full h-32">
+                    <p className="text-lg font-semibold text-gray-400">
+                        No requests found
+                    </p>
+                </div>
+            )}
         </section>
     );
 };

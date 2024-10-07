@@ -131,14 +131,14 @@ const Requests = () => {
             <GroupJoinRequests />
             <CommunityCreationRequests />
             <StaffPhotoChangeRequests />
-            <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px]">
+            {/* <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px]">
                 <h2 className="mb-4 text-2xl font-bold text-blue-500">
                     Profile Information
                 </h2>
                 {profileInformationData.map((data, index) => (
                     <ProfileInformationRow key={index} {...data} />
                 ))}
-            </section>
+            </section> */}
         </div>
     );
 };

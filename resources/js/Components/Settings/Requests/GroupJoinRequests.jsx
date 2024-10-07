@@ -177,18 +177,20 @@ export const GroupJoinRequests = () => {
             <h2 className="mb-4 text-2xl font-bold text-blue-500">
                 Group Join
             </h2>
-            {loading ? (
-                <div className="w-full flex items-center justify-center">
-                    <Loader2 className="w-16 h-16 animate-spin" />
-                </div>
-            ) : (
-                preparedRequests.map((data, index) => (
+            {preparedRequests.length > 0 ? (
+                preparedRequests.map((data) => (
                     <GroupJoinRow
                         key={data.id}
                         {...data}
                         onUpdate={fetchRequests}
                     />
                 ))
+            ) : (
+                <div className="flex items-center justify-center w-full h-32">
+                    <p className="text-lg font-semibold text-gray-400">
+                        No requests found
+                    </p>
+                </div>
             )}
         </section>
     );
