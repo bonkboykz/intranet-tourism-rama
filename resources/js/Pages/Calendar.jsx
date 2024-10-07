@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLayoutEffect } from "react";
-import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -9,9 +7,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
-import { format, isSameDay } from "date-fns";
-// import { CakeIcon } from '@heroicons/react/20/solid';
-import { getDate, getMonth } from "date-fns";
+import { format } from "date-fns";
 import { Popover as RsuitePopover, Whisper } from "rsuite";
 
 import BirthdayCom from "@/Components/Reusable/Birthdayfunction/birthdaypopup";
@@ -27,7 +23,6 @@ import { toastError } from "@/Utils/toast";
 
 import pencilIcon from "../../../public/assets/EditIcon.svg";
 import printIcon from "../../../public/assets/PrintPDF.svg";
-import searchIcon from "../../../public/assets/search.png";
 import PrintCalendar from "./Calendar/PrintCalendar";
 
 import "./Calendar/index.css";
