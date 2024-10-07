@@ -208,11 +208,13 @@ function Navigation({ userId, departmentID, departmentName }) {
         setActiveTab(tab);
     };
 
-    const { isMember, user } = useContext(DepartmentContext);
+    const { isMember } = useContext(DepartmentContext);
 
     // console.log(isMember);
 
     const [searchTerm, setSearchTerm] = useState("");
+
+    const [filterType, setFilterType] = useState(null);
 
     return (
         <WallContext.Provider
@@ -260,7 +262,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                             <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
                                 <DepartmentMembers
                                     departmentID={departmentID}
-                                    loggedInID={user.id}
+                                    loggedInID={userId}
                                 />
                             </div>
                         </div>
@@ -297,24 +299,21 @@ function Navigation({ userId, departmentID, departmentName }) {
                                         userId={userId}
                                         onCreatePoll={handleCreatePoll}
                                         includeAccessibilities={true}
-                                        filterType="Community"
-                                        filterId={departmentID}
-                                        // birthdaysToday={
-                                        //     birthdaysToday.length > 0
-                                        //         ? birthdaysToday
-                                        //         : null
-                                        // }
                                         departmentId={departmentID}
                                     />
                                 )}
-                                <Filter />
+                                <Filter
+                                    onFilterChange={(filter) =>
+                                        setFilterType(filter)
+                                    }
+                                />
                                 <br />
                                 <OutputData
                                     polls={polls}
+                                    postType={filterType}
                                     departmentId={departmentID}
-                                    departmentName={departmentName}
                                     variant="department"
-                                    loggedInUserId={user.id}
+                                    loggedInUserId={userId}
                                 />
                             </div>
                         </div>
