@@ -214,6 +214,8 @@ function Navigation({ userId, departmentID, departmentName }) {
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [filterType, setFilterType] = useState(null);
+
     return (
         <WallContext.Provider
             value={{ variant: "department", loggedInUserId: userId }}
@@ -297,23 +299,21 @@ function Navigation({ userId, departmentID, departmentName }) {
                                         userId={userId}
                                         onCreatePoll={handleCreatePoll}
                                         includeAccessibilities={true}
-                                        filterType="Community"
-                                        filterId={departmentID}
-                                        // birthdaysToday={
-                                        //     birthdaysToday.length > 0
-                                        //         ? birthdaysToday
-                                        //         : null
-                                        // }
                                         departmentId={departmentID}
                                     />
                                 )}
-                                <Filter />
+                                <Filter
+                                    onFilterChange={(filter) =>
+                                        setFilterType(filter)
+                                    }
+                                />
                                 <br />
                                 <OutputData
                                     polls={polls}
+                                    postType={filterType}
                                     departmentId={departmentID}
-                                    departmentName={departmentName}
                                     variant="department"
+                                    loggedInUserId={userId}
                                 />
                             </div>
                         </div>
