@@ -551,6 +551,7 @@ function Navigation({ departmentName, type }) {
                                     communityId={communityID}
                                     postType={filterType}
                                     variant="community"
+                                    loggedInUserId={userId}
                                 />
                             </div>
                         </div>

@@ -25,8 +25,6 @@ export function useInfiniteScroll({
     const { hasRole } = usePermissions();
     const isSuperAdmin = hasRole("superadmin");
 
-    const constructFilter = () => {};
-
     async function fetchData() {
         if (
             loading ||
