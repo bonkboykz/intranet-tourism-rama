@@ -210,7 +210,7 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
 
         const percentagesMap =
             results.percentages?.reduce((acc, cur) => {
-                acc[cur.option_id] = cur.percentage;
+                acc[cur.option_id] = parseFloat(cur.percentage.toFixed(1));
                 return acc;
             }, {}) ?? {};
 
