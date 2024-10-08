@@ -65,11 +65,11 @@ class PostController extends Controller
                                 $query->where(['type' => 'public', 'post_as' => 'admin'])
                                     // For private communities, check if user is a member
                                     ->orWhere(function ($query) use ($user) {
-                                        $query->where('type', 'private')
-                                            ->whereHas('members', function ($query) use ($user) {
-                                                $query->where('user_id', $user->id);
-                                            });
-                                    });
+                                    $query->where('type', 'private')
+                                        ->whereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id);
+                                        });
+                                });
                             });
 
                     })
@@ -95,11 +95,11 @@ class PostController extends Controller
                                 $query->where('type', 'public')
                                     // For private communities, check if user is a member
                                     ->orWhere(function ($query) use ($user) {
-                                        $query->where('type', 'private')
-                                            ->whereHas('members', function ($query) use ($user) {
-                                                $query->where('user_id', $user->id);
-                                            });
-                                    });
+                                    $query->where('type', 'private')
+                                        ->whereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id);
+                                        });
+                                });
                             });
                     })
                         // Departments should also check membership, post_as admin bypasses checks
@@ -109,8 +109,8 @@ class PostController extends Controller
                                     // Check for admin posts or user being part of the department
                                     $query->where('post_as', 'admin')
                                         ->orWhereHas('employmentPosts', function ($query) use ($user) {
-                                            $query->where('user_id', $user->id);
-                                        });
+                                        $query->where('user_id', $user->id);
+                                    });
                                 });
                         });
                 });
@@ -230,15 +230,6 @@ class PostController extends Controller
             // add albums
             if (request()->has('albums')) {
                 $post->albums()->attach(request('albums'));
-                $albums = (array) json_decode($post->albums);
-                $superusers = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'superadmin');
-                });
-                foreach ($albums as $album) {
-                    $superusers->get()->each(function ($superuser) use ($album) {
-                        $superuser->notify(new AlbumTagNotification($album, $superuser));
-                    });
-                }
             }
 
             if (request()->has('accessibilities')) {
@@ -249,6 +240,18 @@ class PostController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             throw $th;
+        }
+
+        if (request()->has('albums')) {
+            $albums = $post->albums();
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
+            foreach ($albums as $album) {
+                $superusers->get()->each(function ($superuser) use ($album) {
+                    $superuser->notify(new AlbumTagNotification($album, $superuser));
+                });
+            }
         }
 
         return response()->noContent();
@@ -369,14 +372,16 @@ class PostController extends Controller
             $post_id = $post->id;
             $community_id = $post->community->id ?? null;
             $department_id = $post->department->id ?? null;
+
             $post->delete();
             DB::commit();
+
             $user_id = Auth::id();
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
             if ($community_id) {
                 $author->notify(new DeletingPostFromCommunityNotification($currentUser, $community_id));
-            } else if ($department_id) {
+            } elseif ($department_id) {
                 $author->notify(new DeletingPostFromDepartmentNotification($currentUser, $department_id));
             } else {
                 $author->notify(new DeletingPostFromDashboardNotification($currentUser, $post_id));
@@ -432,7 +437,7 @@ class PostController extends Controller
         return response()->noContent();
     }
 
-//    private function extractMentions($content)
+    //    private function extractMentions($content)
 //    {
 //        preg_match_all('/@(\w+)/', $content, $matches);
 //        return $matches[1];  // Returns an array of mentioned usernames
@@ -562,10 +567,10 @@ class PostController extends Controller
         // json tag is array of strings which are album names, they could be on any type of post
         // get unique string values from all posts' tag field
         $albums = Post::all()->whereNotNull('tag') // Only consider posts where the 'tag' column is not null
-        ->pluck('tag')        // Extract the 'tag' JSON column
-        ->flatMap(function ($tags) {
-            return json_decode($tags, true); // Decode the JSON to an array
-        })
+            ->pluck('tag')        // Extract the 'tag' JSON column
+            ->flatMap(function ($tags) {
+                return json_decode($tags, true); // Decode the JSON to an array
+            })
             ->unique()            // Get only unique tags
             ->values()
             ->sort()           // Re-index the collection
@@ -911,9 +916,9 @@ class PostController extends Controller
         // Filter by either user is superadmin or post has albums, or user is author
         $query->where(function ($query) {
             $query->whereHas('albums') // Posts with albums
-            ->orWhereHas('user.roles', function ($query) {
-                $query->where('name', 'superadmin'); // User is superadmin
-            })
+                ->orWhereHas('user.roles', function ($query) {
+                    $query->where('name', 'superadmin'); // User is superadmin
+                })
                 ->orWhereHas('user', function ($query) {
                     $query->where('id', Auth::id()); // User is author
                 });

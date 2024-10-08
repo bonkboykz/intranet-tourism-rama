@@ -189,14 +189,16 @@ class CommunityController extends Controller
             $community->members()->attach($user);
         }
 
-        // Notify the new member
-        $user->notify(new CommunityNotification(Auth::user(), $community, 'added'));
+        try {
+            if (Auth::id() !== $user->id) {
+                $current_user = User::where('id', Auth::id())->firstOrFail();
 
-        // Notify the user who added the new member
-        if (Auth::id() !== $user->id) {
-            $current_user = User::findOrFail(Auth::id());
-            $current_user->notify(new CommunityNotification($current_user, $community, 'added ' . $user->name));
+                $user->notify(new CommunityNotification($current_user, $community, 'added'));
+            }
+        } catch (\Throwable $e) {
         }
+
+
 
         return response()->noContent();
     }
