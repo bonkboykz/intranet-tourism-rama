@@ -190,6 +190,8 @@ class CommunityController extends Controller
             $community->members()->attach($user);
         }
 
+        $user->notify(new CommunityNotification(Auth::user(), $community));
+
         return response()->noContent();
     }
 

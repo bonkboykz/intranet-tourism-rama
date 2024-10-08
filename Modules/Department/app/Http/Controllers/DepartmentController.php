@@ -209,6 +209,8 @@ class DepartmentController extends Controller
         // Assign the user the department-specific permissions
         DepartmentPermissionsHelper::assignDepartmentAdminPermissions($user, $department);
 
+        $department->admins()->attach($user->id);
+        $user->notify(new DepartmentNotification($user, $department));
 
         return response()->json([
             'message' => 'User has been successfully invited as a department admin.',

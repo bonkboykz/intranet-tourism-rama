@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export default function Pautan({ displayType }) {
-    // const [extlink, setExtlink] = useState([]);
     const [departmentLinks, setDepartmentLinks] = useState([]);
     const [nonDepartmentLinks, setNonDepartmentLinks] = useState([]);
     const [showAllDept, setShowAllDept] = useState(false);
@@ -81,11 +80,18 @@ export default function Pautan({ displayType }) {
             >
                 {linksToDisplay().map((refer, index) => {
                     const isTop = index === 0;
-                    // const isBottom = index === linksToDisplay().length - 1;
                     const displayLabel =
                         displayType === "department"
                             ? refer.label.replace(/\s*\(dept\)$/, "")
                             : refer.label;
+
+                    let faviconSrc;
+                    try {
+                        const urlObject = new URL(refer.url);
+                        faviconSrc = `https://icons.duckduckgo.com/i/${urlObject.hostname}.ico`;
+                    } catch (error) {
+                        faviconSrc = "/assets/File Management Inactive.svg";
+                    }
 
                     return (
                         <li
@@ -101,9 +107,13 @@ export default function Pautan({ displayType }) {
                                 className="flex min-w-0 gap-x-4 w-full px-4"
                             >
                                 <img
-                                    src={`https://icons.duckduckgo.com/ip2/${new URL(refer.url).hostname}.ico`}
+                                    src={faviconSrc}
                                     alt={`${displayLabel} favicon`}
                                     className="h-6 w-6 flex-none"
+                                    onError={(e) => {
+                                        e.target.src =
+                                            "/assets/File Management Inactive.svg";
+                                    }}
                                 />
                                 <div className="min-w-0 flex-auto self-center pl-2">
                                     <p className="text-md font-semibold leading-5 text-gray-900">
@@ -120,6 +130,7 @@ export default function Pautan({ displayType }) {
                         </li>
                     );
                 })}
+
                 {/* Button to show more or less */}
                 {(displayType === "department" ||
                     displayType === "nonDepartment") && (
