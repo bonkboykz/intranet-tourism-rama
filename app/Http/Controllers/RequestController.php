@@ -35,7 +35,12 @@ class RequestController extends Controller
             if ($request->user->employmentPost) {
                 $request->userDepartment = $request->user->employmentPost->department->name;
             }
-            $request->groupFollowersCount = $request->group->members()->count();
+
+            if ($request->group) {
+                $request->groupFollowersCount = $request->group->members()->count();
+            } else {
+                $request->groupFollowersCount = 0;
+            }
             return $request;
         });
 
