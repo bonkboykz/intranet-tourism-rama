@@ -44,6 +44,11 @@ class RequestController extends Controller
             return $request;
         });
 
+        // filter out join requests where group is null
+        $groupJoinRequests->filter(function ($request) {
+            return $request->group !== null;
+        });
+
         // paginate requests
         return response()->json([
             'data' => $groupJoinRequests,
