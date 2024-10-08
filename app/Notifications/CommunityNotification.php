@@ -23,15 +23,18 @@ class CommunityNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database', 'mail']; // Specify notification channels
+        return ['database',];
     }
 
     public function toArray($notifiable)
     {
-        // Определяем сообщение в зависимости от действия
-        $actionMessage = $this->action === 'added'
-            ? 'added you to the community'
-            : 'removed you from the community';
+        $actionMessage = match($this->action) {
+            'added' => 'added you to the community',
+            'removed' => 'removed you from the community',
+            'archived' => 'archived the community',
+            'unarchived' => 'unarchived the community',
+            default => 'performed an action on the community'
+        };
 
         return [
             'actor' => $this->actor->name,
@@ -39,6 +42,7 @@ class CommunityNotification extends Notification
             'message' => $this->actor->name . ' has ' . $actionMessage . ' ' . $this->community->name,
         ];
     }
+
 
 
 }
