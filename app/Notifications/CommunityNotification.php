@@ -3,43 +3,43 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
-use Modules\Communities\Models\Community;
-use Modules\User\Models\User;
 
-class CommunityNotification extends Notification implements ShouldQueue
+class CommunityNotification extends Notification
 {
     use Queueable;
 
-    public $user;
-    public $community;
+    protected $actor;      // The user who performed the action
+    protected $community;  // The community involved
+    protected $action;     // The action performed (e.g., 'added')
 
-    public function __construct(User $user, Community $community)
+    public function __construct($actor, $community, $action)
     {
-        $this->user = $user;
+        $this->actor = $actor;
         $this->community = $community;
+        $this->action = $action;
     }
 
     public function via($notifiable)
     {
-        return ['database', 'broadcast'];
+        return ['database', 'mail']; // Specify notification channels
     }
 
-    public function toDatabase($notifiable)
+    public function toArray($notifiable)
     {
         return [
-            'message' => $this->user->name . " added you to the community " . $this->community->name,
-            'community_id' => $this->community->id,
+            'actor' => $this->actor->name,
+            'community' => $this->community->name,
+            'message' => $this->actor->name . ' ' . $this->action . ' you to the community ' . $this->community->name,
         ];
     }
 
-    public function toBroadcast($notifiable)
+    public function toMail($notifiable)
     {
-        return new BroadcastMessage([
-            'message' => $this->user->name . " added you to the community " . $this->community->name,
-            'community_id' => $this->community->id,
-        ]);
+        return (new MailMessage)
+            ->subject('You have been added to a community')
+            ->line($this->toArray($notifiable)['message']);
     }
 }
+
