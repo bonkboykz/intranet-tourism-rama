@@ -3,6 +3,9 @@
 namespace Modules\Department\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\AddingToDepartmentNotification;
+use App\Notifications\DeletingFromDepartmentNotification;
+use Illuminate\Support\Facades\Auth;
 use Modules\Department\Helpers\DepartmentPermissionsHelper;
 use Modules\Department\Models\Department;
 use Modules\Department\Models\EmploymentPost;
@@ -60,7 +63,7 @@ class EmploymentPostController extends Controller
     {
         $validated = request()->validate(...EmploymentPost::rules());
 
-        // check if user already has an employment post, even with different position, in the same department
+        // Check if the user already has an employment post in the same department
         $employmentPost = EmploymentPost::where('user_id', $validated['user_id'])
             ->where('department_id', $validated['department_id'])
             ->first();
@@ -73,8 +76,18 @@ class EmploymentPostController extends Controller
 
         EmploymentPost::create($validated);
 
+        $user_id = Auth::id();
+        $currentUser = User::where('id', $user_id)->firstOrFail();
+        $user = User::find($validated['user_id']); // Retrieve the user being added
+
+        $department = Department::where('id', $validated['department_id'])->first(); // Get department from validated data
+
+        // Send notification to the user who has been added
+        $user->notify(new AddingToDepartmentNotification($department->id, $currentUser));
+
         return response()->noContent();
     }
+
 
     public function update(EmploymentPost $employment_post)
     {
@@ -96,6 +109,12 @@ class EmploymentPostController extends Controller
         if ($user) {
             DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($user, $department);
         }
+
+        $user_id = Auth::id();
+        $currentUser = User::where('id', $user_id)->firstOrFail();
+
+        $user->notify(new DeletingFromDepartmentNotification($currentUser, $department->id));
+
 
         return response()->noContent();
     }

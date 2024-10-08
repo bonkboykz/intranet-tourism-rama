@@ -548,14 +548,19 @@ class PostController extends Controller
         $user_id = Auth::id();
         $author = $comment->user;
         $currentUser = User::where('id', $user_id)->firstOrFail();
-        $mentionedUsers = (array) json_decode($comment->mentions);
-        foreach ($mentionedUsers as $mentionedUser) {
-            $user = User::where('name', $mentionedUser->name)->firstOrFail();
-            if ($user) {
-                $user->notify(new UserGotMentionedNotification($post, $comment->id, $currentUser));
-            }
-        }
+        try {
+            $mentionedUsers = (array) json_decode($comment->mentions);
+            $mentionedUsers = array_map(function ($user) {
+                return $user->id;
+            }, $mentionedUsers);
 
+            $mentionedUsers = User::whereIn('id', $mentionedUsers)->get();
+            $mentionedUsers->each(function ($mentionedUser) use ($comment, $currentUser) {
+                $mentionedUser->notify(new UserGotMentionedNotification($comment, $comment->id, $currentUser));
+            });
+        } catch (\Throwable $th) {
+            throw $th;
+        }
         $author->notify(new CommentNotification($currentUser, $post));
 
         return response()->noContent();

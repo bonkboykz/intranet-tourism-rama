@@ -98,32 +98,12 @@ const Community = () => {
 
     const handleDelete = async (departmentId) => {
         try {
-            // const resMembers = await axios.get(
-            //     `/api/communities/communities/${departmentId}/members`
-            // );
-
-            // if (resMembers.data.data.length > 0) {
-            //     toastError("Cannot delete community with members");
-
-            //     return;
-            // }
-
-            // const resAdmins = await axios.get(
-            //     `/api/communities/communities/${departmentId}/admins`
-            // );
-
-            // if (resAdmins.data.data.length > 0) {
-            //     toastError("Cannot delete community with admins");
-
-            //     return;
-            // }
-
             const url = `/api/communities/communities/${departmentId}`;
             const options = {
                 method: "DELETE",
                 headers: {
                     Accept: "application/json",
-                    "X-CSRF-Token": csrfToken, // Ensure this token is being sent correctly
+                    "X-CSRF-Token": csrfToken,
                 },
             };
 
@@ -135,17 +115,12 @@ const Community = () => {
                 );
             }
 
-            // Update the departments list after successful deletion
             setDepartmentsList((prevList) =>
                 prevList.filter((department) => department.id !== departmentId)
             );
-
-            console.log(
-                `Department with ID ${departmentId} deleted successfully.`
-            );
         } catch (error) {
             console.error("Error deleting department:", error.message);
-            // Optional: Show an error message to the user
+            toastError("Error deleting community. Please try again.");
         }
     };
 
