@@ -8,6 +8,8 @@ use App\Notifications\CommentNotification;
 use App\Notifications\DeletingPostFromCommunityNotification;
 use App\Notifications\DeletingPostFromDashboardNotification;
 use App\Notifications\DeletingPostFromDepartmentNotification;
+use App\Notifications\NewPollCreatedInCommunityNotification;
+use App\Notifications\NewPollCreatedInDepartmentNotification;
 use App\Notifications\NewPollCreatedNotification;
 use App\Notifications\PollFeedbackNotification;
 use App\Notifications\UserBirthdayWishNotification;
@@ -231,6 +233,15 @@ class PostController extends Controller
             // add albums
             if (request()->has('albums')) {
                 $post->albums()->attach(request('albums'));
+                $albums = (array)json_decode($post->albums);
+                $superusers = User::whereHas('roles', function ($query) {
+                    $query->where('name', 'superadmin');
+                });
+                foreach ($albums as $album) {
+                    $superusers->get()->each(function ($superuser) use ($album) {
+                        $superuser->notify(new AlbumTagNotification($album, $superuser));
+                    });
+                }
             }
 
             if (request()->has('accessibilities')) {
@@ -476,7 +487,7 @@ class PostController extends Controller
         $user_id = Auth::id();
         $author = $comment->user;
         $currentUser = User::where('id', $user_id)->firstOrFail();
-        $mentionedUsers = (array) json_decode($comment->mentions);
+        $mentionedUsers = (array)json_decode($comment->mentions);
         foreach ($mentionedUsers as $mentionedUser) {
             $user = User::where('name', $mentionedUser->name)->firstOrFail();
             if ($user) {
@@ -653,12 +664,21 @@ class PostController extends Controller
                 $query->where('name', 'superadmin');
             });
 
+
             // Notify all superusers with a reference to the request
             $superusers->get()->each(function ($superuser) use ($post) {
                 $output = new ConsoleOutput();
                 $output->writeln($superuser->name);
+                $department_id = $post->department->id ?? null;
+                $community_id = $post->community->id ?? null;
+                if ($department_id) {
+                    $superuser->notify(new NewPollCreatedInDepartmentNotification($department_id));
+                } elseif ($community_id) {
+                    $superuser->notify(new NewPollCreatedInCommunityNotification($community_id));
+                } else {
+                    $superuser->notify(new NewPollCreatedNotification($post));
+                }
 
-                $superuser->notify(new NewPollCreatedNotification($post));
             });
 
         } catch (\Exception $e) {
