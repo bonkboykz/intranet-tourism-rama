@@ -5,7 +5,7 @@ import { usePage } from "@inertiajs/inertia-react";
 
 import { getProfileImage } from "@/Utils/getProfileImage";
 import { getUserPosition } from "@/Utils/getUserPosition";
-import { useLoading } from "@/Utils/hooks/useLazyLoading";
+import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
 import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 
 import { PersonalWall } from "../Reusable/WallPosting/PersonalWall";
@@ -80,6 +80,12 @@ export function GlobalSearch() {
 
     const { data, isLoading } = useLoading("/api/search?q=" + q);
 
+    const {
+        data: posts,
+        hasMore,
+        fetchData,
+    } = useLazyLoading("/api/search-posts?q=" + q);
+
     const communities = useMemo(() => {
         return data?.communities?.data ?? [];
     }, [data]);
@@ -87,12 +93,6 @@ export function GlobalSearch() {
     const users = useMemo(() => {
         return data?.users?.data ?? [];
     }, [data]);
-
-    const posts = useMemo(() => {
-        return data?.posts?.data ?? [];
-    }, [data]);
-
-    const onLoadMorePosts = () => {};
 
     if (q === "") {
         return (
@@ -180,11 +180,7 @@ export function GlobalSearch() {
                 </section>
             )}
 
-            <PersonalWall
-                posts={posts}
-                onLoad={onLoadMorePosts}
-                hasMore={false}
-            />
+            <PersonalWall posts={posts} onLoad={fetchData} hasMore={hasMore} />
         </div>
     );
 }
