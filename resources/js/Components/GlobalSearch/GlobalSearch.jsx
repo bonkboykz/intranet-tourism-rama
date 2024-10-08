@@ -37,7 +37,7 @@ const CommunityItem = ({ id, name, type, banner, membersCount }) => {
 
             <a href={`/communityInner?communityId=${id}`}>
                 <button
-                    className="justify-center text-white font-semibold px-5 rounded-3xl border bg-primary hover:bg-white hover:text-blue-500"
+                    className="justify-center text-white font-semibold px-5 rounded-3xl border bg-primary hover:bg-white hover:text-primary"
                     aria-label="Visit"
                 >
                     Visit

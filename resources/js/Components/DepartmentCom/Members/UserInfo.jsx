@@ -4,7 +4,7 @@ export function UserInfo({ name, role, isActive }) {
             <div className="flex items-center gap-3">
                 <h2 className="text-xl font-bold">{name} </h2>
                 {isActive && (
-                    <span className="font-semibold text-red-500 text-l">
+                    <span className="font-semibold text-secondary text-l">
                         (Deactivated)
                     </span>
                 )}

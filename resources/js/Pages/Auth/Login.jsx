@@ -138,7 +138,7 @@ export default function Login({ status, canResetPassword }) {
                                   ? "Email and/or password is wrong"
                                   : ""
                         }
-                        className="text-sm text-red-500"
+                        className="text-sm text-secondary"
                     />
                 </div>
             </form>

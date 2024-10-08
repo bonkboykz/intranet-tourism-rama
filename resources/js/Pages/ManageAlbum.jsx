@@ -159,7 +159,7 @@ const ManageAlbum = () => {
             <>
                 <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[1500px] mx-8 my-10">
                     <div className="flex items-start justify-between mb-2 border-b pb-4 border-gray-200 max-md:flex-col">
-                        <h2 className="mb-3 text-3xl font-bold text-blue-500 whitespace-nowrap max-md:text-2xl">
+                        <h2 className="mb-3 text-3xl font-bold text-primary whitespace-nowrap max-md:text-2xl">
                             Manage Albums
                         </h2>
                         <div className="flex space-x-4 max-md:w-full max-md:justify-end">
@@ -224,7 +224,7 @@ const ManageAlbum = () => {
                                                         <td className="px-6 max-md:px-2 py-4 text-sm font-semibold text-black whitespace-nowrap delete-column">
                                                             <div className="fixed-size-container">
                                                                 <button
-                                                                    className="text-red-500"
+                                                                    className="text-secondary"
                                                                     onClick={(
                                                                         e
                                                                     ) => {

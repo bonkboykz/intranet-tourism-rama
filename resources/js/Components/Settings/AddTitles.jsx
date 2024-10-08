@@ -211,7 +211,7 @@ const AddTitles = () => {
                                                         title.title
                                                     )
                                                 }
-                                                className="mr-4 text-blue-500 hover:text-blue-700"
+                                                className="mr-4 text-primary hover:text-blue-700"
                                             >
                                                 Edit
                                             </button>

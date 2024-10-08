@@ -301,7 +301,9 @@ const Invite = ({
                                     </div>
                                 ))}
                             {error && (
-                                <div className="mt-2 text-red-500">{error}</div>
+                                <div className="mt-2 text-secondary">
+                                    {error}
+                                </div>
                             )}
                         </div>
                         {selectedPerson && (

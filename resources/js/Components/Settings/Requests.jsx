@@ -65,7 +65,7 @@ const ProfileInformationRow = ({
                 </p>
                 <div className="flex items-center w-1/4">
                     <p
-                        className="font-medium text-blue-500 cursor-pointer"
+                        className="font-medium text-primary cursor-pointer"
                         onClick={() => setIsPopupVisible(true)}
                     >
                         {changeType}
@@ -106,7 +106,7 @@ const ProfileInformationRow = ({
                             </p>
                             <p className="mb-4 text-xl font-bold text-left">
                                 To:{" "}
-                                <a className="text-xl font-bold text-blue-500">
+                                <a className="text-xl font-bold text-primary">
                                     {newValue}
                                 </a>
                             </p>
@@ -132,7 +132,7 @@ const Requests = () => {
             <CommunityCreationRequests />
             <StaffPhotoChangeRequests />
             {/* <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px]">
-                <h2 className="mb-4 text-2xl font-bold text-blue-500">
+                <h2 className="mb-4 text-2xl font-bold text-primary">
                     Profile Information
                 </h2>
                 {profileInformationData.map((data, index) => (

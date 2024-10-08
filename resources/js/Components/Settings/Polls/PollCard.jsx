@@ -175,7 +175,7 @@ export function PollCard({ post }) {
                         </button>
                     </div>
                     <div
-                        className=" text-[#FF5437]"
+                        className=" text-secondary"
                         style={{
                             fontSize: 22,
                         }}

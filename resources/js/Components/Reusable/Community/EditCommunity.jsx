@@ -305,7 +305,9 @@ function Card({
                     onChange={(e) => setDepartmentDescription(e.target.value)}
                     className="self-stretch mt-3 border border-solid rounded-md text-neutral-800 border-neutral-300 font-bold"
                 />
-                {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+                {error && (
+                    <p className="mt-2 text-sm text-secondary">{error}</p>
+                )}
                 <div className="flex justify-end w-full mt-4 space-x-2">
                     <button
                         onClick={onCancel}

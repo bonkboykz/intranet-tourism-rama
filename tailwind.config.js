@@ -22,6 +22,10 @@ export default {
                     hover: "var(--secondary-color-hover)",
                 },
             },
+            textColor: {
+                primary: "var(--primary-color)",
+                secondary: "var(--secondary-color)",
+            },
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },

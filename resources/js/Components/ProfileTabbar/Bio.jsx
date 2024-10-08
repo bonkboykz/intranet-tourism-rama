@@ -216,7 +216,7 @@ function ProfileBio({
                                             ?
                                         </button>
                                     </div>
-                                    <div className="text-xs text-blue-500">
+                                    <div className="text-xs text-primary">
                                         Image Ratio 3:4
                                     </div>
                                 </td>

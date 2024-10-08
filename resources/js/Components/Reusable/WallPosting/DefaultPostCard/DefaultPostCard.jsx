@@ -94,7 +94,7 @@ function EventTag({ event }) {
                             >
                                 {eventDetails[event.id] && (
                                     <div className="p-2">
-                                        <div className="text-sm font-semibold text-blue-500">
+                                        <div className="text-sm font-semibold text-primary">
                                             {eventDetails[event.id].title}
                                         </div>
                                         <div className="text-xs text-gray-500">
@@ -133,7 +133,7 @@ function EventTag({ event }) {
                         }
                     >
                         <div className="px-2 py-0 rounded-md bg-red-100">
-                            <p className="mt-0 text-xs font-semibold leading-6 text-red-500 max-md:max-w-full cursor-pointer">
+                            <p className="mt-0 text-xs font-semibold leading-6 text-secondary max-md:max-w-full cursor-pointer">
                                 {event.title}
                             </p>
                         </div>
@@ -362,7 +362,7 @@ export function DefaultPostCard({ post }) {
                                 {cachedPost.content}
                             </pre>
                         </div>
-                        <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                        <p className="mt-0 text-xs font-semibold leading-6 text-primary max-md:max-w-full">
                             {cachedPost.mentions
                                 ? JSON.parse(cachedPost.mentions)
                                       .map((mention) => mention.name)
@@ -372,7 +372,7 @@ export function DefaultPostCard({ post }) {
                     </>
                 ) : (
                     <>
-                        <p className="mt-0 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                        <p className="mt-0 text-xs font-semibold leading-6 text-primary max-md:max-w-full">
                             {cachedPost.mentions
                                 ? JSON.parse(cachedPost.mentions)
                                       .map((mention) => mention.name)
@@ -427,7 +427,7 @@ export function DefaultPostCard({ post }) {
                 </article>
 
                 <PostAttachments attachments={cachedPost.attachments} />
-                <p className="taging px-2 py-0 bg-blue-100 rounded-md my-2 text-xs font-semibold leading-6 text-blue-500 max-md:max-w-full">
+                <p className="taging px-2 py-0 bg-blue-100 rounded-md my-2 text-xs font-semibold leading-6 text-primary max-md:max-w-full">
                     {/* {cachedPost.tag?.replace(/[\[\]"]/g, "") || ""} */}
                     {cachedPost.albums?.map((album) => album.name).join(", ")}
                 </p>

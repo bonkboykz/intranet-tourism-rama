@@ -149,7 +149,7 @@ const CommunityCreationRow = ({
 
             {status === "rejected" && (
                 <div className="flex justify-end w-1/4">
-                    <p className="text-sm font-bold text-red-500">Rejected</p>
+                    <p className="text-sm font-bold text-secondary">Rejected</p>
                 </div>
             )}
         </div>
@@ -205,7 +205,7 @@ export const CommunityCreationRequests = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
-            <h2 className="mb-4 text-2xl font-bold text-blue-500">
+            <h2 className="mb-4 text-2xl font-bold text-primary">
                 Community Creation
             </h2>
             {preparedRequests.length > 0 ? (

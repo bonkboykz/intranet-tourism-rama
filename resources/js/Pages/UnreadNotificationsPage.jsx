@@ -2,9 +2,9 @@ import React from "react";
 import { FaCaretLeft } from "react-icons/fa";
 import { usePage } from "@inertiajs/react";
 import { CircleArrowOutDownLeft } from "lucide-react";
-import Example from "@/Layouts/DashboardLayoutNew";
 
 import NotificationsList from "@/Components/NotificationsList";
+import Example from "@/Layouts/DashboardLayoutNew";
 import {
     useNotifications,
     useSetupNotifications,
@@ -15,17 +15,15 @@ const AllNotificationsPage = () => {
     const { notifications } = useSetupNotifications();
 
     return (
-
         <Example>
             <div className="w-full min-h-screen bg-slate-100">
-            <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
-            
-            <header className="flex justify-between items-center w-full">
-                    <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
-                        My Notifications
-                        <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
-                    </div>
-            </header>
+                <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
+                    <header className="flex justify-between items-center w-full">
+                        <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
+                            My Notifications
+                            <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
+                        </div>
+                    </header>
 
                     {/* <div className='w-1/3 border-b-2'></div> */}
 
@@ -36,9 +34,10 @@ const AllNotificationsPage = () => {
                                     <span>Notifications</span>
                                     <button
                                         onClick={() =>
-                                            (window.location.href = "/dashboard")
+                                            (window.location.href =
+                                                "/dashboard")
                                         }
-                                        className="text-blue-500 hover:text-blue-700 font-bold text-lg"
+                                        className="text-primary hover:text-blue-700 font-bold text-lg"
                                     >
                                         Back
                                     </button>
@@ -66,10 +65,8 @@ const AllNotificationsPage = () => {
                             </div>
                         </section>
                     </div>
-                    </section>
-                </div>
-            
-
+                </section>
+            </div>
         </Example>
     );
 };

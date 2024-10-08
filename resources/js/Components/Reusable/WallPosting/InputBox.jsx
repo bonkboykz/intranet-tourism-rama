@@ -5,6 +5,14 @@ import axios from "axios";
 import Picker from "emoji-picker-react";
 import { CircleXIcon, Loader2 } from "lucide-react";
 
+import { AlbumIcon } from "@/Components/Icons/AlbumIcon";
+import { DocumentIcon } from "@/Components/Icons/DocumentIcon";
+import { EmojiIcon } from "@/Components/Icons/EmojiIcon";
+import { EventIcon } from "@/Components/Icons/EventIcon";
+import { ImageIcon } from "@/Components/Icons/ImageIcon";
+import { PollsIcon } from "@/Components/Icons/PollsIcon";
+import { SendIcon } from "@/Components/Icons/SendIcon";
+import { VideoIcon } from "@/Components/Icons/VideoIcon";
 import { useCsrf } from "@/composables";
 import { useSettings } from "@/Layouts/useSettings";
 import { cn } from "@/Utils/cn";
@@ -473,7 +481,7 @@ function ShareYourThoughts({
                                         {name}
                                     </span>
                                     <button
-                                        className="ml-2 text-blue-500"
+                                        className="ml-2 text-primary"
                                         onClick={() => removeFile(index)}
                                     >
                                         <img
@@ -519,7 +527,7 @@ function ShareYourThoughts({
                                             {/* <button
                                             type="button"
                                             onClick={handleClickPeople}
-                                            className="tooltip relative text-md text-blue-500 hover:text-blue-700"
+                                            className="tooltip relative text-md text-primary hover:text-blue-700"
                                         >
                                             <img
                                                 loading="lazy"
@@ -538,12 +546,7 @@ function ShareYourThoughts({
                                                 className="tooltip"
                                                 onClick={toggleReactionPicker}
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src={Emoji}
-                                                    alt="Emoji Icon"
-                                                    className="w-[16px] h-[16px]"
-                                                />
+                                                <EmojiIcon className="w-[16px] h-[16px] text-primary" />
                                                 <span className="tooltiptext">
                                                     React 😀🤣😤
                                                 </span>
@@ -568,12 +571,7 @@ function ShareYourThoughts({
                                             {isSending ? (
                                                 <Loader2 className="w-6 h-6 animate-spin" />
                                             ) : (
-                                                <img
-                                                    loading="lazy"
-                                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
-                                                    alt="SEND"
-                                                    className="h-6 w-6"
-                                                />
+                                                <SendIcon className="h-6 w-6 text-secondary" />
                                             )}
                                         </button>
                                     </div>
@@ -587,12 +585,7 @@ function ShareYourThoughts({
                                                 className="tooltip"
                                                 onClick={toggleReactionPicker}
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src={Emoji}
-                                                    alt="Emoji Icon"
-                                                    className="w-[16px] h-[16px]"
-                                                />
+                                                <EmojiIcon className="w-[16px] h-[16px] text-primary" />
                                                 <span className="tooltiptext">
                                                     React 😀🤣😤
                                                 </span>
@@ -613,12 +606,7 @@ function ShareYourThoughts({
                                                 className="tooltip"
                                                 onClick={handleClickPoll}
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src="assets/inputpolls.svg"
-                                                    alt="Poll Icon"
-                                                    className="w-4 h-4"
-                                                />
+                                                <PollsIcon className="w-4 h-4 text-primary" />
                                                 <span className="tooltiptext">
                                                     Poll
                                                 </span>
@@ -627,12 +615,7 @@ function ShareYourThoughts({
                                                 className="tooltip"
                                                 onClick={handleClickImg}
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src="assets/inputimg.svg"
-                                                    alt="Image Icon"
-                                                    className="w-4 h-4"
-                                                />
+                                                <ImageIcon className="w-4 h-4 text-primary" />
                                                 <span className="tooltiptext">
                                                     Image
                                                 </span>
@@ -641,12 +624,7 @@ function ShareYourThoughts({
                                                 className="tooltip"
                                                 onClick={handleClickVid}
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src="assets/inputvid.svg"
-                                                    alt="Video Icon"
-                                                    className="w-4 h-4"
-                                                />
+                                                <VideoIcon className="w-4 h-4 text-primary" />
                                                 <span className="tooltiptext">
                                                     Video
                                                 </span>
@@ -655,12 +633,7 @@ function ShareYourThoughts({
                                                 className="tooltip"
                                                 onClick={handleClickDoc}
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src="assets/inputdoc.svg"
-                                                    alt="Document Icon"
-                                                    className="w-3 h-3"
-                                                />
+                                                <DocumentIcon className="w-3 h-3 text-primary" />
                                                 <span className="tooltiptext">
                                                     Document
                                                 </span>
@@ -668,13 +641,9 @@ function ShareYourThoughts({
                                             <button
                                                 type="button"
                                                 onClick={handleClickMediaTag}
-                                                className="tooltip relative text-md text-blue-500 hover:text-blue-700"
+                                                className="tooltip relative text-md text-primary hover:text-blue-700"
                                             >
-                                                <img
-                                                    src={MediaTag}
-                                                    alt="Tag Media"
-                                                    className="w-4 h-4"
-                                                />
+                                                <AlbumIcon className="w-4 h-4 text-primary" />
                                                 <span className="tooltiptext">
                                                     Album Tag
                                                 </span>
@@ -687,14 +656,9 @@ function ShareYourThoughts({
                                             <button
                                                 type="button"
                                                 onClick={handleClickEvent}
-                                                className=" tooltip relative text-md text-blue-500 hover:text-blue-700"
+                                                className=" tooltip relative text-md text-primary hover:text-blue-700"
                                             >
-                                                <img
-                                                    loading="lazy"
-                                                    src={EventTag}
-                                                    alt="Event Icon"
-                                                    className="w-4 h-4"
-                                                />
+                                                <EventIcon className="w-4 h-4 text-primary" />
                                                 <span className="tooltiptext">
                                                     Event Tag
                                                 </span>
@@ -750,34 +714,11 @@ function ShareYourThoughts({
                                                         {isSending ? (
                                                             <Loader2 className="w-6 h-6 animate-spin" />
                                                         ) : (
-                                                            <img
-                                                                loading="lazy"
-                                                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
-                                                                alt="SEND"
-                                                                className="h-6 w-6"
-                                                            />
+                                                            <SendIcon className="h-6 w-6 text-secondary" />
                                                         )}
                                                     </button>
                                                 </div>
                                             </div>
-                                            {/* <button
-                                                onClick={handleClickSend}
-                                                className="flex send-button align-item justify-end absolute"
-                                                style={{`
-                                                    right: "16px",
-                                                    top: "50%",
-                                                    transform:
-                                                        "translateY(-50%)",
-                                                }}
-                                            >
-                                                {isSending ? "" : ""}
-                                                <img
-                                                    loading="lazy"
-                                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb9e6a4fb4fdc3ecfcef04a0984faf7c2720a004081fccbe4db40b1509a23780?apiKey=23ce5a6ac4d345ebaa82bd6c33505deb&"
-                                                    alt="SEND"
-                                                    className="h-6 w-6"
-                                                />
-                                            </button> */}
                                         </div>
                                     </div>
                                 </>

@@ -217,7 +217,7 @@ function OutputDataUsers({ userId }) {
                             {post.content}
                         </div>
 
-                        <p className="mt-3.5 text-xs font-semibold leading-6 text-blue-500 underline max-md:max-w-full">
+                        <p className="mt-3.5 text-xs font-semibold leading-6 text-primary underline max-md:max-w-full">
                             {post.tag}
                         </p>
 

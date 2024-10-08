@@ -256,7 +256,7 @@ const Ordering = () => {
                                                                                     }
                                                                                 </span>
                                                                                 {item.isDeactivated && (
-                                                                                    <span className="text-red-500 text-sm mt-0">
+                                                                                    <span className="text-secondary text-sm mt-0">
                                                                                         (Deactivated)
                                                                                     </span>
                                                                                 )}

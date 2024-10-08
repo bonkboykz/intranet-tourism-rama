@@ -18,7 +18,7 @@ const NotificationItem = ({
 }) => {
     return (
         <div className="w-full">
-            <a href="#" className="block mt-2 text-xs text-blue-500">
+            <a href="#" className="block mt-2 text-xs text-primary">
                 <div className="flex items-center gap-3 p-6 hover:bg-blue-100 w-full">
                     <div className="flex items-center bg-gray h-16 relative">
                         <img
@@ -134,7 +134,7 @@ const AllNotificationsPage = () => {
                                             (window.location.href =
                                                 "/dashboard")
                                         }
-                                        className="text-blue-500 hover:text-blue-700 font-bold text-lg"
+                                        className="text-primary hover:text-blue-700 font-bold text-lg"
                                     >
                                         Back
                                     </button>

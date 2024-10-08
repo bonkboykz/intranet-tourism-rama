@@ -242,7 +242,7 @@ const Feedback = ({ postId }) => {
         <>
             <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-10">
                 <h2
-                    className="mb-4 text-2xl font-bold text-blue-500 cursor-default grid text-center"
+                    className="mb-4 text-2xl font-bold text-primary cursor-default grid text-center"
                     style={{
                         gridTemplateColumns: "2fr 3fr 1fr",
                     }}

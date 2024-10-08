@@ -143,7 +143,7 @@ export default function Pautan({ displayType }) {
                                     setShowAllNonDept(!showAllNonDept);
                                 }
                             }}
-                            className="text-blue-500 font-semibold"
+                            className="text-primary font-semibold"
                         >
                             {displayType === "department"
                                 ? showAllDept

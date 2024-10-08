@@ -258,7 +258,7 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
                 )}
 
                 <div
-                    className=" text-[#FF5437] absolute right-[16px] bottom-[16px]"
+                    className="text-secondary absolute right-[16px] bottom-[16px]"
                     style={{
                         fontSize: 22,
                     }}

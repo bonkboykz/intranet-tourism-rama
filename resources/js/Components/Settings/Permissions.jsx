@@ -207,16 +207,16 @@ const Permissions = () => {
             </div>
             <section className="flex flex-col px-8 py-4 bg-white rounded-lg shadow-custom full-width ml-8 mr-8 mb-0 ">
                 <div className="grid grid-cols-12 text-center mt-4">
-                    <div className="col-span-5 lg:text-2xl font-bold text-blue-500 sm:text-md md:text-md">
+                    <div className="col-span-5 lg:text-2xl font-bold text-primary sm:text-md md:text-md">
                         Actions
                     </div>
-                    <div className="col-span-2 lg:text-2xl font-bold text-blue-500 sm:text-md md:text-md">
+                    <div className="col-span-2 lg:text-2xl font-bold text-primary sm:text-md md:text-md">
                         User
                     </div>
-                    <div className="col-span-2 lg:text-2xl font-bold text-blue-500 sm:text-md md:text-md">
+                    <div className="col-span-2 lg:text-2xl font-bold text-primary sm:text-md md:text-md">
                         Admin
                     </div>
-                    <div className="col-span-3 lg:text-2xl font-bold text-blue-500 opacity-50 sm:text-md md:text-md">
+                    <div className="col-span-3 lg:text-2xl font-bold text-primary opacity-50 sm:text-md md:text-md">
                         Jomla! Admin
                     </div>
                 </div>

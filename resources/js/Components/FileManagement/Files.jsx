@@ -325,13 +325,13 @@ const FileTable = ({
                         <table className="w-full min-w-[600px] border-separate table-fixed rounded-2xl shadow-custom border-spacing-1">
                             <thead>
                                 <tr>
-                                    <th className="w-1/3 md:w-3/4 lg:w-3/4 rounded-full bg-blue-200 px-3 py-3.5 text-center text-sm max-md:text-xs font-semibold text-blue-500 sm:pl-1 shadow-custom">
+                                    <th className="w-1/3 md:w-3/4 lg:w-3/4 rounded-full bg-blue-200 px-3 py-3.5 text-center text-sm max-md:text-xs font-semibold text-primary sm:pl-1 shadow-custom">
                                         File Name
                                     </th>
-                                    <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
+                                    <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-primary shadow-custom">
                                         Uploaded By
                                     </th>
-                                    <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-blue-500 shadow-custom">
+                                    <th className="w-1/6 md:w-1/10 lg:w-1/10 rounded-full bg-blue-200 px-3 py-3.5 max-md:px-0 text-center text-sm max-md:text-xs font-semibold text-primary shadow-custom">
                                         Date Created
                                     </th>
                                     <th className="w-1/6 relative py-3.5 ">
@@ -397,7 +397,7 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                     <button
                         disabled={!hasNextButton.prev_page_url}
                         onClick={() => paginate((pv) => pv - 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.prev_page_url ? "text-blue-500" : "text-black-500"}`}
+                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.prev_page_url ? "text-primary" : "text-black-500"}`}
                     >
                         PREV
                     </button>
@@ -407,7 +407,7 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                     <button
                         key={i}
                         onClick={() => paginate(i + 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-200 text-blue-500" : "bg-white text-blue-500"}`}
+                        className={`px-4 py-2 mx-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-200 text-primary" : "bg-white text-primary"}`}
                     >
                         {i + 1}
                     </button>
@@ -416,7 +416,7 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                     <button
                         disabled={!hasNextButton.next_page_url}
                         onClick={() => paginate((pv) => pv + 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.next_page_url ? "text-blue-500" : "text-black-500"}`}
+                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.next_page_url ? "text-primary" : "text-black-500"}`}
                     >
                         NEXT
                     </button>

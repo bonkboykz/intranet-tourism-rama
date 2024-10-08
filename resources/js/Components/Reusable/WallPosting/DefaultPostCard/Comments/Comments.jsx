@@ -1,16 +1,12 @@
-import { useState } from "react";
-
-import Comment from "../../Comment";
+import { CommentsIcon } from "@/Components/Icons/CommentsIcon";
 
 export function Comments({ comments, onCommentsOpen }) {
     const commentsCount = comments.length;
 
     return (
         <>
-            <img
-                src="/assets/commentforposting.svg"
-                alt="Comment"
-                className="w-6 h-6 cursor-pointer"
+            <CommentsIcon
+                className="w-6 h-6 cursor-pointer text-primary"
                 onClick={onCommentsOpen}
             />
             {commentsCount > 0 && (

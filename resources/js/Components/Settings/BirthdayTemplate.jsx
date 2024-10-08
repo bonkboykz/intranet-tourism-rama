@@ -235,7 +235,7 @@ export const BirthdayTemplate = () => {
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px]">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-blue-500 mb-8">
+                <h2 className="text-2xl font-bold text-primary mb-8">
                     Enable/Disable Birthday Templates
                 </h2>
                 <button
