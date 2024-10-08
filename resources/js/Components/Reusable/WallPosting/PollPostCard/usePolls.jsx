@@ -19,7 +19,7 @@ function PollOption({
             <div
                 className={cn(
                     `flex flex-auto gap-3 px-4   bg-gray-100 rounded-3xl max-md:flex-wrap items-center  transition `,
-                    selected && "bg-[#4880FF] text-white",
+                    selected && "bg-primary text-white",
                     disabled && "opacity-60"
                 )}
             >

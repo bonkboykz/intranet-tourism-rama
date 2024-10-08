@@ -199,7 +199,7 @@ export function PollPostCard({ post }) {
                 )}
             >
                 {cachedPost.announced && (
-                    <div className="absolute w-full top-0 left-0  bg-[#FF5437] h-14 rounded-t-2xl  pl-6">
+                    <div className="absolute w-full top-0 left-0  bg-secondary h-14 rounded-t-2xl  pl-6">
                         <div className="flex items-center gap-1 w-full h-full">
                             <Volume2 className="w-6 h-6 text-white" />
                             <div className="text-white text-center font-bold text-lg	ml-2">

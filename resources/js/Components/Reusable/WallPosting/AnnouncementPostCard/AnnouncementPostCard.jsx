@@ -1,8 +1,9 @@
 import { useContext } from "react";
+import { SpeakerIcon, Volume, Volume2 } from "lucide-react";
+
+import { cn } from "@/Utils/cn";
 
 import { WallContext } from "../WallContext";
-import { cn } from "@/Utils/cn";
-import { SpeakerIcon, Volume, Volume2 } from "lucide-react";
 
 export function AnnouncementPostCard({ announce }) {
     const { variant } = useContext(WallContext);
@@ -11,8 +12,8 @@ export function AnnouncementPostCard({ announce }) {
         <div
             className={cn(
                 variant === "department"
-                    ? "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full max-w-[700px] relative pb-16 bg-[#FF5437]"
-                    : "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full max-w-[700px] relative pb-16 bg-[#FF5437]"
+                    ? "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full max-w-[700px] relative pb-16 bg-secondary"
+                    : "mt-10 py-2 px-6  rounded-2xl border-2 shadow-xl w-full max-w-[700px] relative pb-16 bg-secondary"
             )}
         >
             <div className="mb-2 flex items-center gap-1">

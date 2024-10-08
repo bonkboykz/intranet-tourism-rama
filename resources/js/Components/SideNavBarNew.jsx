@@ -8,6 +8,17 @@ import classNames from "classnames";
 import { useSettings } from "@/Layouts/useSettings";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
+import { CalendarActiveIcon } from "./Icons/CalendarActiveIcon";
+import { CommunityActiveIcon } from "./Icons/CommunityActiveIcon";
+import { DashboardActiveIcon } from "./Icons/DashboardActiveIcon";
+import { DepartmentsActiveIcon } from "./Icons/DepartmentsActiveIcon";
+import { FileManagementActiveIcon } from "./Icons/FileManagementActiveIcon";
+import { LinkActiveIcon } from "./Icons/LinkActiveIcon";
+import { LogoutActiveIcon } from "./Icons/LogoutActiveIcon";
+import { MediaActiveIcon } from "./Icons/MediaActiveIcon";
+import { SettingsActiveIcon } from "./Icons/SettingsActiveIcon";
+import { StaffDirectoryActive } from "./Icons/StaffDirectoryActive";
+
 const SidebarItemDesktop = ({
     item,
     activeIndex,
@@ -34,11 +45,15 @@ const SidebarItemDesktop = ({
                 onMouseLeave={handleMouseLeave}
                 ref={ref}
             >
-                <img
-                    src={activeIndex === index ? item.active : item.inactive}
-                    className="h-6 w-6 shrink-0"
-                    alt={item.name}
-                />
+                {activeIndex === index ? (
+                    item.active
+                ) : (
+                    <img
+                        src={item.inactive}
+                        className="h-6 w-6 shrink-0"
+                        alt={item.name}
+                    />
+                )}
                 <span className="sr-only">{item.name}</span>
                 {hoveredIndex === index && (
                     <Tooltip
@@ -79,11 +94,15 @@ const SidebarItem = ({
                 onMouseLeave={handleMouseLeave}
                 ref={ref}
             >
-                <img
-                    src={activeIndex === index ? item.active : item.inactive}
-                    className="h-6 w-6 shrink-0"
-                    alt={item.name}
-                />
+                {activeIndex === index ? (
+                    item.active
+                ) : (
+                    <img
+                        src={item.inactive}
+                        className="h-6 w-6 shrink-0"
+                        alt={item.name}
+                    />
+                )}
                 {item.name}
                 {hoveredIndex === index && (
                     <Tooltip
@@ -137,61 +156,91 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     name: "Dashboard",
                     href: "/dashboard",
                     inactive: "/assets/Dashboard Inactive.svg",
-                    active: "/assets/Dashboard Active.svg",
+                    // active: "/assets/Dashboard Active.svg",
+                    active: (
+                        <DashboardActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Staff Directory",
                     href: "/staffDirectory",
                     inactive: "/assets/Staff Directory Inactive.svg",
-                    active: "/assets/Staff Directory Active.svg",
+                    // active: "/assets/Staff Directory Active.svg",
+                    active: (
+                        <StaffDirectoryActive className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 (settings.calendar_enabled || isSuperAdmin) && {
                     name: "Calendar",
                     href: "/calendar",
                     inactive: "/assets/Calendar Inactive.svg",
-                    active: "/assets/Calendar Active.svg",
+                    // active: "/assets/Calendar Active.svg",
+                    active: (
+                        <CalendarActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Departments",
                     href: "/departments",
                     inactive: "/assets/Group Department Inactive.svg",
-                    active: "/assets/Group Department Active.svg",
+                    // active: "/assets/Group Department Active.svg",
+                    active: (
+                        <DepartmentsActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Community",
                     href: "/community",
                     inactive: "/assets/Group Community Inactive.svg",
-                    active: "/assets/Group Community Active.svg",
+                    // active: "/assets/Group Community Active.svg",
+                    active: (
+                        <CommunityActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "File Management",
                     href: "/file-management",
                     inactive: "/assets/File Management Inactive.svg",
-                    active: "/assets/File Management Active.svg",
+                    // active: "/assets/File Management Active.svg",
+                    active: (
+                        <FileManagementActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Media",
                     href: "/media",
                     inactive: "/assets/Media Inactive.svg",
-                    active: "/assets/Media Active.svg",
+                    // active: "/assets/Media Active.svg",
+                    active: (
+                        <MediaActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Link",
                     href: "/link",
                     inactive: "/assets/Link Inactive.svg",
-                    active: "/assets/Link Active.svg",
+                    // active: "/assets/Link Active.svg",
+                    active: (
+                        <LinkActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Settings",
                     href: "/settings",
                     inactive: "/assets/Settings Inactive.svg",
-                    active: "/assets/Settings Active.svg",
+                    // active: "/assets/Settings Active.svg",
+                    active: (
+                        <SettingsActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
                 {
                     name: "Logout",
                     href: "/logout",
                     inactive: "/assets/Logout Inactive.svg",
-                    active: "/assets/Logout Active.svg",
+                    // active: "/assets/Logout Active.svg",
+                    active: (
+                        <LogoutActiveIcon className="h-6 w-6 shrink-0 text-primary" />
+                    ),
                 },
             ].filter(Boolean),
         [isSuperAdmin, settings]

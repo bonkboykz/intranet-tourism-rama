@@ -144,7 +144,7 @@ function DepartmentMembers({ departmentID, loggedInID }) {
                         {canInvite && (
                             <button
                                 onClick={handleInviteClick}
-                                className="flex items-center justify-center px-4 py-2 text-center bg-[#FF5437] rounded-full hover:bg-secondary-hover text-md whitespace-nowrap"
+                                className="flex items-center justify-center px-4 py-2 text-center bg-secondary rounded-full hover:bg-secondary-hover text-md whitespace-nowrap"
                             >
                                 <img
                                     src="/assets/plus.svg"

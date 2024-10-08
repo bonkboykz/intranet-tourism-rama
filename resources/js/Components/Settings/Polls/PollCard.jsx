@@ -166,7 +166,7 @@ export function PollCard({ post }) {
                 <div className="flex w-full justify-between mt-4 px-1">
                     <div>
                         <button
-                            className="bg-[#FF5437] text-white px-4 py-2 rounded-lg"
+                            className="bg-secondary text-white px-4 py-2 rounded-lg"
                             onClick={() => {
                                 setShowFeedback(!showFeedback);
                             }}
