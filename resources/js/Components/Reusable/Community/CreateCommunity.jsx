@@ -110,12 +110,6 @@ function Card({
     };
 
     const showCroppedImage = useCallback(async () => {
-        if (imageSrc === "/assets/uploadAnImage.svg") {
-            toastError("You need to upload image");
-
-            return;
-        }
-
         try {
             const croppedBlob = await getCroppedImg(
                 imageSrc,
@@ -213,19 +207,20 @@ function Card({
                     alt={imgAlt}
                     onImageChange={handleImageChange}
                 />
-                {imageSrc && (
-                    <div className="relative w-full h-[300px] mt-3">
-                        <Cropper
-                            image={originalImageSrc}
-                            crop={crop}
-                            zoom={zoom}
-                            aspect={3 / 1} // Aspect ratio 3:1
-                            onCropChange={setCrop}
-                            onZoomChange={setZoom}
-                            onCropComplete={onCropComplete}
-                        />
-                    </div>
-                )}
+                {originalImageSrc &&
+                    originalImageSrc !== "/assets/uploadAnImage.svg" && (
+                        <div className="relative w-full h-[300px] mt-3">
+                            <Cropper
+                                image={originalImageSrc}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={3 / 1} // Aspect ratio 3:1
+                                onCropChange={setCrop}
+                                onZoomChange={setZoom}
+                                onCropComplete={onCropComplete}
+                            />
+                        </div>
+                    )}
 
                 <button
                     className="justify-center px-4 py-2 mt-4 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
