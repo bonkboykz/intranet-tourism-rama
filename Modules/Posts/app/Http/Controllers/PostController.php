@@ -233,15 +233,6 @@ class PostController extends Controller
             // add albums
             if (request()->has('albums')) {
                 $post->albums()->attach(request('albums'));
-                $albums = (array)json_decode($post->albums);
-                $superusers = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'superadmin');
-                });
-                foreach ($albums as $album) {
-                    $superusers->get()->each(function ($superuser) use ($album) {
-                        $superuser->notify(new AlbumTagNotification($album, $superuser));
-                    });
-                }
             }
 
             if (request()->has('accessibilities')) {
