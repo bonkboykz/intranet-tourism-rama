@@ -12,7 +12,7 @@ class CommunityNotification extends Notification
 
     protected $actor;      // The user who performed the action
     protected $community;  // The community involved
-    protected $action;     // The action performed (e.g., 'added')
+    protected $action;     // The action performed (e.g., 'added', 'removed')
 
     public function __construct($actor, $community, $action)
     {
@@ -28,18 +28,17 @@ class CommunityNotification extends Notification
 
     public function toArray($notifiable)
     {
+        // Определяем сообщение в зависимости от действия
+        $actionMessage = $this->action === 'added'
+            ? 'added you to the community'
+            : 'removed you from the community';
+
         return [
             'actor' => $this->actor->name,
             'community' => $this->community->name,
-            'message' => $this->actor->name . ' ' . $this->action . ' you to the community ' . $this->community->name,
+            'message' => $this->actor->name . ' has ' . $actionMessage . ' ' . $this->community->name,
         ];
     }
 
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-            ->subject('You have been added to a community')
-            ->line($this->toArray($notifiable)['message']);
-    }
-}
 
+}
