@@ -5,6 +5,7 @@ namespace Modules\Posts\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Notifications\AlbumTagNotification;
 use App\Notifications\CommentNotification;
+use App\Notifications\CommunityAnnouncementNotification;
 use App\Notifications\DeletingPostFromCommunityNotification;
 use App\Notifications\DeletingPostFromDashboardNotification;
 use App\Notifications\DeletingPostFromDepartmentNotification;
@@ -280,6 +281,14 @@ class PostController extends Controller
                 $current_user = User::where('id', $post->user_id)->firstOrFail();
                 $department->members->each(function ($member) use ($department, $current_user) {
                     $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
+                });
+            }
+
+            if (isset($validated['community_id']) && (isset($validated['announced']) && $validated['announced'] == '1')) {
+                $community = Community::find($post->department_id);
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+                $community->members->each(function ($member) use ($community, $current_user) {
+                    $member->notify(new CommunityAnnouncementNotification($current_user, $community));
                 });
             }
         } catch (\Throwable $th) {
@@ -1098,6 +1107,17 @@ class PostController extends Controller
                 $current_user = User::where('id', $post->user_id)->firstOrFail();
                 $department->members->each(function ($member) use ($department, $current_user) {
                     $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
+                });
+            }
+
+            if ($post->community() != null) {
+                $community = $post->community()->first();
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+                $community->members->each(function ($member) use ($community, $current_user) {
+                    $member->notify(new CommunityAnnouncementNotification($current_user, $community));
+                });
+                $community->admins->each(function ($admin) use ($community, $current_user) {
+                    $admin->notify(new CommunityAnnouncementNotification($current_user, $community));
                 });
             }
         } catch (\Throwable $th) {
