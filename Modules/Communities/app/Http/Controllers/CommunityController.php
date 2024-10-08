@@ -207,15 +207,17 @@ class CommunityController extends Controller
 
     public function deleteMember(Community $community)
     {
-
         request()->validate(Community::rules('addMember'));
 
         $user = User::findOrFail(request()->user_id);
 
         $community->members()->detach($user->id);
 
+        $user->notify(new CommunityNotification(Auth::user(), $community, 'removed'));
+
         return response()->noContent();
     }
+
 
     public function getAdmins(Community $community)
     {

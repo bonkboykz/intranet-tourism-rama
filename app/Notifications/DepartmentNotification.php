@@ -3,43 +3,35 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
-use Modules\Department\Models\Department;
-use Modules\User\Models\User;
 
-class DepartmentNotification extends Notification implements ShouldQueue
+class DepartmentNotification extends Notification
 {
     use Queueable;
 
-    public $user;
-    public $department;
+    protected $user;
+    protected $department;
+    protected $action;
 
-    public function __construct(User $user, Department $department)
+    public function __construct($user, $department, $action)
     {
         $this->user = $user;
         $this->department = $department;
+        $this->action = $action;
     }
 
     public function via($notifiable)
     {
-        return ['database', 'broadcast'];
+        return ['database'];
     }
 
-    public function toDatabase($notifiable)
+    public function toArray($notifiable)
     {
         return [
-            'message' => $this->user->name . " added you to the department " . $this->department->name,
+            'message' => "{$this->user->name} was {$this->action} to the department {$this->department->name}.",
             'department_id' => $this->department->id,
         ];
     }
 
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage([
-            'message' => $this->user->name . " added you to the department " . $this->department->name,
-            'department_id' => $this->department->id,
-        ]);
-    }
 }

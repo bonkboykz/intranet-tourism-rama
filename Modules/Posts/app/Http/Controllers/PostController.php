@@ -251,6 +251,7 @@ class PostController extends Controller
 
 
         try {
+            $current_user = User::where('id', Auth::id())->firstOrFail();
             if (isset($validated['type']) && $validated['type'] === 'birthday') {
                 $mentionedUsers = (array) json_decode($post->mentions);
 
@@ -258,7 +259,6 @@ class PostController extends Controller
 
                 $mentionedUser = User::where('id', $firstMentionedUser->id)->first();
 
-                $current_user = User::where('id', Auth::id())->firstOrFail();
 
                 $mentionedUser->notify(new UserBirthdayWishNotification($current_user));
             }
@@ -268,9 +268,9 @@ class PostController extends Controller
                 $superusers = User::whereHas('roles', function ($query) {
                     $query->where('name', 'superadmin');
                 })->get();
-                $albums->get()->each(function ($album) use ($superusers) {
-                    $superusers->each(function ($superuser) use ($album) {
-                        $superuser->notify(new AlbumTagNotification($album, $superuser));
+                $albums->get()->each(function ($album) use ($superusers, $current_user) {
+                    $superusers->each(function ($superuser) use ($album, $current_user) {
+                        $superuser->notify(new AlbumTagNotification($album, $current_user));
                     });
                 });
             }
