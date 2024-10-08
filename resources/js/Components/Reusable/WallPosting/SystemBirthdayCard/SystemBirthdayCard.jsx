@@ -1,15 +1,24 @@
+import { isSameDay } from "date-fns";
+
 import { useSettings } from "@/Layouts/useSettings";
 import { cn } from "@/Utils/cn";
+import useUserData from "@/Utils/hooks/useUserData";
 
 const backgroundImage = "/assets/Birthday-Template-1.png";
 
 export function SystemBirthdayCard() {
     const { settings } = useSettings();
 
+    const user = useUserData();
+
+    if (!isSameDay(new Date(), new Date(user?.profile?.dob))) {
+        return null;
+    }
+
     return (
         <article
             className={cn(
-                "p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative",
+                "p-4 rounded-2xl bg-white border-2 shadow-xl w-full max-w-[700px] z-5 relative"
             )}
         >
             <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
