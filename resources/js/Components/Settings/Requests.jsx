@@ -72,7 +72,7 @@ const ProfileInformationRow = ({
                     </p>
                 </div>
                 <div className="flex justify-end w-1/4">
-                    <button className="px-4 py-1 text-sm font-bold text-white bg-blue-500 rounded-full">
+                    <button className="px-4 py-1 text-sm font-bold text-white bg-primary rounded-full">
                         Approve
                     </button>
                     <button className="px-4 py-1 ml-2 text-sm font-bold text-white bg-[#FF5436] rounded-full">
@@ -111,7 +111,7 @@ const ProfileInformationRow = ({
                                 </a>
                             </p>
                             <button
-                                className="px-4 py-2 text-white bg-blue-500 rounded-full"
+                                className="px-4 py-2 text-white bg-primary rounded-full"
                                 onClick={() => setIsPopupVisible(false)}
                             >
                                 Back

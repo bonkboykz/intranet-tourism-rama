@@ -529,7 +529,7 @@ function ShareYourThoughts({
                                             />
                                             <span className="tooltiptext">Mentions People</span>
                                             {chosenPeople.length > 0 && (
-                                                <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                                <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-secondary rounded-full">
                                                     {chosenPeople.length}
                                                 </span>
                                             )}
@@ -679,7 +679,7 @@ function ShareYourThoughts({
                                                     Album Tag
                                                 </span>
                                                 {mediaTagCount > 0 && (
-                                                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-secondary rounded-full">
                                                         {mediaTagCount}
                                                     </span>
                                                 )}
@@ -699,7 +699,7 @@ function ShareYourThoughts({
                                                     Event Tag
                                                 </span>
                                                 {chosenEvent.length > 0 && (
-                                                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-secondary rounded-full">
                                                         {chosenEvent.length}
                                                     </span>
                                                 )}

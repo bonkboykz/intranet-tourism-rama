@@ -158,7 +158,7 @@ function Popup({
                     </div>
                     <div>
                         <button
-                            className="flex justify-start w-full cursor-pointer my-2 rounded-lg bg-blue-500 text-white px-4 py-2"
+                            className="flex justify-start w-full cursor-pointer my-2 rounded-lg bg-primary text-white px-4 py-2"
                             onClick={handleClickImg}
                         >
                             Choose photo from the device
@@ -209,8 +209,8 @@ function Popup({
                     <button
                         // disabled={croppedDisabled}
                         className={cn(
-                            "bg-blue-500 text-sm text-white px-4 py-2 rounded-full  opacity-50",
-                            "hover:bg-blue-700 opacity-100"
+                            "bg-primary text-sm text-white px-4 py-2 rounded-full  opacity-50",
+                            "hover:bg-primary-hover opacity-100"
                         )}
                         onClick={handleCropAndSave} // Combined Crop and Save function
                     >

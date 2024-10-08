@@ -68,7 +68,7 @@ export const PopupMenuAdmin = ({ onRemove, onAssign, closePopup }) => {
                                 No
                             </button>
                             <button
-                                className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                className="px-8 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                                 onClick={handleConfirmRemove}
                             >
                                 Yes

@@ -137,14 +137,14 @@ function DepartmentMembers({ departmentID, loggedInID }) {
                         />
                         <button
                             onClick={handleSearchChange}
-                            className="items-center justify-center px-4 py-2 text-center bg-[#4780FF] rounded-full hover:bg-blue-700 text-md whitespace-nowrap"
+                            className="items-center justify-center px-4 py-2 text-center bg-[#4780FF] rounded-full hover:bg-primary-hover text-md whitespace-nowrap"
                         >
                             Search
                         </button>
                         {canInvite && (
                             <button
                                 onClick={handleInviteClick}
-                                className="flex items-center justify-center px-4 py-2 text-center bg-[#FF5437] rounded-full hover:bg-red-700 text-md whitespace-nowrap"
+                                className="flex items-center justify-center px-4 py-2 text-center bg-[#FF5437] rounded-full hover:bg-secondary-hover text-md whitespace-nowrap"
                             >
                                 <img
                                     src="/assets/plus.svg"

@@ -29,7 +29,7 @@ export function CommunityWallActions({
     if (["superadmin", "admin"].includes(role)) {
         return (
             <button
-                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"
+                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-secondary-hover"
                 onClick={handleAddMember}
             >
                 Invite
@@ -41,7 +41,9 @@ export function CommunityWallActions({
         return (
             <button
                 className={`px-4 py-2 text-white rounded-full ${
-                    hasJoined ? "bg-[#FF5437]" : "bg-[#FF5437] hover:bg-red-700"
+                    hasJoined
+                        ? "bg-[#FF5437]"
+                        : "bg-[#FF5437] hover:bg-secondary-hover"
                 }`}
                 onClick={handleJoinOrExit}
             >
@@ -53,7 +55,7 @@ export function CommunityWallActions({
     if (isMember) {
         return (
             <button
-                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"
+                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-secondary-hover"
                 onClick={handleJoinOrExit}
             >
                 Exit Group
@@ -64,7 +66,7 @@ export function CommunityWallActions({
     if (isJoinRequestPending) {
         return (
             <button
-                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"
+                className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-secondary-hover"
                 disabled
             >
                 Request Pending
@@ -74,7 +76,7 @@ export function CommunityWallActions({
 
     return (
         <button
-            className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-red-700"
+            className="px-4 py-2 text-white bg-[#FF5437] rounded-full hover:bg-secondary-hover"
             onClick={createJoinRequest}
         >
             Join

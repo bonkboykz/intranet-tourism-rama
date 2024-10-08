@@ -5,7 +5,7 @@ import { AuditTrailCalendar } from "./Calendar";
 
 function SearchButton({ children }) {
     return (
-        <button className="justify-center py-5 font-bold text-white bg-blue-500 px-11 rounded-3xl max-md:px-5">
+        <button className="justify-center py-5 font-bold text-white bg-primary px-11 rounded-3xl max-md:px-5">
             {children}
         </button>
     );

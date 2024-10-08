@@ -12,6 +12,16 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                primary: {
+                    DEFAULT: "var(--primary-color)",
+                    hover: "var(--primary-color-hover)",
+                },
+                secondary: {
+                    DEFAULT: "var(--secondary-color)",
+                    hover: "var(--secondary-color-hover)",
+                },
+            },
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
@@ -35,8 +45,10 @@ export default {
     },
 
     plugins: [
+        // eslint-disable-next-line no-undef
         require("tailwindcss-animate"),
         forms,
+        // eslint-disable-next-line no-undef
         require("@tailwindcss/aspect-ratio"),
     ],
 };

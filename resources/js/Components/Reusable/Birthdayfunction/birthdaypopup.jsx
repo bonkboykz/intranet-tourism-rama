@@ -385,7 +385,7 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
 
                     <button
                         type="submit"
-                        className="flex justify-center items-center py-2 my-4 text-sm font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-full"
+                        className="flex justify-center items-center py-2 my-4 text-sm font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                         onClick={handleClickSend}
                     >
                         Post

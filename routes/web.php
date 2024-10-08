@@ -25,6 +25,7 @@ use App\Http\Controllers\OrderingController;
 use App\Http\Controllers\ManageLinksController;
 use Modules\Crud\Http\Controllers\AuditController;
 use App\Http\Controllers\ManageFoldersController;
+use Modules\Settings\Http\Controllers\UserPreferenceController;
 
 
 // Route::get('/', function () {

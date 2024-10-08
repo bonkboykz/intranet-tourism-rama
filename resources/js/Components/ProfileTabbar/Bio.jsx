@@ -314,7 +314,7 @@ function ProfileBio({
                         onClick={() =>
                             onSaveBio({ ...bioFormData, user_id: userId })
                         }
-                        className="ml-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
+                        className="ml-2 bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-full"
                     >
                         Save
                     </button>
@@ -341,7 +341,7 @@ function ProfileBio({
                         <div className="flex justify-end mt-4">
                             <button
                                 onClick={handleCropImage}
-                                className="bg-blue-500 text-white px-4 py-2 rounded-full"
+                                className="bg-primary text-white px-4 py-2 rounded-full"
                             >
                                 Crop
                             </button>
@@ -360,7 +360,7 @@ function ProfileBio({
                         <div className="flex justify-end mt-4">
                             <button
                                 onClick={handleSaveCroppedImage}
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-primary text-white px-4 py-2 rounded"
                             >
                                 Save
                             </button>
@@ -381,7 +381,7 @@ function ProfileBio({
                         <div className="flex justify-end mt-4">
                             <button
                                 onClick={handleCloseNotification}
-                                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
+                                className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-full"
                             >
                                 OK
                             </button>

@@ -36,7 +36,7 @@ function FileInputSection({ onFileSelect, imageSrc }) {
             />
             <button
                 onClick={() => document.getElementById("fileInput").click()}
-                className="justify-center px-2 py-1.5 text-xs font-bold text-white bg-blue-500 rounded-3xl"
+                className="justify-center px-2 py-1.5 text-xs font-bold text-white bg-primary rounded-3xl"
             >
                 Choose file
             </button>
@@ -136,7 +136,7 @@ function LogoUploader() {
             <button
                 disabled={imageSrc === settings.logo}
                 onClick={handleSave}
-                className="self-center px-4 py-2 mt-5 text-white bg-blue-500 rounded-full"
+                className="self-center px-4 py-2 mt-5 text-white bg-primary rounded-full"
             >
                 Save
             </button>

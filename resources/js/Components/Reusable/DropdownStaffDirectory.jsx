@@ -238,7 +238,7 @@ const DepartmentDropdown = ({
                         <a
                             href={`/departmentInner?departmentId=${selectedDepartment.id}`}
                         >
-                            <button className="flex-1 text-sm font-bold rounded-full whitespace-nowrap px-4 md:py-2.5 md:mr-4 max-md:py-2.5 lg:py-2.5 bg-blue-500 text-white hover:bg-blue-700">
+                            <button className="flex-1 text-sm font-bold rounded-full whitespace-nowrap px-4 md:py-2.5 md:mr-4 max-md:py-2.5 lg:py-2.5 bg-primary text-white hover:bg-primary-hover">
                                 Visit Department
                             </button>
                         </a>
@@ -259,7 +259,7 @@ const DepartmentDropdown = ({
                 ["admin", "superadmin"].includes(selectedDepartment.role) && (
                     <div className="relative flex flex-row items-center justify-between w-full max-md:mt-4 max-md:flex-row max-md:justify-between lg:ml-0">
                         <button
-                            className="flex items-center justify-center text-sm font-bold px-6 py-2.5 bg-red-500 text-white rounded-full hover:bg-red-700"
+                            className="flex items-center justify-center text-sm font-bold px-6 py-2.5 bg-secondary text-white rounded-full hover:bg-secondary-hover"
                             onClick={toggleAddMemberPopup}
                         >
                             <img

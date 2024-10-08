@@ -17,7 +17,7 @@ export function Avatar({ src, alt, className, status }) {
         <div className="relative items-center justify-end h-16">
             <img loading="lazy" src={source} alt={alt} className={className} />
             {status === 1 && (
-                <div className="absolute bottom-0 right-0 border-2 border-white bg-red-500 rounded-full w-[12px] h-[12px] mb-1"></div>
+                <div className="absolute bottom-0 right-0 border-2 border-white bg-secondary rounded-full w-[12px] h-[12px] mb-1"></div>
             )}
             {status === 2 && (
                 <div className="absolute bottom-0 right-0 border-2 border-white bg-green-500 rounded-full w-[12px] h-[12px] mb-1"></div>

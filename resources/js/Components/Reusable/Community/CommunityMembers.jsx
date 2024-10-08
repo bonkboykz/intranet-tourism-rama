@@ -108,7 +108,7 @@ function CommunityMembers({ communityID, loggedInID }) {
                 />
                 <button
                     onClick={handleSearchChange}
-                    className="items-center justify-center px-4 py-2 text-center bg-[#4780FF] rounded-full hover:bg-blue-700 text-md whitespace-nowrap"
+                    className="items-center justify-center px-4 py-2 text-center bg-[#4780FF] rounded-full hover:bg-primary-hover text-md whitespace-nowrap"
                 >
                     Search
                 </button>

@@ -223,7 +223,7 @@ function Card({
                     )}
 
                 <button
-                    className="justify-center px-4 py-2 mt-4 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
+                    className="justify-center px-4 py-2 mt-4 font-bold text-white bg-primary hover:bg-primary-hover rounded-3xl"
                     onClick={showCroppedImage}
                 >
                     Crop Image
@@ -264,7 +264,7 @@ function Card({
                         {cancelText}
                     </button>
                     <button
-                        className="justify-center px-4 py-2 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
+                        className="justify-center px-4 py-2 font-bold text-white bg-primary hover:bg-primary-hover rounded-3xl"
                         onClick={handleSubmit}
                     >
                         {createText}

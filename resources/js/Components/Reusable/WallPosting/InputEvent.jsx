@@ -170,7 +170,7 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
                         <div className="flex flex-col justify-center font-bold text-white">
                             <button
                                 onClick={handleSave}
-                                className="justify-center text-md px-4 py-2 bg-red-500 hover:bg-red-700 rounded-full"
+                                className="justify-center text-md px-4 py-2 bg-secondary hover:bg-secondary-hover rounded-full"
                             >
                                 Save
                             </button>

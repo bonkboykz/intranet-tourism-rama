@@ -36,7 +36,7 @@ const DepartmentSearchBar = ({ onSearch, toggleCreateCommunity }) => {
                 {isSuperAdmin && (
                     <div className="flex justify-end max-md:w-full">
                         <button
-                            className="flex items-center text-sm font-bold px-4 py-3 bg-red-500 text-white rounded-full hover:bg-red-700"
+                            className="flex items-center text-sm font-bold px-4 py-3 bg-secondary text-white rounded-full hover:bg-secondary-hover"
                             onClick={toggleCreateCommunity}
                         >
                             <span className="w-3 text-2xl mr-2">+</span>{" "}

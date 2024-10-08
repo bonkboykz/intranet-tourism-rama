@@ -255,7 +255,7 @@ export default function Header({ setSidebarOpen }) {
                             />
 
                             {hasNewNotifications && (
-                                <span className="absolute bottom-[4px] right-[4px] inline-block w-2 h-2 bg-red-500 rounded-full" />
+                                <span className="absolute bottom-[4px] right-[4px] inline-block w-2 h-2 bg-secondary rounded-full" />
                             )}
                         </button>
                         {isNotificationPopupVisible && <NotificationPopup />}

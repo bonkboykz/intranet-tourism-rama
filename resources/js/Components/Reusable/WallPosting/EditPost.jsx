@@ -279,7 +279,7 @@ function EditPost({
 
                                         <button
                                             type="button"
-                                            className="absolute top-2 right-2 text-red-500 border-red-500 w-8 h-8 bg-white cursor-pointer hover:bg-red-500 hover:text-white rounded-full"
+                                            className="absolute top-2 right-2 text-red-500 border-red-500 w-8 h-8 bg-white cursor-pointer hover:bg-secondary hover:text-white rounded-full"
                                             onClick={() =>
                                                 handleDeleteAttachment(index)
                                             }
@@ -303,7 +303,7 @@ function EditPost({
 
                                         <button
                                             type="button"
-                                            className="absolute top-2 right-2 text-red-500 border-red-500 w-8 h-8 bg-white cursor-pointer hover:bg-red-500 hover:text-white rounded-full"
+                                            className="absolute top-2 right-2 text-red-500 border-red-500 w-8 h-8 bg-white cursor-pointer hover:bg-secondary hover:text-white rounded-full"
                                             onClick={() =>
                                                 handleDeleteAttachment(index)
                                             }
@@ -348,7 +348,7 @@ function EditPost({
                 <button
                     disabled={loading}
                     type="submit"
-                    className="mt-2 px-4 py-2 font-bold hover:bg-blue-700 bg-blue-500 text-white rounded-full text-sm"
+                    className="mt-2 px-4 py-2 font-bold hover:bg-primary-hover bg-primary text-white rounded-full text-sm"
                     onClick={handleFormSubmit}
                 >
                     {loading ? (

@@ -19,7 +19,7 @@
 // );
 
 // const SearchButton = () => (
-//   <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-blue-500 hover:bg-blue-700 rounded-3xl mt-8">
+//   <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-primary hover:bg-primary-hover rounded-3xl mt-8">
 //     Search
 //   </button>
 // );
@@ -283,7 +283,7 @@ const SearchInput = ({ searchTerm, onSearch }) => (
 );
 
 const SearchButton = () => (
-    <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-blue-500 hover:bg-blue-700 rounded-3xl mt-8">
+    <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-primary hover:bg-primary-hover rounded-3xl mt-8">
         Search
     </button>
 );

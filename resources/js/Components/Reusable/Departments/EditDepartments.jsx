@@ -201,7 +201,7 @@
 //           </button>
 //           <button
 //             onClick={handleSubmit}
-//             className="px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+//             className="px-4 py-2 text-white font-bold bg-primary rounded-full hover:bg-primary-hover"
 //           >
 //             {saveText}
 //           </button>
@@ -330,7 +330,7 @@ function Avatar({ src, alt, onImageChange, isRepositionDisabled }) {
                     <div className="flex justify-end w-full mt-4 space-x-2">
                         <button
                             onClick={handleCrop}
-                            className="px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+                            className="px-4 py-2 text-white font-bold bg-primary rounded-full hover:bg-primary-hover"
                         >
                             Apply Crop
                         </button>
@@ -350,8 +350,9 @@ function Avatar({ src, alt, onImageChange, isRepositionDisabled }) {
                             <button
                                 onClick={handleRepositionClick}
                                 className={cn(
-                                    `mt-2 px-4 py-2 text-white font-bold bg-blue-500 rounded-full`,
-                                    !isRepositionDisabled && "hover:bg-blue-700"
+                                    `mt-2 px-4 py-2 text-white font-bold bg-primary rounded-full`,
+                                    !isRepositionDisabled &&
+                                        "hover:bg-primary-hover"
                                 )}
                             >
                                 Reposition Image
@@ -525,7 +526,7 @@ function Card({
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className="px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+                        className="px-4 py-2 text-white font-bold bg-primary rounded-full hover:bg-primary-hover"
                     >
                         {saveText}
                     </button>

@@ -41,7 +41,7 @@ function AddOptionButton({ label, onClick }) {
             className="flex items-center gap-3 p-2 bg-gray-100 border-2 border-gray-300 rounded-3xl cursor-pointer w-fit"
             onClick={onClick}
         >
-            <div className="justify-center items-center text-xl font-bold text-center text-white bg-blue-500 rounded-3xl h-[30px] w-[30px]">
+            <div className="justify-center items-center text-xl font-bold text-center text-white bg-primary rounded-3xl h-[30px] w-[30px]">
                 +
             </div>
             <div className="text-md font-bold text-neutral-800 mr-2">
@@ -269,7 +269,7 @@ export function InputPolls({
                         </div>
                     </div>
                     <button
-                        className="w-full py-2 mt-4 text-white bg-blue-500 hover:bg-blue-700 rounded-3xl"
+                        className="w-full py-2 mt-4 text-white bg-primary hover:bg-primary-hover rounded-3xl"
                         onClick={handlePostPoll}
                     >
                         Post poll

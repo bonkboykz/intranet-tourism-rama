@@ -125,7 +125,7 @@ const SearchMembers = ({
                 <div className="flex w-full space-x-3 sm:justify-end sm:w-auto">
                     <button
                         onClick={handleSearch}
-                        className="font-bold mt-0 text-md px-4 py-2 items-center bg-blue-500 text-white rounded-full hover:bg-blue-700 h-[43px]"
+                        className="font-bold mt-0 text-md px-4 py-2 items-center bg-primary text-white rounded-full hover:bg-primary-hover h-[43px]"
                     >
                         Search
                     </button>

@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 
+import { useSetupTheme } from "@/Utils/hooks/useTheme";
+
 import Header from "../Components/DashboardHeaderNew";
 import Sidebar from "../Components/SideNavBarNew";
 import {
@@ -30,6 +32,8 @@ const Example = ({ children }) => {
     const { user, userData } = useSetupUser();
 
     const { settings, fetchSettings } = useSetupSettings();
+
+    useSetupTheme();
 
     return (
         <SettingsContext.Provider

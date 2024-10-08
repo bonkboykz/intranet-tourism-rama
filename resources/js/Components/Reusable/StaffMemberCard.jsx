@@ -243,7 +243,7 @@ const StaffMemberCard = ({
                                 No
                             </button>
                             <button
-                                className="yes-button hover:bg-blue-700"
+                                className="yes-button hover:bg-primary-hover"
                                 onClick={redirectToWhatsAppWeb}
                             >
                                 Yes

@@ -32,7 +32,7 @@ export const BirthdayTemplateTable = ({
                             onChange={() => handleSwitchChange(template)}
                             className={cn(
                                 template.is_enabled
-                                    ? "bg-blue-500"
+                                    ? "bg-primary"
                                     : "bg-gray-200",
                                 "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                             )}

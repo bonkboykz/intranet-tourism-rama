@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useCsrf } from "@/composables";
 
@@ -139,7 +139,7 @@ const AddTitles = () => {
                 </div>
                 <button
                     onClick={() => setIsPopupOpen(true)}
-                    className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                    className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                 >
                     Add New Title
                 </button>
@@ -249,7 +249,7 @@ const AddTitles = () => {
                             </button>
                             <button
                                 onClick={createTitle}
-                                className="px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                className="px-4 py-2 text-white bg-primary rounded-full hover:bg-primary-hover"
                             >
                                 Add
                             </button>

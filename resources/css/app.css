@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .input-no-outline:focus {
     outline: none !important;
     box-shadow: none !important;
@@ -10,180 +9,256 @@
 
 .input-focus-style:focus {
     outline: none;
-    border: 1px solid #4880FF;
+    border: 1px solid #4880ff;
     border-radius: 1.5rem;
     box-shadow: none;
-  }
+}
 
 /* For the 'File' and 'Date' columns */
-.th-file, .td-file, .th-date, .td-date {
-  border: 2px solid #3182ce; /* Tailwind blue-500 */
+.th-file,
+.td-file,
+.th-date,
+.td-date {
+    border: 2px solid #3182ce; /* Tailwind blue-500 */
 }
 
 .avatar-hover:hover {
-  filter: grayscale(100%); /* Converts the image to grayscale on hover */
+    filter: grayscale(100%); /* Converts the image to grayscale on hover */
 }
 
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* High z-index to cover other content */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.5
+    ); /* semi-transparent black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to cover other content */
 }
 
 .blurred-background {
-  filter: blur(8px); /* Adjust blur level as needed */
+    filter: blur(8px); /* Adjust blur level as needed */
 }
 
 .avatar-container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr); /* Creates 6 columns */
-  gap: 10px; /* Space between items */
-  margin-top: 10px; /* Top margin */
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Creates 6 columns */
+    gap: 10px; /* Space between items */
+    margin-top: 10px; /* Top margin */
 }
 
 .app {
-  font-family: Arial, sans-serif;
-  text-align: center;
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
 
 .popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .popup-content {
-  padding: 20px;
+    padding: 20px;
 }
 
 .popup-buttons {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .popup-buttons button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .popup-buttons button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
 .input-container {
-  margin-bottom: 20px;
-  text-align: left;
+    margin-bottom: 20px;
+    text-align: left;
 }
 
 .input-container label {
-  display: block;
-  margin-bottom: 5px;
+    display: block;
+    margin-bottom: 5px;
 }
 
 .input-container input {
-  width: 100%;
-  padding: 8px;
-  /* border: 1px solid #ccc; */
-  border-radius: 5px;
+    width: 100%;
+    padding: 8px;
+    /* border: 1px solid #ccc; */
+    border-radius: 5px;
 }
 
 .search-input {
-  display: flex;
-  width: 100%;
-  padding: 8px;
-  border-radius: 999px;
-  /* border: red; */
-  background: f3f4f6;
-  align-items: center;
+    display: flex;
+    width: 100%;
+    padding: 8px;
+    border-radius: 999px;
+    /* border: red; */
+    background: f3f4f6;
+    align-items: center;
 }
 
 .success-popup {
-  background-color: #4caf50;
-  color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #4caf50;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,  0,  0,  0.2);
 }
 
 .search-icon {
-  width: 24px;
-  margin-right: 8px;
+    width: 24px;
+    margin-right: 8px;
 }
 
 .search-box {
-  width: 100%;
-  border: none;
-  outline: none;
+    width: 100%;
+    border: none;
+    outline: none;
 }
 
 .search-button {
-  padding: 10px 20px;
-  background-color: blue;
-  color: white;
-  border-radius: 20px;
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    border-radius: 20px;
 }
 
 .table-container {
-  margin: 8px;
+    margin: 8px;
 }
 
 .data-table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 @media (max-width: 600px) {
-  .search-button, .search-input, .page-button {
-    font-size: 14px;
-  }
+    .search-button,
+    .search-input,
+    .page-button {
+        font-size: 14px;
+    }
 }
 
 .blur-background::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
-  z-index: 10;
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10;
 }
 
 .sticky {
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 0;
-  z-index: 40;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 40;
 }
 
 @layer base {
-
-  :primary {
-
-  }
+    :primary {
+    }
 }
 
 /* normalize */
 pre {
-    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-family:
+        Figtree,
+        ui-sans-serif,
+        system-ui,
+        sans-serif,
+        Apple Color Emoji,
+        Segoe UI Emoji,
+        Segoe UI Symbol,
+        Noto Color Emoji;
     font-feature-settings: normal;
     font-variation-settings: normal;
+}
+
+/* Default Theme (Theme 1) */
+:root {
+    --primary-color: #4880ff;
+    --secondary-color: #ff5437;
+}
+
+/* Theme 2 */
+.theme-2 {
+    --primary-color: #0c359e;
+    --secondary-color: #ee99c2;
+}
+
+/* Theme 3 */
+.theme-3 {
+    --primary-color: #265073;
+    --secondary-color: #2d9596;
+}
+
+/* Theme 4 */
+.theme-4 {
+    --primary-color: #b67352;
+    --secondary-color: #8cb9bd;
+}
+
+/* Theme 5 */
+.theme-5 {
+    --primary-color: #ff8080;
+    --secondary-color: #ffcf96;
+}
+
+/* Theme 6 */
+.theme-6 {
+    --primary-color: #ff8911;
+    --secondary-color: #7f27ff;
+}
+
+/* Theme 7 */
+.theme-7 {
+    --primary-color: #40a2e3;
+    --secondary-color: #0d9276;
+}
+
+/* Theme 8 */
+.theme-8 {
+    --primary-color: #f28585;
+    --secondary-color: #b7e5b4;
+}
+
+/* Theme 9 */
+.theme-9 {
+    --primary-color: #561c24;
+    --secondary-color: #c7b7a3;
+}
+
+/* Theme 10 */
+.theme-10 {
+    --primary-color: #665590;
+    --secondary-color: #f6ddce;
 }

@@ -645,7 +645,7 @@ function Calendar() {
 
                                         setIsModalOpen(true);
                                     }}
-                                    className="flex items-center justify-center text-white bg-blue-500 hover:bg-blue-700 px-3.5 py-3.5 max-md:px-1 max-md:py-1 rounded-full"
+                                    className="flex items-center justify-center text-white bg-primary hover:bg-primary-hover px-3.5 py-3.5 max-md:px-1 max-md:py-1 rounded-full"
                                 >
                                     <img
                                         src="/assets/plus.svg"
@@ -872,12 +872,18 @@ function Calendar() {
                                             "black",
                                             "gray",
                                         ].map((color) => (
-                                            <label key={color} className="color-option max-md:mx-2 mb-2">
+                                            <label
+                                                key={color}
+                                                className="color-option max-md:mx-2 mb-2"
+                                            >
                                                 <input
                                                     type="radio"
                                                     name="color"
                                                     value={color}
-                                                    checked={eventData.color === color}
+                                                    checked={
+                                                        eventData.color ===
+                                                        color
+                                                    }
                                                     onChange={handleChange}
                                                     required
                                                 />
@@ -1067,7 +1073,7 @@ function Calendar() {
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                            className="px-4 py-2 text-white bg-primary rounded-full hover:bg-primary-hover"
                                         >
                                             Print
                                         </button>

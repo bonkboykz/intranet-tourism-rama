@@ -59,7 +59,7 @@ const PopupMenu = ({
                             <div className="flex justify-center space-x-4">
                                 <button
                                     onClick={handleCancelDelete}
-                                    className="px-8 py-1 text-white bg-red-500 rounded-full hover:bg-red-700"
+                                    className="px-8 py-1 text-white bg-secondary rounded-full hover:bg-secondary-hover"
                                 >
                                     No
                                 </button>

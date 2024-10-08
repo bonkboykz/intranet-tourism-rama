@@ -120,14 +120,14 @@ function HeaderSection({
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-start gap-4 py-4 px-11 max-md:px-5">
                     {isEditing ? (
                         <button
-                            className="flex items-center px-4 py-2 text-white bg-blue-500 rounded-md"
+                            className="flex items-center px-4 py-2 text-white bg-primary rounded-md"
                             onClick={handleSaveClick}
                         >
                             Save
                         </button>
                     ) : (
                         <button
-                            className="flex items-center justify-center w-8 h-8 px-1 py-1 mb-4 text-white bg-blue-500 rounded-full"
+                            className="flex items-center justify-center w-8 h-8 px-1 py-1 mb-4 text-white bg-primary rounded-full"
                             onClick={handleEditClick}
                         >
                             <img
@@ -634,13 +634,13 @@ function Navigation({ departmentName, type }) {
 
                                 <div className="flex justify-end mt-4">
                                     <button
-                                        className="px-4 py-2 mr-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                        className="px-4 py-2 mr-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                                         onClick={handleAddMembersToCommunity}
                                     >
                                         Add Members
                                     </button>
                                     <button
-                                        className="px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700"
+                                        className="px-4 py-2 font-bold text-white bg-secondary rounded-full hover:bg-secondary-hover"
                                         onClick={() => {
                                             setIsAddMemberPopupOpen(false);
                                             setSelectedUsers([]);
