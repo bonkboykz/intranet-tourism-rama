@@ -4,6 +4,7 @@ namespace Modules\Communities\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Request as AppRequest;
+use App\Notifications\CommunityNotification;
 use Illuminate\Http\Request;
 use Modules\Communities\Helpers\CommunityPermissionsHelper;
 use Modules\User\Models\User;
@@ -190,7 +191,13 @@ class CommunityController extends Controller
             $community->members()->attach($user);
         }
 
-        $user->notify(new CommunityNotification(Auth::user(), $community));
+
+
+        if (Auth::id() !== $user->id) {
+            $current_user = User::where('id', Auth::id())->firstOrFail();
+
+            $user->notify(new CommunityNotification($current_user, $community));
+        }
 
         return response()->noContent();
     }
