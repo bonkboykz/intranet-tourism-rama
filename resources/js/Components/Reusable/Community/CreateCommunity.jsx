@@ -8,6 +8,7 @@ import { useCsrf } from "@/composables";
 import { getProfileImage } from "@/Utils/getProfileImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
+import { toastError } from "@/Utils/toast";
 
 import getCroppedImg from "./cropImgCommunity";
 
@@ -109,6 +110,12 @@ function Card({
     };
 
     const showCroppedImage = useCallback(async () => {
+        if (imageSrc === "/assets/uploadAnImage.svg") {
+            toastError("You need to upload image");
+
+            return;
+        }
+
         try {
             const croppedBlob = await getCroppedImg(
                 imageSrc,
