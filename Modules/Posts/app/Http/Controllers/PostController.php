@@ -246,12 +246,12 @@ class PostController extends Controller
             $albums = $post->albums();
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
-            });
-            foreach ($albums as $album) {
-                $superusers->get()->each(function ($superuser) use ($album) {
+            })->get();
+            $albums->get()->each(function ($album) use ($superusers) {
+                $superusers->each(function ($superuser) use ($album) {
                     $superuser->notify(new AlbumTagNotification($album, $superuser));
                 });
-            }
+            });
         }
 
         return response()->noContent();
