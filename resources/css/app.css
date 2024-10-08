@@ -223,20 +223,20 @@ pre {
 
 /* Theme 4 */
 .theme-4 {
-    --primary-color: #b67352;
-    --secondary-color: #8cb9bd;
+    --primary-color: #8cb9bd;
+    --secondary-color: #b67352;
 }
 
 /* Theme 5 */
 .theme-5 {
-    --primary-color: #ff8080;
-    --secondary-color: #ffcf96;
+    --primary-color: #ff8911;
+    --secondary-color: #7f27ff;
 }
 
 /* Theme 6 */
 .theme-6 {
-    --primary-color: #ff8911;
-    --secondary-color: #7f27ff;
+    --primary-color: #ff8080;
+    --secondary-color: #ffcf96;
 }
 
 /* Theme 7 */
