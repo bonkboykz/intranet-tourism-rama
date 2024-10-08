@@ -10,6 +10,7 @@ use App\Notifications\DeletingPostFromDashboardNotification;
 use App\Notifications\DeletingPostFromDepartmentNotification;
 use App\Notifications\NewPollCreatedNotification;
 use App\Notifications\PollFeedbackNotification;
+use App\Notifications\UserBirthdayWishNotification;
 use App\Notifications\UserGotMentionedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Notifications\LikeNotification;
@@ -242,16 +243,31 @@ class PostController extends Controller
             throw $th;
         }
 
-        if (request()->has('albums')) {
-            $albums = $post->albums();
-            $superusers = User::whereHas('roles', function ($query) {
-                $query->where('name', 'superadmin');
-            })->get();
-            $albums->get()->each(function ($album) use ($superusers) {
-                $superusers->each(function ($superuser) use ($album) {
-                    $superuser->notify(new AlbumTagNotification($album, $superuser));
+        try {
+            if ($validated['type'] === 'birthday') {
+                $mentionedUsers = (array) json_decode($post->mentions);
+
+                $firstMentionedUser = $mentionedUsers[0];
+
+                $mentionedUser = User::where('id', $firstMentionedUser->id)->first();
+
+                $current_user = User::where('id', Auth::id())->firstOrFail();
+
+                $mentionedUser->notify(new UserBirthdayWishNotification($current_user));
+            }
+
+            if (request()->has('albums')) {
+                $albums = $post->albums();
+                $superusers = User::whereHas('roles', function ($query) {
+                    $query->where('name', 'superadmin');
+                })->get();
+                $albums->get()->each(function ($album) use ($superusers) {
+                    $superusers->each(function ($superuser) use ($album) {
+                        $superuser->notify(new AlbumTagNotification($album, $superuser));
+                    });
                 });
-            });
+            }
+        } catch (\Throwable $th) {
         }
 
         return response()->noContent();
