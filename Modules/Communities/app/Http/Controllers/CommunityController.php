@@ -244,7 +244,7 @@ class CommunityController extends Controller
     }
 
 
-    // invie community admin
+    // invite community admin
     public function inviteCommunityAdmin(Request $request)
     {
         $user = User::findOrFail(auth()->id());
@@ -272,39 +272,30 @@ class CommunityController extends Controller
     }
 
     // revoke community admin
-    public function revokeCommunityAdmin(Request $request)
-    {
-        $user = User::findOrFail(auth()->id());
+  public function revoke(Community $community)
+  {
+      try {
+          $community->admins()->detach();
+          $community->members()->detach();
 
-        if (!CommunityPermissionsHelper::checkSpecificPermission($user, 'add remove an admin from the same group', $request->community_id)) {
-            abort(403, 'Unauthorized action.');
-        }
+          $community->delete();
 
-        // Validate the request to ensure user and community are valid
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'community_id' => 'required|exists:communities,id',
-        ]);
+          $superAdmins = User::whereHas('roles', function ($query) {
+              $query->where('name', 'superadmin');
+          })->get();
 
-        // Fetch the user and the community
-        $user = User::findOrFail($request->user_id);
-        $community = Community::findOrFail($request->community_id);
+          foreach ($superAdmins as $superAdmin) {
+              $superAdmin->notify(new CommunityNotification(Auth::user(), $community, 'revoke'));
+          }
 
-        // Revoke the user's community-specific permissions
-        CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
+          return response()->json(['message' => 'Community has been deleted successfully.']);
+      } catch (\Exception $e) {
+          \Log::error('Failed to delete community: ' . $e->getMessage());
+          return response()->json(['message' => 'Failed to delete the community.'], 500);
+      }
+  }
 
-        if (request()->has('remove')) {
-            $employmentPost = CommunityMember::where('user_id', $user->id)->where('community_id', $community->id)->first();
 
-            if ($employmentPost) {
-                $employmentPost->delete();
-            }
-        }
-
-        return response()->json([
-            'message' => 'User has been successfully revoked as a community admin.',
-        ]);
-    }
 
  public function archive(Community $community)
  {
@@ -313,7 +304,6 @@ class CommunityController extends Controller
          $community->save();
 
 
-         // Уведомление суперпользователям (SuperAdmin)
          $superAdmins = User::whereHas('roles', function ($query) {
              $query->where('name', 'superadmin');
          })->get();
@@ -324,7 +314,6 @@ class CommunityController extends Controller
 
          return response()->json(['message' => 'Community has been archived successfully.']);
      } catch (\Exception $e) {
-         // Логирование ошибки
          Log::error('Failed to archive community: ' . $e->getMessage());
          return response()->json(['message' => 'Failed to archive the community.'], 500);
      }
@@ -338,7 +327,6 @@ public function unarchive(Community $community)
         $community->save();
 
 
-        // Уведомление суперпользователям (SuperAdmin)
         $superAdmins = User::whereHas('roles', function ($query) {
             $query->where('name', 'superadmin');
         })->get();
@@ -349,7 +337,6 @@ public function unarchive(Community $community)
 
         return response()->json(['message' => 'Community has been unarchived successfully.']);
     } catch (\Exception $e) {
-        // Логирование ошибки
         Log::error('Failed to unarchive community: ' . $e->getMessage());
         return response()->json(['message' => 'Failed to unarchive the community.'], 500);
     }
