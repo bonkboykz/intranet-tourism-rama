@@ -9,7 +9,7 @@
 //       case "Away":
 //         return "bg-yellow-500";
 //       case "Offline":
-//         return "bg-red-500";
+//         return "bg-secondary";
 //       default:
 //         return "bg-gray-500";
 //     }
@@ -130,7 +130,7 @@
 //                   Offline
 //                 </button>
 //                 <div
-//                   className={`w-3 h-3 rounded-full border-2 border-white ${statusFilter === "Offline" ? "bg-red-500" : "bg-red-500 opacity-50"}`}
+//                   className={`w-3 h-3 rounded-full border-2 border-white ${statusFilter === "Offline" ? "bg-secondary" : "bg-secondary opacity-50"}`}
 //                 />
 //               </div>
 //             </div>
@@ -157,6 +157,7 @@
 
 import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
+
 import Example from "@/Layouts/DashboardLayoutNew";
 
 const ProfileCard = ({ name, status, ID_USER }) => {
@@ -204,7 +205,7 @@ const ProfileCard = ({ name, status, ID_USER }) => {
             case "Away":
                 return "bg-yellow-500";
             case "Offline":
-                return "bg-red-500";
+                return "bg-secondary";
             default:
                 return "bg-gray-500";
         }
@@ -270,42 +271,44 @@ const MyComponent = () => {
 
     return (
         <Example>
-        <div className="w-full min-h-screen bg-slate-100">
-            <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
-                <header className="flex justify-between items-center w-full">
-                    <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
-                        Who’s Online
-                        <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
+            <div className="w-full min-h-screen bg-slate-100">
+                <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
+                    <header className="flex justify-between items-center w-full">
+                        <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
+                            Who’s Online
+                            <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
+                        </div>
+                    </header>
+                    <div className="w-full bg-white p-6 rounded-2xl mt-4 items-start shadow-2xl">
+                        <div className="flex flex-col text-neutral-800">
+                            <header className="flex justify-between items-center font-extrabold text-neutral-800 mb-4">
+                                <span className="text-xl sm:text-2xl ">
+                                    Online List
+                                </span>
+                                <button
+                                    onClick={() => window.history.back()}
+                                    className="text-blue-500 hover:text-blue-700 font-bold text-lg"
+                                >
+                                    Back
+                                </button>
+                            </header>
+                            {onlineUsers.length > 0 ? (
+                                onlineUsers.map((online, index) => (
+                                    <ProfileCard
+                                        key={index}
+                                        name={online.name}
+                                        status={online.status}
+                                        position={online.position}
+                                        ID_USER={online.id}
+                                    />
+                                ))
+                            ) : (
+                                <p className="ml-4 mt-2">No users found</p>
+                            )}
+                        </div>
                     </div>
-                </header>
-                <div className="w-full bg-white p-6 rounded-2xl mt-4 items-start shadow-2xl">
-                    <div className="flex flex-col text-neutral-800">
-                        <header className="flex justify-between items-center font-extrabold text-neutral-800 mb-4">
-                            <span className="text-xl sm:text-2xl ">Online List</span>
-                            <button
-                                onClick={() => window.history.back()}
-                                className="text-blue-500 hover:text-blue-700 font-bold text-lg"
-                            >
-                                Back
-                            </button>
-                        </header>
-                        {onlineUsers.length > 0 ? (
-                            onlineUsers.map((online, index) => (
-                                <ProfileCard
-                                    key={index}
-                                    name={online.name}
-                                    status={online.status}
-                                    position={online.position}
-                                    ID_USER={online.id}
-                                />
-                            ))
-                        ) : (
-                            <p className="ml-4 mt-2">No users found</p>
-                        )}
-                    </div>
-                </div>
-            </section>
-        </div>
+                </section>
+            </div>
         </Example>
     );
 };

@@ -103,7 +103,7 @@ const CoreFeatures = () => {
                                 checked={state}
                                 onChange={setState}
                                 className={classNames(
-                                    state ? "bg-blue-500" : "bg-gray-200",
+                                    state ? "bg-primary" : "bg-gray-200",
                                     "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                                 )}
                             >
@@ -131,7 +131,7 @@ const CoreFeatures = () => {
                 </button>
                 <button
                     type="submit"
-                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-blue-500 rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-primary rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                     onClick={handleSave}
                 >
                     Save
@@ -297,7 +297,7 @@ const SizeLimit = () => {
                 </button>
                 <button
                     type="submit"
-                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-blue-500 rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-primary rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                     onClick={handleSave}
                 >
                     Save
@@ -331,7 +331,7 @@ const Media = () => {
                             checked={fileFolder}
                             onChange={setFileFolder}
                             className={classNames(
-                                fileFolder ? "bg-blue-500" : "bg-gray-200",
+                                fileFolder ? "bg-primary" : "bg-gray-200",
                                 "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                             )}
                         >
@@ -377,7 +377,7 @@ const Media = () => {
                 </button>
                 <button
                     type="submit"
-                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-blue-500 rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-primary rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                 >
                     Save
                 </button>
@@ -451,7 +451,7 @@ const CoverPhotos = () => {
                                 checked={state}
                                 onChange={setState}
                                 className={classNames(
-                                    state ? "bg-blue-500" : "bg-gray-200",
+                                    state ? "bg-primary" : "bg-gray-200",
                                     "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                                 )}
                             >
@@ -479,7 +479,7 @@ const CoverPhotos = () => {
                 </button>
                 <button
                     type="submit"
-                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-blue-500 rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-primary rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                     onClick={handleSave}
                 >
                     Save
@@ -585,7 +585,7 @@ const MailSettings = () => {
                             checked={fileFolder}
                             onChange={setFileFolder}
                             className={classNames(
-                                fileFolder ? "bg-blue-500" : "bg-gray-200",
+                                fileFolder ? "bg-primary" : "bg-gray-200",
                                 "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                             )}
                         >
@@ -670,7 +670,7 @@ const MailSettings = () => {
                             checked={authentication}
                             onChange={setAuthentication}
                             className={classNames(
-                                authentication ? "bg-blue-500" : "bg-gray-200",
+                                authentication ? "bg-primary" : "bg-gray-200",
                                 "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                             )}
                         >
@@ -757,7 +757,7 @@ const MailSettings = () => {
                             onChange={setEmailNotification}
                             className={classNames(
                                 emailNotification
-                                    ? "bg-blue-500"
+                                    ? "bg-primary"
                                     : "bg-gray-200",
                                 "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                             )}
@@ -785,7 +785,7 @@ const MailSettings = () => {
                 </button>
                 <button
                     type="submit"
-                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-blue-500 rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-white bg-primary rounded-md shadow-custom hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                 >
                     Save
                 </button>

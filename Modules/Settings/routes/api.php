@@ -38,5 +38,6 @@ Route::apiResources([
     'user_preferences' => UserPreferenceController::class,
 ]);
 
+Route::put('/user-preferences/theme', [UserPreferenceController::class, 'updateTheme'])->name('user-preferences.updateTheme');
 Route::put('/settings/update_by_key/{key}', [SettingController::class, 'updateByKey'])->name('settings.updateByKey');
 

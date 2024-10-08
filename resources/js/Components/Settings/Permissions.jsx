@@ -24,7 +24,7 @@ const PermissionRow = ({
                 checked={userState}
                 onChange={setUserState}
                 className={classNames(
-                    userState ? "bg-blue-500" : "bg-gray-200",
+                    userState ? "bg-primary" : "bg-gray-200",
                     "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                 )}
             >
@@ -42,7 +42,7 @@ const PermissionRow = ({
                 checked={adminState}
                 onChange={setAdminState}
                 className={classNames(
-                    adminState ? "bg-blue-500" : "bg-gray-200",
+                    adminState ? "bg-primary" : "bg-gray-200",
                     "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                 )}
             >
@@ -59,7 +59,7 @@ const PermissionRow = ({
             <Switch
                 checked={true} // Always on
                 onChange={() => {}} // No action on change
-                className="bg-blue-500 relative inline-flex h-6 w-11 flex-shrink-0 cursor-not-allowed rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+                className="bg-primary relative inline-flex h-6 w-11 flex-shrink-0 cursor-not-allowed rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
             >
                 <span
                     aria-hidden="true"

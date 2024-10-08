@@ -56,7 +56,7 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
                     <button
                         disabled={isImagesLoading}
                         onClick={loadMoreImages}
-                        className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-blue-500 hover:bg-blue-700 flex align-center justify-center"
+                        className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-primary hover:bg-primary-hover flex align-center justify-center"
                     >
                         {isImagesLoading ? (
                             <Loader2 className="w-6 h-6 animate-spin" />
@@ -107,7 +107,7 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
                     <button
                         disabled={isVideoLoading}
                         onClick={loadMoreVideo}
-                        className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-blue-500 hover:bg-blue-700 flex align-center justify-center"
+                        className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-primary hover:bg-primary-hover flex align-center justify-center"
                     >
                         {isVideoLoading ? (
                             <Loader2 className="w-6 h-6 animate-spin" />

@@ -125,7 +125,7 @@ const CommunityCreationRow = ({
                     ) : (
                         <>
                             <button
-                                className="px-4 py-1 text-sm font-bold text-white bg-blue-500 rounded-full"
+                                className="px-4 py-1 text-sm font-bold text-white bg-primary rounded-full"
                                 onClick={onApprove}
                             >
                                 Approve

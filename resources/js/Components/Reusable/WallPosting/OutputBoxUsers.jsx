@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 
 function ProfileHeader({ name, timeAgo, profileImageSrc, profileImageAlt }) {
@@ -62,7 +62,7 @@ function FeedbackForm() {
                 style={{ maxHeight: "30px", overflowY: "auto" }}
             />
             <button
-                className="flex flex-col justify-center my-auto text-xs font-bold leading-5 text-center text-white whitespace-nowrap px-6 py-2 bg-red-500 rounded-2xl max-md:px-5"
+                className="flex flex-col justify-center my-auto text-xs font-bold leading-5 text-center text-white whitespace-nowrap px-6 py-2 bg-secondary rounded-2xl max-md:px-5"
                 onClick={handleFeedbackClick}
             >
                 Send
@@ -166,7 +166,7 @@ function OutputDataUsers({ userId }) {
                                 <div className="absolute bg-white border-2 rounded-xl p-1 shadow-lg mt-6 right-0 w-[160px] h-auto z-10 ">
                                     <p
                                         className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl  p-2"
-                                        onClick={() => handleEdit(index)}
+                                        // onClick={() => handleEdit(index)}
                                     >
                                         <img
                                             className="w-6 h-6"
@@ -179,7 +179,7 @@ function OutputDataUsers({ userId }) {
 
                                     <p
                                         className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
-                                        onClick={() => handleDelete(index)}
+                                        // onClick={() => handleDelete(index)}
                                     >
                                         <img
                                             className="w-6 h-6"
@@ -192,9 +192,9 @@ function OutputDataUsers({ userId }) {
 
                                     <p
                                         className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
-                                        onClick={() =>
-                                            handleAnnouncement(index)
-                                        }
+                                        // onClick={() =>
+                                        //     handleAnnouncement(index)
+                                        // }
                                     >
                                         <img
                                             className="w-6 h-6"

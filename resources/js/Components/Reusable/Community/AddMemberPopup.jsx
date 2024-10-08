@@ -30,13 +30,13 @@ const ConfirmationPopup = ({ selectedPerson, onConfirm, onCancel }) => {
                 </p>
                 <div className="flex flex-col mt-4">
                     <button
-                        className="w-full px-4 py-2 mb-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                        className="w-full px-4 py-2 mb-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                         onClick={() => onConfirm("remove")}
                     >
                         Yes, Remove
                     </button>
                     <button
-                        className="w-full px-4 py-2 mb-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700"
+                        className="w-full px-4 py-2 mb-2 font-bold text-white bg-secondary rounded-full hover:bg-secondary-hover"
                         onClick={() => onConfirm("keep")}
                     >
                         No, Keep & Add
@@ -687,7 +687,7 @@ const AddMemberPopup = ({
                                 Cancel
                             </button>
                             <button
-                                className="w-[100px] px-4 mb-4 mr-4 font-bold text-white bg-red-500 hover:bg-red-700 rounded-full"
+                                className="w-[100px] px-4 mb-4 mr-4 font-bold text-white bg-secondary hover:bg-secondary-hover rounded-full"
                                 onClick={handleAdd}
                                 disabled={!selectedPerson}
                             >

@@ -108,7 +108,7 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                 />
                 {/* <button
           onClick={handleSearchChange}
-          className="visit-department-btn text-md font-bold rounded-full px-4 py-3 mx-3 bg-blue-500 text-white hover:bg-blue-700">
+          className="visit-department-btn text-md font-bold rounded-full px-4 py-3 mx-3 bg-primary text-white hover:bg-primary-hover">
           Search
         </button> */}
                 <label htmlFor="file-upload" style={{ cursor: "pointer" }}>
@@ -119,7 +119,7 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                         onChange={handleFileChange}
                         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z,.mp3,.csv,.css,.js,.html"
                     />
-                    {/* <div className="flex items-center bg-blue-500 hover:bg-blue-700 px-4 py-2 max-md:px-5 max-md:py-0 h-full rounded-full ml-3 mr-2">
+                    {/* <div className="flex items-center bg-primary hover:bg-primary-hover px-4 py-2 max-md:px-5 max-md:py-0 h-full rounded-full ml-3 mr-2">
                         <img
                             src="/assets/plus.svg"
                             alt="add new file"
@@ -130,7 +130,7 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                 {/* <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
           <input type="file" id="file-upload" style={{ display: 'none' }} onChange={handleFileChange}/>
           <div
-            className="flex items-center ml-2 bg-blue-500 hover:bg-blue-700 px-4 py-1.5 rounded-full">
+            className="flex items-center ml-2 bg-primary hover:bg-primary-hover px-4 py-1.5 rounded-full">
             <img src="/assets/addFile.svg" alt="add new file" className="w-10 h-8" />
           </div>
         </label> */}
@@ -172,7 +172,7 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                                 {/* Add CancelButton with onClick handler */}
                                 <button
                                     onClick={handleFileUpload}
-                                    className="upload-btn font-bold bg-blue-500 hover:bg-blue-700 text-white px-6 py-2 rounded-full"
+                                    className="upload-btn font-bold bg-primary hover:bg-primary-hover text-white px-6 py-2 rounded-full"
                                 >
                                     Upload
                                 </button>

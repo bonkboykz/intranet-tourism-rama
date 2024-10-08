@@ -90,7 +90,7 @@ const Media = () => {
                             <div className="ml-auto">
                                 {/* Manage Album Button */}
                                 <button
-                                    className="px-8 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                    className="px-8 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                                     onClick={handleManageAlbum}
                                 >
                                     Manage Album

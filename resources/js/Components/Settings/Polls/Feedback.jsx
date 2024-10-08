@@ -124,7 +124,7 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
                         </p>
                         <div className="flex justify-center space-x-4">
                             <button
-                                className="px-8 py-2 mt-5 text-white bg-blue-500 rounded-full"
+                                className="px-8 py-2 mt-5 text-white bg-primary rounded-full"
                                 onClick={() => setIsFeedbackModalVisible(false)}
                             >
                                 Back
@@ -148,7 +148,7 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
                             </h2>
                             <div className="flex justify-center space-x-4">
                                 <button
-                                    className="px-8 py-2 text-base font-bold text-white bg-blue-500 border border-blue-500 rounded-full"
+                                    className="px-8 py-2 text-base font-bold text-white bg-primary border border-blue-500 rounded-full"
                                     onClick={handleDelete}
                                 >
                                     Yes

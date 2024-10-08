@@ -217,7 +217,7 @@ const OrderingDepartments = () => {
                                     </button>
                                     <button
                                         type="button"
-                                        className="px-4 py-2 font-bold text-white bg-red-500 rounded-full text-md hover:bg-red-700"
+                                        className="px-4 py-2 font-bold text-white bg-secondary rounded-full text-md hover:bg-secondary-hover"
                                         onClick={handleSave}
                                     >
                                         Save

@@ -159,7 +159,7 @@
 //           <button className="my-auto font-semibold text-neutral-800" onClick={onCancel}>
 //             {cancelText}
 //           </button>
-//           <button className="justify-center px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700" onClick={handleSubmit}>
+//           <button className="justify-center px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover" onClick={handleSubmit}>
 //             {createText}
 //           </button>
 //         </div>
@@ -284,8 +284,8 @@ function Banner({
                 <button
                     disabled={cropDisabled}
                     className={cn(
-                        "mt-4 px-4 py-2 font-bold text-white bg-blue-500 rounded-full ",
-                        !cropDisabled && "hover:bg-blue-700"
+                        "mt-4 px-4 py-2 font-bold text-white bg-primary rounded-full ",
+                        !cropDisabled && "hover:bg-primary-hover"
                     )}
                     onClick={() => setCropMode(true)}
                 >
@@ -482,7 +482,7 @@ function Card({
                         {cancelText}
                     </button>
                     <button
-                        className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                        className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                         onClick={handleSubmit}
                     >
                         {createText}

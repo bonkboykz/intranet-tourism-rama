@@ -139,7 +139,7 @@ export function EditPollPost({
                         <button
                             type="button"
                             onClick={addOption}
-                            className="mt-2 p-2 bg-blue-500 text-white rounded-md"
+                            className="mt-2 p-2 bg-primary text-white rounded-md"
                         >
                             Add Option
                         </button>
@@ -190,7 +190,7 @@ export function EditPollPost({
                 <button
                     disabled={loading}
                     type="submit"
-                    className="mt-2 px-4 py-2 font-bold hover:bg-blue-700 bg-blue-500 text-white rounded-full text-sm"
+                    className="mt-2 px-4 py-2 font-bold hover:bg-primary-hover bg-primary text-white rounded-full text-sm"
                     onClick={handleFormSubmit}
                 >
                     {loading ? (

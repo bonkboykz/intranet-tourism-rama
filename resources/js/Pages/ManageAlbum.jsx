@@ -172,7 +172,7 @@ const ManageAlbum = () => {
                                 Back
                             </button>
                             <button
-                                className="px-4 py-2 font-bold text-white max-md:text-sm whitespace-nowrap bg-blue-500 hover:bg-blue-700 rounded-full"
+                                className="px-4 py-2 font-bold text-white max-md:text-sm whitespace-nowrap bg-primary hover:bg-primary-hover rounded-full"
                                 onClick={() => {
                                     resetForm();
                                     setIsAddModalVisible(true);
@@ -280,7 +280,7 @@ const ManageAlbum = () => {
                                     Cancel
                                 </button>
                                 <button
-                                    className="px-8 py-2 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-full"
+                                    className="px-8 py-2 font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={handleAddAlbum}
                                 >
                                     Create
@@ -313,7 +313,7 @@ const ManageAlbum = () => {
                                     Cancel
                                 </button>
                                 <button
-                                    className="px-8 py-2 text-base font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-full"
+                                    className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={handleUpdateAlbum}
                                 >
                                     Update
@@ -339,7 +339,7 @@ const ManageAlbum = () => {
                                     No
                                 </button>
                                 <button
-                                    className="px-8 py-2 text-white font-bold bg-blue-500 hover:bg-blue-700 rounded-full"
+                                    className="px-8 py-2 text-white font-bold bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={handleDeleteAlbum}
                                 >
                                     Yes

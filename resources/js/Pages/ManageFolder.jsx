@@ -344,7 +344,7 @@ const Pautan = () => {
                                 Back
                             </button>
                             <button
-                                className="px-4 py-2 font-bold text-white whitespace-nowrap bg-blue-500 hover:bg-blue-700 rounded-full"
+                                className="px-4 py-2 font-bold text-white whitespace-nowrap bg-primary hover:bg-primary-hover rounded-full"
                                 onClick={() => {
                                     resetForm();
                                     setIsAddModalVisible(true);
@@ -515,7 +515,7 @@ const Pautan = () => {
                                     Cancel
                                 </button>
                                 <button
-                                    className="px-8 py-2 font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-full"
+                                    className="px-8 py-2 font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={PautanHandleAddApp}
                                 >
                                     Add
@@ -558,7 +558,7 @@ const Pautan = () => {
                                     Cancel
                                 </button>
                                 <button
-                                    className="px-8 py-2 text-base font-bold text-white bg-blue-500 hover:bg-blue-700 rounded-full"
+                                    className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={PautanHandleUpdateApp}
                                 >
                                     Update
@@ -584,7 +584,7 @@ const Pautan = () => {
                                     No
                                 </button>
                                 <button
-                                    className="px-8 py-2 text-white font-bold bg-blue-500 hover:bg-blue-700 rounded-full"
+                                    className="px-8 py-2 text-white font-bold bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={PautanHandleDeleteApp}
                                 >
                                     Yes

@@ -388,7 +388,7 @@ export default function Roles() {
                     {hasPermission("assign super admin") && (
                         <button
                             onClick={() => setIsSearchPopupOpen(true)}
-                            className="px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                            className="px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-primary-hover"
                         >
                             Assign New Super Admin
                         </button>
@@ -550,7 +550,7 @@ export default function Roles() {
                                     No
                                 </button>
                                 <button
-                                    className="px-4 py-2 font-bold text-white bg-red-500 rounded-md hover:bg-red-600"
+                                    className="px-4 py-2 font-bold text-white bg-secondary rounded-md hover:bg-red-600"
                                     onClick={handleAssignSuperAdmin}
                                 >
                                     Yes
@@ -579,7 +579,7 @@ export default function Roles() {
                                     No
                                 </button>
                                 <button
-                                    className="px-4 py-2 font-bold text-white bg-red-500 rounded-md hover:bg-red-600"
+                                    className="px-4 py-2 font-bold text-white bg-secondary rounded-md hover:bg-red-600"
                                     onClick={handleDemoteToUser}
                                 >
                                     Yes
@@ -607,7 +607,7 @@ export default function Roles() {
                             <div className="flex justify-end mt-10">
                                 <button
                                     onClick={() => setShowPopup(false)}
-                                    className="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                    className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                                 >
                                     Close
                                 </button>

@@ -107,7 +107,7 @@ function Avatar({ src, alt, onImageChange, onOriginalImageChange }) {
                     <div className="flex justify-end w-full mt-4 space-x-2">
                         <button
                             onClick={handleCrop}
-                            className="px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+                            className="px-4 py-2 text-white font-bold bg-primary rounded-full hover:bg-primary-hover"
                         >
                             Apply Crop
                         </button>
@@ -126,7 +126,7 @@ function Avatar({ src, alt, onImageChange, onOriginalImageChange }) {
                             />
                             <button
                                 onClick={handleRepositionClick}
-                                className="mt-2 px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+                                className="mt-2 px-4 py-2 text-white font-bold bg-primary rounded-full hover:bg-primary-hover"
                             >
                                 Reposition Image
                             </button>
@@ -315,7 +315,7 @@ function Card({
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className="px-4 py-2 text-white font-bold bg-blue-500 rounded-full hover:bg-blue-700"
+                        className="px-4 py-2 text-white font-bold bg-primary rounded-full hover:bg-primary-hover"
                     >
                         {saveText}
                     </button>

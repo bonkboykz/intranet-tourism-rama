@@ -61,7 +61,7 @@ function DeleteBirthdayPopup({
                 <div className="w-[300px] mx-auto flex justify-center space-x-2">
                     <button
                         onClick={onDelete}
-                        className="w-full px-4 py-2 text-white bg-red-500 rounded-full hover:bg-red-700"
+                        className="w-full px-4 py-2 text-white bg-secondary rounded-full hover:bg-secondary-hover"
                     >
                         {deleteText}
                     </button>
@@ -155,7 +155,7 @@ function TemplateCard({
                 <div className="flex flex-col items-center space-y-2">
                     <button
                         onClick={handleSubmit}
-                        className="w-full px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                        className="w-full px-4 py-2 text-white bg-primary rounded-full hover:bg-primary-hover"
                     >
                         {saveText}
                     </button>
@@ -240,7 +240,7 @@ export const BirthdayTemplate = () => {
                 </h2>
                 <button
                     onClick={() => setIsPopupOpen(true)}
-                    className="px-2 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                    className="px-2 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                 >
                     Add New Template
                 </button>

@@ -355,7 +355,7 @@ const StaffDirectory = () => {
                                 Yes
                             </button>
                             <button
-                                className="px-8 py-1 text-white bg-red-500 rounded-full hover:bg-red-700"
+                                className="px-8 py-1 text-white bg-secondary rounded-full hover:bg-secondary-hover"
                                 onClick={() => setIsDeactivateModalOpen(false)}
                             >
                                 No
@@ -378,7 +378,7 @@ const StaffDirectory = () => {
                                 No
                             </button>
                             <button
-                                className="px-8 py-1 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                                className="px-8 py-1 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
                                 onClick={handleActivate}
                             >
                                 Yes

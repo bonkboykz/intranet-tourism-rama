@@ -392,7 +392,7 @@ const Invite = ({
                                 Cancel
                             </button>
                             <button
-                                className="w-[100px] px-4 mb-4 mr-4 text-white bg-blue-500 hover:bg-blue-700 rounded-full"
+                                className="w-[100px] px-4 mb-4 mr-4 text-white bg-primary hover:bg-primary-hover rounded-full"
                                 onClick={handleAdd}
                                 disabled={
                                     !selectedPerson ||

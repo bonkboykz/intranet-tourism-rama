@@ -139,7 +139,7 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
                             </button>
                             <button
                                 type="submit"
-                                className="w-full py-2 max-md:py-2 px-4 font-bold bg-blue-500 hover:bg-blue-700 text-white rounded-full mb-2 md:mb-0"
+                                className="w-full py-2 max-md:py-2 px-4 font-bold bg-primary hover:bg-primary-hover text-white rounded-full mb-2 md:mb-0"
                             >
                                 Post
                             </button>

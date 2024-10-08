@@ -26,7 +26,7 @@
 //           onChange={handleSearch}
 //         />
 //         <div className="flex w-full space-x-3 sm:justify-end sm:w-auto">
-//           <button onClick={handleSearch} className="text-md px-4 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-700">
+//           <button onClick={handleSearch} className="text-md px-4 py-3 bg-primary text-white rounded-full hover:bg-primary-hover">
 //           Search
 //         </button>
 //         </div>
@@ -68,7 +68,7 @@ const CommunitySearchBar = ({ onSearch, toggleCreateCommunity }) => {
                 />
                 <div className="flex justify-end max-md:w-full">
                     <button
-                        className="flex items-center text-sm font-bold px-4 py-3 bg-red-500 text-white rounded-full hover:bg-red-700"
+                        className="flex items-center text-sm font-bold px-4 py-3 bg-secondary text-white rounded-full hover:bg-secondary-hover"
                         onClick={toggleCreateCommunity}
                     >
                         <img
