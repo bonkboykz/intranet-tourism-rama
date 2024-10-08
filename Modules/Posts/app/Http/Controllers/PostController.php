@@ -8,6 +8,9 @@ use App\Notifications\CommentNotification;
 use App\Notifications\DeletingPostFromCommunityNotification;
 use App\Notifications\DeletingPostFromDashboardNotification;
 use App\Notifications\DeletingPostFromDepartmentNotification;
+use App\Notifications\NewPollCreatedInCommunityNotification;
+use App\Notifications\NewPollCreatedInDepartmentNotification;
+use App\Notifications\DepartmentAnnouncementNotification;
 use App\Notifications\NewPollCreatedNotification;
 use App\Notifications\PollFeedbackNotification;
 use App\Notifications\UserBirthdayWishNotification;
@@ -211,6 +214,9 @@ class PostController extends Controller
 
     public function store(Post $post)
     {
+        $output = new ConsoleOutput();
+        $output->writeln('PostController@store');
+
         request()->merge(['user_id' => Auth::id()]);
         if (request()->has('accessibilities')) {
             $accessibilities = request('accessibilities');
@@ -243,8 +249,9 @@ class PostController extends Controller
             throw $th;
         }
 
+
         try {
-            if ($validated['type'] === 'birthday') {
+            if (isset($validated['type']) && $validated['type'] === 'birthday') {
                 $mentionedUsers = (array) json_decode($post->mentions);
 
                 $firstMentionedUser = $mentionedUsers[0];
@@ -267,7 +274,16 @@ class PostController extends Controller
                     });
                 });
             }
+
+            if (isset($validated['department_id']) && (isset($validated['announced']) && $validated['announced'] == '1')) {
+                $department = Department::find($post->department_id);
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+                $department->members->each(function ($member) use ($department, $current_user) {
+                    $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
+                });
+            }
         } catch (\Throwable $th) {
+            $output->writeln($th->getMessage());
         }
 
         return response()->noContent();
@@ -653,12 +669,21 @@ class PostController extends Controller
                 $query->where('name', 'superadmin');
             });
 
+
             // Notify all superusers with a reference to the request
             $superusers->get()->each(function ($superuser) use ($post) {
                 $output = new ConsoleOutput();
                 $output->writeln($superuser->name);
+                $department_id = $post->department->id ?? null;
+                $community_id = $post->community->id ?? null;
+                if ($department_id) {
+                    $superuser->notify(new NewPollCreatedInDepartmentNotification($department_id));
+                } elseif ($community_id) {
+                    $superuser->notify(new NewPollCreatedInCommunityNotification($community_id));
+                } else {
+                    $superuser->notify(new NewPollCreatedNotification($post));
+                }
 
-                $superuser->notify(new NewPollCreatedNotification($post));
             });
 
         } catch (\Exception $e) {
@@ -1066,6 +1091,17 @@ class PostController extends Controller
     {
         $post->announced = true;
         $post->save();
+
+        try {
+            if ($post->department() != null) {
+                $department = $post->department()->first();
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+                $department->members->each(function ($member) use ($department, $current_user) {
+                    $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
+                });
+            }
+        } catch (\Throwable $th) {
+        }
 
         return response()->noContent();
     }
