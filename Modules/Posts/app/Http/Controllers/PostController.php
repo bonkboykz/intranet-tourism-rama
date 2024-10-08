@@ -1279,11 +1279,42 @@ class PostController extends Controller
         // stringify options and output
         $output->writeln(json_encode($options));
 
+        $feedbacks = Feedback::where('poll_id', $post->poll->id)->get();
+        $responses = $feedbacks->map(function ($response) {
+            $user = User::findOrFail($response->user_id);
+
+            $userEmploymentPost = $user->employmentPost;
+
+            $departmentName = "No department";
+            $positionName = "No title";
+
+            if ($userEmploymentPost && $userEmploymentPost->businessPost) {
+                $positionName = $userEmploymentPost->businessPost->title;
+            }
+
+            // attach department if present
+            if ($userEmploymentPost->department) {
+                $departmentName = $userEmploymentPost->department->name;
+            }
+
+
+
+            return [
+                'created_at' => $response->created_at,
+                'name' => $user->name,
+                'position' => $positionName,
+                'department' => $departmentName,
+                'email' => $user->email,
+                'text' => $response->feedback_text,
+            ];
+        });
+
         // Load the PDF view and pass the events data
         $pdf = Pdf::loadView('polls.pdf', [
             'options' => $options,
             'logoPath' => public_path('assets/logo.png'), // Path to the logo
-            'title' => 'Joomla Poll Results' // The title for the PDF
+            'title' => 'Joomla Poll Results', // The title for the PDF
+            'feedbacks' => $responses,
         ]);
 
         return $pdf->download('events.pdf');
