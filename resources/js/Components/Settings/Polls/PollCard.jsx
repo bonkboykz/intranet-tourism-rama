@@ -6,14 +6,15 @@ import { Loader2 } from "lucide-react";
 
 import { CardHeader } from "@/Components/Reusable/WallPosting/DefaultPostCard/CardHeader/CardHeader";
 import { CardImage } from "@/Components/Reusable/WallPosting/DefaultPostCard/CardImage/CardImage";
-import { PostDetails } from "@/Components/Reusable/WallPosting/DefaultPostCard/PostDetails/PostDetails";
 import { DeletePopup } from "@/Components/Reusable/WallPosting/DeletePopup";
 import EditPost from "@/Components/Reusable/WallPosting/EditPost";
+import { PostDetails } from "@/Components/Reusable/WallPosting/PollPostCard/PostDetails/PostDetails";
 import { useUser } from "@/Layouts/useUser";
 import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import Feedback from "./Feedback";
+
 function PollOptionAnswered({ option, percentage }) {
     return (
         <div className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12">
