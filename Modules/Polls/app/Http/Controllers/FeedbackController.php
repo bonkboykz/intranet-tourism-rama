@@ -40,7 +40,19 @@ class FeedbackController extends Controller
 
     public function destroy(Feedback $feedback)
     {
+        // $feedback_id = $feedback->id;
+
+        // $superusers = User::whereHas('roles', function ($query) {
+        //     $query->where('name', 'superadmin');
+        // });
         $feedback->delete();
+
+        // $user_id = Auth::id();
+        // $currentUser = User::where('id', $user_id)->firstOrFail();
+
+        // $superusers->get()-each(function ($superuser) use ($currentUser) {
+        //     $superuser->notify(new DeleteFeedbackNotification($currentUser, $feedback));
+        // });
 
         return response()->noContent();
     }

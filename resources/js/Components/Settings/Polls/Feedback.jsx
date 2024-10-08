@@ -217,9 +217,16 @@ const Feedback = ({ postId }) => {
     };
 
     // Function to delete feedback
-    const deleteFeedback = (id) => {
+    const deleteFeedback = async (id) => {
         // TODO:
-        // setFeedbackList(feedbackList.filter((fb) => fb.id !== id));
+
+        const response = await axios.delete(`/api/polls/feedbacks/${id}`);
+
+        if (![200, 201, 204].includes(response.status)) {
+            throw new Error("Network response was not ok");
+        }
+
+        fetchFeedbackData();
     };
 
     const indexOfLastRow = currentPage * rowsPerPage;

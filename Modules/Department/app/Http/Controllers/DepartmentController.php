@@ -3,6 +3,10 @@
 namespace Modules\Department\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\AssigningAdminDepartmentNotification;
+use App\Notifications\DeletingFromDepartmentNotification;
+use App\Notifications\DepartmentNotification;
+use App\Notifications\RevokingAdminDepartmentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Department\Helpers\DepartmentPermissionsHelper;
@@ -209,6 +213,13 @@ class DepartmentController extends Controller
         // Assign the user the department-specific permissions
         DepartmentPermissionsHelper::assignDepartmentAdminPermissions($user, $department);
 
+        $superusers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'superadmin');
+        })->get();
+
+        $superusers->each(function ($superuser) use ($user, $department) {
+            $superuser->notify(new AssigningAdminDepartmentNotification($user, $department->id));
+        });
 
         return response()->json([
             'message' => 'User has been successfully invited as a department admin.',
@@ -284,14 +295,22 @@ public function addMember(Request $request)
 
         if (request()->has('remove')) {
             $employmentPost = EmploymentPost::where('user_id', $user->id)->where('department_id', $department->id)->first();
-
             if ($employmentPost) {
                 $employmentPost->delete();
             }
         }
+        $superusers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'superadmin');
+        })->get();
+
+        $superusers->each(function ($superuser) use ($user, $department) {
+            $superuser->notify(new RevokingAdminDepartmentNotification($user, $department->id));
+        });
+
 
         return response()->json([
             'message' => 'User has been successfully revoked as a department admin.',
         ]);
+
     }
 }
