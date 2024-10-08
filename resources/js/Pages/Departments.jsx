@@ -260,7 +260,7 @@ const Departments = () => {
             {isErrorModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="relative px-8 py-6 bg-white shadow-lg rounded-2xl w-96">
-                        <h2 className="mb-0 text-xl font-bold text-center text-red-500">
+                        <h2 className="mb-0 text-xl font-bold text-center text-secondary">
                             Error
                         </h2>
                         <p className="text-center font-bold text-gray-800">

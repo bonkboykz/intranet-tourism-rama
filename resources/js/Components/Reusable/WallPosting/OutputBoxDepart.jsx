@@ -37,7 +37,7 @@ function FeedbackOption({ optionText, onVote }) {
         <div className="flex gap-2.5 px-3.5 py-2.5 mt-4 text-sm leading-5 bg-gray-100 rounded-3xl text-neutral-800 max-md:flex-wrap">
             <div className="shrink-0 self-start w-3 bg-white rounded-full h-[11px]" />
             <div className="flex-auto max-md:max-w-full">{optionText}</div>
-            <button className="ml-2 text-blue-500" onClick={onVote}>
+            <button className="ml-2 text-primary" onClick={onVote}>
                 Vote
             </button>
         </div>
@@ -376,7 +376,7 @@ function OutputDataDepart({ polls }) {
                             >
                                 {post.content}
                             </div>
-                            <p className="mt-3.5 text-xs font-semibold leading-6 text-blue-500 underline max-md:max-w-full">
+                            <p className="mt-3.5 text-xs font-semibold leading-6 text-primary underline max-md:max-w-full">
                                 {post.tag}
                             </p>
 

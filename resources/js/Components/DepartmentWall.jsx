@@ -224,7 +224,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                 <nav className="flex items-start w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Post" ? "text-blue-500" : ""
+                            activeTab === "Post" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Post")}
                     >
@@ -232,7 +232,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                     </div>
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Gallery" ? "text-blue-500" : ""
+                            activeTab === "Gallery" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Gallery")}
                     >
@@ -240,7 +240,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                     </div>
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Files" ? "text-blue-500" : ""
+                            activeTab === "Files" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Files")}
                     >
@@ -248,7 +248,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                     </div>
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Members" ? "text-blue-500" : ""
+                            activeTab === "Members" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Members")}
                     >

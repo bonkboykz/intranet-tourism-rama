@@ -287,7 +287,7 @@ const MyComponent = () => {
                                 </span>
                                 <button
                                     onClick={() => window.history.back()}
-                                    className="text-blue-500 hover:text-blue-700 font-bold text-lg"
+                                    className="text-primary hover:text-blue-700 font-bold text-lg"
                                 >
                                     Back
                                 </button>

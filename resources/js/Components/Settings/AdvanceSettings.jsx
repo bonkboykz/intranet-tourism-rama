@@ -64,7 +64,7 @@ const CoreFeatures = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px]">
-            <h2 className="text-2xl font-bold text-blue-500">
+            <h2 className="text-2xl font-bold text-primary">
                 Enable/Disable Core Features
             </h2>
             <div className="mt-2 border-t border-gray-200"></div>
@@ -191,7 +191,7 @@ const SizeLimit = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px] mt-5">
-            <h2 className="text-2xl font-bold text-blue-500">
+            <h2 className="text-2xl font-bold text-primary">
                 File / Video / Photo Size Limit
             </h2>
             <div className="mt-2 border-t border-gray-200"></div>
@@ -312,7 +312,7 @@ const Media = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px] mt-5">
-            <h2 className="text-2xl font-bold text-blue-500">Media</h2>
+            <h2 className="text-2xl font-bold text-primary">Media</h2>
             <div className="mt-2 border-t border-gray-200"></div>
             <div className="w-full">
                 <ul role="list" className="divide-y divide-gray-200">
@@ -426,7 +426,7 @@ const CoverPhotos = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px] mt-5">
-            <h2 className="text-2xl font-bold text-blue-500">Cover Photos</h2>
+            <h2 className="text-2xl font-bold text-primary">Cover Photos</h2>
             <div className="mt-2 border-t border-gray-200"></div>
             <div className="w-full">
                 <ul role="list" className="divide-y divide-gray-200">
@@ -504,7 +504,7 @@ const MailSettings = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px] mt-5">
-            <h2 className="text-2xl font-bold text-blue-500">Mail Settings</h2>
+            <h2 className="text-2xl font-bold text-primary">Mail Settings</h2>
             <div className="mt-2 border-t border-gray-200"></div>
             <div className="w-full">
                 <ul role="list" className="divide-y divide-gray-200">

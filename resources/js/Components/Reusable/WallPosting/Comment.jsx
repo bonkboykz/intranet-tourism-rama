@@ -3,6 +3,8 @@ import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 
+import { LikeIcon } from "@/Components/Icons/LikeIcon";
+import { LikeOutlinedIcon } from "@/Components/Icons/LikeOutlinedIcon";
 import { ShareYourThoughts } from "@/Components/Reusable/WallPosting";
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
@@ -449,10 +451,8 @@ const Comment = ({
                                             </div>
                                             <div className="flex items-center gap-2 mx-1 mt-2">
                                                 {isPostLikedByUser(comment) ? (
-                                                    <img
-                                                        src="/assets/Like.svg"
-                                                        alt="Unlike"
-                                                        className="w-5 h-5 cursor-pointer"
+                                                    <LikeIcon
+                                                        className="w-5 h-5 cursor-pointer text-secondary"
                                                         onClick={() =>
                                                             handleUnlike(
                                                                 comment.id
@@ -460,10 +460,8 @@ const Comment = ({
                                                         }
                                                     />
                                                 ) : (
-                                                    <img
-                                                        src="/assets/likeforposting.svg"
-                                                        alt="Like"
-                                                        className="w-5 h-5 cursor-pointer"
+                                                    <LikeOutlinedIcon
+                                                        className="w-5 h-5 cursor-pointer text-secondary"
                                                         onClick={() =>
                                                             handleLike(
                                                                 comment.id

@@ -11,7 +11,7 @@ export function PersonalStory({
             style={{
                 display: "inline-block",
                 marginLeft: "10px",
-                marginRight: "10px",
+                // marginRight: "10px",
                 marginBottom: "10px",
                 position: "relative",
                 marginRight: "30px",
@@ -47,11 +47,11 @@ export function PersonalStory({
                             !avatar.src // check if src variable is empty
                                 ? `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${avatar.fullName}&rounded=true` // if src is empty = src equals to this path
                                 : avatar.src ===
-                                  "/assets/dummyStaffPlaceHolder.jpg" //if avatar.src is not empty, check id avatar.src is equal to this path
-                                ? avatar.src // if it is equal to the path, then src = avatar.src
-                                : avatar.src.startsWith("avatar/") // if not equal, then check if avatar.src starts with avatar/
-                                ? `/storage/${avatar.src}` // if yes, then src = storage/{avatar.src}
-                                : `/storage/avatar/${avatar.src}` // If no then then src =
+                                    "/assets/dummyStaffPlaceHolder.jpg" //if avatar.src is not empty, check id avatar.src is equal to this path
+                                  ? avatar.src // if it is equal to the path, then src = avatar.src
+                                  : avatar.src.startsWith("avatar/") // if not equal, then check if avatar.src starts with avatar/
+                                    ? `/storage/${avatar.src}` // if yes, then src = storage/{avatar.src}
+                                    : `/storage/avatar/${avatar.src}` // If no then then src =
                         }
                         alt={avatar.alt}
                         style={{
@@ -64,30 +64,14 @@ export function PersonalStory({
                 </div>
             </button>
             <button
-                style={{
-                    border: "none",
-                    background: "none",
-                    padding: "0",
-                    position: "relative",
-                }}
+                className="border-none bg-none p-0 relative"
                 onClick={handlePlusButtonClick}
             >
                 <span
                     style={{
-                        position: "absolute",
-                        bottom: "0px",
-                        right: "5px",
-                        width: "22px",
-                        height: "22px",
-                        background: "blue",
-                        color: "white",
                         borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                        border: "2px solid white",
                     }}
+                    className="absolute bottom-0 right-[5px] w-[22px] h-[22px] bg-primary text-white  flex items-center justify-center font-size-[12px] border-2 border-white"
                 >
                     +
                 </span>

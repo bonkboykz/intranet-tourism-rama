@@ -10,9 +10,10 @@ const Pagination = ({
             <button
                 disabled={!hasNextButton.prev_page_url}
                 onClick={() => paginate((pv) => pv - 1)}
-                className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.prev_page_url ? "text-blue-500" : "text-black-500"}`}
-                children={"PREV"}
-            />
+                className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.prev_page_url ? "text-primary" : "text-black-500"}`}
+            >
+                PREV
+            </button>
         )}
 
         {Array.from(
@@ -21,7 +22,7 @@ const Pagination = ({
                 <button
                     key={i}
                     onClick={() => paginate(i + 1)}
-                    className={`px-4 py-2 mx-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-200 text-blue-500" : "bg-white text-blue-500"}`}
+                    className={`px-4 py-2 mx-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-200 text-primary" : "bg-white text-primary"}`}
                 >
                     {i + 1}
                 </button>
@@ -31,9 +32,10 @@ const Pagination = ({
             <button
                 disabled={!hasNextButton.next_page_url}
                 onClick={() => paginate((pv) => pv + 1)}
-                className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.next_page_url ? "text-blue-500" : "text-black-500"}`}
-                children={"NEXT"}
-            />
+                className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.next_page_url ? "text-primary" : "text-black-500"}`}
+            >
+                NEXT
+            </button>
         )}
     </div>
 );

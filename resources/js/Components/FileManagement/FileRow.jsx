@@ -52,7 +52,7 @@ export const FileRow = ({
 
                         <button
                             onClick={() => onRename(index, editingName)}
-                            className="ml-2 text-blue-500"
+                            className="ml-2 text-primary"
                         >
                             Save
                         </button>

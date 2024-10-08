@@ -130,7 +130,7 @@ export function EditPollPost({
                                 <button
                                     type="button"
                                     onClick={() => removeOption(index)}
-                                    className="ml-2 text-red-500"
+                                    className="ml-2 text-secondary"
                                 >
                                     Remove
                                 </button>

@@ -489,7 +489,9 @@ const AddMemberPopup = ({
                                 ))
                             )}
                             {error && (
-                                <div className="mt-2 text-red-500">{error}</div>
+                                <div className="mt-2 text-secondary">
+                                    {error}
+                                </div>
                             )}
                         </div>
                         {selectedPerson && (
@@ -534,7 +536,7 @@ const AddMemberPopup = ({
                                         </MenuItems>
                                     </Menu>
                                     {titleError && (
-                                        <div className="mt-2 text-red-500">
+                                        <div className="mt-2 text-secondary">
                                             You must select a title
                                         </div>
                                     )}
@@ -640,7 +642,7 @@ const AddMemberPopup = ({
                                             </MenuItems>
                                         </Menu>
                                         {gradeError && (
-                                            <div className="mt-2 text-red-500">
+                                            <div className="mt-2 text-secondary">
                                                 You must select a grade
                                             </div>
                                         )}

@@ -443,7 +443,7 @@ const Pautan = () => {
                                                         <td className="px-6 max-md:px-2 py-4 text-sm font-semibold text-black whitespace-nowrap delete-column">
                                                             <div className="fixed-size-container">
                                                                 <button
-                                                                    className="text-red-500"
+                                                                    className="text-secondary"
                                                                     onClick={(
                                                                         e
                                                                     ) => {
@@ -491,7 +491,7 @@ const Pautan = () => {
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
                             {nameError && (
-                                <p className="text-red-500 -mt-4 mb-5">
+                                <p className="text-secondary -mt-4 mb-5">
                                     {nameError}
                                 </p>
                             )}
@@ -503,7 +503,7 @@ const Pautan = () => {
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
                             {urlError && (
-                                <p className="text-red-500 -mt-4 mb-5">
+                                <p className="text-secondary -mt-4 mb-5">
                                     {urlError}
                                 </p>
                             )}
@@ -546,7 +546,7 @@ const Pautan = () => {
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
                             {urlError && (
-                                <p className="text-red-500 -mt-4 mb-5">
+                                <p className="text-secondary -mt-4 mb-5">
                                     {urlError}
                                 </p>
                             )}

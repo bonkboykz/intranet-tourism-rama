@@ -452,7 +452,7 @@ function Navigation({ departmentName, type }) {
                 <nav className="flex items-center w-full gap-5 py-6 text-sm font-semibold text-center bg-white shadow-custom px-9 rounded-b-2xl text-stone-300 max-md:flex-wrap max-md:max-w-full">
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Post" ? "text-blue-500" : ""
+                            activeTab === "Post" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Post")}
                     >
@@ -460,7 +460,7 @@ function Navigation({ departmentName, type }) {
                     </div>
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Gallery" ? "text-blue-500" : ""
+                            activeTab === "Gallery" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Gallery")}
                     >
@@ -468,7 +468,7 @@ function Navigation({ departmentName, type }) {
                     </div>
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Files" ? "text-blue-500" : ""
+                            activeTab === "Files" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Files")}
                     >
@@ -476,7 +476,7 @@ function Navigation({ departmentName, type }) {
                     </div>
                     <div
                         className={`cursor-pointer ${
-                            activeTab === "Members" ? "text-blue-500" : ""
+                            activeTab === "Members" ? "text-primary" : ""
                         }`}
                         onClick={() => handleTabClick("Members")}
                     >
@@ -568,7 +568,7 @@ function Navigation({ departmentName, type }) {
                                         >
                                             {user.name}
                                             <button
-                                                className="ml-2 text-red-500"
+                                                className="ml-2 text-secondary"
                                                 onClick={() =>
                                                     handleDeselectPerson(user)
                                                 }
@@ -627,7 +627,7 @@ function Navigation({ departmentName, type }) {
                                 </div>
 
                                 {errorMessage && (
-                                    <div className="mt-2 text-red-500">
+                                    <div className="mt-2 text-secondary">
                                         {errorMessage}
                                     </div>
                                 )}

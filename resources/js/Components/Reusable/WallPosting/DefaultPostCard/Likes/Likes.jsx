@@ -2,6 +2,9 @@ import { useMemo } from "react";
 import { useState } from "react";
 import axios from "axios";
 
+import { LikeIcon } from "@/Components/Icons/LikeIcon";
+import { LikeOutlinedIcon } from "@/Components/Icons/LikeOutlinedIcon";
+
 import LikesPopup from "../../LikesPopup";
 
 import "./Likes.css";
@@ -58,22 +61,14 @@ export function Likes({
                     className="like-button"
                     onClick={() => handleLike(postId)}
                 >
-                    <img
-                        src="/assets/Like.svg"
-                        alt="Unlike"
-                        className="w-5 h-5 cursor-pointer"
-                    />
+                    <LikeIcon className="w-5 h-5 cursor-pointer text-secondary" />
                 </button>
             ) : (
                 <button
                     className="like-button"
                     onClick={() => handleLike(postId)}
                 >
-                    <img
-                        src="/assets/likeforposting.svg"
-                        alt="Like"
-                        className="w-5 h-5 cursor-pointer"
-                    />
+                    <LikeOutlinedIcon className="w-5 h-5 cursor-pointer text-secondary" />
                 </button>
             )}
             {likesCount > 0 && (

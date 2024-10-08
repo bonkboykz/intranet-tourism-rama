@@ -126,7 +126,7 @@ const OrgChartPhotoChangeRow = ({
 
                 {status === "rejected" && (
                     <div className="flex justify-end w-1/4">
-                        <p className="text-sm font-bold text-red-500">
+                        <p className="text-sm font-bold text-secondary">
                             Rejected
                         </p>
                     </div>
@@ -175,7 +175,7 @@ export const StaffPhotoChangeRequests = () => {
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
-            <h2 className="mb-4 text-2xl font-bold text-blue-500">
+            <h2 className="mb-4 text-2xl font-bold text-primary">
                 Organisational Chart Photo Change
             </h2>
 

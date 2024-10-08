@@ -215,9 +215,7 @@ const StaffMemberCard = ({
                             Call is available only on mobile.
                             <br></br>
                             Office Number:
-                            <span className="ml-2 text-blue-500">
-                                +{workNo}
-                            </span>
+                            <span className="ml-2 text-primary">+{workNo}</span>
                         </p>
                     </div>
                 </div>
