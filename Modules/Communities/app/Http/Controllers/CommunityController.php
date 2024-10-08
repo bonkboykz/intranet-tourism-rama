@@ -306,25 +306,57 @@ class CommunityController extends Controller
         ]);
     }
 
-    public function archive(Community $community)
-    {
-        $community->is_archived = true;
-        $community->save();
+ public function archive(Community $community)
+ {
+     try {
+         $community->is_archived = true;
+         $community->save();
 
-        return response()->json([
-            'message' => 'Community has been archived successfully.'
-        ]);
-    }
 
-    public function unarchive(Community $community)
-    {
+         // Уведомление суперпользователям (SuperAdmin)
+         $superAdmins = User::whereHas('roles', function ($query) {
+             $query->where('name', 'superadmin');
+         })->get();
+
+         foreach ($superAdmins as $superAdmin) {
+             $superAdmin->notify(new CommunityNotification(Auth::user(), $community, 'archived'));
+         }
+
+         return response()->json(['message' => 'Community has been archived successfully.']);
+     } catch (\Exception $e) {
+         // Логирование ошибки
+         Log::error('Failed to archive community: ' . $e->getMessage());
+         return response()->json(['message' => 'Failed to archive the community.'], 500);
+     }
+ }
+
+
+public function unarchive(Community $community)
+{
+    try {
         $community->is_archived = false;
         $community->save();
 
-        return response()->json([
-            'message' => 'Community has been unarchived successfully.'
-        ]);
+
+        // Уведомление суперпользователям (SuperAdmin)
+        $superAdmins = User::whereHas('roles', function ($query) {
+            $query->where('name', 'superadmin');
+        })->get();
+
+        foreach ($superAdmins as $superAdmin) {
+            $superAdmin->notify(new CommunityNotification(Auth::user(), $community, 'unarchived'));
+        }
+
+        return response()->json(['message' => 'Community has been unarchived successfully.']);
+    } catch (\Exception $e) {
+        // Логирование ошибки
+        Log::error('Failed to unarchive community: ' . $e->getMessage());
+        return response()->json(['message' => 'Failed to unarchive the community.'], 500);
     }
+}
+
+
+
 
     public function getLatestCommunities()
     {

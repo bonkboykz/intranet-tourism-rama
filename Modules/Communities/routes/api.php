@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Communities\Http\Controllers\CommunityController;
 use Modules\Communities\Http\Controllers\CommunityMemberController;
+use Modules\Communities\Http\Controllers\ArchiveController;
+
 
 /*
  *--------------------------------------------------------------------------
