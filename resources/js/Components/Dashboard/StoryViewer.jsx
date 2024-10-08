@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import Stories from "react-insta-stories";
 import axios from "axios";
 
-import DeleteIcon from "../../../../public/assets/DeleteRedButton.svg";
+import { ThrashIcon } from "../Icons/ThrashIcon";
 
 const StoryViewer = ({
     setCurrentStoryIndex,
@@ -181,15 +181,7 @@ const StoryViewer = ({
                                     cursor: "pointer",
                                 }}
                             >
-                                <img
-                                    src={DeleteIcon}
-                                    alt="Delete icon"
-                                    style={{
-                                        width: "30px",
-                                        height: "30px",
-                                        marginTop: "-10px",
-                                    }}
-                                />
+                                <ThrashIcon className="w-[30px] h-[30px] mt-[-10px] text-secondary" />
                             </button>
                         )}
                         <button
