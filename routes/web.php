@@ -109,6 +109,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
     Route::get('/api/search', [GlobalSearchController::class, 'search'])->name('search.results');
+    Route::get('/api/search-posts', [GlobalSearchController::class, 'searchPosts'])->name('search.searchPosts');
     Route::get('/api/update-search-index', [GlobalSearchController::class, 'updateSearchIndex'])->name('search.updateSearchIndex');
 });
 

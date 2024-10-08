@@ -26,34 +26,23 @@ class GlobalSearchController extends Controller
 
         if (empty($query)) {
             return response()->json([
-                'posts' => [],
                 'users' => [],
                 'communities' => [],
             ]);
         }
 
-
-        $posts = Cache::remember('posts_search_' . $query, 300, function () use ($query) {
-            $posts = Post::search($query)->query(function (Builder $query) {
-                $query->with(['albums', 'comments', 'user.profile', 'community', 'department', 'attachments']);
-            })->paginate(20);
-
-            return $posts;
-        });
-
-
         $users = Cache::remember('users_search_' . $query, 300, function () use ($query) {
             $users = User::search($query)->query(function (Builder $query) {
                 $query->with(['profile', 'employmentPosts.businessPost']);
             })
-                ->paginate(20);
+                ->paginate(100);
 
             return $users;
         });
 
         $communities = Cache::remember('communities_search_' . $query, 300, function () use ($query) {
             $communities = Community::search($query)
-                ->paginate(20);
+                ->paginate(100);
 
             // attach count of members
             $communities->loadCount('members');
@@ -63,10 +52,45 @@ class GlobalSearchController extends Controller
 
         return response()->json([
             'data' => [
-                'posts' => $posts,
                 'users' => $users,
                 'communities' => $communities,
             ]
+        ]);
+    }
+
+    public function searchPosts(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (empty($query)) {
+            return response()->json([
+                'posts' => [],
+            ]);
+        }
+
+        $page = $request->input('page', 1);
+
+
+        $posts = Cache::remember('posts_search_' . $query . '_' . $page, 300, function () use ($query, $page) {
+            $posts = Post::search($query)->query(function (Builder $query) use ($page) {
+                $query->with(relations: [
+                    'albums',
+                    'comments',
+                    'user.profile',
+                    'community',
+                    'department',
+                    'attachments',
+                    'poll',
+                    'poll.question',
+                    'poll.question.options'
+                ]);
+            })->paginate(20, $page);
+
+            return $posts;
+        });
+
+        return response()->json([
+            'data' => $posts
         ]);
     }
 

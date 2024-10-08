@@ -57,9 +57,9 @@ class PostController extends Controller
         // Get the variant input from the request
         $variant = $request->input('variant');
 
-        $output = new ConsoleOutput();
-        $output->writeln('PostController@index');
-        $output->writeln($variant);
+        // $output = new ConsoleOutput();
+        // $output->writeln('PostController@index');
+        // $output->writeln($variant);
 
         // Apply different logic based on variant
         if ($variant === 'dashboard') {
