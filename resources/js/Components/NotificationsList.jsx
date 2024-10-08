@@ -62,7 +62,8 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                                     borderRadius: "100%",
                                 }}
                             />
-                            {notification.status === 1 && (
+                            {notification.type ===
+                                "App\\Notifications\\UserBirthdayWishNotification" && (
                                 <img
                                     className="absolute h-5 w-5 right-0 bottom-0"
                                     src="/assets/noti-icon-react/birthday_I.png"

@@ -214,8 +214,7 @@ export default function Header({ setSidebarOpen }) {
                     />
                 </form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
-                    {/* TODO: return after implementation */}
-                    {/* <div className="relative" ref={birthdayNotificationRef}>
+                    <div className="relative" ref={birthdayNotificationRef}>
                         <button
                             type="button"
                             className="birthday-icon -m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5"
@@ -235,9 +234,8 @@ export default function Header({ setSidebarOpen }) {
                                 onClose={() => setIsBirthdayPopupVisible(false)}
                             />
                         )}
-                    </div> */}
+                    </div>
 
-                    {/* TODO: return after implementation */}
                     <div className="relative" ref={notificationRef}>
                         <button
                             type="button"
