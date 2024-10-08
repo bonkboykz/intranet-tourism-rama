@@ -3,9 +3,11 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\AdminCreatedPostNotification;
 use App\Notifications\AlbumTagNotification;
 use App\Notifications\CommentNotification;
 use App\Notifications\CommunityAnnouncementNotification;
+use App\Notifications\DashboardAnnouncementNotification;
 use App\Notifications\DeletingPostFromCommunityNotification;
 use App\Notifications\DeletingPostFromDashboardNotification;
 use App\Notifications\DeletingPostFromDepartmentNotification;
@@ -18,6 +20,9 @@ use App\Notifications\UserBirthdayWishNotification;
 use App\Notifications\UserGotMentionedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Notifications\LikeNotification;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Modules\Communities\Helpers\CommunityPermissionsHelper;
+use Modules\Department\Helpers\DepartmentPermissionsHelper;
 use Modules\Events\Models\Event;
 use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
@@ -253,6 +258,7 @@ class PostController extends Controller
 
         try {
             $current_user = User::where('id', Auth::id())->firstOrFail();
+
             if (isset($validated['type']) && $validated['type'] === 'birthday') {
                 $mentionedUsers = (array) json_decode($post->mentions);
 
@@ -282,14 +288,55 @@ class PostController extends Controller
                 $department->members->each(function ($member) use ($department, $current_user) {
                     $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
                 });
-            }
-
-            if (isset($validated['community_id']) && (isset($validated['announced']) && $validated['announced'] == '1')) {
+            } elseif (isset($validated['community_id']) && (isset($validated['announced']) && $validated['announced'] == '1')) {
                 $community = Community::find($post->department_id);
                 $current_user = User::where('id', $post->user_id)->firstOrFail();
                 $community->members->each(function ($member) use ($community, $current_user) {
                     $member->notify(new CommunityAnnouncementNotification($current_user, $community));
                 });
+            } elseif (isset($validated['announced']) && $validated['announced'] == '1') {
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+
+                User::whereNot('id', $current_user->id)->chunk(10, function ($users) use ($current_user) {
+                    $users->each(function ($user) use ($current_user) {
+                        $user->notify(new DashboardAnnouncementNotification($current_user));
+                    });
+                });
+            }
+
+            if (isset($validated['department_id'])) {
+                $department = Department::find($post->department_id);
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+
+                // check if current user is department admin
+                $is_admin = DepartmentPermissionsHelper::isAdmin($current_user, $department);
+
+                if ($is_admin) {
+                    $department->members->each(function ($member) use ($department, $current_user) {
+                        $member->notify(new AdminCreatedPostNotification($current_user, $department->name));
+                    });
+                }
+            } elseif (isset($validated['community_id'])) {
+                $community = Community::find($post->department_id);
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+
+                $is_admin = CommunityPermissionsHelper::isAdmin($current_user, $community);
+
+                if ($is_admin) {
+                    $community->members->each(function ($member) use ($community, $current_user) {
+                        $member->notify(new AdminCreatedPostNotification($current_user, $community->name));
+                    });
+                }
+            } else {
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+
+                if ($current_user->hasRole('superadmin')) {
+                    User::whereNot('id', $current_user->id)->chunk(10, function ($users) use ($current_user) {
+                        $users->each(function ($user) use ($current_user) {
+                            $user->notify(new AdminCreatedPostNotification($current_user, 'Dashboard'));
+                        });
+                    });
+                }
             }
         } catch (\Throwable $th) {
             $output->writeln($th->getMessage());
@@ -1102,16 +1149,14 @@ class PostController extends Controller
         $post->save();
 
         try {
-            if ($post->department() != null) {
-                $department = $post->department()->first();
+            if ($post->department_id !== null) {
+                $department = $post->department()->firstOrFail();
                 $current_user = User::where('id', $post->user_id)->firstOrFail();
                 $department->members->each(function ($member) use ($department, $current_user) {
                     $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
                 });
-            }
-
-            if ($post->community() != null) {
-                $community = $post->community()->first();
+            } elseif ($post->community_id !== null) {
+                $community = $post->community()->firstOrFail();
                 $current_user = User::where('id', $post->user_id)->firstOrFail();
                 $community->members->each(function ($member) use ($community, $current_user) {
                     $member->notify(new CommunityAnnouncementNotification($current_user, $community));
@@ -1119,8 +1164,18 @@ class PostController extends Controller
                 $community->admins->each(function ($admin) use ($community, $current_user) {
                     $admin->notify(new CommunityAnnouncementNotification($current_user, $community));
                 });
+            } else {
+                $current_user = User::where('id', $post->user_id)->firstOrFail();
+
+                User::whereNot('id', $current_user->id)->chunk(10, function ($users) use ($current_user) {
+                    $users->each(function ($user) use ($current_user) {
+                        $user->notify(new DashboardAnnouncementNotification($current_user));
+                    });
+                });
             }
         } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
         }
 
         return response()->noContent();
