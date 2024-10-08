@@ -35,6 +35,9 @@ start_reverb:
 	php artisan reverb:start
 
 start_notifications:
+	php artisan queue:work
+
+queue_listen:
 	php artisan queue:listen
 
 seed_settings:

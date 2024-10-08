@@ -99,5 +99,9 @@ class DepartmentPermissionsHelper
         return false;
     }
 
+    public static function isAdmin(User $user, Department $department)
+    {
+        return $department->admins()->where('id', $user->id)->exists();
+    }
 }
 
