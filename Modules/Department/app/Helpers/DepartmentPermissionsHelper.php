@@ -65,6 +65,7 @@ class DepartmentPermissionsHelper
             $user->revokePermissionTo($departmentPermissionName);
         }
 
+        Role::firstOrCreate(['name' => "department admin {$department->id}", 'guard_name' => 'web']);
         // detach specific department admin role
         $user->removeRole("department admin {$department->id}");
 

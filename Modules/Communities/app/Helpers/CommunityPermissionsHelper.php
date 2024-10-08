@@ -65,6 +65,8 @@ class CommunityPermissionsHelper
             $user->revokePermissionTo($communityPermissionName);
         }
 
+        Role::firstOrCreate(['name' => "community admin {$community->id}", 'guard_name' => 'web']);
+
         // detach specific community admin role
         $user->removeRole("community admin {$community->id}");
 
