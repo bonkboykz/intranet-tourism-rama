@@ -249,10 +249,8 @@ class PostController extends Controller
             throw $th;
         }
 
-        $output->writeln('sending notifications');
 
         try {
-            $output->writeln(json_encode($validated));
             if (isset($validated['type']) && $validated['type'] === 'birthday') {
                 $mentionedUsers = (array) json_decode($post->mentions);
 
@@ -264,8 +262,6 @@ class PostController extends Controller
 
                 $mentionedUser->notify(new UserBirthdayWishNotification($current_user));
             }
-
-            $output->writeln(request()->has('albums') ? 'true' : 'false');
 
             if (request()->has('albums')) {
                 $albums = $post->albums();
