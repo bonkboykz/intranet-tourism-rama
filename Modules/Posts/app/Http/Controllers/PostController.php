@@ -3,9 +3,14 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\AlbumTagNotification;
 use App\Notifications\CommentNotification;
+use App\Notifications\DeletingPostFromCommunityNotification;
+use App\Notifications\DeletingPostFromDashboardNotification;
+use App\Notifications\DeletingPostFromDepartmentNotification;
 use App\Notifications\NewPollCreatedNotification;
 use App\Notifications\PollFeedbackNotification;
+use App\Notifications\UserGotMentionedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Notifications\LikeNotification;
 use Modules\Events\Models\Event;
@@ -60,11 +65,11 @@ class PostController extends Controller
                                 $query->where(['type' => 'public', 'post_as' => 'admin'])
                                     // For private communities, check if user is a member
                                     ->orWhere(function ($query) use ($user) {
-                                    $query->where('type', 'private')
-                                        ->whereHas('members', function ($query) use ($user) {
-                                            $query->where('user_id', $user->id);
-                                        });
-                                });
+                                        $query->where('type', 'private')
+                                            ->whereHas('members', function ($query) use ($user) {
+                                                $query->where('user_id', $user->id);
+                                            });
+                                    });
                             });
 
                     })
@@ -90,11 +95,11 @@ class PostController extends Controller
                                 $query->where('type', 'public')
                                     // For private communities, check if user is a member
                                     ->orWhere(function ($query) use ($user) {
-                                    $query->where('type', 'private')
-                                        ->whereHas('members', function ($query) use ($user) {
-                                            $query->where('user_id', $user->id);
-                                        });
-                                });
+                                        $query->where('type', 'private')
+                                            ->whereHas('members', function ($query) use ($user) {
+                                                $query->where('user_id', $user->id);
+                                            });
+                                    });
                             });
                     })
                         // Departments should also check membership, post_as admin bypasses checks
@@ -104,8 +109,8 @@ class PostController extends Controller
                                     // Check for admin posts or user being part of the department
                                     $query->where('post_as', 'admin')
                                         ->orWhereHas('employmentPosts', function ($query) use ($user) {
-                                        $query->where('user_id', $user->id);
-                                    });
+                                            $query->where('user_id', $user->id);
+                                        });
                                 });
                         });
                 });
@@ -167,8 +172,6 @@ class PostController extends Controller
     }
 
 
-
-
     public function show($id)
     {
         $post = Post::where('id', $id)->firstOrFail();
@@ -205,7 +208,6 @@ class PostController extends Controller
     }
 
 
-
     public function store(Post $post)
     {
         request()->merge(['user_id' => Auth::id()]);
@@ -228,6 +230,15 @@ class PostController extends Controller
             // add albums
             if (request()->has('albums')) {
                 $post->albums()->attach(request('albums'));
+                $albums = (array) json_decode($post->albums);
+                $superusers = User::whereHas('roles', function ($query) {
+                    $query->where('name', 'superadmin');
+                });
+                foreach ($albums as $album) {
+                    $superusers->get()->each(function ($superuser) use ($album) {
+                        $superuser->notify(new AlbumTagNotification($album, $superuser));
+                    });
+                }
             }
 
             if (request()->has('accessibilities')) {
@@ -354,8 +365,22 @@ class PostController extends Controller
             } else if ($post->type === 'poll') {
                 Poll::where('post_id', $post->id)->delete();
             }
+            $author = $post->user;
+            $post_id = $post->id;
+            $community_id = $post->community->id ?? null;
+            $department_id = $post->department->id ?? null;
             $post->delete();
             DB::commit();
+            $user_id = Auth::id();
+            $currentUser = User::where('id', $user_id)->firstOrFail();
+
+            if ($community_id) {
+                $author->notify(new DeletingPostFromCommunityNotification($currentUser, $community_id));
+            } else if ($department_id) {
+                $author->notify(new DeletingPostFromDepartmentNotification($currentUser, $department_id));
+            } else {
+                $author->notify(new DeletingPostFromDashboardNotification($currentUser, $post_id));
+            }
             return response()->noContent();
         } catch (\Throwable $th) {
             DB::rollback();
@@ -386,10 +411,12 @@ class PostController extends Controller
         $post->save();
 
 
+        $author = $post->user;
+        $user_id = Auth::id();
         $currentUser = User::where('id', $user_id)->firstOrFail();
 
 
-        $post->user->notify(new LikeNotification($currentUser, $post));
+        $author->notify(new LikeNotification($currentUser, $post));
 
 
         return response()->noContent();
@@ -405,6 +432,12 @@ class PostController extends Controller
         return response()->noContent();
     }
 
+//    private function extractMentions($content)
+//    {
+//        preg_match_all('/@(\w+)/', $content, $matches);
+//        return $matches[1];  // Returns an array of mentioned usernames
+//    }
+
     public function comment(Post $post)
     {
         request()->merge(['user_id' => Auth::id()]);
@@ -418,12 +451,19 @@ class PostController extends Controller
             'comment_id' => $comment->id,
         ]);
 
+
         $user_id = Auth::id();
-
+        $author = $comment->user;
         $currentUser = User::where('id', $user_id)->firstOrFail();
+        $mentionedUsers = (array) json_decode($comment->mentions);
+        foreach ($mentionedUsers as $mentionedUser) {
+            $user = User::where('name', $mentionedUser->name)->firstOrFail();
+            if ($user) {
+                $user->notify(new UserGotMentionedNotification($post, $comment->id, $currentUser));
+            }
+        }
 
-
-        $post->user->notify(new CommentNotification( $currentUser, $post));
+        $author->notify(new CommentNotification($currentUser, $post));
 
         return response()->noContent();
     }
@@ -522,10 +562,10 @@ class PostController extends Controller
         // json tag is array of strings which are album names, they could be on any type of post
         // get unique string values from all posts' tag field
         $albums = Post::all()->whereNotNull('tag') // Only consider posts where the 'tag' column is not null
-            ->pluck('tag')        // Extract the 'tag' JSON column
-            ->flatMap(function ($tags) {
-                return json_decode($tags, true); // Decode the JSON to an array
-            })
+        ->pluck('tag')        // Extract the 'tag' JSON column
+        ->flatMap(function ($tags) {
+            return json_decode($tags, true); // Decode the JSON to an array
+        })
             ->unique()            // Get only unique tags
             ->values()
             ->sort()           // Re-index the collection
@@ -604,9 +644,6 @@ class PostController extends Controller
             DB::rollBack();
             throw $e;
         }
-
-
-
 
 
         return response()->json([
@@ -874,9 +911,9 @@ class PostController extends Controller
         // Filter by either user is superadmin or post has albums, or user is author
         $query->where(function ($query) {
             $query->whereHas('albums') // Posts with albums
-                ->orWhereHas('user.roles', function ($query) {
-                    $query->where('name', 'superadmin'); // User is superadmin
-                })
+            ->orWhereHas('user.roles', function ($query) {
+                $query->where('name', 'superadmin'); // User is superadmin
+            })
                 ->orWhereHas('user', function ($query) {
                     $query->where('id', Auth::id()); // User is author
                 });
@@ -931,7 +968,6 @@ class PostController extends Controller
             'data' => $posts
         ]);
     }
-
 
 
     public function getMedia()
