@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Polls\Http\Controllers\FeedbackController;
 use Modules\Polls\Http\Controllers\OptionController;
 use Modules\Polls\Http\Controllers\PollsController;
 use Modules\Polls\Http\Controllers\QuestionController;
@@ -18,7 +19,7 @@ use Modules\Posts\Http\Controllers\PostController;
  * routes are loaded by the RouteServiceProvider within a group which
  * is assigned the "api" middleware group. Enjoy building your API!
  *
-*/
+ */
 
 // Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 //     Route::apiResource('crud', CrudController::class)->names('crud');
@@ -26,10 +27,9 @@ use Modules\Posts\Http\Controllers\PostController;
 
 // require_once 'crud.php';
 Route::apiResources([
-
     'polls' => PollsController::class,
     'questions' => QuestionController::class,
     'options' => OptionController::class,
     'responses' => ResponseController::class,
-
+    'feedbacks' => FeedbackController::class
 ]);
