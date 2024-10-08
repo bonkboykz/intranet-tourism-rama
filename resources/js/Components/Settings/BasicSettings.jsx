@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import axios from "axios";
 
 import { useSettings } from "@/Layouts/useSettings";
+import { cn } from "@/Utils/cn";
 import { toastError } from "@/Utils/toast";
+
+import { ThrashIcon } from "../Icons/ThrashIcon";
 
 function FileInputSection({ onFileSelect, imageSrc }) {
     const blobToBase64 = (blob) => {
@@ -65,12 +68,13 @@ function ImageSection({ imageSrc, onDelete }) {
                 )}
             </figure>
             <div className="flex items-end">
-                <img
+                <ThrashIcon
                     onClick={onDelete}
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/afe3477ad4cf3bf53704463467275bf23818a2768045ef6be28ddcea6fc246d6?apiKey=285d536833cc4168a8fbec258311d77b&"
                     alt="Delete icon"
-                    className={`aspect-square w-[26px] cursor-pointer ${imageSrc ? "block" : "hidden"}`}
+                    className={cn(
+                        `aspect-square w-[26px] cursor-pointer text-secondary`,
+                        `${imageSrc ? "block" : "hidden"}`
+                    )}
                 />
             </div>
         </section>
