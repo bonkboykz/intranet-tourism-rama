@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\BirthdayWishJob;
 use App\Jobs\UpdateSearchIndex;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
@@ -25,11 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Overides\EnsureFrontendRequestsAreStateful::class,
         ]);
     })
-    // ->withSchedule(function (Schedule $schedule) {
-    //     $schedule->job(DepartmentWishBirthday::class)->dailyAt('07:00');
-    // })
     ->withSchedule(function (Schedule $schedule) {
-        // Schedule::command('telescope:prune')->daily();
+        // Every day at 08:00 Kuala Lumpur time, 00:00 UTC time
+        $schedule->job(new BirthdayWishJob)->dailyAt('00:00');
         $schedule->command('telescope:prune')->daily();
         $schedule->job(new UpdateSearchIndex)->everyFiveMinutes();
     })

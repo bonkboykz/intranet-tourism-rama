@@ -178,29 +178,32 @@ class CommunityController extends Controller
 
     public function addMember(Community $community)
     {
-
         request()->validate(Community::rules('addMember'));
         $user = User::findOrFail(request()->user_id);
 
+        // Attach the user to the community
         if (request()->has('role')) {
-
             $role = request('role');
             $community->members()->attach($user, ['role' => $role]);
-
         } else {
             $community->members()->attach($user);
         }
 
+        try {
+            if (Auth::id() !== $user->id) {
+                $current_user = User::where('id', Auth::id())->firstOrFail();
 
-
-        if (Auth::id() !== $user->id) {
-            $current_user = User::where('id', Auth::id())->firstOrFail();
-
-            $user->notify(new CommunityNotification($current_user, $community));
+                $user->notify(new CommunityNotification($current_user, $community, 'added'));
+            }
+        } catch (\Throwable $e) {
         }
+
+
 
         return response()->noContent();
     }
+
+
 
     public function deleteMember(Community $community)
     {
