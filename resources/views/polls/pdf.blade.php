@@ -65,7 +65,6 @@
                 <th>Name</th>
                 <th>Title</th>
                 <th>Department</th>
-                <th>Email</th>
                 <th>Feedback</th>
             </tr>
         </thead>
@@ -76,7 +75,6 @@
                     <td>{{ $feedback['name'] }}</td>
                     <td>{{ $feedback['position'] }}</td>
                     <td>{{ $feedback['department'] }}</td>
-                    <td>{{ $feedback['email'] }}</td>
                     <td>{{ $feedback['text'] }}</td>
                 </tr>
             @endforeach
