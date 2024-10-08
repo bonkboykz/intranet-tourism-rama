@@ -694,14 +694,15 @@ class PostController extends Controller
                 'post_as' => $request->post_as,
             ]);
 
-            $output = new ConsoleOutput();
-            $output->writeln('PostController@createPoll');
-            $output->writeln($post->id);
+            // $output = new ConsoleOutput();
+            // $output->writeln('PostController@createPoll');
+            // $output->writeln($post->id);
 
             $poll = Poll::create([
                 'title' => 'Poll from ' . $user->name,
                 'post_id' => $post->id,
                 'user_id' => $user->id,
+                'end_date' => $request->end_date,
             ]);
 
             $question = Question::create([
