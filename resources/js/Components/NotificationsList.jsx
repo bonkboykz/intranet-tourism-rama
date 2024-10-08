@@ -84,8 +84,10 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                                     alt=""
                                 />
                             )}
-                            {notification.type ===
-                                "App\\Notifications\\GroupJoinRequestNotification" && (
+                            {[
+                                "App\\Notifications\\GroupJoinRequestNotification",
+                                "App\\Notifications\\CommunityAnnouncementNotification",
+                            ].includes(notification.type) && (
                                 <img
                                     className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
                                     src="/assets/noti-icon-react/community_I.svg"
