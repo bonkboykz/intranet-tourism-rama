@@ -11,6 +11,7 @@ use App\Notifications\DashboardAnnouncementNotification;
 use App\Notifications\DeletingPostFromCommunityNotification;
 use App\Notifications\DeletingPostFromDashboardNotification;
 use App\Notifications\DeletingPostFromDepartmentNotification;
+use App\Notifications\LikeCommentNotification;
 use App\Notifications\NewPollCreatedInCommunityNotification;
 use App\Notifications\NewPollCreatedInDepartmentNotification;
 use App\Notifications\DepartmentAnnouncementNotification;
@@ -508,8 +509,17 @@ class PostController extends Controller
         $user_id = Auth::id();
         $currentUser = User::where('id', $user_id)->firstOrFail();
 
+        $comment = PostComment::where('comment_id', $post->id)->firstOrFail();
 
-        $author->notify(new LikeNotification($currentUser, $post));
+
+        if($comment) {
+            $author->notify(new LikeCommentNotification($currentUser, $comment->id));
+        } else {
+            $author->notify(new LikeNotification($currentUser, $post));
+
+        }
+
+
 
 
         return response()->noContent();
