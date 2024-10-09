@@ -76,10 +76,15 @@ class RequestController extends Controller
             'status' => 'pending',
         ]);
 
-        // Notify all superusers with a reference to the request
-        $superusers->get()->each(function ($superuser) use ($newRequest) {
-            $superuser->notify(new GroupJoinRequestNotification($newRequest));
-        });
+        try {
+            // Notify all superusers with a reference to the request
+            $superusers->get()->each(function ($superuser) use ($newRequest) {
+                $superuser->notify(new GroupJoinRequestNotification($newRequest));
+            });
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         // $event = new NewMessageEvent($superuser, 'New request to join a group.');
         // broadcast($event)->via('reverb');
@@ -106,8 +111,13 @@ class RequestController extends Controller
         $group = Community::find($groupId);
         $group->members()->attach($requestToUpdate->user_id, ['role' => 'member']);
 
-        $user = User::find($requestToUpdate->user_id);
-        $user->notify(new GroupJoinRequestNotification($requestToUpdate));
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new GroupJoinRequestNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
 
         return response()->json(['status' => $requestToUpdate->status]);
@@ -127,8 +137,13 @@ class RequestController extends Controller
         $requestToUpdate->save();
 
 
-        $user = User::find($requestToUpdate->user_id);
-        $user->notify(new GroupJoinRequestNotification($requestToUpdate));
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new GroupJoinRequestNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->json(['status' => $requestToUpdate->status]);
     }
@@ -210,7 +225,12 @@ class RequestController extends Controller
         $profile = Profile::where('user_id', $user->id)->first();
         $profile->update(['staff_image' => $newPhoto]);
 
-        $user->notify(new PhotoChangeRequestNotification($requestToUpdate));
+        try {
+            $user->notify(new PhotoChangeRequestNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->json(['status' => $requestToUpdate->status]);
     }
@@ -228,8 +248,13 @@ class RequestController extends Controller
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
 
-        $user = User::find($requestToUpdate->user_id);
-        $user->notify(new PhotoChangeRequestNotification($requestToUpdate));
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new PhotoChangeRequestNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->json(['status' => $requestToUpdate->status]);
     }
@@ -295,15 +320,20 @@ class RequestController extends Controller
             'status' => 'pending',
         ]);
 
-        // find all superadmins
-        $superusers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        });
+        try {
+            // find all superadmins
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
 
-        // Notify all superusers with a reference to the request
-        $superusers->get()->each(callback: function ($superuser) use ($newRequest) {
-            $superuser->notify(new CreateCommunityRequestNotification($newRequest));
-        });
+            // Notify all superusers with a reference to the request
+            $superusers->get()->each(callback: function ($superuser) use ($newRequest) {
+                $superuser->notify(new CreateCommunityRequestNotification($newRequest));
+            });
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->json(['status' => 'request_sent']);
     }
@@ -342,8 +372,13 @@ class RequestController extends Controller
 
         CommunityPermissionsHelper::assignCommunityAdminPermissions($user, $new_community);
 
-        $user = User::find($requestToUpdate->user_id);
-        $user->notify(new CreateCommunityRequestNotification($requestToUpdate));
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new CreateCommunityRequestNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->json(['status' => $requestToUpdate->status, 'community' => $new_community]);
     }
@@ -361,8 +396,13 @@ class RequestController extends Controller
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
 
-        $user = User::find($requestToUpdate->user_id);
-        $user->notify(new CreateCommunityRequestNotification($requestToUpdate));
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new CreateCommunityRequestNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->json(['status' => $requestToUpdate->status]);
     }

@@ -465,16 +465,23 @@ class PostController extends Controller
             $post->delete();
             DB::commit();
 
-            $user_id = Auth::id();
-            $currentUser = User::where('id', $user_id)->firstOrFail();
+            try {
+                $user_id = Auth::id();
+                $currentUser = User::where('id', $user_id)->firstOrFail();
 
-            if ($community_id) {
-                $author->notify(new DeletingPostFromCommunityNotification($currentUser, $community_id));
-            } elseif ($department_id) {
-                $author->notify(new DeletingPostFromDepartmentNotification($currentUser, $department_id));
-            } else {
-                $author->notify(new DeletingPostFromDashboardNotification($currentUser, $post_id));
+                if ($community_id) {
+                    $author->notify(new DeletingPostFromCommunityNotification($currentUser, $community_id));
+                } elseif ($department_id) {
+                    $author->notify(new DeletingPostFromDepartmentNotification($currentUser, $department_id));
+                } else {
+                    $author->notify(new DeletingPostFromDashboardNotification($currentUser, $post_id));
+                }
+            } catch (\Throwable $th) {
+                $output = new ConsoleOutput();
+                $output->writeln($th->getMessage());
             }
+
+
             return response()->noContent();
         } catch (\Throwable $th) {
             DB::rollback();
@@ -504,28 +511,20 @@ class PostController extends Controller
         $post->likes = array_unique(array_merge($post->likes, [$user_id]));
         $post->save();
 
-
-
-
-
         try {
             $author = $post->user;
             $user_id = Auth::id();
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
-
-            if($post->type === 'comment') {
+            if ($post->type === 'comment') {
                 $author->notify(new LikeCommentNotification($currentUser));
             } else {
                 $author->notify(new LikeNotification($currentUser, $post));
             }
         } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
         }
-
-
-
-
-
 
         return response()->noContent();
     }
@@ -540,12 +539,6 @@ class PostController extends Controller
         return response()->noContent();
     }
 
-    //    private function extractMentions($content)
-//    {
-//        preg_match_all('/@(\w+)/', $content, $matches);
-//        return $matches[1];  // Returns an array of mentioned usernames
-//    }
-
     public function comment(Post $post)
     {
         request()->merge(['user_id' => Auth::id()]);
@@ -559,11 +552,11 @@ class PostController extends Controller
             'comment_id' => $comment->id,
         ]);
 
-
-        $user_id = Auth::id();
-        $author = $comment->user;
-        $currentUser = User::where('id', $user_id)->firstOrFail();
         try {
+            $user_id = Auth::id();
+            $author = $comment->user;
+            $currentUser = User::where('id', $user_id)->firstOrFail();
+
             $mentionedUsers = (array) json_decode($comment->mentions);
             $mentionedUsers = array_map(function ($user) {
                 return $user->id;
@@ -573,10 +566,12 @@ class PostController extends Controller
             $mentionedUsers->each(function ($mentionedUser) use ($comment, $currentUser) {
                 $mentionedUser->notify(new UserGotMentionedNotification($comment, $comment->id, $currentUser));
             });
+
+            $author->notify(new CommentNotification($currentUser, $post));
         } catch (\Throwable $th) {
-            throw $th;
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
         }
-        $author->notify(new CommentNotification($currentUser, $post));
 
         return response()->noContent();
     }
@@ -741,28 +736,28 @@ class PostController extends Controller
 
             DB::commit();
 
-            // find all superadmins
-            $superusers = User::whereHas('roles', function ($query) {
-                $query->where('name', 'superadmin');
-            });
+            try {
+                // find all superadmins
+                $superusers = User::whereHas('roles', function ($query) {
+                    $query->where('name', 'superadmin');
+                });
 
-
-            // Notify all superusers with a reference to the request
-            $superusers->get()->each(function ($superuser) use ($post) {
+                // Notify all superusers with a reference to the request
+                $superusers->get()->each(function ($superuser) use ($post) {
+                    $department_id = $post->department->id ?? null;
+                    $community_id = $post->community->id ?? null;
+                    if ($department_id) {
+                        $superuser->notify(new NewPollCreatedInDepartmentNotification($department_id));
+                    } elseif ($community_id) {
+                        $superuser->notify(new NewPollCreatedInCommunityNotification($community_id));
+                    } else {
+                        $superuser->notify(new NewPollCreatedNotification($post));
+                    }
+                });
+            } catch (\Throwable $th) {
                 $output = new ConsoleOutput();
-                $output->writeln($superuser->name);
-                $department_id = $post->department->id ?? null;
-                $community_id = $post->community->id ?? null;
-                if ($department_id) {
-                    $superuser->notify(new NewPollCreatedInDepartmentNotification($department_id));
-                } elseif ($community_id) {
-                    $superuser->notify(new NewPollCreatedInCommunityNotification($community_id));
-                } else {
-                    $superuser->notify(new NewPollCreatedNotification($post));
-                }
-
-            });
-
+                $output->writeln($th->getMessage());
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -846,10 +841,15 @@ class PostController extends Controller
             $author = $poll->user;
             $post = $poll->post;
 
-            // get user with profile
-            $user = User::query()->where('id', $user->id)->with('profile')->firstOrFail();
+            try {
+                // get user with profile
+                $user = User::query()->where('id', $user->id)->with('profile')->firstOrFail();
 
-            $author->notify(new PollFeedbackNotification($post, $user));
+                $author->notify(new PollFeedbackNotification($post, $user));
+            } catch (\Throwable $th) {
+                $output = new ConsoleOutput();
+                $output->writeln($th->getMessage());
+            }
 
             DB::commit();
         } catch (\Exception $e) {

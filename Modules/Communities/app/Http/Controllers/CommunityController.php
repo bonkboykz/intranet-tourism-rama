@@ -179,16 +179,22 @@ class CommunityController extends Controller
 
         $community->delete();
 
-        $superusers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        });
 
-        $user_id = Auth::id();
-        $currentUser = User::where('id', $user_id)->firstOrFail();
+        try {
+            $user_id = Auth::id();
+            $currentUser = User::where('id', $user_id)->firstOrFail();
 
-        $superusers->get()->each(function ($superuser) use ($currentUser, $communityId) {
-            $superuser->notify(new DeletingCommunityNotification($communityId, $currentUser));
-        });
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
+
+            $superusers->get()->each(function ($superuser) use ($currentUser, $communityId) {
+                $superuser->notify(new DeletingCommunityNotification($communityId, $currentUser));
+            });
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
 
         return response()->noContent();
     }
@@ -213,7 +219,9 @@ class CommunityController extends Controller
 
                 $user->notify(new CommunityNotification($current_user, $community, 'added'));
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
         }
 
 
@@ -229,18 +237,21 @@ class CommunityController extends Controller
 
         $community->members()->detach($user->id);
 
-        $user->notify(new CommunityNotification(Auth::user(), $community, 'removed'));
+        try {
+            $user->notify(new CommunityNotification(Auth::user(), $community, 'removed'));
 
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
 
-        $superusers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        });
-
-        $superusers->get()->each(function ($superuser) use ($user, $community) {
-            // notify all superadmins
-            $superuser->notify(new LeavingFromCommunityNotification($community->id, $user));
-
-        });
+            $superusers->get()->each(function ($superuser) use ($user, $community) {
+                // notify all superadmins
+                $superuser->notify(new LeavingFromCommunityNotification($community->id, $user));
+            });
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
+        }
 
 
 
@@ -295,16 +306,20 @@ class CommunityController extends Controller
         CommunityPermissionsHelper::assignCommunityAdminPermissions($user, $community);
 
 
-        $superusers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        });
+        try {
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
 
-        $superusers->get()->each(function ($superuser) use ($user, $community) {
-            // $superuser->notify(new AssignAdminCommunityNotification($user, $community->id,));
-            // notify all superadmins
-            $superuser->notify(new AssigningAdminCommunityNotification($user, $community->id));
-
-        });
+            $superusers->get()->each(function ($superuser) use ($user, $community) {
+                // $superuser->notify(new AssignAdminCommunityNotification($user, $community->id,));
+                // notify all superadmins
+                $superuser->notify(new AssigningAdminCommunityNotification($user, $community->id));
+            });
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
+        }
 
         return response()->json([
             'message' => 'User has been successfully invited as a community admin.',
@@ -367,46 +382,47 @@ class CommunityController extends Controller
 
     public function archive(Community $community)
     {
+        $community->is_archived = true;
+        $community->save();
+
+
         try {
-            $community->is_archived = true;
-            $community->save();
-
-
-            $superAdmins = User::whereHas('roles', function ($query) {
+            $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
-            })->get();
+            });
 
-            foreach ($superAdmins as $superAdmin) {
-                $superAdmin->notify(new CommunityNotification(Auth::user(), $community, 'archived'));
-            }
-
-            return response()->json(['message' => 'Community has been archived successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to archive the community.'], 500);
+            $superusers->get()->each(function ($superuser) use ($community) {
+                $superuser->notify(new CommunityNotification(Auth::user(), $community, 'archived'));
+            });
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
         }
+
+        return response()->json(['message' => 'Community has been archived successfully.']);
     }
 
 
     public function unarchive(Community $community)
     {
+        $community->is_archived = false;
+        $community->save();
+
+
         try {
-            $community->is_archived = false;
-            $community->save();
-
-
-            $superAdmins = User::whereHas('roles', function ($query) {
+            $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
             })->get();
 
-            foreach ($superAdmins as $superAdmin) {
+            $superusers->each(function ($superAdmin) use ($community) {
                 $superAdmin->notify(new CommunityNotification(Auth::user(), $community, 'unarchived'));
-            }
-
-            return response()->json(['message' => 'Community has been unarchived successfully.']);
-        } catch (\Exception $e) {
-            Log::error('Failed to unarchive community: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to unarchive the community.'], 500);
+            });
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
         }
+
+        return response()->json(['message' => 'Community has been unarchived successfully.']);
     }
 
 

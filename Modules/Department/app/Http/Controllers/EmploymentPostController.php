@@ -76,15 +76,22 @@ class EmploymentPostController extends Controller
 
         EmploymentPost::create($validated);
 
-        $user_id = Auth::id();
-        $currentUser = User::where('id', $user_id)->firstOrFail();
-        $user = User::find($validated['user_id']); // Retrieve the user being added
 
-        $department = Department::where('id', $validated['department_id'])->first(); // Get department from validated data
 
-        // Send notification to the user who has been added
-        $user->notify(new AddingToDepartmentNotification($department->id, $currentUser));
+        try {
+            $user_id = Auth::id();
+            $currentUser = User::where('id', $user_id)->firstOrFail();
+            $user = User::find($validated['user_id']); // Retrieve the user being added
 
+            $department = Department::where('id', $validated['department_id'])->first();
+
+            // Send notification to the user who has been added
+            $user->notify(new AddingToDepartmentNotification($department->id, $currentUser));
+
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
+        }
         return response()->noContent();
     }
 
@@ -110,10 +117,15 @@ class EmploymentPostController extends Controller
             DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($user, $department);
         }
 
-        $user_id = Auth::id();
-        $currentUser = User::where('id', $user_id)->firstOrFail();
+        try {
+            $user_id = Auth::id();
+            $currentUser = User::where('id', $user_id)->firstOrFail();
 
-        $user->notify(new DeletingFromDepartmentNotification($currentUser, $department->id));
+            $user->notify(new DeletingFromDepartmentNotification($currentUser, $department->id));
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
+        }
 
 
         return response()->noContent();
