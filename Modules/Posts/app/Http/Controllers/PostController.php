@@ -505,19 +505,24 @@ class PostController extends Controller
         $post->save();
 
 
-        $author = $post->user;
-        $user_id = Auth::id();
-        $currentUser = User::where('id', $user_id)->firstOrFail();
-
-        $comment = PostComment::where('comment_id', $post->id)->firstOrFail();
 
 
-        if($comment) {
-            $author->notify(new LikeCommentNotification($currentUser, $comment->id));
-        } else {
-            $author->notify(new LikeNotification($currentUser, $post));
 
+        try {
+            $author = $post->user;
+            $user_id = Auth::id();
+            $currentUser = User::where('id', $user_id)->firstOrFail();
+
+
+            if($post->type === 'comment') {
+                $author->notify(new LikeCommentNotification($currentUser));
+            } else {
+                $author->notify(new LikeNotification($currentUser, $post));
+            }
+        } catch (\Throwable $th) {
         }
+
+
 
 
 
