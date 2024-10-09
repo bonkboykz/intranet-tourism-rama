@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Modules\Department\Models\EmploymentPost;
 use Modules\User\Models\User;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class DepartmentController extends Controller
 {
@@ -213,62 +214,68 @@ class DepartmentController extends Controller
         // Assign the user the department-specific permissions
         DepartmentPermissionsHelper::assignDepartmentAdminPermissions($user, $department);
 
-        $superusers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        })->get();
+        try {
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            })->get();
 
-        $superusers->each(function ($superuser) use ($user, $department) {
-            $superuser->notify(new AssigningAdminDepartmentNotification($user, $department->id));
-        });
+            $superusers->each(function ($superuser) use ($user, $department) {
+                $superuser->notify(new AssigningAdminDepartmentNotification($user, $department->id));
+            });
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
+
 
         return response()->json([
             'message' => 'User has been successfully invited as a department admin.',
         ]);
     }
 
-public function addMember(Request $request)
-{
-    $user = User::findOrFail(auth()->id());
+    public function addMember(Request $request)
+    {
+        $user = User::findOrFail(auth()->id());
 
-    if (!DepartmentPermissionsHelper::checkSpecificPermission($user, 'add member to the department', $request->department_id)) {
-        abort(403, 'Unauthorized action.');
-    }
+        if (!DepartmentPermissionsHelper::checkSpecificPermission($user, 'add member to the department', $request->department_id)) {
+            abort(403, 'Unauthorized action.');
+        }
 
-    // Validate the request to ensure user and department are valid
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'department_id' => 'required|exists:departments,id',
-    ]);
+        // Validate the request to ensure user and department are valid
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'department_id' => 'required|exists:departments,id',
+        ]);
 
-    // Fetch the user and the department
-    $user = User::findOrFail($request->user_id);
-    $department = Department::findOrFail($request->department_id);
+        // Fetch the user and the department
+        $user = User::findOrFail($request->user_id);
+        $department = Department::findOrFail($request->department_id);
 
-    // Check if the user is already a member of this or another department
-    $is_user_member_in_any_other_department = EmploymentPost::where('user_id', $user->id)
-        ->where('department_id', '!=', $department->id)
-        ->exists();
+        // Check if the user is already a member of this or another department
+        $is_user_member_in_any_other_department = EmploymentPost::where('user_id', $user->id)
+            ->where('department_id', '!=', $department->id)
+            ->exists();
 
-    if ($is_user_member_in_any_other_department) {
+        if ($is_user_member_in_any_other_department) {
+            return response()->json([
+                'message' => 'User is already a member in another department.',
+            ], 400);
+        }
+
+        // Add the user as a member of the department
+        $department->employmentPosts()->create([
+            'user_id' => $user->id,
+            'department_id' => $department->id,
+            // You can add more fields here if needed, e.g., employment type or role.
+        ]);
+
+        // Notify the user that they have been added as a member
+        $user->notify(new DepartmentNotification(Auth::user(), $department, 'added as a member'));
+
         return response()->json([
-            'message' => 'User is already a member in another department.',
-        ], 400);
+            'message' => 'User has been successfully added as a department member.',
+        ]);
     }
-
-    // Add the user as a member of the department
-    $department->employmentPosts()->create([
-        'user_id' => $user->id,
-        'department_id' => $department->id,
-        // You can add more fields here if needed, e.g., employment type or role.
-    ]);
-
-    // Notify the user that they have been added as a member
-    $user->notify(new DepartmentNotification(Auth::user(), $department, 'added as a member'));
-
-    return response()->json([
-        'message' => 'User has been successfully added as a department member.',
-    ]);
-}
 
 
     // revoke department admin
