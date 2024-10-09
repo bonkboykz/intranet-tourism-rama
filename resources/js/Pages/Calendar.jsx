@@ -133,6 +133,7 @@ const DayCellContent = ({ birthdays, user, ...dayInfo }) => {
 };
 
 function Calendar() {
+    const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [events, setEvents] = useState([]);
     const [showAllEvents, setShowAllEvents] = useState(false);
     const [filteredEvents, setFilteredEvents] = useState([]);
@@ -520,6 +521,24 @@ function Calendar() {
         } catch (error) {
             console.error("Error deleting event:", error);
         }
+    };
+
+    const handleConfirmDelete = () => {
+        handleDelete();
+        setDeleteConfirmOpen(false);
+        closeEditModal();
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteConfirmOpen(false);
+    };
+
+    const openDeleteConfirm = () => {
+        setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteClick = () => {
+        openDeleteConfirm();
     };
 
     const [currentRange, setCurrentRange] = useState({
@@ -924,6 +943,188 @@ function Calendar() {
                                     />
                                 </button>
                                 <form onSubmit={handleEditSubmit}>
+                                    {/* Ваша форма редактирования событий */}
+                                    <div className="button-container">
+                                        <button
+                                            type="button"
+                                            className="modal-delete-button font-bold"
+                                            onClick={handleDeleteClick}
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="modal-save-button font-bold"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {isEditModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="modal-container">
+                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
+                                    Edit Event
+                                </h1>
+                                <button
+                                    onClick={closeEditModal}
+                                    className="mt-2 mr-2 modal-close-button"
+                                >
+                                    <img
+                                        src="/assets/cancel.svg"
+                                        alt="Close icon"
+                                        className="w-6 h-6"
+                                    />
+                                </button>
+                                <form onSubmit={handleEditSubmit}>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={eventData.title}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="Event Title"
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        name="venue"
+                                        value={eventData.venue}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="Venue"
+                                    />
+                                    <input
+                                        type="date"
+                                        name="startDate"
+                                        value={eventData.startDate}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="Start Date"
+                                        required
+                                    />
+                                    <input
+                                        type="date"
+                                        name="endDate"
+                                        value={eventData.endDate}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="End Date"
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        value={eventData.description}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="Description"
+                                    />
+                                    <div className="color-picker justify-between">
+                                        {[
+                                            "red",
+                                            "blue",
+                                            "green",
+                                            "orange",
+                                            "purple",
+                                            "DeepPink",
+                                            "black",
+                                            "gray",
+                                        ].map((color) => (
+                                            <label
+                                                key={color}
+                                                className="color-option mb-3"
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="color"
+                                                    value={color}
+                                                    onChange={handleChange}
+                                                    required
+                                                    checked={
+                                                        eventData.color ===
+                                                        color
+                                                    }
+                                                />
+                                                <span
+                                                    className="color-display"
+                                                    style={{
+                                                        backgroundColor: color,
+                                                    }}
+                                                ></span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    <div className="button-container">
+                                        <button
+                                            type="button"
+                                            className="modal-delete-button font-bold"
+                                            onClick={openDeleteConfirm}
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="modal-save-button font-bold"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {isDeleteConfirmOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="modal-container">
+                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
+                                    Confirmation of deletion
+                                </h1>
+                                <p>
+                                    Are you sure you want to delete this event?
+                                </p>
+                                <div className="button-container mt-4">
+                                    <button
+                                        type="button"
+                                        className="modal-delete-button font-bold"
+                                        onClick={handleConfirmDelete}
+                                    >
+                                        Delete
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="modal-save-button font-bold"
+                                        onClick={handleCancelDelete}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* {isEditModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="modal-container">
+                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
+                                    Edit Event
+                                </h1>
+                                <button
+                                    onClick={closeEditModal}
+                                    className="mt-2 mr-2 modal-close-button"
+                                >
+                                    <img
+                                        src="/assets/cancel.svg"
+                                        alt="Close icon"
+                                        className="w-6 h-6"
+                                    />
+                                </button>
+                                <form onSubmit={handleEditSubmit}>
                                     <input
                                         type="text"
                                         name="title"
@@ -1020,7 +1221,7 @@ function Calendar() {
                                 </form>
                             </div>
                         </div>
-                    )}
+                    )} */}
 
                     {isPrintModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
