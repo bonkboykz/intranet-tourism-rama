@@ -15,6 +15,7 @@ use Modules\Communities\Helpers\CommunityPermissionsHelper;
 use Modules\User\Models\User;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CommunityController extends Controller
 {
@@ -29,9 +30,9 @@ class CommunityController extends Controller
                 // if community is private then limit to communities user is a member of
                 $query->where(function ($query) {
                     $query->where('type', 'public') // Public community
-                    ->orWhereHas('members', function ($query) {
-                        $query->where('user_id', Auth::id()); // Private community, user is a member
-                    })
+                        ->orWhereHas('members', function ($query) {
+                            $query->where('user_id', Auth::id()); // Private community, user is a member
+                        })
                         ->orWhereHas('admins', function ($query) {
                             $query->where('user_id', Auth::id()); // Private community, user is an admin
                         });
@@ -311,23 +312,39 @@ class CommunityController extends Controller
     }
 
     // revoke community admin
-    public function revoke(Community $community)
+    public function revokeCommunityAdmin(Request $request)
     {
-        try {
-            $community->admins()->detach();
-            $community->members()->detach();
+        $user = User::findOrFail(auth()->id());
 
-            $community->delete();
+        if (!CommunityPermissionsHelper::checkSpecificPermission($user, 'add remove an admin from the same group', $request->community_id)) {
+            abort(403, 'Unauthorized action.');
+        }
 
-            $superAdmins = User::whereHas('roles', function ($query) {
-                $query->where('name', 'superadmin');
-            })->get();
+        // Validate the request to ensure user and community are valid
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'community_id' => 'required|exists:communities,id',
+        ]);
 
-            foreach ($superAdmins as $superAdmin) {
-                $superAdmin->notify(new CommunityNotification(Auth::user(), $community, 'revoke'));
+        // Fetch the user and the community
+        $user = User::findOrFail($request->user_id);
+        $community = Community::findOrFail($request->community_id);
+
+        // Revoke the user's community-specific permissions
+        CommunityPermissionsHelper::revokeCommunityAdminPermissions($user, $community);
+
+        if (request()->has('remove')) {
+            $employmentPost = CommunityMember::where('user_id', $user->id)->where('community_id', $community->id)->first();
+
+            if ($employmentPost) {
+                $employmentPost->delete();
             }
+        }
 
-            $user = User::findOrFail(auth()->id());
+        try {
+            $current_user = User::findOrFail(auth()->id());
+
+            $user->notify(new CommunityNotification($current_user, $community, 'revoke'));
 
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
@@ -335,14 +352,17 @@ class CommunityController extends Controller
 
             $superusers->get()->each(function ($superuser) use ($user, $community) {
                 $superuser->notify(new RevokingAdminCommunityNotification($user, $community->id));
-
             });
-
-            return response()->json(['message' => 'Community has been deleted successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete the community.'], 500);
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
         }
+
+        return response()->json([
+            'message' => 'User has been successfully revoked as a community admin.',
+        ]);
     }
+
 
 
     public function archive(Community $community)
