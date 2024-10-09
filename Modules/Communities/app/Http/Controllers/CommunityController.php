@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Request as AppRequest;
 use App\Notifications\AssigningAdminCommunityNotification;
 use App\Notifications\CommunityNotification;
+use App\Notifications\LeavingFromCommunityNotification;
 use App\Notifications\RevokingAdminCommunityNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -213,6 +214,19 @@ class CommunityController extends Controller
         $community->members()->detach($user->id);
 
         $user->notify(new CommunityNotification(Auth::user(), $community, 'removed'));
+
+
+        $superusers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'superadmin');
+        });
+
+        $superusers->get()->each(function ($superuser) use ($user, $community) {
+            // notify all superadmins
+            $superuser->notify(new LeavingFromCommunityNotification($community->id, $user));
+
+        });
+
+
 
         return response()->noContent();
     }
