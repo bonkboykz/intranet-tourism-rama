@@ -13,17 +13,15 @@ class LikeCommentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $comment_id;
     public $user;
 
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, $comment_id)
+    public function __construct(User $user)
     {
         $this->user = $user;
-        $this->comment_id = $comment_id;
     }
 
     /**
@@ -39,14 +37,12 @@ class LikeCommentNotification extends Notification implements ShouldQueue
     public function toDatabase(object $notifiable): array {
         return [
             'message' => $this->user->name . ' liked a comment.',
-            'comment_id' => $this->comment_id,
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage {
         return new BroadcastMessage([
             'message' => $this->user->name . ' liked a comment.',
-            'comment_id' => $this->comment_id,
         ]);
     }
 }
