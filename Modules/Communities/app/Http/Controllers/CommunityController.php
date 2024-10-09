@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Request as AppRequest;
 use App\Notifications\AssigningAdminCommunityNotification;
 use App\Notifications\CommunityNotification;
+use App\Notifications\DeletingCommunityNotification;
 use App\Notifications\LeavingFromCommunityNotification;
 use App\Notifications\RevokingAdminCommunityNotification;
 use Illuminate\Http\Request;
@@ -164,15 +165,29 @@ class CommunityController extends Controller
         // revoke permission from all admins
         $admins = $community->admins;
 
+
         foreach ($admins as $admin) {
             CommunityPermissionsHelper::revokeCommunityAdminPermissions($admin, $community);
         }
+
+        $communityId = $community->id;
 
         // remove all members and admins
         $community->admins()->detach();
         $community->members()->detach();
 
         $community->delete();
+
+        $superusers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'superadmin');
+        });
+
+        $user_id = Auth::id();
+        $currentUser = User::where('id', $user_id)->firstOrFail();
+
+        $superusers->get()->each(function ($superuser) use ($currentUser, $communityId) {
+            $superuser->notify(new DeletingCommunityNotification($communityId, $currentUser));
+        });
 
         return response()->noContent();
     }
