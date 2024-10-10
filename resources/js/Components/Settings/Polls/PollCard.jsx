@@ -180,7 +180,7 @@ export function PollCard({ post }) {
                             fontSize: 22,
                         }}
                     >
-                        Total votes: {results.total_count_of_votes}
+                        Total votesdsafdasfdsaf: {results.total_count_of_votes}
                     </div>
                 </div>
             </>
