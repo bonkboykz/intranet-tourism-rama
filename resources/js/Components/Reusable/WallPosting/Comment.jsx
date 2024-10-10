@@ -376,7 +376,7 @@ const Comment = ({
                         </header>
                         <div className="mt-4">
                             <div className="text-lg mb-4">
-                                <pre className="whitespace-pre-wrap max-w-full overflow-x-auto">
+                                <pre className="break-words overflow-hidden">
                                     {renderContentWithTags(
                                         post.content,
                                         post.mentions
@@ -389,7 +389,7 @@ const Comment = ({
                             {post.type === "poll" && post.poll && (
                                 <div className="mt-4 relative pb-[64px]">
                                     <div className="text-lg mb-4">
-                                        <pre className="whitespace-pre-wrap max-w-full overflow-x-auto">
+                                        <pre className="break-words overflow-hidden">
                                             {question}
                                         </pre>
                                     </div>
@@ -422,7 +422,7 @@ const Comment = ({
                                 return (
                                     <div
                                         key={comment.id}
-                                        className="relative flex items-start"
+                                        className="relative flex items-start pr-7"
                                     >
                                         <img
                                             src={
@@ -441,9 +441,9 @@ const Comment = ({
                                                       )}&rounded=true`
                                             }
                                             alt={user.name || "Commenter"}
-                                            className="w-10 h-10 rounded-full mt-1"
+                                            className="w-10 h-10 rounded-full mt-1 mr-2"
                                         />
-                                        <div className="relative ml-3 bg-gray-100 p-2 rounded-lg w-full">
+                                        <div className="relative bg-gray-100 p-2 rounded-lg w-full">
                                             <div className="flex text-sm items-end mx-1">
                                                 <span className="font-semibold">
                                                     {displayedUserName ||
@@ -455,7 +455,7 @@ const Comment = ({
                                                     )}
                                                 </span>
                                             </div>
-                                            <div className="text-sm mt-1 mx-1">
+                                            <div className="text-sm mt-1 mx-3 break-words overflow-hidden">
                                                 {renderContentWithTags(
                                                     comment.content,
                                                     comment.mentions
