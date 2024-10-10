@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import { CardHeader } from "@/Components/Reusable/WallPosting/DefaultPostCard/CardHeader/CardHeader.jsx";
 import { useUser } from "@/Layouts/useUser";
 
 import { PollCard } from "./PollCard";
@@ -38,5 +39,9 @@ export function Polls() {
         fetchUserPolls();
     }, []);
 
-    return userPolls.map((post) => <PollCard key={post.id} post={post} />);
+    return userPolls.map((post) => (
+        <div key={post.id}>
+            <PollCard post={post} />
+        </div>
+    ));
 }

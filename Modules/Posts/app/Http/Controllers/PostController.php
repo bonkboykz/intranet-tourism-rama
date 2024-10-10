@@ -962,7 +962,7 @@ class PostController extends Controller
     {
         $posts = Post::where('user_id', '=', $user->id)
             ->where('type', 'poll')
-            ->with(['poll', 'poll.question', 'poll.question.options'])
+            ->with(['poll', 'poll.question', 'poll.question.options' , 'department', 'community'])
             ->get();
 
         // attach user profile
