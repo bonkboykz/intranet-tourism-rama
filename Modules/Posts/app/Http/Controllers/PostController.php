@@ -162,61 +162,80 @@ class PostController extends Controller
 
         // Map additional data to the posts
         $data->map(function ($post) {
-            // Attach likes
+          
+            if ($post->user->hasRole('superadmin')) {
+                $post->user->name = 'Jomla! Admin';
+            }
+        
+            $post->comments->map(function ($comment) {
+                if ($comment->user->hasRole('superadmin')) {
+                    $comment->user->name = 'Jomla! Admin';
+                }
+                return $comment;
+            });
+        
             $post->likes = collect($post->likes);
-
-            // Attach tags
             $post->tags = collect($post->tags);
-
-            // Attach accessibilities if available
             if (!$post->accessibilities->isEmpty()) {
                 $post->accessibilities = $post->accessibilities;
             }
-
+        
             return $post;
         });
-
-        // Return the response
+        
         return response()->json([
             'data' => $data,
         ]);
+        
     }
 
 
     public function show($id)
     {
         $post = Post::where('id', $id)->firstOrFail();
-
+    
         $post->load([
             'comments' => function ($query) {
                 $query->withPivot('id', 'comment_id');
             }
         ]);
-
-        // attach user by user_id
-        $post->user = User::find($post->user_id);
-        $post->user->profile = $post->user->profile;
+    
+        $user = User::find($post->user_id);
+    
+        if ($user->hasRole('superadmin')) {
+            $user->name = 'Jomla! Admin';
+        }
+    
+        $post->user = $user;
+        $post->user->profile = $user->profile;
         $post->attachments = Resource::where('attachable_id', $post->id)->get();
         $post->comments = $post->comments->map(function ($comment) {
-            $comment->user = User::find($comment->user_id);
+            $commentUser = User::find($comment->user_id);
+            if ($commentUser->hasRole('superadmin')) {
+                $commentUser->name = 'Jomla! Admin';
+            }
+            $comment->user = $commentUser;
             return $comment;
         });
+    
         $post->likes = collect($post->likes);
         $post->albums = $post->albums()->get();
-
+    
         $poll = Poll::where('post_id', $post->id)->first();
-
+    
         if ($poll) {
             $post->poll = $poll;
             $post->poll->question = $poll->question;
             $post->poll->question->options = $poll->question->options;
             $post->poll->feedbacks = Feedback::where('poll_id', $poll->id)->get();
         }
-
+    
         return response()->json([
             'data' => $post,
         ]);
     }
+    
+
 
 
     public function store(Post $post)
@@ -542,41 +561,49 @@ class PostController extends Controller
     }
 
     public function comment(Post $post)
-    {
-        request()->merge(['user_id' => Auth::id()]);
-        request()->merge(['type' => 'comment']);
-        request()->merge(['visibility' => 'public']);
-        $validated = request()->validate(...Post::rules());
+{
+    request()->merge(['user_id' => Auth::id()]);
+    request()->merge(['type' => 'comment']);
+    request()->merge(['visibility' => 'public']);
+    $validated = request()->validate(...Post::rules());
 
-        $comment = Post::create($validated);
-        PostComment::create([
-            'post_id' => $post->id,
-            'comment_id' => $comment->id,
-        ]);
+    $comment = Post::create($validated);
+    PostComment::create([
+        'post_id' => $post->id,
+        'comment_id' => $comment->id,
+    ]);
 
-        try {
-            $user_id = Auth::id();
-            $author = $comment->user;
-            $currentUser = User::where('id', $user_id)->firstOrFail();
+    try {
+        $user_id = Auth::id();
+        $author = User::find($user_id);
+        $currentUser = User::where('id', $user_id)->firstOrFail();
 
-            $mentionedUsers = (array) json_decode($comment->mentions);
-            $mentionedUsers = array_map(function ($user) {
-                return $user->id;
-            }, $mentionedUsers);
-
-            $mentionedUsers = User::whereIn('id', $mentionedUsers)->get();
-            $mentionedUsers->each(function ($mentionedUser) use ($comment, $currentUser) {
-                $mentionedUser->notify(new UserGotMentionedNotification($comment, $comment->id, $currentUser));
-            });
-
-            $author->notify(new CommentNotification($currentUser, $post));
-        } catch (\Throwable $th) {
-            $output = new ConsoleOutput();
-            $output->writeln($th->getMessage());
+        if ($author->hasRole('superadmin')) {
+            $author->name = 'Joomla! Admin';
         }
 
-        return response()->noContent();
+        $comment->user = $author;
+
+        $mentionedUsers = (array) json_decode($comment->mentions);
+        $mentionedUsers = array_map(function ($user) {
+            return $user->id;
+        }, $mentionedUsers);
+
+        $mentionedUsers = User::whereIn('id', $mentionedUsers)->get();
+        $mentionedUsers->each(function ($mentionedUser) use ($comment, $currentUser) {
+            $mentionedUser->notify(new UserGotMentionedNotification($comment, $comment->id, $currentUser));
+        });
+
+        $post->user->notify(new CommentNotification($currentUser, $post));
+    } catch (\Throwable $th) {
+        $output = new ConsoleOutput();
+        $output->writeln($th->getMessage());
     }
+
+    return response()->noContent();
+}
+
+    
 
     public function access(Post $post)
     {
