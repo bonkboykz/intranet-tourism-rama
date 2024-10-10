@@ -462,7 +462,9 @@ class PostController extends Controller
             $community_id = $post->community->id ?? null;
             $department_id = $post->department->id ?? null;
 
+            $post->attachments()->delete();
             $post->delete();
+
             DB::commit();
 
             try {
@@ -962,7 +964,7 @@ class PostController extends Controller
     {
         $posts = Post::where('user_id', '=', $user->id)
             ->where('type', 'poll')
-            ->with(['poll', 'poll.question', 'poll.question.options' , 'department', 'community'])
+            ->with(['poll', 'poll.question', 'poll.question.options', 'department', 'community'])
             ->get();
 
         // attach user profile
