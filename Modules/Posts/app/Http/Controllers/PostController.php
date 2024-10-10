@@ -561,47 +561,35 @@ class PostController extends Controller
     }
 
     public function comment(Post $post)
-{
-    request()->merge(['user_id' => Auth::id()]);
-    request()->merge(['type' => 'comment']);
-    request()->merge(['visibility' => 'public']);
-    $validated = request()->validate(...Post::rules());
-
-    $comment = Post::create($validated);
-    PostComment::create([
-        'post_id' => $post->id,
-        'comment_id' => $comment->id,
-    ]);
-
-    try {
-        $user_id = Auth::id();
-        $author = User::find($user_id);
-        $currentUser = User::where('id', $user_id)->firstOrFail();
-
-        if ($author->hasRole('superadmin')) {
-            $author->name = 'Joomla! Admin';
+    {
+        request()->merge(['user_id' => Auth::id(), 'type' => 'comment', 'visibility' => 'public']);
+        $validated = request()->validate(...Post::rules());
+    
+        $comment = Post::create($validated);
+        PostComment::create([
+            'post_id' => $post->id,
+            'comment_id' => $comment->id,
+        ]);
+    
+        try {
+            $currentUser = Auth::user();
+    
+            if ($currentUser->hasRole('superadmin')) {
+                $currentUser->name = 'Jomla! Admin';
+            }
+    
+            $post->user->notify(new CommentNotification($currentUser, $post));
+    
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+            return response()->json(['error' => $th->getMessage()], 500);
         }
-
-        $comment->user = $author;
-
-        $mentionedUsers = (array) json_decode($comment->mentions);
-        $mentionedUsers = array_map(function ($user) {
-            return $user->id;
-        }, $mentionedUsers);
-
-        $mentionedUsers = User::whereIn('id', $mentionedUsers)->get();
-        $mentionedUsers->each(function ($mentionedUser) use ($comment, $currentUser) {
-            $mentionedUser->notify(new UserGotMentionedNotification($comment, $comment->id, $currentUser));
-        });
-
-        $post->user->notify(new CommentNotification($currentUser, $post));
-    } catch (\Throwable $th) {
-        $output = new ConsoleOutput();
-        $output->writeln($th->getMessage());
+    
+        return response()->json(['message' => 'Комментарий успешно добавлен!']);
     }
-
-    return response()->noContent();
-}
+    
+    
 
     
 
@@ -1368,7 +1356,7 @@ class PostController extends Controller
         $pdf = Pdf::loadView('polls.pdf', [
             'options' => $options,
             'logoPath' => public_path('assets/logo.png'), // Path to the logo
-            'title' => 'Joomla Poll Results', // The title for the PDF
+            'title' => 'Jomla Poll Results', // The title for the PDF
             'feedbacks' => $responses,
         ]);
 
