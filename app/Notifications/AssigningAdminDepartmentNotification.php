@@ -15,6 +15,8 @@ class AssigningAdminDepartmentNotification extends Notification implements Shoul
 
     public $user;
     public $department_id;
+    public $user_avatar;
+
 
     /**
      * Create a new notification instance.
@@ -23,6 +25,13 @@ class AssigningAdminDepartmentNotification extends Notification implements Shoul
     {
         $this->user = $user;
         $this->department_id = $department_id;
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     /**
@@ -39,6 +48,7 @@ class AssigningAdminDepartmentNotification extends Notification implements Shoul
         return [
             'message' => $this->user->name . ' was assigned as an admin in department',
             'department_id' => $this->department_id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -46,6 +56,7 @@ class AssigningAdminDepartmentNotification extends Notification implements Shoul
         return new BroadcastMessage([
             'message' => $this->user->name . ' was assigned as an admin in department',
             'department_id' => $this->department_id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }

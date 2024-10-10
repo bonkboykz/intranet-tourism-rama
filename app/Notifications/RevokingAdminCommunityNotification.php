@@ -15,6 +15,8 @@ class RevokingAdminCommunityNotification extends Notification implements ShouldQ
     public $user;
     public $community_id;
 
+    public $user_avatar;
+
     /**
      * Create a new notification instance.
      */
@@ -41,6 +43,7 @@ class RevokingAdminCommunityNotification extends Notification implements ShouldQ
         return [
             'message' => $this->user->name . ' was revoked as an admin in community',
             'community_id' => $this->community_id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -50,6 +53,7 @@ class RevokingAdminCommunityNotification extends Notification implements ShouldQ
         return new BroadcastMessage([
             'message' => $this->user->name . ' was revoked as an admin in community',
             'community_id' => $this->community_id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }

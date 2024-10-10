@@ -15,6 +15,7 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
 
     public $user;
     public $department_id;
+    public $user_avatar;
 
     /**
      * Create a new notification instance.
@@ -23,6 +24,14 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
     {
         $this->user = $user;
         $this->department_id = $department_id;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
 
@@ -42,6 +51,7 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
         return [
             'message' => $this->user->name . ' was revoked as an admin in department',
             'department_id' => $this->department_id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -51,6 +61,7 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
         return new BroadcastMessage([
             'message' => $this->user->name . ' was revoked as an admin in department',
             'department_id' => $this->department_id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }
