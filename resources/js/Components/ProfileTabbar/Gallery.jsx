@@ -22,18 +22,22 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
 
     const renderImages = () => {
         return posts.map((post) =>
-            post.attachments.map((imageAttachment) => (
-                <PhotoView
-                    key={imageAttachment.id}
-                    src={`/storage/${imageAttachment.path}`}
-                >
-                    <img
+            post.attachments
+                .filter((attachment) => {
+                    return attachment.mime_type.startsWith("image/");
+                })
+                .map((imageAttachment) => (
+                    <PhotoView
+                        key={imageAttachment.id}
                         src={`/storage/${imageAttachment.path}`}
-                        alt="Image Attachment"
-                        className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                    />
-                </PhotoView>
-            ))
+                    >
+                        <img
+                            src={`/storage/${imageAttachment.path}`}
+                            alt="Image Attachment"
+                            className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                        />
+                    </PhotoView>
+                ))
         );
     };
 
@@ -85,6 +89,9 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
 
     const videos = posts
         .filter((post) => post.attachments)
+        .filter((attachment) => {
+            return attachment.mime_type.startsWith("video/");
+        })
         .map((post) => post.attachments)
         .flat()
         .map((attachment) => ({

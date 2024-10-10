@@ -109,25 +109,6 @@ const DepartmentInner = () => {
                     </div>
                 </main>
 
-                {/* <aside className="fixed bottom-0 left-0 hidden w-full px-4 py-6 overflow-y-auto border-r border-gray-200 lg:left-20 top-16 lg:w-96 sm:px-6 lg:px-8 xl:block">
-                    <style>
-                        {`
-          aside::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-          }
-          `}
-                    </style>
-                    <div className="file-directory-header">
-                        <PageTitle title="Department" />
-                    </div>
-                    <hr className="file-directory-underline" />
-                    <div>
-                        <FeaturedEvents />
-                        <WhosOnline />
-                    </div>
-                </aside> */}
-
                 {isEditPopupOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                         <EditDepartments
