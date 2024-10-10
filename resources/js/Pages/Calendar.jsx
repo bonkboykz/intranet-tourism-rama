@@ -133,6 +133,7 @@ const DayCellContent = ({ birthdays, user, ...dayInfo }) => {
 };
 
 function Calendar() {
+    const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [events, setEvents] = useState([]);
     const [showAllEvents, setShowAllEvents] = useState(false);
     const [filteredEvents, setFilteredEvents] = useState([]);
@@ -520,6 +521,24 @@ function Calendar() {
         } catch (error) {
             console.error("Error deleting event:", error);
         }
+    };
+
+    const handleConfirmDelete = () => {
+        handleDelete();
+        setDeleteConfirmOpen(false);
+        closeEditModal();
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteConfirmOpen(false);
+    };
+
+    const openDeleteConfirm = () => {
+        setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteClick = () => {
+        openDeleteConfirm();
     };
 
     const [currentRange, setCurrentRange] = useState({
@@ -1006,7 +1025,7 @@ function Calendar() {
                                         <button
                                             type="button"
                                             className="modal-delete-button font-bold"
-                                            onClick={handleDelete}
+                                            onClick={openDeleteConfirm}
                                         >
                                             Delete
                                         </button>
@@ -1018,6 +1037,35 @@ function Calendar() {
                                         </button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {isDeleteConfirmOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="modal-container">
+                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
+                                    Confirmation of deletion
+                                </h1>
+                                <p>
+                                    Are you sure you want to delete this event?
+                                </p>
+                                <div className="button-container mt-4">
+                                    <button
+                                        type="button"
+                                        className="modal-delete-button font-bold"
+                                        onClick={handleConfirmDelete}
+                                    >
+                                        Delete
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="modal-save-button font-bold"
+                                        onClick={handleCancelDelete}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}

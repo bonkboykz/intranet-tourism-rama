@@ -33,8 +33,8 @@ export function Gallery({ selectedTag }) {
         only_video: true,
     });
 
-    console.log(videos);
-
+    // console.log(images);
+    // console.log(videos);
     return (
         <>
             <div>
@@ -51,30 +51,40 @@ export function Gallery({ selectedTag }) {
                             maskClassName="backdrop"
                         >
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
-                                {images.map((post) =>
-                                    post.attachments
-                                        .filter((attachment) =>
-                                            attachment.mime_type.startsWith(
-                                                "image/"
+                                {images
+                                    .sort(
+                                        (a, b) =>
+                                            new Date(b.created_at) -
+                                            new Date(a.created_at)
+                                    )
+                                    .map((post) =>
+                                        post.attachments
+                                            .filter((attachment) =>
+                                                attachment.mime_type.startsWith(
+                                                    "image/"
+                                                )
                                             )
-                                        )
-                                        .map((imageAttachment) => {
-                                            return (
-                                                <div key={imageAttachment.id}>
-                                                    <PhotoView
+                                            .map((imageAttachment) => {
+                                                return (
+                                                    <div
                                                         key={imageAttachment.id}
-                                                        src={`/storage/${imageAttachment.path}`}
                                                     >
-                                                        <img
+                                                        <PhotoView
+                                                            key={
+                                                                imageAttachment.id
+                                                            }
                                                             src={`/storage/${imageAttachment.path}`}
-                                                            alt="Image Attachment"
-                                                            className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                                                        />
-                                                    </PhotoView>
-                                                </div>
-                                            );
-                                        })
-                                )}
+                                                        >
+                                                            <img
+                                                                src={`/storage/${imageAttachment.path}`}
+                                                                alt="Image Attachment"
+                                                                className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                                                            />
+                                                        </PhotoView>
+                                                    </div>
+                                                );
+                                            })
+                                    )}
                             </div>
                         </PhotoProvider>
 
@@ -104,18 +114,24 @@ export function Gallery({ selectedTag }) {
                     </header>
                     <section className="mt-4 max-md:max-w-full">
                         <VideoGallery
-                            videos={videos.flatMap((post) =>
-                                post.attachments
-                                    .filter((attachment) =>
-                                        attachment.mime_type.startsWith(
-                                            "video/"
+                            videos={videos
+                                .sort(
+                                    (a, b) =>
+                                        new Date(b.created_at) -
+                                        new Date(a.created_at)
+                                )
+                                .flatMap((post) =>
+                                    post.attachments
+                                        .filter((attachment) =>
+                                            attachment.mime_type.startsWith(
+                                                "video/"
+                                            )
                                         )
-                                    )
-                                    .map((videoAttachment) => ({
-                                        ...videoAttachment,
-                                        path: `/storage/${videoAttachment.path}`,
-                                    }))
-                            )}
+                                        .map((videoAttachment) => ({
+                                            ...videoAttachment,
+                                            path: `/storage/${videoAttachment.path}`,
+                                        }))
+                                )}
                         />
 
                         {hasMoreVideo && (
