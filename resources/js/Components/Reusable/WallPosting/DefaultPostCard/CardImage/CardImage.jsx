@@ -12,7 +12,9 @@ export function CardImage({ post }) {
                 <UserPostTitle post={post} />
                 <time className="mt-1 text-xs text-neutral-800 text-opacity-50 flex gap-2">
                     <div>{formatTimeAgo(post.created_at)}</div>
-                    <div>end: {formatDateEnd(post.end_date)}</div>
+                    {post.poll && post.poll.end_date && (
+                        <div>Ends at {formatDateEnd(post.poll.end_date)}</div>
+                    )}
                 </time>
             </div>
         </div>
