@@ -64,6 +64,8 @@ const StaffDirectory = () => {
         }
     };
 
+    const { isSuperAdmin } = usePermissions();
+
     const fetchStaffMembers = async (departmentId) => {
         setIsLoading(true);
 
@@ -89,7 +91,11 @@ const StaffDirectory = () => {
                 order: member.order,
             }));
 
-            setStaffMembers(members);
+            const filteredMembers = members.filter(
+                (member) => isSuperAdmin || !member.isDeactivated
+            );
+
+            setStaffMembers(filteredMembers);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -149,9 +155,9 @@ const StaffDirectory = () => {
         setIsActivateModalOpen(true);
     };
 
-    const getCurrentMemberData = () => {
-        return staffMembers.find((member) => member.id === currentMemberId);
-    };
+    // const getCurrentMemberData = () => {
+    //     return staffMembers.find((member) => member.id === currentMemberId);
+    // };
 
     const handleSearch = (term) => {
         setSearchTerm(term);
@@ -217,7 +223,7 @@ const StaffDirectory = () => {
         }
     };
 
-    console.log("staffMembers", staffMembers);
+    // console.log("staffMembers", staffMembers);
 
     const handleNewMemberAdded = (newMember) => {
         const newMembers = [...staffMembers, newMember];

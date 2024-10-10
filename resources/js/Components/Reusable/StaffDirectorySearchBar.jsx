@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 import defaultImage from "../../../../public/assets/dummyStaffPlaceHolder.jpg";
 import orgChartIconActive from "../../../../public/assets/orgChartActive.svg";
 import orgChartIconInactive from "../../../../public/assets/orgChartInactive.svg";
