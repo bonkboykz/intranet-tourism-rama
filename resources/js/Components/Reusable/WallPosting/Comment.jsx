@@ -107,13 +107,19 @@ const Comment = ({
                     data: { data: user },
                 } = await axios.get(`/api/users/users/${user_id}`, {
                     params: {
-                        with: ["profile"],
+                        with: ["profile", "roles"],
                     },
                 });
 
+                const userName = user.roles.some(
+                    (role) => role.name === "superadmin"
+                )
+                    ? "Jomla! Admin"
+                    : user.name;
+
                 return {
                     userId: user_id,
-                    name: user.name,
+                    name: userName,
                     profileImage: user.profile?.image || "",
                 };
             })
@@ -408,6 +414,11 @@ const Comment = ({
                                 const user =
                                     commentedUsers[comment.user_id] || {};
 
+                                const displayedUserName =
+                                    user.name === "Jomla! Admin"
+                                        ? "Jomla! Admin"
+                                        : user.name;
+
                                 return (
                                     <div
                                         key={comment.id}
@@ -435,7 +446,8 @@ const Comment = ({
                                         <div className="relative ml-3 bg-gray-100 p-2 rounded-lg w-full">
                                             <div className="flex text-sm items-end mx-1">
                                                 <span className="font-semibold">
-                                                    {user.name || "Commenter"}
+                                                    {displayedUserName ||
+                                                        "Commenter"}
                                                 </span>
                                                 <span className="ml-2 text-xs mb-[1px] text-gray-500">
                                                     {formatTimeAgo(

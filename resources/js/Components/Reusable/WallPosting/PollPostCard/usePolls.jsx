@@ -240,7 +240,7 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
                         <input
                             className="border-slate-300 rounded-md px-4 py-2 flex flex-1"
                             type="text"
-                            placeholder="Your feedbacdsafdsafdsak will only be seen by the poll creator"
+                            placeholder="Your feedback will only be seen by the poll creator"
                             value={feedbackText}
                             onChange={(e) => setFeedbackText(e.target.value)}
                         />
