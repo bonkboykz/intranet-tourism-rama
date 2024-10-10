@@ -26,3 +26,9 @@ export const formatTime = (time) => {
         return date.format("DD/MM/YYYY");
     }
 };
+
+export const formatDateEnd = (time) => {
+    const date = moment(time);
+
+    return date.format("DD/MM/YYYY");
+};
