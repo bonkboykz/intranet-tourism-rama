@@ -53,7 +53,7 @@ export function SendAs({ postAs, onChange, departmentId, communityId }) {
                                 handlePostAsSelect("Post as a member")
                             }
                         >
-                            Post as a member
+                            Post for members only
                         </li>
                         <li
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
@@ -61,7 +61,7 @@ export function SendAs({ postAs, onChange, departmentId, communityId }) {
                                 handlePostAsSelect("Post as an admin")
                             }
                         >
-                            Post as an admin
+                            Post to everyone
                         </li>
                     </ul>
                 </div>
