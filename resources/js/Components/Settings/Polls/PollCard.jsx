@@ -163,7 +163,6 @@ export function PollCard({ post }) {
                         />
                     ))}
                 </div>
-
                 <div className="flex w-full justify-between mt-4 px-1">
                     <div>
                         <button
@@ -202,11 +201,16 @@ export function PollCard({ post }) {
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
                     "w-full lg:w-full max-w-[900px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full relative"
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full relative",
+                    cachedPost.announced &&
+                        (cachedPost.community_id || cachedPost.department_id
+                            ? "relative pt-20"
+                            : "relative pt-16")
                 )}
             >
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="mt-4 flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2">
+                        <CardHeader post={cachedPost} />
                         <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
                             <CardImage post={cachedPost} />
                             <div className="flex items-center gap-2">
