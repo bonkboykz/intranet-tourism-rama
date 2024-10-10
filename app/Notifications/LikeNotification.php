@@ -17,9 +17,19 @@ class LikeNotification extends Notification implements ShouldQueue
     public $user;
     public $post;
 
+    public $user_avatar;
+
     public function __construct(User $user, Post $post) {
         $this->user = $user;
         $this->post = $post;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
 
@@ -33,12 +43,14 @@ class LikeNotification extends Notification implements ShouldQueue
         return [
             'message' => $this->user->name . " liked your post.",
             'post_id' => $this->post->id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
             'message' => $this->user->name . " liked your post.",
             'post_id' => $this->post->id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }

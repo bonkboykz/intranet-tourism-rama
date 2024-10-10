@@ -14,6 +14,7 @@ class DeletingCommunityNotification extends Notification implements ShouldQueue
 
     public $community_id;
     public $user;
+    public $user_avatar;
 
     /**
      * Create a new notification instance.
@@ -22,6 +23,14 @@ class DeletingCommunityNotification extends Notification implements ShouldQueue
     {
         $this->community_id = $community_id;
         $this->user = $user;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     /**
@@ -38,6 +47,7 @@ class DeletingCommunityNotification extends Notification implements ShouldQueue
         return [
             'message' => 'The community was deleted by ' . $this->user->name,
             'community_id' => $this->community_id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -45,6 +55,7 @@ class DeletingCommunityNotification extends Notification implements ShouldQueue
         return new BroadcastMessage([
             'message' => 'The community was deleted by ' . $this->user->name,
             'community_id' => $this->community_id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }

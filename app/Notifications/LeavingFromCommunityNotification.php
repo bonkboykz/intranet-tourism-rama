@@ -15,6 +15,7 @@ class LeavingFromCommunityNotification extends Notification implements ShouldQue
 
     public $community_id;
     public $user;
+    public $user_avatar;
     /**
      * Create a new notification instance.
      */
@@ -22,6 +23,14 @@ class LeavingFromCommunityNotification extends Notification implements ShouldQue
     {
         $this->community_id = $community_id;
         $this->user = $user;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     /**
@@ -37,14 +46,16 @@ class LeavingFromCommunityNotification extends Notification implements ShouldQue
     public function toDatabase(object $notifiable): array {
         return [
             'message' => $this->user->name . ' has leaved the community',
-            'community_id' => $this->community_id
+            'community_id' => $this->community_id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage {
         return new BroadcastMessage([
             'message' => $this->user->name . ' has leaved the community',
-            'community_id' => $this->community_id
+            'community_id' => $this->community_id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }

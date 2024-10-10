@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\User;
@@ -16,6 +17,7 @@ class DeleteFeedbackNotification extends Notification implements ShouldQueue
 
     public $user;
     public $feedback;
+    public $user_avatar;
 
     /**
      * Create a new notification instance.
@@ -24,6 +26,14 @@ class DeleteFeedbackNotification extends Notification implements ShouldQueue
     {
         $this->user = $user;
         $this->feedback = $feedback;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
 
@@ -43,6 +53,7 @@ class DeleteFeedbackNotification extends Notification implements ShouldQueue
         return [
             'message' => 'Feedback was deleted by ' . $this->user->name . '.',
             'feedback_id' => $this->feedback->id,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -51,6 +62,7 @@ class DeleteFeedbackNotification extends Notification implements ShouldQueue
         return new BroadcastMessage([
             'message' => 'Feedback was deleted by ' . $this->user->name . '.',
             'feedback_id' => $this->feedback->id,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 

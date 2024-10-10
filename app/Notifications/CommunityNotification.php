@@ -11,15 +11,24 @@ class CommunityNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $actor;
+    protected $user;
     protected $community;
     protected $action;
+    public $user_avatar;
 
-    public function __construct($actor, $community, $action)
+    public function __construct($user, $community, $action)
     {
-        $this->actor = $actor;
+        $this->user = $user;
         $this->community = $community;
         $this->action = $action;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     public function via($notifiable)
@@ -40,9 +49,10 @@ class CommunityNotification extends Notification implements ShouldQueue
         };
 
         return [
-            'actor' => $this->actor->name,
+            'user' => $this->user->name,
             'community' => $this->community->name,
-            'message' => $this->actor->name . ' has ' . $actionMessage . ' ' . $this->community->name,
+            'message' => $this->user->name . ' has ' . $actionMessage . ' ' . $this->community->name,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -58,9 +68,10 @@ class CommunityNotification extends Notification implements ShouldQueue
         };
 
         return new BroadcastMessage([
-            'actor' => $this->actor->name,
+            'user' => $this->user->name,
             'community' => $this->community->name,
-            'message' => $this->actor->name . ' has ' . $actionMessage . ' ' . $this->community->name,
+            'message' => $this->user->name . ' has ' . $actionMessage . ' ' . $this->community->name,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 }

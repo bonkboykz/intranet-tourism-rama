@@ -17,9 +17,12 @@ class CreateCommunityRequestNotification extends Notification implements ShouldQ
 
     public $request;
 
+    public $user_avatar;
+
     public function __construct($request)
     {
         $this->request = $request;
+
     }
 
     public function via($notifiable)
@@ -53,6 +56,7 @@ class CreateCommunityRequestNotification extends Notification implements ShouldQ
                 'message' => 'Your request to create a community has been ' . $this->request->status . '.',
                 'request_id' => $this->request->id,
                 'details' => $this->request->details,
+
             ]);
         }
 

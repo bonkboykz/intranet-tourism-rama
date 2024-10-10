@@ -16,6 +16,8 @@ class AdminCreatedPostNotification extends Notification implements ShouldQueue
     public $user;
 
     public string $destination;
+    public $user_avatar;
+
 
     /**
      * Create a new notification instance.
@@ -24,6 +26,14 @@ class AdminCreatedPostNotification extends Notification implements ShouldQueue
     {
         $this->user = $user;
         $this->destination = $destination;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     /**
@@ -41,6 +51,7 @@ class AdminCreatedPostNotification extends Notification implements ShouldQueue
     {
         return [
             'message' => $this->user->name . ' created a new post in ' . $this->destination,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -48,6 +59,7 @@ class AdminCreatedPostNotification extends Notification implements ShouldQueue
     {
         return new BroadcastMessage([
             'message' => $this->user->name . ' created a new post in ' . $this->destination,
+            'user_avatar' => $this->user_avatar
         ]);
     }
 }

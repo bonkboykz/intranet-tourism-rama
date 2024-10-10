@@ -14,6 +14,7 @@ class LikeCommentNotification extends Notification implements ShouldQueue
     use Queueable;
 
     public $user;
+    public $user_avatar;
 
 
     /**
@@ -34,15 +35,19 @@ class LikeCommentNotification extends Notification implements ShouldQueue
         return ['database', 'broadcast'];
     }
 
-    public function toDatabase(object $notifiable): array {
+    public function toDatabase(object $notifiable): array
+    {
         return [
             'message' => $this->user->name . ' liked a comment.',
+            'user_avatar' => $this->user_avatar
         ];
     }
 
-    public function toBroadcast(object $notifiable): BroadcastMessage {
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
         return new BroadcastMessage([
             'message' => $this->user->name . ' liked a comment.',
+            'user_avatar' => $this->user_avatar
         ]);
     }
 }

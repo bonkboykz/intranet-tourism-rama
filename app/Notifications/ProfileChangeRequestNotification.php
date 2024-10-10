@@ -16,10 +16,20 @@ class ProfileChangeRequestNotification extends Notification implements ShouldQue
     public $user;
     public $changeDetails;
 
+    public $user_avatar;
+
     public function __construct($user, $changeDetails)
     {
         $this->user = $user;
         $this->changeDetails = $changeDetails;
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     public function via($notifiable)
@@ -33,6 +43,7 @@ class ProfileChangeRequestNotification extends Notification implements ShouldQue
             'message' => $this->user->name . ' has requested to change their profile information.',
             'user_id' => $this->user->id,
             'changes' => $this->changeDetails,
+            'user_avatar' => $this->user_avatar,
         ];
     }
 
@@ -42,6 +53,7 @@ class ProfileChangeRequestNotification extends Notification implements ShouldQue
             'message' => $this->user->name . ' has requested to change their profile information.',
             'user_id' => $this->user->id,
             'changes' => $this->changeDetails,
+            'user_avatar' => $this->user_avatar,
         ]);
     }
 
