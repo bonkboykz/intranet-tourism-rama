@@ -943,44 +943,6 @@ function Calendar() {
                                     />
                                 </button>
                                 <form onSubmit={handleEditSubmit}>
-                                    {/* Ваша форма редактирования событий */}
-                                    <div className="button-container">
-                                        <button
-                                            type="button"
-                                            className="modal-delete-button font-bold"
-                                            onClick={handleDeleteClick}
-                                        >
-                                            Delete
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            className="modal-save-button font-bold"
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-
-                    {isEditModalOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-container">
-                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
-                                    Edit Event
-                                </h1>
-                                <button
-                                    onClick={closeEditModal}
-                                    className="mt-2 mr-2 modal-close-button"
-                                >
-                                    <img
-                                        src="/assets/cancel.svg"
-                                        alt="Close icon"
-                                        className="w-6 h-6"
-                                    />
-                                </button>
-                                <form onSubmit={handleEditSubmit}>
                                     <input
                                         type="text"
                                         name="title"
