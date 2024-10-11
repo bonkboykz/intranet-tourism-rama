@@ -25,28 +25,32 @@ class DepartmentController extends Controller
         $query = Department::queryable()->paginate($limit);
 
         $user = Auth::user();
-        // attach is_member if the user either superadmin, or is member through employment post, or is admin
-        $query->map(function ($item) use ($user) {
-            $is_member = $item->employmentPosts()->where('user_id', Auth::id())->exists();
-            $is_admin = $item->admins()->where('user_id', Auth::id())->exists();
 
-            $is_superadmin = $user->hasRole('superadmin');
+        if ($user !== null) {
+            // attach is_member if the user either superadmin, or is member through employment post, or is admin
+            $query->map(function ($item) use ($user) {
+                $is_member = $item->employmentPosts()->where('user_id', Auth::id())->exists();
+                $is_admin = $item->admins()->where('user_id', Auth::id())->exists();
 
-            if ($is_superadmin) {
-                $item['is_member'] = true;
-                $item['role'] = "superadmin";
-            } else if ($is_admin) {
-                $item['is_member'] = true;
-                $item['role'] = "admin";
-            } else if ($is_member) {
-                $item["is_member"] = true;
-                $item["role"] = "member";
-            } else {
-                $item['is_member'] = false;
-            }
+                $is_superadmin = $user->hasRole('superadmin');
 
-            return $item;
-        });
+                if ($is_superadmin) {
+                    $item['is_member'] = true;
+                    $item['role'] = "superadmin";
+                } else if ($is_admin) {
+                    $item['is_member'] = true;
+                    $item['role'] = "admin";
+                } else if ($is_member) {
+                    $item["is_member"] = true;
+                    $item["role"] = "member";
+                } else {
+                    $item['is_member'] = false;
+                }
+
+                return $item;
+            });
+        }
+
 
         return response()->json([
             'data' => $query,
