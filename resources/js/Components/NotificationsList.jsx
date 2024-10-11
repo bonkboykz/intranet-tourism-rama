@@ -4,7 +4,10 @@ import { useMemo } from "react";
 import axios from "axios";
 
 import { formatTimeAgo } from "@/Utils/format";
-import { getProfileImage } from "@/Utils/getProfileImage";
+import {
+    getNotificationAvatar,
+    getProfileImage,
+} from "@/Utils/getProfileImage";
 
 function NotificationsList({ activeTab, notifications, shouldSlice }) {
     const [readMap, setReadmap] = useState({});
@@ -51,10 +54,16 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                         <div className="flex items-center bg-gray h-16 relative">
                             <img
                                 className="h-10 w-10 ml-2"
-                                src={getProfileImage(
-                                    notification.notifiable.profile,
-                                    notification.notifiable.name
-                                )}
+                                src={
+                                    notification.data.user_avatar
+                                        ? getNotificationAvatar(
+                                              notification.data.user_avatar
+                                          )
+                                        : getProfileImage(
+                                              notification.notifiable.profile,
+                                              notification.notifiable.name
+                                          )
+                                }
                                 alt=""
                                 style={{
                                     height: "60px",
