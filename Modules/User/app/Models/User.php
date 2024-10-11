@@ -267,13 +267,35 @@ class User extends Authenticatable implements AuditableContract
 
     public function toSearchableArray()
     {
+        $phone_no = null;
+
+        if ($this->profile) {
+            $phone_no = $this->profile->phone_no;
+        }
+
+        $department = null;
+        $businessUnit = null;
+        $position = null;
+
+        if ($this->employmentPost) {
+            $department = $this->employmentPost->department->name;
+
+            if ($this->employmentPost->businessUnit) {
+                $businessUnit = $this->employmentPost->businessUnit->name;
+            }
+
+            if ($this->employmentPost->businessPost) {
+                $position = $this->employmentPost->businessPost->title;
+            }
+        }
+
         return [
             'name' => $this->name,
             'email' => $this->email,
-            // 'phone_no' => $this->profile->phone_no,
-            'department' => $this->employmentPost->department->name ?? null,
-            'business_unit' => $this->employmentPost->businessUnit->name ?? null,
-            'position' => $this->employmentPost->businessPost->title ?? null,
+            'phone_no' => $phone_no,
+            'department' => $department,
+            'business_unit' => $businessUnit,
+            'position' => $position
         ];
     }
 
