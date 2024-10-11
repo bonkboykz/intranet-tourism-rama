@@ -89,11 +89,11 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
 
     const videos = posts
         .filter((post) => post.attachments)
+        .map((post) => post.attachments)
+        .flat()
         .filter((attachment) => {
             return attachment.mime_type.startsWith("video/");
         })
-        .map((post) => post.attachments)
-        .flat()
         .map((attachment) => ({
             ...attachment,
             path: `/storage/${attachment.path}`,
