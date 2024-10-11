@@ -80,3 +80,27 @@ export const getAvatarSource = (src, name) => {
 
     return source;
 };
+
+export const getNotificationAvatar = (imageSrc) => {
+    if (imageSrc.startsWith("avatar/")) {
+        return `/storage/${imageSrc}`;
+    }
+
+    if (imageSrc === "/assets/dummyStaffPlaceHolder.jpg") {
+        return imageSrc;
+    }
+
+    if (imageSrc.startsWith("staff_image/")) {
+        return `/storage/${imageSrc}`;
+    }
+
+    if (imageSrc.startsWith("https://")) {
+        return imageSrc;
+    }
+
+    if (imageSrc.startsWith("data:image/")) {
+        return imageSrc;
+    }
+
+    return `/avatar/${imageSrc}`;
+};

@@ -17,7 +17,8 @@ class DeletingPostFromDepartmentNotification extends Notification implements Sho
 
     public $user_avatar;
 
-    public function __construct(User $user, $department_id) {
+    public function __construct(User $user, $department_id)
+    {
         $this->user = $user;
         $this->department_id = $department_id;
         if ($this->user->profile->image) {
@@ -29,22 +30,25 @@ class DeletingPostFromDepartmentNotification extends Notification implements Sho
         }
     }
 
-    public function via($notifiable) {
+    public function via($notifiable)
+    {
         return ['database', 'broadcast'];
     }
 
 
-    public function toDatabase($notifiable) {
+    public function toDatabase($notifiable)
+    {
         return [
-            'message' => 'Your post from department has been deleted by' . $this->user->name,
+            'message' => 'Your post from department has been deleted by ' . $this->user->name,
             'department_id' => $this->department_id,
             'user_avatar' => $this->user_avatar,
         ];
     }
 
-    public function toBroadcast($notifiable) {
+    public function toBroadcast($notifiable)
+    {
         return new BroadcastMessage([
-            'message' => 'Your post from department has been deleted by' . $this->user->name,
+            'message' => 'Your post from department has been deleted by ' . $this->user->name,
             'department_id' => $this->department_id,
             'user_avatar' => $this->user_avatar,
         ]);
