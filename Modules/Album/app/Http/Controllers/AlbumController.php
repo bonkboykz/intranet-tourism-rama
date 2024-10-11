@@ -20,7 +20,7 @@ class AlbumController extends Controller
         $query = Album::query();
         // if search is provided, filter the results
         if (request()->has('search')) {
-            $query->where('name', 'like', '%' . request('search') . '%');
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower(request('search')) . '%']);
         }
         $albums = $query->get();
 
