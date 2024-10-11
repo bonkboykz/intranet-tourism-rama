@@ -328,7 +328,7 @@ function ShareYourThoughtsDepart() {
 
                         {/* Output styling for break word to next line and icon */}
                         {/* <div
-              className="post-content break-words overflow-hidden"
+              className="post-content break-all overflow-hidden"
               style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}
             >
               {post.text}
