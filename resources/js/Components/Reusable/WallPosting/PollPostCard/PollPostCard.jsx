@@ -273,7 +273,7 @@ export function PollPostCard({ post }) {
                     )}
                 </header>
 
-                <div className="break-words overflow-hidden">{question}</div>
+                <div className="break-all overflow-hidden">{question}</div>
 
                 {renderPoll()}
 

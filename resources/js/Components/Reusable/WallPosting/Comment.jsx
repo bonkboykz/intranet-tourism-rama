@@ -375,13 +375,13 @@ const Comment = ({
                             </div>
                         </header>
                         <div className="mt-4">
-                            <div className="text-lg mb-4">
-                                <pre className="break-words overflow-hidden">
+                            <div className="text-lg mb-4 overflow-hidden break-all">
+                                <div>
                                     {renderContentWithTags(
                                         post.content,
                                         post.mentions
                                     )}
-                                </pre>
+                                </div>
                             </div>
                             <PostAttachments attachments={post.attachments} />
 
@@ -389,9 +389,9 @@ const Comment = ({
                             {post.type === "poll" && post.poll && (
                                 <div className="mt-4 relative pb-[64px]">
                                     <div className="text-lg mb-4">
-                                        <pre className="break-words overflow-hidden">
+                                        <div className="break-all overflow-hidden">
                                             {question}
-                                        </pre>
+                                        </div>
                                     </div>
                                     <div className="flex flex-col gap-4">
                                         {renderPoll()}
@@ -455,7 +455,7 @@ const Comment = ({
                                                     )}
                                                 </span>
                                             </div>
-                                            <div className="text-sm mt-1 mx-3 break-words overflow-hidden">
+                                            <div className="text-sm mt-1 mx-3 break-all overflow-hidden">
                                                 {renderContentWithTags(
                                                     comment.content,
                                                     comment.mentions

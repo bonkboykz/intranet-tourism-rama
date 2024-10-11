@@ -358,7 +358,7 @@ export function DefaultPostCard({ post }) {
                 cachedPost.attachments.length === 0 ? (
                     <>
                         <div>
-                            <div className="whitespace-pre-wrap break-words overflow-hidden">
+                            <div className="whitespace-pre-wrap break-all overflow-hidden">
                                 {cachedPost.content}
                             </div>
                         </div>
@@ -418,7 +418,7 @@ export function DefaultPostCard({ post }) {
         return (
             <>
                 <article className="post-content">
-                    <div className="whitespace-pre-wrap break-words overflow-hidden">
+                    <div className="whitespace-pre-wrap break-all overflow-hidden">
                         {renderContentWithTags(
                             cachedPost.content,
                             cachedPost.mentions

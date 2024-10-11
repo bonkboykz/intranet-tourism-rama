@@ -368,7 +368,7 @@ function OutputDataDepart({ polls }) {
                                 )}
                             </header>
                             <div
-                                className=" post-content break-words overflow-hidden"
+                                className=" post-content break-all overflow-hidden"
                                 style={{
                                     wordBreak: "break-word",
                                     whiteSpace: "pre-wrap",
