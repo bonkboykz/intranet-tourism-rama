@@ -191,3 +191,6 @@ php artisan scout:import "Modules\Posts\Models\Post"
 php artisan scout:import "Modules\User\Models\User"
 php artisan scout:import "Modules\Communities\Models\Community"
 ```
+
+-   `http://localhost:7700` - Meilisearch
+-   `http://localhost:8000/telescope` - Telescope

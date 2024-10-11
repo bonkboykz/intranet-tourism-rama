@@ -95,21 +95,18 @@ function ShareYourThoughts({
     };
 
     const handleTagSelection = (tag, id) => {
-        // const firstName = tag.name.split(" ")[0]; // Get only the first name
-        // console.log("HAHAHA", tag, id);
-
         const beforeCursor = inputValue.slice(0, cursorPosition);
         const afterCursor = inputValue.slice(cursorPosition);
         const mentionStartIndex = beforeCursor.lastIndexOf("@");
-        const updatedText = `${beforeCursor.slice(
-            0,
-            mentionStartIndex
-        )}@${tag} ${afterCursor}`;
+
+        const updatedText = `${beforeCursor.slice(0, mentionStartIndex)}@${tag} ${afterCursor}`;
 
         setInputValue(updatedText);
-        setChosenPeople((prevPeople) => [...prevPeople, { name: tag, id: id }]); // Store both name and user_id
-        setCursorPosition(mentionStartIndex + tag.length + 2); // Adjust cursor position
-        setIsMentioning(false); // Close mention suggestions
+
+        setChosenPeople((prevPeople) => [...prevPeople, { name: tag, id: id }]);
+
+        setCursorPosition(mentionStartIndex + tag.length + 2);
+        setIsMentioning(false);
         setMentionQuery("");
     };
 
