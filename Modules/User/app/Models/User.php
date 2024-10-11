@@ -270,7 +270,7 @@ class User extends Authenticatable implements AuditableContract
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'phone_no' => $this->profile->phone_no,
+            // 'phone_no' => $this->profile->phone_no,
             'department' => $this->employmentPost->department->name ?? null,
             'business_unit' => $this->employmentPost->businessUnit->name ?? null,
             'position' => $this->employmentPost->businessPost->title ?? null,
