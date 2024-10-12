@@ -22,7 +22,9 @@ export function CommunityTitle({ post }) {
         post.community.name + (isCommunityAdmin ? ` (${post.user.name})` : "");
 
     return (
-        <div className="text-base font-semibold text-neutral-800">{title}</div>
+        <div className="text-base font-semibold text-neutral-800">
+            {post.user.name}
+        </div>
     );
 }
 
