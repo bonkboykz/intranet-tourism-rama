@@ -30,8 +30,8 @@ export function PersonalStory({
                 <div
                     style={{
                         borderRadius: "50%",
-                        width: "104px",
-                        height: "104px",
+                        width: "84px",
+                        height: "84pxpx",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -56,8 +56,8 @@ export function PersonalStory({
                         alt={avatar.alt}
                         style={{
                             borderRadius: "50%",
-                            width: "100px",
-                            height: "100px",
+                            width: "80px",
+                            height: "80px",
                             border: "3px solid white",
                         }}
                     />
