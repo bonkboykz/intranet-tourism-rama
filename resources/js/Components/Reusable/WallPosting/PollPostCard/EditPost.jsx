@@ -31,31 +31,26 @@ export function EditPollPost({
         Boolean(post.poll.end_date)
     );
 
-    // Обновление текста вопроса
     const handleQuestionChange = (event) => {
         setQuestionText(event.target.value);
     };
 
-    // Обновление текста варианта ответа
     const handleOptionChange = (index, event) => {
         const newOptions = [...options];
         newOptions[index] = event.target.value;
         setOptions(newOptions);
     };
 
-    // Добавление нового варианта
     const addOption = () => {
-        setOptions([...options, ""]); // Добавляем пустую строку для нового варианта
+        setOptions([...options, ""]);
     };
 
-    // Удаление варианта
     const removeOption = (index) => {
         const newOptions = [...options];
         newOptions.splice(index, 1);
         setOptions(newOptions);
     };
 
-    // Обработчик отправки формы
     const handleFormSubmit = async (event) => {
         event.preventDefault();
 
@@ -64,6 +59,7 @@ export function EditPollPost({
             const data = {
                 question: questionText,
                 options: options.map((option) => ({ option_text: option })),
+                community: post.community,
             };
 
             if (includeEndDate) {
@@ -94,6 +90,13 @@ export function EditPollPost({
                     />
                 </button>
             </div>
+
+            {post.community && (
+                <div className="mb-4 text-sm font-semibold text-neutral-600">
+                    Community: {post.community.name}
+                </div>
+            )}
+
             <div className="max-h-[80vh] overflow-y-auto pb-4">
                 <header className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1.5">
