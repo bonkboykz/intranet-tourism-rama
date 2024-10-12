@@ -173,6 +173,13 @@ function EditPost({
                     />
                 </button>
             </div>
+
+            {post.community && (
+                <div className="mb-4 text-sm font-semibold text-neutral-600">
+                    Community: {post.community.name}
+                </div>
+            )}
+
             <div className="max-h-[80vh] overflow-y-auto pb-4">
                 <header className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1.5">

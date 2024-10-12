@@ -225,6 +225,8 @@ export function DefaultPostCard({ post }) {
                         "likes",
                         "comments",
                         "albums",
+                        "community",
+                        "department",
                     ],
                 },
             });
