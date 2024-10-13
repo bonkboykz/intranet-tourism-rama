@@ -63,7 +63,20 @@ export function EditPollPost({
             };
 
             if (includeEndDate) {
-                data["end_date"] = endDate;
+                const timezone = new Intl.DateTimeFormat().resolvedOptions()
+                    .timeZone;
+
+                // Format the date including time zone
+                data["end_date"] = new Date(endDate).toLocaleString("en-US", {
+                    timeZone: timezone,
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false, // 24-hour format
+                });
             }
 
             await axios.put(`/api/posts/${post.id}/update-poll`, data);
