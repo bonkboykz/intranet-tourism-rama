@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Modules\User\Models\User;
 
-class UserGotMentionedNotification extends Notification implements ShouldQueue
+class UserGotMentionedInCommentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     public $post;
