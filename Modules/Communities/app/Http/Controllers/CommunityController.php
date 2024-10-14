@@ -311,11 +311,15 @@ class CommunityController extends Controller
                 $query->where('name', 'superadmin');
             });
 
-            $superusers->get()->each(function ($superuser) use ($user, $community) {
-                // $superuser->notify(new AssignAdminCommunityNotification($user, $community->id,));
-                // notify all superadmins
-                $superuser->notify(new AssigningAdminCommunityNotification($user, $community->id));
+            $currentUser = User::where('id', $user->id)->firstOrFail();
+
+            $superusers->get()->each(function ($superuser) use ($currentUser, $community) {
+                if($superuser->id !== $currentUser->id) {
+                    $superuser->notify(new AssigningAdminCommunityNotification($currentUser, $community->id, true));
+                }
             });
+
+            $currentUser->notify(new AssigningAdminCommunityNotification($user, $community->id, false));
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();
             $output->writeln($tr->getMessage());
@@ -357,17 +361,21 @@ class CommunityController extends Controller
         }
 
         try {
-            $current_user = User::findOrFail(auth()->id());
 
-            $user->notify(new CommunityNotification($current_user, $community, 'revoke'));
 
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
             });
 
-            $superusers->get()->each(function ($superuser) use ($user, $community) {
-                $superuser->notify(new RevokingAdminCommunityNotification($user, $community->id));
+            $currentUser = User::where('id', $user->id)->firstOrFail();
+
+            $superusers->get()->each(function ($superuser) use ($currentUser, $community) {
+                if($superuser->id !== $currentUser->id) {
+                    $superuser->notify(new RevokingAdminCommunityNotification($currentUser, $community->id, true));
+                }
             });
+
+            $currentUser->notify(new RevokingAdminCommunityNotification($user, $community->id, false));
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();
             $output->writeln($tr->getMessage());
