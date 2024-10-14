@@ -16,15 +16,17 @@ class AssigningAdminDepartmentNotification extends Notification implements Shoul
     public $user;
     public $department_id;
     public $user_avatar;
+    public $is_admin;
 
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, $department_id)
+    public function __construct(User $user, $department_id, $is_admin = false)
     {
         $this->user = $user;
         $this->department_id = $department_id;
+        $this->is_admin = $is_admin;
         if ($this->user->profile->image) {
             $this->user_avatar = $this->user->profile->image;
         } elseif ($this->user->profile->staff_image) {
@@ -44,17 +46,21 @@ class AssigningAdminDepartmentNotification extends Notification implements Shoul
         return ['database', 'broadcast'];
     }
 
-    public function toDatabase(object $notifiable): array {
+    public function toDatabase(object $notifiable): array
+    {
         return [
-            'message' => $this->user->name . ' was assigned as an admin in department',
+            'message' => $this->is_admin ? $this->user->name . ' was assigned as an admin in department'
+                : 'You were assigned as an admin in department',
             'department_id' => $this->department_id,
             'user_avatar' => $this->user_avatar,
         ];
     }
 
-    public function toBroadcast(object $notifiable): BroadcastMessage {
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
         return new BroadcastMessage([
-            'message' => $this->user->name . ' was assigned as an admin in department',
+            'message' => $this->is_admin ? $this->user->name . ' was assigned as an admin in department'
+                : 'You were assigned as an admin in department',
             'department_id' => $this->department_id,
             'user_avatar' => $this->user_avatar,
         ]);

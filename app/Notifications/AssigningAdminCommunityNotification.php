@@ -15,15 +15,17 @@ class AssigningAdminCommunityNotification extends Notification implements Should
 
     public $user;
     public $community_id;
+    public $is_admin;
     public $user_avatar;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, $community_id)
+    public function __construct(User $user, $community_id, $is_admin = false)
     {
         $this->user = $user;
         $this->community_id = $community_id;
+        $this->is_admin = $is_admin;
         if ($this->user->profile->image) {
             $this->user_avatar = $this->user->profile->image;
         } elseif ($this->user->profile->staff_image) {
@@ -47,7 +49,8 @@ class AssigningAdminCommunityNotification extends Notification implements Should
     public function toDatabase(object $notifiable): array
     {
         return [
-            'message' => $this->user->name . ' was assigned as an admin in community',
+            'message' => $this->is_admin ? $this->user->name . ' was assigned as an admin in community'
+                : 'You were assigned as an admin in community',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ];
@@ -56,7 +59,8 @@ class AssigningAdminCommunityNotification extends Notification implements Should
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'message' => $this->user->name . ' was assigned as an admin in community',
+            'message' => $this->is_admin ? $this->user->name . ' was assigned as an admin in community'
+                : 'You were assigned as an admin in community',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
 
