@@ -15,15 +15,17 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
 
     public $user;
     public $department_id;
+    public $is_admin;
     public $user_avatar;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, $department_id)
+    public function __construct(User $user, $department_id, $is_admin = false)
     {
         $this->user = $user;
         $this->department_id = $department_id;
+        $this->is_admin = $is_admin;
 
         if ($this->user->profile->image) {
             $this->user_avatar = $this->user->profile->image;
@@ -49,7 +51,8 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
     public function toDatabase(object $notifiable): array
     {
         return [
-            'message' => $this->user->name . ' was revoked as an admin in department',
+            'message' => $this->is_admin ? $this->user->name . ' was revoked as an admin in department'
+                : 'You were revoked as an admin in department',
             'department_id' => $this->department_id,
             'user_avatar' => $this->user_avatar,
         ];
@@ -59,7 +62,8 @@ class RevokingAdminDepartmentNotification extends Notification implements Should
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'message' => $this->user->name . ' was revoked as an admin in department',
+            'message' => $this->is_admin ? $this->user->name . ' was revoked as an admin in department'
+                : 'You were revoked as an admin in department',
             'department_id' => $this->department_id,
             'user_avatar' => $this->user_avatar,
         ]);

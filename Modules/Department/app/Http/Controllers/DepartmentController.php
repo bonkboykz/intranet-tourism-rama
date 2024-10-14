@@ -138,7 +138,6 @@ class DepartmentController extends Controller
     }
 
 
-
     public function destroy(Department $department)
     {
         // revoke permission from all admins
@@ -223,9 +222,20 @@ class DepartmentController extends Controller
                 $query->where('name', 'superadmin');
             })->get();
 
-            $superusers->each(function ($superuser) use ($user, $department) {
-                $superuser->notify(new AssigningAdminDepartmentNotification($user, $department->id));
+            $currentUser = User::where('id', $user->id)->firstOrFail();
+
+
+            $superusers->each(function ($superuser) use ($currentUser, $department) {
+                if ($superuser->id !== $currentUser->id) {
+                    $superuser->notify(new AssigningAdminDepartmentNotification($currentUser, $department->id, true));
+                }
             });
+
+
+            $currentUser->notify(new AssigningAdminDepartmentNotification($user, $department->id, false));
+
+
+
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
@@ -266,13 +276,27 @@ class DepartmentController extends Controller
                 $employmentPost->delete();
             }
         }
-        $superusers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        })->get();
 
-        $superusers->each(function ($superuser) use ($user, $department) {
-            $superuser->notify(new RevokingAdminDepartmentNotification($user, $department->id));
-        });
+        try {
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            })->get();
+
+
+            $currentUser = User::where('id', $user->id)->firstOrFail();
+
+
+            $superusers->each(function ($superuser) use ($currentUser, $department) {
+                if ($superuser->id !== $currentUser->id) {
+                    $superuser->notify(new RevokingAdminDepartmentNotification($currentUser, $department->id, true));
+                }
+            });
+
+
+            $currentUser->notify(new RevokingAdminDepartmentNotification($user, $department->id, false));
+
+        } catch (\Throwable $th) {}
+
 
 
         return response()->json([
