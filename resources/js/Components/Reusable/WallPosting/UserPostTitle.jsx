@@ -43,7 +43,10 @@ export function DepartmentTitle({ post }) {
         post.department.name + (isAdmin ? ` (${post.user.name})` : "");
 
     return (
-        <div className="text-base font-semibold text-neutral-800">{title}</div>
+        <div className="text-base font-semibold text-neutral-800">
+            {" "}
+            {post.user.name}
+        </div>
     );
 }
 
