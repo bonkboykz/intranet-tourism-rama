@@ -1,6 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 import defaultImg from "../../../../public/assets/story/upload-photo-story.png";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateVideoStory = ({ goBack, onClose }) => {
     const [video, setVideo] = useState("");
@@ -8,12 +11,16 @@ const CreateVideoStory = ({ goBack, onClose }) => {
     const [previewedText, setPreviewedText] = useState("");
 
     const fileUploadRef = useRef();
-    const videoRef = useRef();
 
     const handleVideoChange = (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
 
+        if (file && file.size > 30 * 1024 * 1024) {
+            toast.error("File size exceeds 30MB!");
+            return;
+        }
+
+        const reader = new FileReader();
         reader.onload = () => {
             setVideo(reader.result);
         };
@@ -30,7 +37,7 @@ const CreateVideoStory = ({ goBack, onClose }) => {
 
     const handleTextChange = (e) => {
         if (!video) {
-            alert("Please upload a video first.");
+            toast.warn("Please upload a video first.");
         } else {
             setText(e.target.value);
         }
@@ -47,20 +54,24 @@ const CreateVideoStory = ({ goBack, onClose }) => {
     };
 
     const handlePost = () => {
-        if (video && text) {
-            console.log("Posting story:");
-            console.log("Video:", video);
-            console.log("Text:", text);
-            alert("Story has been posted!");
-        } else if (!video && !text) {
-            alert("Please upload a video or add text before posting.");
-        } else {
-            alert("Please add both video and text before posting.");
+        if (!video) {
+            toast.error("Please upload a video before posting.");
+            return;
         }
+        if (!text) {
+            toast.error("Please add text before posting.");
+            return;
+        }
+
+        console.log("Posting story:");
+        console.log("Video:", video);
+        console.log("Text:", text);
+        toast.success("Story has been posted!");
     };
 
     return (
         <div className="flex flex-col items-center p-6 bg-white rounded-lg">
+            <ToastContainer />
             <div className="flex justify-between w-full items-center">
                 <h1 className="text-2xl font-bold mb-4 text-center w-full">
                     Create Video Story
@@ -82,7 +93,7 @@ const CreateVideoStory = ({ goBack, onClose }) => {
                     />
                     <button
                         type="button"
-                        className="py-2 px-4 bg-blue-600 text-white rounded-full hover:bg-primary-hover max-w-32 "
+                        className="py-2 px-4 bg-blue-600 text-white rounded-full hover:bg-primary-hover max-w-32"
                         onClick={handlePreview}
                     >
                         Preview Text
@@ -113,15 +124,8 @@ const CreateVideoStory = ({ goBack, onClose }) => {
                     {video ? (
                         <div className="relative max-h-96 max-w-full">
                             <video
-                                ref={videoRef}
                                 className="max-h-96 max-w-full object-contain rounded-lg"
-                                autoPlay
-                                // onEnded={() =>
-                                //     setCurrentSlide(
-                                //         (prevSlide) =>
-                                //             (prevSlide + 1) % media.length
-                                //     )
-                                // }
+                                controls
                             >
                                 <source src={video} type="video/mp4" />
                                 Your browser does not support the video tag.
