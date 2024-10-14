@@ -144,7 +144,7 @@ class DepartmentController extends Controller
         $admins = $department->admins;
 
         foreach ($admins as $admin) {
-            Department::revokeCommunityAdminPermissions($admin, $department);
+            DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($admin, $department);
         }
 
         // remove all members and admins
