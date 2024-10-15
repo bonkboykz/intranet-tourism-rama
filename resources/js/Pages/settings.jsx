@@ -26,7 +26,7 @@ const Settings = () => {
                     inactive: "assets/Inactive Basic Settings.svg",
                     active: "assets/Active Basic Settings.svg",
                 },
-                isSuperAdmin && {
+                {
                     name: "Themes",
                     href: "#",
                     inactive: "assets/Inactive Theme.svg",
@@ -65,6 +65,18 @@ const Settings = () => {
                     active: "assets/Active Birthday Template.svg",
                 },
                 isSuperAdmin && {
+                    name: "Business Units",
+                    href: "#",
+                    inactive: "assets/Inactive Departments.svg",
+                    active: "assets/Active Departments.svg",
+                },
+                isSuperAdmin && {
+                    name: "Business Titles",
+                    href: "#",
+                    inactive: "assets/Inactive Departments.svg",
+                    active: "assets/Active Departments.svg",
+                },
+                isSuperAdmin && {
                     name: "Roles",
                     href: "#",
                     inactive: "assets/role-inactive.svg",
@@ -73,7 +85,7 @@ const Settings = () => {
                 isSuperAdmin && {
                     name: "Permissions",
                     href: "#",
-                    inactive: "assets/permission-active.svg",
+                    inactive: "assets/permission-inactive.svg",
                     active: "assets/permission-active.svg",
                 },
             ].filter(Boolean),
