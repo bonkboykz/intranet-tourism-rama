@@ -75,6 +75,8 @@ const FileTable = ({
     }, [searchTerm]);
 
     useEffect(() => {
+        setEditingIndex(null);
+        setEditingName("");
         fetchFiles();
     }, [currentPage]);
 
@@ -362,7 +364,6 @@ const FileTable = ({
                                             index={index}
                                             editingName={editingName}
                                             indexOfFirstItem={indexOfFirstItem}
-                                            setEditingIndex={setEditingIndex}
                                             onRename={handleRename}
                                             onDelete={() =>
                                                 handleDelete(item.id, index)
@@ -381,7 +382,7 @@ const FileTable = ({
                         totalPages={totalPages}
                         itemsPerPage={itemsPerPage}
                         paginate={setCurrentPage}
-                        // onPageChange={setCurrentPage}
+                        onPageChange={setCurrentPage}
                     />
                 </div>
             </div>

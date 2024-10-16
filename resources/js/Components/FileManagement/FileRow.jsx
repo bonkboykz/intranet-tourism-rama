@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PopupContent from "../Reusable/PopupContent";
 
@@ -9,24 +8,24 @@ export const FileRow = ({
     onDelete,
     onFileSelect,
     canEdit,
-    isEditing,
     onStartEditing,
+    isEditing,
+    setEditingIndex,
     onSaveEditing,
     setEditingName,
     onKeyDown,
     index,
     editingName,
     indexOfFirstItem,
-    setEditingIndex,
 }) => {
     const metadata = item.metadata || {};
-
     const inputRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (inputRef.current && !inputRef.current.contains(event.target)) {
-                setEditingIndex(null);
+                // Call the function to exit editing when clicking outside
+                setEditingIndex(null); // This needs to be passed from the parent
             }
         };
 
@@ -35,6 +34,13 @@ export const FileRow = ({
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    // New function to handle editing
+    const handleStartEditing = () => {
+        if (canEdit) {
+            onStartEditing(index, metadata.original_name);
+        }
+    };
 
     return (
         <tr key={item.id}>
@@ -60,13 +66,7 @@ export const FileRow = ({
                 ) : (
                     <div
                         className="text-sm font-bold mt-1 block w-full rounded-md py-2 border-2 border-transparent text-neutral-800 text-opacity-80 overflow-hidden text-ellipsis"
-                        onDoubleClick={() => {
-                            if (!canEdit) {
-                                return;
-                            }
-
-                            onStartEditing(index, metadata.original_name);
-                        }}
+                        onDoubleClick={handleStartEditing} // Use the new function here
                     >
                         {metadata.original_name || "Unknown"}
                     </div>
@@ -82,12 +82,7 @@ export const FileRow = ({
                 <PopupContent
                     file={item}
                     canEdit={canEdit}
-                    onRename={() =>
-                        onStartEditing(
-                            indexOfFirstItem + index,
-                            metadata.original_name
-                        )
-                    }
+                    onRename={handleStartEditing} // Updated to use the new function
                     onDelete={onDelete}
                     onFileSelect={onFileSelect}
                 />
