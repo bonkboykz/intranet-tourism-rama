@@ -10,6 +10,7 @@ use App\Notifications\RevokingAdminDepartmentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Department\Helpers\DepartmentPermissionsHelper;
+use Modules\Department\Models\BusinessUnit;
 use Modules\Department\Models\Department;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -140,22 +141,29 @@ class DepartmentController extends Controller
 
     public function destroy(Department $department)
     {
-        // revoke permission from all admins
+        // Revoke permission from all admins
         $admins = $department->admins;
 
         foreach ($admins as $admin) {
             DepartmentPermissionsHelper::revokeDepartmentAdminPermissions($admin, $department);
         }
 
-        // remove all members and admins
+        // Remove all members and admins
         $department->admins()->detach();
         $department->employmentPosts()->delete();
 
+        $relatedBusinessUnits = BusinessUnit::where('department_id', $department->id)->get();
 
+        foreach ($relatedBusinessUnits as $businessUnit) {
+            $businessUnit->delete();
+        }
+
+        // Finally, delete the department
         $department->delete();
 
         return response()->noContent();
     }
+
 
 
     public function getAdmins(Department $department)
