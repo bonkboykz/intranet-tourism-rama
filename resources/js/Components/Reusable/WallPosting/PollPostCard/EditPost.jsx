@@ -23,6 +23,8 @@ export function EditPollPost({
         post.poll.question.options.map((option) => option.option_text) || []
     );
 
+    const [newOptions, setNewOptions] = useState([]);
+
     const [endDate, setEndDate] = useState(
         post.poll.end_date ? new Date(post.poll.end_date) : new Date()
     );
@@ -36,19 +38,25 @@ export function EditPollPost({
     };
 
     const handleOptionChange = (index, event) => {
-        const newOptions = [...options];
-        newOptions[index] = event.target.value;
-        setOptions(newOptions);
+        const updatedNewOptions = [...newOptions];
+        updatedNewOptions[index] = event.target.value;
+        setNewOptions(updatedNewOptions);
     };
 
     const addOption = () => {
-        setOptions([...options, ""]);
+        setNewOptions([...newOptions, ""]);
     };
 
-    const removeOption = (index) => {
-        const newOptions = [...options];
-        newOptions.splice(index, 1);
-        setOptions(newOptions);
+    const removeOption = (index, isNew = false) => {
+        if (isNew) {
+            const updatedNewOptions = [...newOptions];
+            updatedNewOptions.splice(index, 1);
+            setNewOptions(updatedNewOptions);
+        } else {
+            const updatedOptions = [...options];
+            updatedOptions.splice(index, 1);
+            setOptions(updatedOptions);
+        }
     };
 
     const handleFormSubmit = async (event) => {
@@ -58,7 +66,10 @@ export function EditPollPost({
         try {
             const data = {
                 question: questionText,
-                options: options.map((option) => ({ option_text: option })),
+                options: [
+                    ...options.map((option) => ({ option_text: option })),
+                    ...newOptions.map((option) => ({ option_text: option })),
+                ],
                 community: post.community,
             };
 
@@ -80,6 +91,9 @@ export function EditPollPost({
             }
 
             await axios.put(`/api/posts/${post.id}/update-poll`, data);
+
+            setOptions([...options, ...newOptions]);
+            setNewOptions([]);
 
             onClose();
             onClosePopup();
@@ -137,15 +151,32 @@ export function EditPollPost({
                                 <input
                                     type="text"
                                     value={option}
-                                    onChange={(event) =>
-                                        handleOptionChange(index, event)
-                                    }
                                     className="w-full p-2 border rounded-md"
                                     placeholder={`Option ${index + 1}`}
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => removeOption(index)}
+                                    onClick={() => removeOption(index, false)}
+                                    className="ml-2 text-secondary"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
+                        {newOptions.map((option, index) => (
+                            <div key={index} className="flex mt-2">
+                                <input
+                                    type="text"
+                                    value={option}
+                                    onChange={(event) =>
+                                        handleOptionChange(index, event)
+                                    }
+                                    className="w-full p-2 border rounded-md"
+                                    placeholder={`Option ${options.length + index + 1}`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeOption(index, true)}
                                     className="ml-2 text-secondary"
                                 >
                                     Remove
