@@ -19,6 +19,7 @@ const SearchMembers = ({
     isStaffListActive,
     isOrgChartActive,
 }) => {
+    const { isSuperAdmin } = usePermissions();
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -41,6 +42,10 @@ const SearchMembers = ({
             const data = responseText ? JSON.parse(responseText) : {};
 
             allResults = data.data;
+
+            if (!isSuperAdmin) {
+                allResults = allResults.filter((member) => !member.is_active);
+            }
 
             setSearchResults(allResults);
         } catch (error) {
