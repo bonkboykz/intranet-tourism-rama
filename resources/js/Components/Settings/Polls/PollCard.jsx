@@ -24,7 +24,7 @@ function PollOptionAnswered({ option, percentage }) {
                     style={{ width: `${percentage}%` }}
                 ></div>
                 <div className="relative flex gap-2 items-center z-10">
-                    <div>{percentage}%</div>
+                    <div>{percentage.toFixed(1)}%</div>
                 </div>
                 <button
                     disabled
