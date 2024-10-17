@@ -214,14 +214,20 @@ function PostAttachments({ attachments }) {
                                                 imagesAndVideos[
                                                     currentMediaIndex
                                                 ].path
-                                            } // Unique key for image
+                                            }
                                             src={`/storage/${imagesAndVideos[currentMediaIndex].path}`}
                                             alt="Current attachment"
                                             className={cn(
-                                                "w-[500px] h-[500px] object-contain rounded-none",
+                                                "object-contain rounded-none",
                                                 imagesAndVideos.length === 1 &&
                                                     "w-full h-auto"
                                             )}
+                                            style={{
+                                                maxWidth: "50vw",
+                                                maxHeight: "80vh",
+                                                display: "block",
+                                                margin: "auto",
+                                            }}
                                             onClick={(e) => e.stopPropagation()}
                                         />
                                     ) : (
@@ -230,9 +236,15 @@ function PostAttachments({ attachments }) {
                                                 imagesAndVideos[
                                                     currentMediaIndex
                                                 ].path
-                                            } // Unique key for video
+                                            }
                                             controls
-                                            className="w-[500px] h-[500px] object-curtain rounded-lg" // Fixed width and height
+                                            className="rounded-lg"
+                                            style={{
+                                                maxWidth: "90vw",
+                                                maxHeight: "80vh",
+                                                display: "block",
+                                                margin: "auto",
+                                            }}
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <source
@@ -244,6 +256,7 @@ function PostAttachments({ attachments }) {
                                     )}
                                 </div>
                             </div>
+
                             <div className="flex justify-start mt-4 overflow-x-scroll w-full">
                                 {imagesAndVideos.length === 1
                                     ? null
