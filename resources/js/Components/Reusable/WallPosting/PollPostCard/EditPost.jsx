@@ -4,6 +4,7 @@ import { add, format, startOfDay } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 import { cn } from "@/Utils/cn";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import { UserProfileAvatar } from "../UserProfileAvatar";
 
@@ -17,6 +18,11 @@ export function EditPollPost({
     const [questionText, setQuestionText] = useState(
         post.poll.question.question_text || ""
     );
+
+    const { hasRole } = usePermissions();
+
+    const isSuperAdmin = hasRole("superadmin");
+
     const [loading, setLoading] = useState(false);
 
     const [options, setOptions] = useState(
@@ -33,6 +39,9 @@ export function EditPollPost({
         Boolean(post.poll.end_date)
     );
 
+    const isPollCreator = post.user?.id === loggedInUserId;
+    const canEditPoll = isSuperAdmin || isPollCreator;
+
     const handleQuestionChange = (event) => {
         setQuestionText(event.target.value);
     };
@@ -41,22 +50,6 @@ export function EditPollPost({
         const updatedNewOptions = [...newOptions];
         updatedNewOptions[index] = event.target.value;
         setNewOptions(updatedNewOptions);
-    };
-
-    const addOption = () => {
-        setNewOptions([...newOptions, ""]);
-    };
-
-    const removeOption = (index, isNew = false) => {
-        if (isNew) {
-            const updatedNewOptions = [...newOptions];
-            updatedNewOptions.splice(index, 1);
-            setNewOptions(updatedNewOptions);
-        } else {
-            const updatedOptions = [...options];
-            updatedOptions.splice(index, 1);
-            setOptions(updatedOptions);
-        }
     };
 
     const handleFormSubmit = async (event) => {
@@ -142,6 +135,7 @@ export function EditPollPost({
                         className="w-full p-2 border rounded-md"
                         rows="4"
                         placeholder="Edit question"
+                        disabled={!canEditPoll}
                     />
 
                     <div className="mt-4">
@@ -153,14 +147,8 @@ export function EditPollPost({
                                     value={option}
                                     className="w-full p-2 border rounded-md"
                                     placeholder={`Option ${index + 1}`}
+                                    disabled={!canEditPoll}
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => removeOption(index, false)}
-                                    className="ml-2 text-secondary"
-                                >
-                                    Remove
-                                </button>
                             </div>
                         ))}
                         {newOptions.map((option, index) => (
@@ -173,23 +161,10 @@ export function EditPollPost({
                                     }
                                     className="w-full p-2 border rounded-md"
                                     placeholder={`Option ${options.length + index + 1}`}
+                                    disabled={!canEditPoll}
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => removeOption(index, true)}
-                                    className="ml-2 text-secondary"
-                                >
-                                    Remove
-                                </button>
                             </div>
                         ))}
-                        <button
-                            type="button"
-                            onClick={addOption}
-                            className="mt-2 p-2 bg-primary text-white rounded-md"
-                        >
-                            Add Option
-                        </button>
                     </div>
                 </form>
 
@@ -220,6 +195,7 @@ export function EditPollPost({
                                     `border-none p-4 text-sm text-neutral-800 rounded-3xl`,
                                     includeEndDate ? "block" : "hidden"
                                 )}
+                                disabled={!canEditPoll}
                             />
                         )}
                     </div>
@@ -234,18 +210,20 @@ export function EditPollPost({
                 >
                     Cancel
                 </button>
-                <button
-                    disabled={loading}
-                    type="submit"
-                    className="mt-2 px-4 py-2 font-bold hover:bg-primary-hover bg-primary text-white rounded-full text-sm"
-                    onClick={handleFormSubmit}
-                >
-                    {loading ? (
-                        <Loader2 className="w-6 h-6 animate-spin text-white" />
-                    ) : (
-                        "Save"
-                    )}
-                </button>
+                {canEditPoll && (
+                    <button
+                        disabled={loading}
+                        type="submit"
+                        className="mt-2 px-4 py-2 font-bold hover:bg-primary-hover bg-primary text-white rounded-full text-sm"
+                        onClick={handleFormSubmit}
+                    >
+                        {loading ? (
+                            <Loader2 className="w-6 h-6 animate-spin text-white" />
+                        ) : (
+                            "Save"
+                        )}
+                    </button>
+                )}
             </div>
         </>
     );

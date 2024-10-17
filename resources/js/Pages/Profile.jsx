@@ -273,7 +273,7 @@ function ProfileContent() {
                     );
 
                     toast.success(
-                        "The request to change staff photo has been sent to the admin"
+                        "Your request for changes has been submitted to the Jomla! Admin"
                     );
                 }
 

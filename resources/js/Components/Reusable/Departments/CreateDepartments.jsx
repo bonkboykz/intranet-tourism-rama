@@ -202,17 +202,12 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
-import { toast, ToastContainer } from "react-toastify";
-import axios from "axios";
-import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
 import useUserData from "@/Utils/hooks/useUserData";
 
 import getCroppedImg from "./cropImageDepartment";
-
-import "react-toastify/dist/ReactToastify.css";
 
 // Function to get current user info (replace with your actual method)
 // const getCurrentUser = async () => {
@@ -401,87 +396,44 @@ function Card({
     const isDefaultImage = imageSrc === imgSrc;
 
     const handleSubmit = async () => {
-        // Validate if department name is provided
-        if (!departmentName.trim()) {
-            toast.error("Department name is required.", {
-                icon: <CircleXIcon className="w-6 h-6 text-white" />,
-                theme: "colored",
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
-            return; // Stop execution if validation fails
+        const formData = new FormData();
+        formData.append("name", departmentName);
+
+        if (!wasCropped && !isDefaultImage) {
+            formData.append("banner", imageFile);
+        } else if (croppedImage && !isDefaultImage) {
+            formData.append("banner", croppedImage);
         }
 
-        // Prepare the data payload
-        const data = {
-            name: departmentName,
-            type: selectedType,
-            created_by: userData.name,
-            updated_by: userData.name,
+        formData.append("description", departmentDescription);
+        formData.append("type", selectedType);
+
+        const options = {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "X-CSRF-Token": csrfToken,
+            },
+            body: formData,
         };
 
-        if (croppedImage) {
-            data.banner = croppedImage;
-            data.banner_original = imageFile; // If needed
-        }
-        if (departmentDescription) {
-            data.description = departmentDescription;
-        }
-
         try {
-            // If not a SuperAdmin, send a department creation request
-            if (!userData.isSuperAdmin) {
-                const response = await axios.post(
-                    `/api/createDepartmentRequest`,
-                    data
-                );
-
-                if ([200, 201, 204].includes(response.status)) {
-                    toast.success("Department create request sent", {
-                        position: "top-right",
-                        autoClose: 3000,
-                        theme: "colored",
-                    });
-                    onCreate(); // Trigger on successful request
-                    return;
-                }
-            }
-
-            // If SuperAdmin, create department directly
-            const response = await axios.post(
+            const response = await fetch(
                 "/api/department/departments",
-                data
+                options
             );
+            const text = await response.text();
 
-            if (![200, 201, 204].includes(response.status)) {
+            if (!response.ok) {
                 throw new Error("Failed to create department");
             }
 
-            // Success: Department created
-            toast.success("Department created successfully", {
-                position: "top-right",
-                autoClose: 3000,
-                theme: "colored",
-            });
-            onCreate(); // Trigger on successful creation
+            const responseData = text ? JSON.parse(text) : {};
+            console.log("Department created:", responseData.data);
+            onCreate(responseData.data);
+            window.location.reload();
         } catch (error) {
             console.error("Error creating department:", error.message);
-
-            // Show error toast with custom icon
-            toast.error("Failed to create department", {
-                icon: <CircleXIcon className="w-6 h-6 text-white" />,
-                theme: "colored",
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
         }
     };
 
@@ -537,7 +489,6 @@ function Card({
                     </button>
                 </div>
             </div>
-            <ToastContainer />
         </section>
     );
 }
