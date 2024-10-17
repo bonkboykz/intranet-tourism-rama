@@ -287,8 +287,16 @@ function ShareYourThoughts({
                     );
                     if (response.ok) {
                         const data = await response.json();
-                        setSearchResults(data.data.data);
-                        console.log("searchResults", searchResults);
+
+                        // Сортировка данных по имени
+                        const sortedResults = data.data.data.sort((a, b) => {
+                            return a.name
+                                .toLowerCase()
+                                .localeCompare(b.name.toLowerCase());
+                        });
+
+                        setSearchResults(sortedResults); // Установка отсортированных данных
+                        console.log("Sorted searchResults:", sortedResults);
                     } else {
                         console.error("Failed to fetch recommended people");
                     }
