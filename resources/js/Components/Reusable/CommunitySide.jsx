@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { memo } from "react";
-import { FaLock } from "react-icons/fa"; // Import the lock icon
+import { useContext } from "react";
+import { FaLock } from "react-icons/fa";
 import axios from "axios";
+
+import { CommunityContext } from "@/Pages/CommunityContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 const CommunityItem = ({
     id,
@@ -40,6 +44,10 @@ const CommunityItem = ({
 function CommunitySide() {
     const [communities, setCommunities] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
+
+    const { isMember } = useContext(CommunityContext);
 
     const fetchCommunities = async () => {
         setIsLoading(true);
@@ -52,20 +60,31 @@ function CommunitySide() {
             }
             const data = response.data;
 
-            const communityData = data.data.map((community) => {
-                return {
-                    id: community.id,
-                    name: community.name,
-                    category: community.type,
-                    imgSrc: community.banner
-                        ? community.banner
-                        : "assets/departmentsDefault.jpg",
-                    altText: `${community.name} community image`,
-                    createdAt: new Date(community.created_at),
-                    isArchived: community.is_archived,
-                    memberCount: community.members_count,
-                };
-            });
+            const communityData = data.data
+                .filter((community) => {
+                    if (
+                        community.type === "private" &&
+                        !community.isMember &&
+                        !isSuperAdmin
+                    ) {
+                        return false;
+                    }
+                    return true;
+                })
+                .map((community) => {
+                    return {
+                        id: community.id,
+                        name: community.name,
+                        category: community.type,
+                        imgSrc: community.banner
+                            ? community.banner
+                            : "assets/departmentsDefault.jpg",
+                        altText: `${community.name} community image`,
+                        createdAt: new Date(community.created_at),
+                        isArchived: community.is_archived,
+                        memberCount: community.members_count,
+                    };
+                });
 
             setCommunities(communityData);
         } catch (error) {
