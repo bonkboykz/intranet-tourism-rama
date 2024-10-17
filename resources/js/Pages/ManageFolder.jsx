@@ -532,6 +532,7 @@ const Pautan = () => {
                                 Edit Link
                             </h2>
                             <input
+                                required
                                 type="text"
                                 placeholder="Example.com"
                                 value={newAppName}
@@ -539,6 +540,7 @@ const Pautan = () => {
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
                             <input
+                                required
                                 type="text"
                                 placeholder="https://example.com"
                                 value={newAppUrl}
@@ -559,7 +561,16 @@ const Pautan = () => {
                                 </button>
                                 <button
                                     className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
-                                    onClick={PautanHandleUpdateApp}
+                                    onClick={() => {
+                                        if (!newAppName || !newAppUrl) {
+                                            setUrlError(
+                                                "Both fields are required!"
+                                            );
+                                        } else {
+                                            setUrlError("");
+                                            PautanHandleUpdateApp();
+                                        }
+                                    }}
                                 >
                                     Update
                                 </button>
