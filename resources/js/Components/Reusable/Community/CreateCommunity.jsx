@@ -5,6 +5,7 @@ import axios from "axios";
 import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
+import { cn } from "@/Utils/cn";
 import { getProfileImage } from "@/Utils/getProfileImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
@@ -22,31 +23,72 @@ function Header({ title }) {
     );
 }
 
-function Avatar({ src, alt, onImageChange }) {
+function Banner({
+    src,
+    alt,
+    onImageChange,
+    cropMode,
+    setCropMode,
+    crop,
+    setCrop,
+    zoom,
+    setZoom,
+    onCropComplete,
+    cropDisabled = true,
+}) {
     const handleClick = () => {
-        document.getElementById("avatarInput").click();
+        if (!cropMode) {
+            document.getElementById("avatarInput").click();
+        }
     };
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
             <div
-                className="relative flex items-center justify-center bg-gray-200 cursor-pointer rounded-xl w-[400px] h-[300px]"
+                className="relative flex items-center justify-center bg-gray-200 cursor-pointer rounded-xl w-full max-w-md h-[133px] overflow-hidden"
                 onClick={handleClick}
             >
-                <img
-                    loading="lazy"
-                    src={src}
-                    alt={alt}
-                    className="aspect-square w-[400px] h-[300px] rounded-xl border-4 border-gray-200 object-cover object-center"
-                />
+                {src && cropMode ? (
+                    <Cropper
+                        image={src}
+                        crop={crop}
+                        zoom={zoom}
+                        aspect={3 / 1}
+                        onCropChange={setCrop}
+                        onCropComplete={onCropComplete}
+                        onZoomChange={setZoom}
+                        className="rounded-xl"
+                    />
+                ) : (
+                    <img
+                        loading="lazy"
+                        src={src || "/assets/uploadAnImage.svg"}
+                        alt={alt}
+                        className="w-full h-full object-cover"
+                    />
+                )}
             </div>
-            <input
-                type="file"
-                accept="image/*"
-                id="avatarInput"
-                onChange={(e) => onImageChange(e.target.files[0])}
-                className="hidden"
-            />
+            {!cropMode && (
+                <input
+                    type="file"
+                    accept="image/*"
+                    id="avatarInput"
+                    onChange={(e) => onImageChange(e.target.files[0])}
+                    className="hidden"
+                />
+            )}
+            {src && !cropMode && (
+                <button
+                    disabled={cropDisabled}
+                    className={cn(
+                        "mt-4 px-4 py-2 font-bold text-white bg-primary rounded-full ",
+                        !cropDisabled && "hover:bg-primary-hover"
+                    )}
+                    onClick={() => setCropMode(true)}
+                >
+                    Crop Image
+                </button>
+            )}
         </div>
     );
 }
@@ -90,6 +132,7 @@ function Card({
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
+    const [cropMode, setCropMode] = useState(false);
     const csrfToken = useCsrf();
 
     const onCropComplete = useCallback((_, croppedAreaPixels) => {
@@ -198,36 +241,25 @@ function Card({
         });
     };
 
+    const isDefaultImage = imageSrc === imgSrc;
+
     return (
         <section className="flex flex-col py-2.5 bg-white rounded-3xl max-w-[442px]">
             <Header title={title} />
             <div className="flex flex-col items-center px-6 mt-3 w-full">
-                <Avatar
-                    src={croppedImage || imageSrc}
+                <Banner
+                    src={imageSrc}
                     alt={imgAlt}
                     onImageChange={handleImageChange}
+                    cropMode={cropMode}
+                    setCropMode={setCropMode}
+                    crop={crop}
+                    setCrop={setCrop}
+                    zoom={zoom}
+                    setZoom={setZoom}
+                    onCropComplete={onCropComplete}
+                    cropDisabled={isDefaultImage}
                 />
-                {originalImageSrc &&
-                    originalImageSrc !== "/assets/uploadAnImage.svg" && (
-                        <div className="relative w-full h-[300px] mt-3">
-                            <Cropper
-                                image={originalImageSrc}
-                                crop={crop}
-                                zoom={zoom}
-                                aspect={3 / 1} // Aspect ratio 3:1
-                                onCropChange={setCrop}
-                                onZoomChange={setZoom}
-                                onCropComplete={onCropComplete}
-                            />
-                        </div>
-                    )}
-
-                <button
-                    className="justify-center px-4 py-2 mt-4 font-bold text-white bg-primary hover:bg-primary-hover rounded-3xl"
-                    onClick={showCroppedImage}
-                >
-                    Crop Image
-                </button>
                 <input
                     type="text"
                     placeholder="Community name"
