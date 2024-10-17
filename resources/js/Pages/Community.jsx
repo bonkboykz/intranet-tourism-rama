@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
@@ -273,11 +274,7 @@ const Community = () => {
                                     onClick={toggleCreateCommunity}
                                     className="absolute top-0 right-0 mt-2 mr-2"
                                 >
-                                    <img
-                                        src="/assets/cancel.svg"
-                                        alt="Close icon"
-                                        className="w-6 h-6"
-                                    />
+                                    <CancelIcon className="w-6 h-6" />
                                 </button>
                             </div>
                         </div>

@@ -6,6 +6,7 @@ import Picker from "emoji-picker-react";
 import { CircleXIcon, Loader2 } from "lucide-react";
 
 import { AlbumIcon } from "@/Components/Icons/AlbumIcon";
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { DocumentIcon } from "@/Components/Icons/DocumentIcon";
 import { EmojiIcon } from "@/Components/Icons/EmojiIcon";
 import { EventIcon } from "@/Components/Icons/EventIcon";
@@ -484,10 +485,7 @@ function ShareYourThoughts({
                                         className="ml-2 text-primary"
                                         onClick={() => removeFile(index)}
                                     >
-                                        <img
-                                            src="assets/cancel2.svg"
-                                            alt="cancel icon"
-                                        />
+                                        <CancelIcon variant="2" />
                                     </button>
                                 </div>
                             ))}

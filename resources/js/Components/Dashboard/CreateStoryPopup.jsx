@@ -1,6 +1,8 @@
 import React from "react";
 import Modal from "react-modal";
 
+import { CancelIcon } from "../Icons/CancelIcon";
+
 const Popup = ({ isOpen, onClose, children }) => {
     return (
         <Modal
@@ -30,11 +32,7 @@ const Popup = ({ isOpen, onClose, children }) => {
             }}
         >
             <button onClick={onClose} className="modal-close-button pt-3 px-2">
-                <img
-                    src="/assets/cancel.svg"
-                    alt="Close icon"
-                    className="w-6 h-6"
-                />
+                <CancelIcon className="w-6 h-6" />
             </button>
             {children}
         </Modal>

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import Stories from "react-insta-stories";
 import axios from "axios";
 
+import { CancelIcon } from "../Icons/CancelIcon";
 import { ThrashIcon } from "../Icons/ThrashIcon";
 
 const StoryViewer = ({
@@ -192,10 +193,8 @@ const StoryViewer = ({
                             }}
                             onClick={onClose}
                         >
-                            <img
-                                src="/assets/cancel.svg"
+                            <CancelIcon
                                 className="w-6 h-6"
-                                alt="Close icon"
                                 style={{
                                     width: "28px",
                                     height: "28px",

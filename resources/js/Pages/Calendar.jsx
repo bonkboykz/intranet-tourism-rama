@@ -10,6 +10,7 @@ import * as bootstrap from "bootstrap";
 import { format } from "date-fns";
 import { Popover as RsuitePopover, Whisper } from "rsuite";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import BirthdayCom from "@/Components/Reusable/Birthdayfunction/birthdaypopup";
 import Popup from "@/Components/Reusable/Popup";
 import { useCsrf } from "@/composables";
@@ -825,11 +826,7 @@ function Calendar() {
                                     onClick={closeModal}
                                     className="mt-2 mr-2 modal-close-button"
                                 >
-                                    <img
-                                        src="/assets/cancel.svg"
-                                        alt="Close icon"
-                                        className="w-6 h-6"
-                                    />
+                                    <CancelIcon className="w-6 h-6" />
                                 </button>
                                 <form onSubmit={handleSubmit}>
                                     <input
