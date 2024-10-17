@@ -7,6 +7,8 @@ import { useClickAway } from "@uidotdev/usehooks";
 import getCroppedImg from "@/Utils/cropImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
+import "../../../css/app.css";
+
 function ProfileBio({
     formData,
     isEditing,
@@ -268,6 +270,8 @@ function ProfileBio({
                                     {isEditing ? (
                                         <PhoneInput
                                             country={"my"}
+                                            excludeCountries={["il"]}
+                                            enableSearch={true}
                                             value={
                                                 bioFormData.whatsapp !==
                                                     undefined &&
@@ -275,7 +279,7 @@ function ProfileBio({
                                                     ? bioFormData.whatsapp
                                                     : ""
                                             }
-                                            onChange={handlePhoneChange} // Phone change handler
+                                            onChange={handlePhoneChange}
                                             containerClass="w-full sm:ml-[5px] md:ml-[4px] lg:ml-[1px] max-md:px-3"
                                             inputStyle={{
                                                 width: "100%",

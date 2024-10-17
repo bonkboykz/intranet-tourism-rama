@@ -9,6 +9,7 @@ import { toastError } from "@/Utils/toast";
 import defaultImage from "../../../../public/assets/dummyStaffPlaceHolder.jpg";
 
 import "react-phone-input-2/lib/style.css";
+import "../../../css/app.css";
 import "./AddMemberPopup.css";
 
 const ConfirmationPopup = ({ selectedPerson, onConfirm, onCancel }) => {
@@ -834,6 +835,8 @@ const AddMemberPopup = ({
                                     </label>
                                     <PhoneInput
                                         country={"my"}
+                                        excludeCountries={["il"]}
+                                        enableSearch={true}
                                         value={workPhoneNumber}
                                         onChange={setWorkPhoneNumber}
                                         inputClass="text-sm text-neutral-800 text-opacity-80 mt-1 block w-full h-12 rounded-full p-2 border-2 border-stone-300 max-md:ml-4"
