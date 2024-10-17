@@ -23,7 +23,7 @@ const getDepartmentOrCommunityBannerUrl = (group) => {
 };
 
 export function UserProfileAvatar({ post }) {
-    if (post.community) {
+    if (post.community && post.post_as === "admin") {
         return (
             <img
                 loading="lazy"
@@ -34,7 +34,7 @@ export function UserProfileAvatar({ post }) {
         );
     }
 
-    if (post.department) {
+    if (post.department && post.post_as === "admin") {
         return (
             <img
                 loading="lazy"
