@@ -140,18 +140,6 @@ const CommunityCreationRow = ({
                     )}
                 </div>
             )}
-
-            {status === "approved" && (
-                <div className="flex justify-end w-1/4">
-                    <p className="text-sm font-bold text-green-500">Approved</p>
-                </div>
-            )}
-
-            {status === "rejected" && (
-                <div className="flex justify-end w-1/4">
-                    <p className="text-sm font-bold text-secondary">Rejected</p>
-                </div>
-            )}
         </div>
     );
 };
@@ -176,10 +164,29 @@ export const CommunityCreationRequests = () => {
                 const {
                     data: { data },
                 } = response.data;
+                const preparedRequests = data
+                    .filter(
+                        (item) =>
+                            item.status !== "approved" &&
+                            item.status !== "rejected"
+                    )
+                    .map((request) => ({
+                        id: request.id,
+                        name: request.user.name,
+                        department: request.userDepartment,
+                        time: new Date(request.created_at),
+                        group: request.group.name,
+                        profileImage: getProfileImage(
+                            request.userProfile,
+                            request.user.name
+                        ),
+                        groupImage:
+                            request.group.banner ??
+                            "/assets/defaultCommunity.png",
+                        status: request.status,
+                    }));
 
-                // console.log(data);
-
-                setRequests(data);
+                setRequests(preparedRequests);
             }
         } catch (e) {
             console.error(e);
@@ -192,24 +199,13 @@ export const CommunityCreationRequests = () => {
         fetchRequests();
     }, []);
 
-    const preparedRequests = requests.map((request, index) => ({
-        id: request.id,
-        name: request.user.name,
-        department: request.userDepartment,
-        time: new Date(request.created_at),
-        group: request.group.name,
-        profileImage: getProfileImage(request.userProfile, request.user.name),
-        groupImage: request.group.banner ?? "/assets/defaultCommunity.png",
-        status: request.status,
-    }));
-
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
             <h2 className="mb-4 text-2xl font-bold text-primary">
                 Community Creation
             </h2>
-            {preparedRequests.length > 0 ? (
-                preparedRequests.map((data, index) => (
+            {requests.length > 0 ? (
+                requests.map((data, index) => (
                     <CommunityCreationRow
                         key={index}
                         {...data}

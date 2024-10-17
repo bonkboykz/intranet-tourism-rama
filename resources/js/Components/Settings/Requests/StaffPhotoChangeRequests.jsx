@@ -115,22 +115,6 @@ const OrgChartPhotoChangeRow = ({
                         )}
                     </div>
                 )}
-
-                {status === "approved" && (
-                    <div className="flex justify-end w-1/4">
-                        <p className="text-sm font-bold text-green-500">
-                            Approved
-                        </p>
-                    </div>
-                )}
-
-                {status === "rejected" && (
-                    <div className="flex justify-end w-1/4">
-                        <p className="text-sm font-bold text-secondary">
-                            Rejected
-                        </p>
-                    </div>
-                )}
             </div>
 
             {isPopupVisible && (
@@ -163,15 +147,19 @@ export const StaffPhotoChangeRequests = () => {
         sort: [{ created_at: "desc" }],
     });
 
-    const preparedRequests = requests.map((request, index) => ({
-        id: request.id,
-        name: request.user.name,
-        department: request.userDepartment,
-        time: new Date(request.created_at),
-        currentImage: getStaffImage(request.userProfile, request.user.name),
-        status: request.status,
-        changeImage: `/storage/${request.new_photo}`,
-    }));
+    const preparedRequests = requests
+        .filter(
+            (item) => item.status !== "approved" && item.status !== "rejected"
+        )
+        .map((request, index) => ({
+            id: request.id,
+            name: request.user.name,
+            department: request.userDepartment,
+            time: new Date(request.created_at),
+            currentImage: getStaffImage(request.userProfile, request.user.name),
+            status: request.status,
+            changeImage: `/storage/${request.new_photo}`,
+        }));
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
