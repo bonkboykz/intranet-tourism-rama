@@ -24,6 +24,8 @@ const Pautan = () => {
     const [newAppUrl, setNewAppUrl] = useState("");
     const [urlError, setUrlError] = useState("");
     const csrfToken = useCsrf();
+    const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const fetchData = async () => {
         let allApps = [];
@@ -483,11 +485,6 @@ const Pautan = () => {
                                 onChange={(e) => setNewAppUrl(e.target.value)}
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
-                            {urlError && (
-                                <p className="text-secondary -mt-4 mb-5">
-                                    {urlError}
-                                </p>
-                            )}
                             <div className="flex justify-end space-x-3 text-sm">
                                 <button
                                     className="px-6 py-2 font-bold text-gray-400 bg-white hover:bg-gray-400 hover:text-white rounded-full border border-gray-400"
@@ -498,12 +495,23 @@ const Pautan = () => {
                                 <button
                                     className="px-8 py-2 font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={() => {
-                                        if (!newAppName || !newAppUrl) {
-                                            setUrlError(
-                                                "Both fields are required!"
+                                        if (!newAppName && newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide the app name."
                                             );
+                                            setIsErrorModalVisible(true); // Показать ошибку
+                                        } else if (!newAppName && !newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide both the app name and URL."
+                                            );
+                                            setIsErrorModalVisible(true); // Показать ошибку
+                                        } else if (newAppName && !newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide the app URL."
+                                            );
+                                            setIsErrorModalVisible(true); // Показать ошибку
                                         } else {
-                                            setUrlError("");
+                                            setErrorMessage("");
                                             PautanHandleAddApp();
                                         }
                                     }}
@@ -511,6 +519,21 @@ const Pautan = () => {
                                     Add
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {isErrorModalVisible && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                            <h3 className="text-lg font-bold mb-4">Error</h3>
+                            <p className="text-red-500 mb-4">{errorMessage}</p>
+                            <button
+                                className="px-4 py-2 bg-primary text-white rounded-full"
+                                onClick={() => setIsErrorModalVisible(false)}
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 )}
@@ -552,13 +575,21 @@ const Pautan = () => {
                                 <button
                                     className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={() => {
-                                        if (!newAppName || !newAppUrl) {
+                                        if (!newAppName && newAppUrl) {
                                             setUrlError(
-                                                "Both fields are required!"
+                                                "Please provide the app name."
+                                            );
+                                        } else if (!newAppName && !newAppUrl) {
+                                            setUrlError(
+                                                "Please provide both the app name and URL."
+                                            );
+                                        } else if (newAppName && !newAppUrl) {
+                                            setUrlError(
+                                                "Please provide the app URL."
                                             );
                                         } else {
-                                            setUrlError("");
-                                            PautanHandleUpdateApp();
+                                            setUrlError(""); // Clear the error
+                                            PautanHandleUpdateApp(); // Proceed with update
                                         }
                                     }}
                                 >
