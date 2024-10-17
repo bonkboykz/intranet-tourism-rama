@@ -232,6 +232,7 @@ import { usePage } from "@inertiajs/react";
 
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import getCroppedImg from "./cropImageDepartment";
 
@@ -265,7 +266,6 @@ function Avatar({ src, alt, onImageChange, isRepositionDisabled }) {
     };
 
     let banner = "";
-
     if (previewSrc && typeof previewSrc === "string") {
         if (previewSrc.startsWith("banner/")) {
             banner = `/storage/${previewSrc}`;
@@ -293,17 +293,13 @@ function Avatar({ src, alt, onImageChange, isRepositionDisabled }) {
     }, [croppedAreaPixels, previewSrc, onImageChange]);
 
     const handleRepositionClick = async () => {
-        if (isRepositionDisabled) {
-            return;
-        }
-
+        if (isRepositionDisabled) return;
         setCropping(true);
-        // Re-fetch the original image from the server
+
         try {
             const response = await fetch(banner);
-            if (!response.ok) {
-                throw new Error("Failed to fetch the image for repositioning");
-            }
+            if (!response.ok)
+                throw new Error("Failed to fetch image for repositioning");
             const blob = await response.blob();
             const objectUrl = URL.createObjectURL(blob);
             setPreviewSrc(objectUrl);
@@ -383,6 +379,7 @@ function Card({
     saveText,
     onCancel,
     onSave,
+    role,
 }) {
     const [departmentName, setDepartmentName] = useState(
         department?.name || ""
@@ -396,11 +393,6 @@ function Card({
         department?.banner || imgSrc
     );
     const [imageFile, setImageFile] = useState(null);
-
-    const [selectedType, setSelectedType] = useState(department?.type || "");
-    const [initialSelectedType, setInitialSelectedType] = useState(
-        department?.type || ""
-    );
 
     const [departmentDescription, setDepartmentDescription] = useState(
         department?.description || ""
@@ -419,9 +411,6 @@ function Card({
 
         setImageSrc(department?.banner || imgSrc);
         setInitialImageSrc(department?.banner || imgSrc);
-
-        setSelectedType(department?.type || "");
-        setInitialSelectedType(department?.type || "");
 
         setDepartmentDescription(department?.description || "");
         setInitialDepartmentDescription(department?.description || "");
@@ -442,7 +431,6 @@ function Card({
         if (
             departmentName === initialDepartmentName &&
             imageSrc === initialImageSrc &&
-            selectedType === initialSelectedType &&
             departmentDescription === initialDepartmentDescription
         ) {
             setError("No changes detected.");
@@ -455,7 +443,6 @@ function Card({
         formData.append("_method", "PUT");
         formData.append("name", departmentName);
         formData.append("description", departmentDescription);
-        formData.append("type", selectedType);
 
         if (imageFile) {
             formData.append("banner", imageFile);
@@ -492,6 +479,8 @@ function Card({
         }
     };
 
+    const { hasRole } = usePermissions();
+
     return (
         <section className="flex flex-col py-6 bg-white rounded-2xl shadow-sm max-w-[442px]">
             <Header title={title} />
@@ -502,20 +491,27 @@ function Card({
                     onImageChange={handleImageChange}
                     isRepositionDisabled={imageSrc === imgSrc}
                 />
-                <input
-                    type="text"
-                    placeholder="Department name"
-                    value={departmentName}
-                    onChange={(e) => setDepartmentName(e.target.value)}
-                    className="self-stretch text-2xl font-extrabold border border-solid rounded-md mt-6 text-neutral-800 border-neutral-300"
-                />
-                <input
-                    type="text"
-                    placeholder="Department description"
-                    value={departmentDescription}
-                    onChange={(e) => setDepartmentDescription(e.target.value)}
-                    className="self-stretch mt-3 border border-solid rounded-md text-neutral-800 border-neutral-300 font-bold"
-                />
+
+                {hasRole("superadmin") && (
+                    <>
+                        <input
+                            type="text"
+                            placeholder="Department name"
+                            value={departmentName}
+                            onChange={(e) => setDepartmentName(e.target.value)}
+                            className="self-stretch text-2xl font-extrabold border border-solid rounded-md mt-6 text-neutral-800 border-neutral-300"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Department description"
+                            value={departmentDescription}
+                            onChange={(e) =>
+                                setDepartmentDescription(e.target.value)
+                            }
+                            className="self-stretch mt-3 border border-solid rounded-md text-neutral-800 border-neutral-300 font-bold"
+                        />
+                    </>
+                )}
                 {error && (
                     <p className="mt-2 text-sm text-secondary">{error}</p>
                 )}
@@ -538,7 +534,7 @@ function Card({
     );
 }
 
-const EditDepartments = ({ department, onCancel, onSave }) => (
+const EditDepartments = ({ department, role, onCancel, onSave }) => (
     <Card
         title="Edit Department"
         imgSrc="/assets/uploadAnImage.svg"
@@ -546,6 +542,7 @@ const EditDepartments = ({ department, onCancel, onSave }) => (
         department={department}
         cancelText="Cancel"
         saveText="Save"
+        role={role}
         onCancel={onCancel}
         onSave={onSave}
     />
