@@ -23,7 +23,6 @@ function PollOption({
                     disabled && "opacity-60"
                 )}
             >
-                <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
                 <button
                     disabled={disabled}
                     onClick={onClick}
