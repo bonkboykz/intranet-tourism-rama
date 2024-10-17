@@ -3,7 +3,6 @@ import { useLayoutEffect } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { createPortal } from "react-dom";
-import { Emoji } from "react-emoji-render";
 import { useClickAway } from "@uidotdev/usehooks";
 import axios from "axios";
 import { format, isSameDay } from "date-fns";
