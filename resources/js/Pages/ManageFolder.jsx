@@ -26,6 +26,9 @@ const Pautan = () => {
     const csrfToken = useCsrf();
     const [nameError, setNameError] = useState("");
 
+    const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
     const removeDeptLabel = (label) => {
         return label.replace(/\(dept\)$/, "").trim();
     };
@@ -476,8 +479,29 @@ const Pautan = () => {
                     </DragDropContext>
                 </section>
 
-                {isAddModalVisible && (
+                {isErrorModalVisible && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="relative px-8 py-6 bg-white rounded-2xl shadow-lg w-80 m-4">
+                            <h2 className="mb-4 text-xl font-bold text-red-600">
+                                Error
+                            </h2>
+                            <p className="mb-4">{errorMessage}</p>
+                            <div className="flex justify-end">
+                                <button
+                                    className="px-6 py-2 font-bold text-white bg-red-600 hover:bg-red-700 rounded-full"
+                                    onClick={() =>
+                                        setIsErrorModalVisible(false)
+                                    }
+                                >
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isAddModalVisible && (
+                    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="relative px-8 py-6 bg-white rounded-2xl shadow-lg w-96 m-4">
                             <h2 className="mb-4 text-xl font-bold">
                                 Add New Link
@@ -490,11 +514,6 @@ const Pautan = () => {
                                 onChange={(e) => setNewAppName(e.target.value)}
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
-                            {nameError && (
-                                <p className="text-secondary -mt-4 mb-5">
-                                    {nameError}
-                                </p>
-                            )}
                             <input
                                 type="text"
                                 placeholder="https://example.com"
@@ -502,11 +521,6 @@ const Pautan = () => {
                                 onChange={(e) => setNewAppUrl(e.target.value)}
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
-                            {urlError && (
-                                <p className="text-secondary -mt-4 mb-5">
-                                    {urlError}
-                                </p>
-                            )}
                             <div className="flex justify-end space-x-3 text-sm">
                                 <button
                                     className="px-6 py-2 font-bold text-gray-400 bg-white hover:bg-gray-400 hover:text-white rounded-full border border-gray-400"
@@ -516,7 +530,27 @@ const Pautan = () => {
                                 </button>
                                 <button
                                     className="px-8 py-2 font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
-                                    onClick={PautanHandleAddApp}
+                                    onClick={() => {
+                                        if (!newAppName && newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide the app name."
+                                            );
+                                            setIsErrorModalVisible(true);
+                                        } else if (!newAppName && !newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide both the app name and URL."
+                                            );
+                                            setIsErrorModalVisible(true);
+                                        } else if (newAppName && !newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide the app URL."
+                                            );
+                                            setIsErrorModalVisible(true);
+                                        } else {
+                                            setIsErrorModalVisible(false);
+                                            PautanHandleAddApp(); // Proceed with add
+                                        }
+                                    }}
                                 >
                                     Add
                                 </button>
@@ -526,12 +560,13 @@ const Pautan = () => {
                 )}
 
                 {isEditModalVisible && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="relative px-8 py-6 bg-white rounded-2xl shadow-lg w-96 m-4">
                             <h2 className="mb-4 text-xl font-bold">
                                 Edit Link
                             </h2>
                             <input
+                                required
                                 type="text"
                                 placeholder="Example.com"
                                 value={newAppName}
@@ -539,17 +574,13 @@ const Pautan = () => {
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
                             <input
+                                required
                                 type="text"
                                 placeholder="https://example.com"
                                 value={newAppUrl}
                                 onChange={(e) => setNewAppUrl(e.target.value)}
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
-                            {urlError && (
-                                <p className="text-secondary -mt-4 mb-5">
-                                    {urlError}
-                                </p>
-                            )}
                             <div className="flex justify-end space-x-3 mt-3">
                                 <button
                                     className="px-6 py-2 text-base font-bold text-gray-400 bg-white hover:bg-gray-400 hover:text-white rounded-full border border-gray-400"
@@ -559,7 +590,27 @@ const Pautan = () => {
                                 </button>
                                 <button
                                     className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
-                                    onClick={PautanHandleUpdateApp}
+                                    onClick={() => {
+                                        if (!newAppName && newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide the app name."
+                                            );
+                                            setIsErrorModalVisible(true);
+                                        } else if (!newAppName && !newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide both the app name and URL."
+                                            );
+                                            setIsErrorModalVisible(true);
+                                        } else if (newAppName && !newAppUrl) {
+                                            setErrorMessage(
+                                                "Please provide the app URL."
+                                            );
+                                            setIsErrorModalVisible(true);
+                                        } else {
+                                            setIsErrorModalVisible(false);
+                                            PautanHandleUpdateApp(); // Proceed with update
+                                        }
+                                    }}
                                 >
                                     Update
                                 </button>
