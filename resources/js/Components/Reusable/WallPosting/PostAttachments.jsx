@@ -32,7 +32,9 @@ function PostAttachments({ attachments }) {
     const renderImageOrVideo = (attachment, index, isMore = false) => (
         <div
             key={attachment.path} // Use a unique key based on the attachment
-            className={`attachment ${attachment.height > attachment.width ? "tall" : ""} ${isMore ? "relative" : ""}`}
+            className={`attachment ${
+                attachment.height > attachment.width ? "tall" : ""
+            } ${isMore ? "relative" : ""}`}
             onClick={() => openPopup(index)}
         >
             {attachment.mime_type.startsWith("image/") ? (
@@ -215,7 +217,11 @@ function PostAttachments({ attachments }) {
                                                     currentMediaIndex
                                                 ].path
                                             }
-                                            src={`/storage/${imagesAndVideos[currentMediaIndex].path}`}
+                                            src={`/storage/${
+                                                imagesAndVideos[
+                                                    currentMediaIndex
+                                                ].path
+                                            }`}
                                             alt="Current attachment"
                                             className={cn(
                                                 "object-contain rounded-none",
@@ -248,7 +254,11 @@ function PostAttachments({ attachments }) {
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <source
-                                                src={`/storage/${imagesAndVideos[currentMediaIndex].path}`}
+                                                src={`/storage/${
+                                                    imagesAndVideos[
+                                                        currentMediaIndex
+                                                    ].path
+                                                }`}
                                             />
                                             Your browser does not support the
                                             video tag.
