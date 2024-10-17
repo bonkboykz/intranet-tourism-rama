@@ -3,6 +3,8 @@ import { useEffect } from "react";
 // import { useDebounce } from "@uidotdev/usehooks";
 import axios from "axios";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
+
 import ActionButtons from "./ActionButtons";
 import SearchBar from "./SearchBar";
 import TaggedItem from "./TaggedItem";
@@ -66,11 +68,9 @@ const TagInput = ({ tag, setTag, onClose, onSave }) => {
                             Tag Album
                         </div>
                         <div className="w-full flex justify-end">
-                            <img
-                                loading="lazy"
-                                src="/assets/cancel.svg"
+                            <CancelIcon
                                 alt="Close icon"
-                                className="self-end w-6 aspect-square cursor-pointer"
+                                className="w-6 h-6"
                                 onClick={onClose}
                             />
                         </div>

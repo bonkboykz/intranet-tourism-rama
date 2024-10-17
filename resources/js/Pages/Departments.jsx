@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import Birthdaypopup from "@/Components/Reusable/Birthdayfunction/birthdayalert";
 import DepartmentDropdown from "@/Components/Reusable/Departments/DepartmentsDropdown";
 import { useCsrf } from "@/composables";
@@ -288,11 +289,7 @@ const Departments = () => {
                                     onClick={toggleCreateCommunity}
                                     className="absolute top-0 right-0 mt-2 mr-2"
                                 >
-                                    <img
-                                        src="/assets/cancel.svg"
-                                        alt="Close icon"
-                                        className="w-6 h-6"
-                                    />
+                                    <CancelIcon className="w-6 h-6" />
                                 </button>
                             </div>
                             {/* <CreateDepartments Create={handleNewDepartment} userID={id} /> */}

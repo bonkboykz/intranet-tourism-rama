@@ -3,6 +3,7 @@ import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { LikeIcon } from "@/Components/Icons/LikeIcon";
 import { LikeOutlinedIcon } from "@/Components/Icons/LikeOutlinedIcon";
 import { ShareYourThoughts } from "@/Components/Reusable/WallPosting";
@@ -342,12 +343,7 @@ const Comment = ({
                                 Post
                             </span>
                         </div>
-                        <img
-                            src="/assets/cancel.svg"
-                            alt="Close icon"
-                            className="w-6 h-6"
-                            onClick={onClose}
-                        />
+                        <CancelIcon className="w-6 h-6" onClick={onClose} />
                     </div>
                 </div>
 

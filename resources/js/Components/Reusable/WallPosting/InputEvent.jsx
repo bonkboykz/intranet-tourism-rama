@@ -2,6 +2,8 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { format, isSameDay } from "date-fns";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
+
 export function SearchEventInput({ onSearchResults }) {
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -136,10 +138,7 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
                 <div className="flex w-full justify-between items-center mb-6">
                     <div className="text-2xl font-bold w-full">Tag Event</div>
                     <div className="w-full flex justify-end">
-                        <img
-                            loading="lazy"
-                            src="/assets/cancel.svg"
-                            alt="Close icon"
+                        <CancelIcon
                             className="self-end w-6 aspect-square cursor-pointer"
                             onClick={onClose}
                         />
