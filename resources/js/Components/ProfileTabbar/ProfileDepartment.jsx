@@ -3,6 +3,7 @@ import PhoneInput from "react-phone-input-2";
 
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
+import "../../../css/app.css";
 import "react-phone-input-2/lib/style.css";
 
 function ProfileDepartment({
@@ -318,6 +319,8 @@ function ProfileDepartment({
                                     {isEditing ? (
                                         <PhoneInput
                                             country={"my"}
+                                            excludeCountries={["il"]}
+                                            enableSearch={true}
                                             value={localFormData.phone}
                                             onChange={handlePhoneChange}
                                             containerClass="w-full sm:ml-[5px] md:ml-[4px] lg:ml-[1px] max-md:px-3" // Tailwind classes for margin adjustments

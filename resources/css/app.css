@@ -26,6 +26,10 @@
     filter: grayscale(100%); /* Converts the image to grayscale on hover */
 }
 
+.flag-il {
+    display: none !important;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
