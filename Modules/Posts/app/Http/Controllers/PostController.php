@@ -540,11 +540,16 @@ class PostController extends Controller
             $user_id = Auth::id();
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
-            if ($post->type === 'comment') {
-                $author->notify(new LikeCommentNotification($currentUser));
-            } else {
-                $author->notify(new LikeNotification($currentUser, $post));
+            if ($author->id !== $user_id) {
+                $currentUser = User::findOrFail($user_id); // Получаем текущего пользователя
+    
+                if ($post->type === 'comment') {
+                    $author->notify(new LikeCommentNotification($currentUser));
+                } else {
+                    $author->notify(new LikeNotification($currentUser, $post));
+                }
             }
+            
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
