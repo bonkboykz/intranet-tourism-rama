@@ -77,7 +77,7 @@ function EventTag({ event }) {
     }
 
     return (
-        <div className="flex gap-2">
+        <div className="flex gap-2  overflow-x-auto max-w-full pb-2">
             {events.map((event) => {
                 return (
                     <Whisper
