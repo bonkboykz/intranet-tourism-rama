@@ -3,6 +3,7 @@ import { useLayoutEffect } from "react";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { createPortal } from "react-dom";
+import { Emoji } from "react-emoji-render";
 import { useClickAway } from "@uidotdev/usehooks";
 import axios from "axios";
 import { format, isSameDay } from "date-fns";
@@ -115,7 +116,14 @@ function EventTag({ event }) {
                                                         eventDetails.end_at
                                                     )
                                                 ) &&
-                                                ` – ${format(new Date(eventDetails[event.id].end_at), "dd.MM.yyyy")}`}
+                                                ` – ${format(
+                                                    new Date(
+                                                        eventDetails[
+                                                            event.id
+                                                        ].end_at
+                                                    ),
+                                                    "dd.MM.yyyy"
+                                                )}`}
                                         </div>
                                         <div className="text-xs text-gray-500">
                                             {eventDetails[event.id].location}
@@ -145,63 +153,58 @@ function EventTag({ event }) {
 }
 
 const renderContentWithTags = (content, mentions) => {
+    if (!content) {
+        return null; // or return <></> for an empty fragment
+    }
+
     const mentionData = mentions ? JSON.parse(mentions) : [];
     const mentionNames = mentionData.map((person) => person.name);
-
-    // Regex to match mentions and URLs starting with https
-    const tagRegex = new RegExp(
-        mentionNames.map((name) => `@${name}`).join("|"),
+    const tagRegex = new RegExp(`@(${mentionNames.join("|")})\\b`, "g");
+    const urlRegex = /https:\/\/[^\s]+/g;
+    const combinedRegex = new RegExp(
+        `(${urlRegex.source}|${tagRegex.source})`,
         "g"
     );
-    const urlRegex = /https:\/\/[^\s]+/g;
 
-    // Replace content with mentions and URLs
     const replaceContent = (text) => {
-        const combinedRegex = new RegExp(
-            `(${urlRegex.source}|${tagRegex.source})`,
-            "g"
-        );
+        const parts = text.split(combinedRegex).filter(Boolean);
+        const renderedParts = [];
 
-        const parts = text?.split(combinedRegex).filter(Boolean);
+        for (let index = 0; index < parts.length; index++) {
+            const part = parts[index];
 
-        return parts?.map((part, index) => {
             if (urlRegex.test(part)) {
-                return (
+                renderedParts.push(
                     <a
                         href={part}
                         key={`url-${index}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{
-                            color: "blue",
-                            textDecoration: "underline",
-                        }}
+                        className="emoji-text"
+                        style={{ color: "blue", textDecoration: "underline" }}
                     >
                         {part}
                     </a>
                 );
-            }
-
-            const mentionMatch = mentionNames.find(
-                (name) => `@${name}` === part
-            );
-            if (mentionMatch) {
-                const mention = mentionData.find(
+            } else if (index === 0 || !parts[index - 1].startsWith("@")) {
+                const mentionMatch = mentionData.find(
                     (person) => `@${person.name}` === part
                 );
-                if (mention) {
-                    return (
+                if (mentionMatch) {
+                    renderedParts.push(
                         <MentionedName
-                            key={`mention-${index}`}
-                            name={mention.name}
-                            userId={mention.id}
+                            key={`mention-${mentionMatch.id}-${index}`}
+                            name={mentionMatch.name}
+                            userId={mentionMatch.id}
                         />
                     );
+                } else {
+                    renderedParts.push(part);
                 }
             }
+        }
 
-            return part;
-        });
+        return renderedParts;
     };
 
     return replaceContent(content);
@@ -396,7 +399,7 @@ export function DefaultPostCard({ post }) {
                                         ) && (
                                         <div className="absolute inset-0 flex justify-center items-center p-4">
                                             <span
-                                                className="text-5xl font-black text-center text-white text-opacity-90 bg-black bg-opacity-50 rounded-lg"
+                                                className="text-5xl font-black text-center emoji-text  text-white text-opacity-90 bg-black bg-opacity-50 rounded-lg"
                                                 style={{
                                                     maxWidth: "90%",
                                                     overflowWrap: "break-word",
