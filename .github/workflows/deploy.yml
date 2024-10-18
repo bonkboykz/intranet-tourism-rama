@@ -60,5 +60,5 @@ jobs:
                       docker compose down
                       docker compose up -d
 
-                      # migrate database
-                      docker exec laravel_app php artisan migrate
+                      # # migrate database
+                      # docker exec laravel_app php artisan migrate
