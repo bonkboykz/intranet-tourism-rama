@@ -1,9 +1,7 @@
 version: "3.8"
 services:
     web:
-        build:
-            context: .
-            dockerfile: .nixpacks/Dockerfile
+        image: ghcr.io/enzeetech/jomla-tourism:latest
         container_name: laravel_app
         restart: unless-stopped
         working_dir: /var/www
@@ -18,11 +16,10 @@ services:
             - db
             - redis
             - soketi
+            - meilisearch
 
     worker:
-        build:
-            context: .
-            dockerfile: .nixpacks/Dockerfile
+        image: ghcr.io/enzeetech/jomla-tourism:latest
         container_name: laravel_worker
         restart: unless-stopped
         working_dir: /var/www
