@@ -19,6 +19,7 @@ jobs:
             UPLOAD_MAX_FILESIZE: "1024M"
             POST_MAX_SIZE: "1024M"
             MEMORY_LIMIT: "2048M"
+            NIXPACKS_PHP_ROOT_DIR: "/app/public"
 
         steps:
             - name: Checkout code
@@ -60,5 +61,5 @@ jobs:
                       docker compose down
                       docker compose up -d
 
-                      # # migrate database
-                      # docker exec laravel_app php artisan migrate
+                      # migrate database
+                      # docker exec laravel_app php /app/artisan migrate
