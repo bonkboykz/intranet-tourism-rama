@@ -46,7 +46,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Enter the server
               uses: appleboy/ssh-action@v1.1.0
@@ -62,4 +62,4 @@ jobs:
                       docker compose up -d
 
                       # migrate database
-                      # docker exec laravel_app php /app/artisan migrate
+                      docker exec laravel_app php /app/artisan migrate
