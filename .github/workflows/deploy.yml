@@ -62,4 +62,4 @@ jobs:
                       docker compose up -d
 
                       # migrate database
-                      # docker exec laravel_app php /app/artisan migrate
+                      docker exec laravel_app php /app/artisan migrate
