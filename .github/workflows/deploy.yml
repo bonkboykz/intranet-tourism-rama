@@ -29,6 +29,8 @@ jobs:
                   echo $GHCR_TAG
                   echo $GHCR_TAG_LATEST
 
+                  mv .env.example .env
+
                   docker build -t "$GHCR_TAG" -t "$GHCR_TAG_LATEST" -f .nixpacks/Dockerfile .
 
                   docker login ghcr.io -u "$GH_USER" -p "$GH_TOKEN"
