@@ -36,3 +36,41 @@ jobs:
                   docker login ghcr.io -u "$GH_USER" -p "$GH_TOKEN"
                   docker push "$GHCR_TAG"
                   docker push "$GHCR_TAG_LATEST"
+    deploy:
+        needs: build-and-push
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up SSH
+              uses: webfactory/ssh-agent@v0.7.0
+              with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+            - name: Install SSH client
+              run: |
+                  sudo apt-get update -y
+                  sudo apt-get install openssh-client -y
+
+            - name: Add deploy server to known hosts
+              run: |
+                  mkdir -p ~/.ssh
+                  chmod 700 ~/.ssh
+                  ssh-keyscan ${{ env.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
+                  chmod 644 ~/.ssh/known_hosts
+
+            - name: Deploy application
+              run: |
+                  ssh ${{ env.DEPLOY_USER }}@${{ env.DEPLOY_SERVER }} << EOF
+                    cd /home/${{ env.DEPLOY_USER }}/intranet-tourism-app
+                    docker pull ghcr.io/enzeetech/jomla-tourism:latest
+                    docker-compose down
+                    docker-compose up -d
+
+                    # migrate database
+                    docker exec laravel_app php artisan migrate
+
+                    exit
+                  EOF

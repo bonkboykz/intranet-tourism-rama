@@ -35,16 +35,16 @@ services:
             - redis
             - soketi
 
-    db:
-        image: postgres:15
-        ports:
-            - 5432:5432
-        environment:
-            - POSTGRES_DB=laravel
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
+    # db:
+    #     image: postgres:15
+    #     ports:
+    #         - 5432:5432
+    #     environment:
+    #         - POSTGRES_DB=laravel
+    #         - POSTGRES_USER=postgres
+    #         - POSTGRES_PASSWORD=postgres
+    #     volumes:
+    #         - postgres_data:/var/lib/postgresql/data
 
     soketi:
         image: quay.io/soketi/soketi:latest-16-alpine
@@ -74,6 +74,5 @@ services:
         environment:
             - MEILI_MASTER_KEY=masterKey
             - MEILI_HTTP_ADDR=localhost:7700
-
-volumes:
-    postgres_data:
+# volumes:
+#     postgres_data:

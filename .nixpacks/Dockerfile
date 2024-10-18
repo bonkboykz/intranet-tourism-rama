@@ -33,7 +33,6 @@ RUN  npm ci
 # build phase
 COPY . /app/.
 RUN  npm run build
-RUN  php artisan migrate
 RUN  php artisan storage:link
 
 # php:build phase
