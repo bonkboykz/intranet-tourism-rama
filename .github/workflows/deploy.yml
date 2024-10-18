@@ -1,47 +1,36 @@
-name: Deploy
+name: Build and push Docker image
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - dev2
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+    build-and-push:
+        runs-on: ubuntu-latest
 
-    env:
-      DEPLOY_SERVER: "52.237.96.127"
-      DEPLOY_USER: "jomla-admin"
-      DEPLOY_PATH: "/var/www"
+        env:
+            GH_USER: ${{ secrets.GH_USER }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            NAME: jomla-tourism
+            TAG: ${{ github.sha }}
+            TAG_LATEST: latest
+            GHCR_REPO: ghcr.io/enzeetech/jomla-tourism
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+            - name: Build and push Docker image
+              run: |
+                  export GHCR_TAG=$GHCR_REPO:$TAG
+                  export GHCR_TAG_LATEST=$GHCR_REPO:$TAG_LATEST
 
-    - name: Install SSH client
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install openssh-client -y
+                  echo $GHCR_TAG
+                  echo $GHCR_TAG_LATEST
 
-    - name: Add deploy server to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
-        ssh-keyscan ${{ env.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
-        chmod 644 ~/.ssh/known_hosts
+                  docker build -t "$GHCR_TAG" -t "$GHCR_TAG_LATEST" -f .nixpacks/Dockerfile .
 
-    - name: Deploy application
-      run: |
-        ssh ${{ env.DEPLOY_USER }}@${{ env.DEPLOY_SERVER }} << EOF
-          cd ${{ env.DEPLOY_PATH }}/intranet-tourism
-          git reset --hard
-          # git clean -df ##causing the files to be deleted 
-          git pull
-          sh ${{ env.DEPLOY_PATH }}/intranet-tourism/update.sh
-          exit
-        EOF
+                  docker login ghcr.io -u "$GH_USER" -p "$GH_TOKEN"
+                  docker push "$GHCR_TAG"
+                  docker push "$GHCR_TAG_LATEST"

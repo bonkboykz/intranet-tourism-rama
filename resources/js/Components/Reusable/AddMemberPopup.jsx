@@ -569,7 +569,7 @@ const AddMemberPopup = ({
         <div>
             {isAddMemberPopupOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center z-10 bg-black px-4 bg-opacity-50">
-                    <div className="bg-white rounded-2xl pt-7 px-4 max-md:w-full max-md:mx-8 w-[400px]">
+                    <div className="bg-white rounded-2xl pt-7 px-4 max-md:w-full max-md:mx-8 w-[400px] overflow-y-auto max-h-[88hv] mt-[3rem]">
                         <h1 className="flex justify-start mx-2 mb-4 text-2xl font-bold text-neutral-800">
                             Add staff
                         </h1>
@@ -754,6 +754,23 @@ const AddMemberPopup = ({
                                         </div>
                                     )}
                                 </div>
+                                <div className="mb-4">
+                                    <label className="block font-bold text-gray-700">
+                                        Work Phone Number
+                                    </label>
+                                    <PhoneInput
+                                        country={"my"}
+                                        excludeCountries={["il"]}
+                                        enableSearch={true}
+                                        value={workPhoneNumber}
+                                        onChange={setWorkPhoneNumber}
+                                        inputClass="text-sm text-neutral-800 text-opacity-80 mt-1 block w-full h-12 rounded-full p-2 border-2 border-stone-300 max-md:ml-4"
+                                        containerClass="phone-input-container"
+                                        buttonClass="phone-input-button"
+                                        dropdownClass="custom-dropdown"
+                                        disableDropdown={false}
+                                    />
+                                </div>
                                 {!selectedPerson.employment_post && (
                                     <div className="mb-4">
                                         <label className="block font-bold text-gray-700">
@@ -827,23 +844,6 @@ const AddMemberPopup = ({
                                             setLocation(e.target.value)
                                         }
                                         className="w-full p-2 border border-gray-300 rounded-full"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block font-bold text-gray-700">
-                                        Work Phone Number
-                                    </label>
-                                    <PhoneInput
-                                        country={"my"}
-                                        excludeCountries={["il"]}
-                                        enableSearch={true}
-                                        value={workPhoneNumber}
-                                        onChange={setWorkPhoneNumber}
-                                        inputClass="text-sm text-neutral-800 text-opacity-80 mt-1 block w-full h-12 rounded-full p-2 border-2 border-stone-300 max-md:ml-4"
-                                        containerClass="phone-input-container"
-                                        buttonClass="phone-input-button"
-                                        dropdownClass="phone-input-dropdown"
-                                        disableDropdown={false}
                                     />
                                 </div>
                             </div>

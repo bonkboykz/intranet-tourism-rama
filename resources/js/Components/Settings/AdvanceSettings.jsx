@@ -249,7 +249,7 @@ const SizeLimit = () => {
                                 >
                                     <Menu.Items className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-custom ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <div className="py-1">
-                                            {[5, 10, 20].map((option) => (
+                                            {[5, 10, 20, 30].map((option) => (
                                                 <Menu.Item
                                                     key={option}
                                                     as="div"

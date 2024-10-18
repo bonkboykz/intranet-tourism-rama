@@ -1,67 +1,64 @@
-
-
 /* style.css */
 
-
-
-
-.imageSrc{
-
-    background-color: blue;
-    outline:solid green 1px;
+.emoji-text {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+        "Android Emoji", sans-serif;
 }
 
+.imageSrc {
+    background-color: blue;
+    outline: solid green 1px;
+}
 
 /* Targeting the container */
 .relative {
-  /* Additional styling */
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #888 #f1f1f1; /* Thumb and track color for Firefox */
+    /* Additional styling */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Thumb and track color for Firefox */
 }
 
 /* WebKit-based browsers (Chrome, Safari) */
 .relative::-webkit-scrollbar {
-  height: 2px; /* Reduce the height for horizontal scrollbar */
-  width: 10px;  /* Reduce the width for vertical scrollbar if needed */
+    height: 2px; /* Reduce the height for horizontal scrollbar */
+    width: 10px; /* Reduce the width for vertical scrollbar if needed */
 }
 
 .relative::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Track color */
-  border-radius: 25px;
+    background: #f1f1f1; /* Track color */
+    border-radius: 25px;
 }
 
 .relative::-webkit-scrollbar-thumb {
-  background: #888; /* Scrollbar color */
-  border-radius: 25px;
+    background: #888; /* Scrollbar color */
+    border-radius: 25px;
 }
 
 .relative::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Scrollbar color on hover */
+    background: #555; /* Scrollbar color on hover */
 }
 
 .sticky {
-  position: sticky;
-  top: 0;
-  z-index: 40;
+    position: sticky;
+    top: 0;
+    z-index: 40;
 }
 
 .phone-input-container {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 .custom-phone-input {
-  width: 40%; /* or specify any width you need */
+    width: 40%; /* or specify any width you need */
 }
 
-
 .phone-input-button {
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  margin-left: 0%;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-left: 0%;
 }
 
 .phone-input-dropdown {
-  max-height: 150px;
-  overflow-y: auto;
-  height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+    height: 100px;
 }

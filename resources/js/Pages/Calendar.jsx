@@ -869,6 +869,7 @@ function Calendar() {
                                         className="form-control"
                                         placeholder="End Date"
                                         required
+                                        min={eventData.startDate}
                                     />
                                     <textarea
                                         name="description"

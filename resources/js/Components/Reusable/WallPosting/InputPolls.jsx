@@ -15,7 +15,6 @@ function PollOption({ option, onRemove, onChange }) {
         <div className="flex gap-5 px-px mt-0 text-sm leading-5 text-neutral-800 max-md:flex-wrap">
             <div className="flex flex-auto gap-3 px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-2xl items-center">
                 <div className="flex items-center w-full">
-                    <div className="shrink-0 bg-white rounded-full h-[13px] w-[13px]" />
                     <input
                         type="text"
                         value={option}
