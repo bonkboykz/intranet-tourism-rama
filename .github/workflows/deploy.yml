@@ -16,6 +16,9 @@ jobs:
             TAG: ${{ github.sha }}
             TAG_LATEST: latest
             GHCR_REPO: ghcr.io/enzeetech/jomla-tourism
+            UPLOAD_MAX_FILESIZE: "1024M"
+            POST_MAX_SIZE: "1024M"
+            MEMORY_LIMIT: "2048M"
 
         steps:
             - name: Checkout code
