@@ -27,7 +27,7 @@ services:
         volumes:
             - ./:/var/www
             - ./storage:/app/storage/app
-        command: php artisan queue:work
+        command: php /app/artisan queue:work
         env_file:
             - .env
         depends_on:

@@ -221,5 +221,7 @@ jobs:
                       docker compose down
                       docker compose up -d
 
+                      docker image prune -f
+
                       # migrate database
                       docker exec laravel_app php /app/artisan migrate --force
