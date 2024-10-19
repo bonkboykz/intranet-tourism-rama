@@ -196,8 +196,19 @@ jobs:
                   echo "SCOUT_QUEUE=\"$SCOUT_QUEUE\"" >> .env
 
 
+                  # build args IS_LARAVEL MEMORY_LIMIT NIXPACKS_PHP_ROOT_DIR PORT POST_MAX_SIZE UPLOAD_MAX_FILESIZE
 
-                  docker build -t "$GHCR_TAG" -t "$GHCR_TAG_LATEST" -f .nixpacks/Dockerfile .
+                  docker build \
+                    -t "$GHCR_TAG" \
+                    -t "$GHCR_TAG_LATEST" \
+                    --build-arg IS_LARAVEL="$IS_LARAVEL" \
+                    --build-arg MEMORY_LIMIT="$MEMORY_LIMIT" \
+                    --build-arg NIXPACKS_PHP_ROOT_DIR="$NIXPACKS_PHP_ROOT_DIR" \
+                    --build-arg PORT="$PORT" \
+                    --build-arg POST_MAX_SIZE="$POST_MAX_SIZE" \
+                    --build-arg UPLOAD_MAX_FILESIZE="$UPLOAD_MAX_FILESIZE" \
+                    -f .nixpacks/Dockerfile \
+                    .
 
                   docker login ghcr.io -u "$GH_USER" -p "$GH_TOKEN"
                   docker push "$GHCR_TAG"

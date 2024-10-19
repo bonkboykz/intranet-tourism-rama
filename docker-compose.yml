@@ -4,9 +4,7 @@ services:
         image: ghcr.io/enzeetech/jomla-tourism:latest
         container_name: laravel_app
         restart: unless-stopped
-        working_dir: /var/www
         volumes:
-            - ./:/var/www
             - ./storage:/app/storage/app
             - ./seed-data:/app/seed
         env_file:
@@ -23,18 +21,15 @@ services:
         image: ghcr.io/enzeetech/jomla-tourism:latest
         container_name: laravel_worker
         restart: unless-stopped
-        working_dir: /var/www
-        volumes:
-            - ./:/var/www
-            - ./storage:/app/storage/app
         command: php /app/artisan queue:work
         env_file:
             - .env
         depends_on:
-            - app
+            - web
             - db
             - redis
             - soketi
+            - meilisearch
 
     db:
         image: postgres:15
