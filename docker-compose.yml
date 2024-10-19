@@ -8,6 +8,7 @@ services:
         volumes:
             - ./:/var/www
             - ./storage:/app/storage/app
+            - ./seed-data:/app/seed
         env_file:
             - .env
         ports:
@@ -35,16 +36,16 @@ services:
             - redis
             - soketi
 
-    # db:
-    #     image: postgres:15
-    #     ports:
-    #         - 5432:5432
-    #     environment:
-    #         - POSTGRES_DB=laravel
-    #         - POSTGRES_USER=postgres
-    #         - POSTGRES_PASSWORD=postgres
-    #     volumes:
-    #         - postgres_data:/var/lib/postgresql/data
+    db:
+        image: postgres:15
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_DB=laravel
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
 
     soketi:
         image: quay.io/soketi/soketi:latest-16-alpine
@@ -56,6 +57,8 @@ services:
             - SOKETI_DEFAULT_APP_ID=1
             - SOKETI_DEFAULT_APP_KEY=secret
             - SOKETI_DEFAULT_APP_SECRET=secret
+        volumes:
+            - soketi-data:/var/www/soketi
 
     redis:
         image: bitnami/redis:latest
@@ -64,6 +67,8 @@ services:
             - "6379:6379"
         environment:
             - ALLOW_EMPTY_PASSWORD=yes
+        volumes:
+            - redis-data:/bitnami/redis/data
 
     meilisearch:
         image: getmeili/meilisearch:v1.10
@@ -73,6 +78,12 @@ services:
             - "7700:7700"
         environment:
             - MEILI_MASTER_KEY=masterKey
-            - MEILI_HTTP_ADDR=localhost:7700
-# volumes:
-#     postgres_data:
+            - MEILI_HTTP_ADDR=0.0.0.0:7700
+        volumes:
+            - meilisearch-data:/data.ms
+
+volumes:
+    postgres-data:
+    soketi-data:
+    redis-data:
+    meilisearch-data:
