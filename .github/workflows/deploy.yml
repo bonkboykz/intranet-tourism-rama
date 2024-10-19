@@ -21,6 +21,7 @@ jobs:
             MEMORY_LIMIT: "2048M"
             NIXPACKS_PHP_ROOT_DIR: "/app/public"
             APP_NAME: "Jomla Tourism"
+            VITE_APP_NAME: "Jomla Tourism"
             APP_ENV: production
             APP_KEY: base64:your-app-key
             APP_DEBUG: false
@@ -116,6 +117,7 @@ jobs:
                   echo "MEMORY_LIMIT=\"$MEMORY_LIMIT\"" >> .env
                   echo "NIXPACKS_PHP_ROOT_DIR=\"$NIXPACKS_PHP_ROOT_DIR\"" >> .env
                   echo "APP_NAME=\"$APP_NAME\"" >> .env
+                  echo "VITE_APP_NAME=\"$VITE_APP_NAME\"" >> .env
                   echo "APP_ENV=\"$APP_ENV\"" >> .env
                   echo "APP_KEY=\"$APP_KEY\"" >> .env
                   echo "APP_DEBUG=\"$APP_DEBUG\"" >> .env
