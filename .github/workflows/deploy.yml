@@ -82,7 +82,7 @@ jobs:
             PUSHER_SCHEME: "http"
             PUSHER_APP_CLUSTER: "mt1"
             VITE_PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
-            VITE_PUSHER_HOST: https://jomla-stag.sociodev.com.my
+            VITE_PUSHER_HOST: jomla-stag.sociodev.com.my
             VITE_PUSHER_PORT: "6002"
             VITE_PUSHER_SCHEME: "http"
             VITE_PUSHER_APP_CLUSTER: "mt1"
@@ -220,6 +220,8 @@ jobs:
                       docker pull ghcr.io/enzeetech/jomla-tourism:latest
                       docker compose down
                       docker compose up -d
+
+                      docker image prune -f
 
                       # migrate database
                       docker exec laravel_app php /app/artisan migrate --force
