@@ -110,6 +110,9 @@ jobs:
                   echo $GHCR_TAG
                   echo $GHCR_TAG_LATEST
 
+                  # place variables into the .env file
+                  printenv | awk -F= '{print $1"="$2}' > .env
+
                   docker build -t "$GHCR_TAG" -t "$GHCR_TAG_LATEST" -f .nixpacks/Dockerfile .
 
                   docker login ghcr.io -u "$GH_USER" -p "$GH_TOKEN"
