@@ -108,6 +108,9 @@ jobs:
                   export GHCR_TAG=$GHCR_REPO:$TAG
                   export GHCR_TAG_LATEST=$GHCR_REPO:$TAG_LATEST
 
+                  export GHCR_WORKER_TAG=$GHCR_REPO-worker:$TAG
+                  export GHCR_WORKER_TAG_LATEST=$GHCR_REPO-worker:$TAG_LATEST
+
                   echo $GHCR_TAG
                   echo $GHCR_TAG_LATEST
 
@@ -210,9 +213,19 @@ jobs:
                     -f .nixpacks/Dockerfile \
                     .
 
+                  docker build \
+                    -t "$GHCR_WORKER_TAG" \
+                    -t "$GHCR_WORKER_TAG_LATEST" \
+                    -f Dockerfile.worker \
+                    .
+
+
                   docker login ghcr.io -u "$GH_USER" -p "$GH_TOKEN"
                   docker push "$GHCR_TAG"
                   docker push "$GHCR_TAG_LATEST"
+
+                  docker push "$GHCR_WORKER_TAG"
+                  docker push "$GHCR_WORKER_TAG_LATEST"
     deploy:
         needs: build-and-push
         runs-on: ubuntu-latest

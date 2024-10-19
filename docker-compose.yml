@@ -18,10 +18,9 @@ services:
             - meilisearch
 
     worker:
-        image: ghcr.io/enzeetech/jomla-tourism:latest
+        image: ghcr.io/enzeetech/jomla-tourism-worker:latest
         container_name: laravel_worker
-        restart: unless-stopped
-        command: php /app/artisan queue:work
+        restart: on-failure
         env_file:
             - .env
         depends_on:
