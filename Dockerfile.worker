@@ -28,8 +28,5 @@ COPY . /var/www
 # Install dependencies
 RUN composer install
 
-# Change current user to www
-USER www-data
-
 # Start worker
 CMD ["php", "artisan", "queue:work"]
