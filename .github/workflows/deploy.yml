@@ -20,7 +20,7 @@ jobs:
             POST_MAX_SIZE: "1024M"
             MEMORY_LIMIT: "2048M"
             NIXPACKS_PHP_ROOT_DIR: "/app/public"
-            APP_NAME: Jomla Tourism
+            APP_NAME: "Jomla Tourism"
             APP_ENV: production
             APP_KEY: base64:your-app-key
             APP_DEBUG: false
