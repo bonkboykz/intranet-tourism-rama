@@ -99,6 +99,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/getCommunityCreateRequests', [RequestController::class, 'getCommunityCreateRequests'])->name('getCommunityCreateRequests');
     Route::post('/api/approveCommunityCreateRequest', [RequestController::class, 'approveCommunityCreateRequest'])->name('approveCommunityCreateRequest');
     Route::post('/api/rejectCommunityCreateRequest', [RequestController::class, 'rejectCommunityCreateRequest'])->name('rejectCommunityCreateRequest');
+    Route::put('/api/createRequestForUpdateProfileDepartment/{departmentId}', [RequestController::class, 'createRequestForUpdateProfileDepartment'])->name('createRequestForUpdateProfileDepartment');
+    Route::post('/api/approveRequestForUpdateProfileDepartment', [RequestController::class, 'approveRequestForUpdateProfileDepartment'])->name('approveRequestForUpdateProfileDepartment');
+    Route::post('/api/rejectRequestForUpdateProfileDepartment', [RequestController::class, 'rejectRequestForUpdateProfileDepartment'])->name('rejectRequestForUpdateProfileDepartment');
+    Route::get('/api/getRequestForUpdateProfileDepartment', [RequestController::class, 'getRequestForUpdateProfileDepartment'])->name('getRequestForUpdateProfileDepartment');
 
     Route::get('/api/audits', [AuditController::class, 'index'])->name('audits');
     Route::post('/api/birthday-templates', [BirthdayTemplateController::class, 'store']);
