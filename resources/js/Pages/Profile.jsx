@@ -321,34 +321,37 @@ function ProfileContent() {
             FfData.append("user_id", id);
 
             if (!isSuperAdmin) {
-                // TODO: Implement in requests
-                toast.success("The request has been sent to the admin");
+                const response = await axios.post(
+                    `/api/createRequestForUpdateProfileDepartment/${employmentPost.department_id}`,
+                    FfData
+                );
+                if ([201, 200, 204].includes(response.status)) {
+                    toast.success("The request has been sent to the admin");
+                }
 
                 setIsEditingDepartments((prev) =>
                     prev.map((isEditing, i) =>
                         i === index ? false : isEditing
                     )
                 );
-
-                return;
             }
 
-            const response = await fetch(
-                `/api/department/employment_posts/${employmentPost.id}`,
-                {
-                    method: "POST",
-                    body: FfData,
-                    headers: {
-                        Accept: "application/json",
-                        "X-CSRF-TOKEN": csrfToken || "",
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
+            // const response = await fetch(
+            //     `/api/department/employment_posts/${employmentPost.id}`,
+            //     {
+            //         method: "POST",
+            //         body: FfData,
+            //         headers: {
+            //             Accept: "application/json",
+            //             "X-CSRF-TOKEN": csrfToken || "",
+            //             Authorization: `Bearer ${authToken}`,
+            //         },
+            //     }
+            // );
+            //
+            // if (!response.ok) {
+            //     throw new Error("Network response was not ok");
+            // }
 
             setOriginalFormData(formData);
             setIsEditingDepartments((prev) =>
@@ -362,7 +365,7 @@ function ProfileContent() {
                 error
             );
         }
-        window.location.reload();
+        // window.location.reload();
     };
 
     const handleCancelBio = () => {

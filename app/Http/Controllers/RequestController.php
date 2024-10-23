@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewMessageEvent;
 use App\Models\Request;
 use App\Notifications\CreateCommunityRequestNotification;
+use App\Notifications\CreateRequestForUpdateProfileDepartmentNotification;
 use App\Notifications\GroupJoinRequestNotification;
 use App\Notifications\PhotoChangeRequestNotification;
 use Illuminate\Http\Request as HttpRequest;
 use Modules\Communities\Helpers\CommunityPermissionsHelper;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
+use Modules\Crud\Models\BusinessUnit;
+use Modules\Department\Models\EmploymentPost;
 use Modules\Profile\Models\Profile;
 use Modules\User\Models\User;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -406,5 +408,141 @@ class RequestController extends Controller
 
         return response()->json(['status' => $requestToUpdate->status]);
     }
+
+
+    public function createRequestForUpdateProfileDepartment(HttpRequest $request)
+    {
+        $request->validate([
+            'department_id' => 'required|exists:departments,id',
+            'business_unit_id' => 'required|exists:business_units,id',
+            'location' => 'required|string',
+            'work_phone' => 'required|string',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $department_id = $request->department_id;
+        $business_unit_id = $request->business_unit_id;
+        $location = $request->location;
+        $work_phone = $request->work_phone;
+        $user_id = $request->user_id;
+
+        $business_unit_name = BusinessUnit::find($business_unit_id)->name;
+
+        $newRequest = Request::create([
+            'user_id' => auth()->id(),
+            'request_type' => 'update_profile_department',
+            'details' => [
+                'department_id' => $department_id,
+                'business_unit_id' => $business_unit_id,
+                'business_unit_name' => $business_unit_name,
+                'location' => $location,
+                'work_phone' => $work_phone,
+                'user_id' => $user_id,
+            ]
+        ]);
+
+        try {
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            })->get();
+            $superusers->each(function ($superuser) use ($newRequest) {
+                $superuser->notify(new CreateRequestForUpdateProfileDepartmentNotification($newRequest));
+            });
+        } catch (\Throwable $th) {
+
+        }
+
+        return response()->json(['status' => 'request_sent']);
+    }
+
+    public function approveRequestForUpdateProfileDepartment(HttpRequest $request)
+    {
+        $request->validate([
+            'request_id' => 'required|exists:requests,id',
+        ]);
+
+        $requestId = $request->request_id;
+
+        $requestToUpdate = Request::findOrFail($requestId);
+        $requestToUpdate->status = 'approved';
+        $requestToUpdate->action_at = now();
+        $requestToUpdate->save();
+
+
+        // update the status and change the data
+        $details = $requestToUpdate->details;
+//        $user = User::findOrFail($details['user_id']);
+
+
+        $employmentPost = EmploymentPost::where('user_id', $details['user_id'])->first();
+        $employmentPost->update([
+            'department_id' => $details['department_id'],
+            'business_unit_id' => $details['business_unit_id'],
+            'business_unit_name' => $details['business_unit_name'],
+            'work_phone' => $details['work_phone'],
+            'location' => $details['location'],
+        ]);
+
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new CreateRequestForUpdateProfileDepartmentNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
+
+        return response()->json(['status' => $requestToUpdate->status]);
+    }
+
+    public function rejectRequestForUpdateProfileDepartment(HttpRequest $request)
+    {
+        $request->validate([
+            'request_id' => 'required|exists:requests,id',
+        ]);
+
+        $requestId = $request->request_id;
+
+        $requestToUpdate = Request::findOrFail($requestId);
+        $requestToUpdate->status = 'rejected';
+        $requestToUpdate->action_at = now();
+        $requestToUpdate->save();
+
+        try {
+            $user = User::find($requestToUpdate->user_id);
+            $user->notify(new CreateRequestForUpdateProfileDepartmentNotification($requestToUpdate));
+        } catch (\Throwable $th) {
+            $output = new ConsoleOutput();
+            $output->writeln($th->getMessage());
+        }
+
+        return response()->json(['status' => $requestToUpdate->status]);
+    }
+
+
+    public function getRequestForUpdateProfileDepartment()
+    {
+        $updateProfileDepartmentRequests = Request::queryable()
+            ->where('request_type', 'update_profile_department')
+            ->paginate();
+
+        $updateProfileDepartmentRequests->getCollection()->transform(function ($request) {
+            $details = $request->details;
+            $request->department = BusinessUnit::find($details['department_id']);
+            $request->business_unit = $details['business_unit_id'];
+            $request->business_unit_name = $details['business_unit_name'];
+            $request->location = $details['location'];
+            $request->work_phone = $details['work_phone'];
+            if ($request->user->employmentPost) {
+                $request->userDepartment = $request->user->employmentPost->department->name;
+                $request->business_unit = BusinessUnit::find($request->user->employmentPost->business_unit_id);
+            }
+            return $request;
+        });
+
+        return response()->json([
+            'data' => $updateProfileDepartmentRequests,
+        ]);
+    }
+
 
 }
