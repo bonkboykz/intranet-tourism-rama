@@ -29,6 +29,7 @@ export function UserWall({ onLoad, hasMore, posts, userId }) {
                         <Loader2 className="w-12 h-12 animate-spin" />
                     </div>
                 }
+                className="w-full max-w-[700px]"
             >
                 {filderedPosts.map((post, index) => {
                     if (post.type === "poll") {
