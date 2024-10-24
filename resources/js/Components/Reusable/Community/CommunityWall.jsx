@@ -18,7 +18,7 @@ import defaultImage from "../../../../../public/assets/dummyStaffPlaceHolder.jpg
 import { SearchButton, SearchInput, Table } from "../../ProfileTabbar";
 import { ImageProfile, VideoProfile } from "../../ProfileTabbar/Gallery";
 import { WallContext } from "../WallPosting/WallContext";
-import CmMembers from "./CommunityMembers";
+import CommunityMembers from "./CommunityMembers";
 import { CommunityWallActions } from "./CommunityWallActions";
 import EditCommunity from "./EditCommunity";
 
@@ -250,7 +250,7 @@ function Navigation({ departmentName, type }) {
 
         try {
             const response = await axios.post(url, body);
-            if (![200, 201, 204].includes(response.status)) {
+            if ([200, 201, 204].includes(response.status)) {
                 console.log("Member added successfully");
                 setHasJoined(true);
 
@@ -273,7 +273,7 @@ function Navigation({ departmentName, type }) {
 
         try {
             const response = await axios.post(url, body);
-            if (![200, 201, 204].includes(response.status)) {
+            if ([200, 201, 204].includes(response.status)) {
                 console.log("Member removed successfully");
                 // TODO: refactor this hack
                 window.location.reload();
@@ -466,7 +466,7 @@ function Navigation({ departmentName, type }) {
                     {activeTab === "Members" && (
                         <div className="flex justify-center w-full mt-4">
                             <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
-                                <CmMembers
+                                <CommunityMembers
                                     communityID={communityID}
                                     loggedInID={id}
                                 />
