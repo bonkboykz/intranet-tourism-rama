@@ -19,7 +19,7 @@ export function useMentions({ inputValue, cursorPosition }) {
         if (searchTerm) {
             try {
                 const response = await fetch(
-                    `/api/crud/users?search=${searchTerm}&with[]=profile`
+                    `/api/crud/users?search=${searchTerm}&with[]=profile&disabledPagination`
                 );
                 if (response.ok) {
                     const data = await response.json();
