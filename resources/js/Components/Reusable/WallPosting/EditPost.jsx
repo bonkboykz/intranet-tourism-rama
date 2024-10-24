@@ -4,6 +4,8 @@ import { Loader2 } from "lucide-react";
 
 import { cn } from "@/Utils/cn";
 
+import { MentionPopup } from "./DefaultPostCard/MentionPopup";
+import { useCursorPointer } from "./DefaultPostCard/useCursorPosition";
 import {
     ChosenEvent,
     Event,
@@ -36,10 +38,6 @@ function EditPost({
         // setAlbums(post.albums || []);
         setAttachments(post.attachments || []);
     }, [post]);
-
-    const handleInputChange = (event) => {
-        setContent(event.target.value);
-    };
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
@@ -75,6 +73,18 @@ function EditPost({
                 }
             } else if (albums.length === 0) {
                 formData.append("remove_albums", "");
+            }
+
+            // Handle mentions
+            if (chosenPeople.length > 0) {
+                const mentions = chosenPeople
+                    .map(
+                        (person) =>
+                            `{ "id": "${person.id}", "name": "${person.name}" }`
+                    )
+                    .join(", ");
+                const formattedMentions = `[${mentions}]`;
+                formData.append("mentions", formattedMentions);
             }
 
             if (chosenEvent.length > 0) {
@@ -161,6 +171,43 @@ function EditPost({
         setChosenEvent(chosenEvent.filter((event) => event.id !== id));
     };
 
+    const {
+        handleChange,
+        inputValue,
+        cursorPosition,
+        isMentioning,
+        mentionQuery,
+        textareaRef,
+        popoverPosition,
+        resetMentioning,
+        setCursorPosition,
+        setInputValue,
+    } = useCursorPointer({
+        initialInputValue: content,
+    });
+
+    useEffect(() => {
+        setContent(inputValue);
+    }, [inputValue]);
+
+    const [chosenPeople, setChosenPeople] = useState([]);
+
+    const handleMentionSelect = (tag, id) => {
+        const beforeCursor = inputValue.slice(0, cursorPosition);
+        const afterCursor = inputValue.slice(cursorPosition);
+        const mentionStartIndex = beforeCursor.lastIndexOf("@");
+        const updatedText = `${beforeCursor.slice(
+            0,
+            mentionStartIndex
+        )}@${tag} ${afterCursor}`;
+
+        setInputValue(updatedText);
+        setChosenPeople((prevPeople) => [...prevPeople, { name: tag, id: id }]); // Store both name and user_id
+        setCursorPosition(mentionStartIndex + tag.length + 2); // Adjust cursor position
+
+        resetMentioning();
+    };
+
     return (
         <>
             <div className="flex flex-row justify-between items-center w-full max-md:w-full mb-4">
@@ -192,13 +239,26 @@ function EditPost({
                     </div>
                 </header>
                 <form onSubmit={handleFormSubmit} className="mt-4">
-                    <textarea
-                        value={content}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border rounded-md"
-                        rows="4"
-                        placeholder="Edit caption"
-                    />
+                    <div className="relative">
+                        <textarea
+                            ref={textareaRef}
+                            value={content}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md"
+                            rows="4"
+                            placeholder="Edit caption"
+                        />
+
+                        <MentionPopup
+                            inputValue={content}
+                            cursorPosition={cursorPosition}
+                            isMentioning={isMentioning}
+                            mentionQuery={mentionQuery}
+                            popoverPosition={popoverPosition}
+                            onMentionSelect={handleMentionSelect}
+                        />
+                    </div>
+
                     <div>
                         <div className="font-semibold text-lg mt-4">
                             Edit event tag

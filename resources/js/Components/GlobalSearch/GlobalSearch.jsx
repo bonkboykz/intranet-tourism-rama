@@ -49,7 +49,7 @@ const CommunityItem = ({ id, name, type, banner, membersCount }) => {
 
 const UserItem = ({ id, name, image, position }) => {
     return (
-        <a href={`/users/${id}`}>
+        <a href={`/user/${id}`}>
             <article className="flex items-center w-full gap-3 py-1 ">
                 <div className="">
                     <img

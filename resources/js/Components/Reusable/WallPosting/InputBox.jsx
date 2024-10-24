@@ -388,12 +388,7 @@ function ShareYourThoughts({
         setShowMediaTagPopup(true);
     };
 
-    const handleClickPeople = () => {
-        setShowPeoplePopup(true);
-    };
-
     const handleClickEvent = () => {
-        // console.log("Hello");
         setShowEventPopup(true);
     };
 
