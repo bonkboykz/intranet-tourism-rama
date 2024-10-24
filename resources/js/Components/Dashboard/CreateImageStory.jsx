@@ -3,6 +3,8 @@ import Stories from "react-insta-stories";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 
+import { toastError } from "@/Utils/toast";
+
 import "react-toastify/dist/ReactToastify.css";
 import "./styles.css";
 
@@ -10,11 +12,23 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
     const [image, setImage] = useState(null);
     const [text, setText] = useState("");
     const [previewUrl, setPreviewUrl] = useState("");
+    const [storyType, setStoryType] = useState("image");
 
     useEffect(() => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
+                if (file.type.includes("video")) {
+                    setStoryType("video");
+
+                    if (file.type !== "video/mp4") {
+                        toastError(
+                            "Only MP4 format is supported for video uploads."
+                        );
+                        return;
+                    }
+                }
+
                 setPreviewUrl(reader.result);
             };
             reader.readAsDataURL(file);
@@ -28,11 +42,6 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (image && image.size > 30 * 1024 * 1024) {
-            toast.error("File size exceeds 30MB!");
-            return;
-        }
 
         const formData = new FormData();
         formData.append("user_id", userId);
@@ -56,6 +65,7 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
                     caption: text,
                     user_id: userId,
                     viewed: false,
+                    type: storyType,
                 };
                 onPostStory(newStory);
             } else {
@@ -80,7 +90,7 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
                         <div className="image-preview relative">
                             <Stories
                                 stories={[
-                                    { url: previewUrl, type: "image", text },
+                                    { url: previewUrl, type: storyType, text },
                                 ]}
                                 defaultInterval={1500}
                                 width={300}
