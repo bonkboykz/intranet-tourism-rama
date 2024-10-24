@@ -246,8 +246,8 @@ function PostAttachments({ attachments }) {
                                             controls
                                             className="rounded-lg"
                                             style={{
-                                                maxWidth: "90vw",
-                                                maxHeight: "80vh",
+                                                maxWidth: "50vw",
+                                                maxHeight: "70vh",
                                                 display: "block",
                                                 margin: "auto",
                                             }}
