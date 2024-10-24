@@ -393,7 +393,7 @@ const FileTable = ({
 const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
     return (
         <>
-            <div className="py-3 flex w-full justify-center">
+            <div className="py-3 flex w-full justify-center max-w-full overflow-x-scroll">
                 {hasNextButton && (
                     <button
                         disabled={!hasNextButton.prev_page_url}
