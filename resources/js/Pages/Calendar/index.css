@@ -315,6 +315,10 @@ h1 {
 .events-table td {
     padding: 12px;
 }
+.fc .fc-daygrid-body {
+    z-index: 0;
+}
+
 .fc .fc-daygrid-day.fc-day-today {
     background-color: rgb(206, 240, 255);
 }
