@@ -110,6 +110,12 @@ function EditPost({
                 }
             });
 
+            if (post.community) {
+                formData.append("community_id", post.community.id);
+            } else if (post.department) {
+                formData.append("department_id", post.department.id);
+            }
+
             const response = await axios.post(
                 `/api/posts/posts/${post.id}`,
                 formData
@@ -224,6 +230,12 @@ function EditPost({
             {post.community && (
                 <div className="mb-4 text-sm font-semibold text-neutral-600">
                     Community: {post.community.name}
+                </div>
+            )}
+
+            {post.department && (
+                <div className="mb-4 text-sm font-semibold text-neutral-600">
+                    Department: {post.department.name}
                 </div>
             )}
 

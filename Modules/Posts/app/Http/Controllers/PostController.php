@@ -191,6 +191,8 @@ class PostController extends Controller
         $post = Post::where('id', $id)->firstOrFail();
 
         $post->load([
+            'department',
+            'community',
             'comments' => function ($query) {
                 $query->withPivot('id', 'comment_id');
             }
