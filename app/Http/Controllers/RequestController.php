@@ -103,6 +103,12 @@ class RequestController extends Controller
         $requestId = $request->request_id;
 
         $requestToUpdate = Request::findOrFail($requestId);
+
+        // if already approved or rejected, return
+        if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+            return response()->json(['status' => $requestToUpdate->status]);
+        }
+
         $requestToUpdate->status = 'approved';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
@@ -134,6 +140,12 @@ class RequestController extends Controller
         $requestId = $request->request_id;
 
         $requestToUpdate = Request::findOrFail($requestId);
+
+        // if already approved or rejected, return
+        if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+            return response()->json(['status' => $requestToUpdate->status]);
+        }
+
         $requestToUpdate->status = 'rejected';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
@@ -216,6 +228,10 @@ class RequestController extends Controller
         $requestId = $request->request_id;
 
         $requestToUpdate = Request::findOrFail($requestId);
+        // if already approved or rejected, return
+        if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+            return response()->json(['status' => $requestToUpdate->status]);
+        }
         $requestToUpdate->status = 'approved';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
@@ -246,6 +262,10 @@ class RequestController extends Controller
         $requestId = $request->request_id;
 
         $requestToUpdate = Request::findOrFail($requestId);
+        // if already approved or rejected, return
+        if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+            return response()->json(['status' => $requestToUpdate->status]);
+        }
         $requestToUpdate->status = 'rejected';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
@@ -349,6 +369,10 @@ class RequestController extends Controller
         $requestId = $request->request_id;
 
         $requestToUpdate = Request::findOrFail($requestId);
+        // if already approved or rejected, return
+        if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+            return response()->json(['status' => $requestToUpdate->status]);
+        }
         $requestToUpdate->status = 'approved';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
@@ -394,6 +418,10 @@ class RequestController extends Controller
         $requestId = $request->request_id;
 
         $requestToUpdate = Request::findOrFail($requestId);
+        // if already approved or rejected, return
+        if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+            return response()->json(['status' => $requestToUpdate->status]);
+        }
         $requestToUpdate->status = 'rejected';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
@@ -471,7 +499,7 @@ class RequestController extends Controller
 
         // update the status and change the data
         $details = $requestToUpdate->details;
-//        $user = User::findOrFail($details['user_id']);
+        //        $user = User::findOrFail($details['user_id']);
 
 
         $employmentPost = EmploymentPost::where('user_id', $details['user_id'])->first();
