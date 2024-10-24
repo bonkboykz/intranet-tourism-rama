@@ -202,6 +202,8 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
+import { toast } from "react-toastify";
+import { CircleXIcon } from "lucide-react";
 
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
@@ -396,6 +398,22 @@ function Card({
     const isDefaultImage = imageSrc === imgSrc;
 
     const handleSubmit = async () => {
+        if (!departmentName.trim()) {
+            toast.error("You did not fill in the name", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
+            return;
+        }
+
+        if (!selectedType.trim()) {
+            toast.error("You did not select a type", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
+            return;
+        }
+
         const formData = new FormData();
         formData.append("name", departmentName);
 
@@ -428,12 +446,19 @@ function Card({
                 throw new Error("Failed to create department");
             }
 
-            const responseData = text ? JSON.parse(text) : {};
-            console.log("Department created:", responseData.data);
-            onCreate(responseData.data);
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to create community");
+            }
+
+            onCreate();
             window.location.reload();
         } catch (error) {
             console.error("Error creating department:", error.message);
+
+            toast.error("Failed to create community", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
         }
     };
 
@@ -457,6 +482,7 @@ function Card({
                     cropDisabled={isDefaultImage}
                 />
                 <input
+                    required
                     type="text"
                     placeholder="Department name"
                     value={departmentName}

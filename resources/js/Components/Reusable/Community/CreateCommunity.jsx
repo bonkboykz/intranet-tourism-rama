@@ -171,12 +171,28 @@ function Card({
     const isSuperAdmin = hasRole("superadmin");
 
     const handleSubmit = async () => {
+        if (!communityName.trim()) {
+            toast.error("You did not fill in the name", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
+            return;
+        }
+
         const data = {
             name: communityName,
             type: selectedType,
             created_by: user.name,
             updated_by: user.name,
         };
+
+        if (!selectedType.trim()) {
+            toast.error("You did not select a type", {
+                icon: <CircleXIcon className="w-6 h-6 text-white" />,
+                theme: "colored",
+            });
+            return;
+        }
 
         if (imageBase64) {
             data.banner = imageBase64;
