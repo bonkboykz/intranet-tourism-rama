@@ -94,10 +94,12 @@ const Settings = () => {
 
     useEffect(() => {
         const savedPage = localStorage.getItem("currentSettingsPage");
-        if (savedPage) {
+        if (savedPage && isSuperAdmin) {
             setCurrentPage(savedPage);
+        } else {
+            setCurrentPage("Themes");
         }
-    }, []);
+    }, [isSuperAdmin]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
