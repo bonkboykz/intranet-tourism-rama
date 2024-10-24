@@ -283,13 +283,13 @@ function ShareYourThoughts({
             if (searchTerm) {
                 try {
                     const response = await fetch(
-                        `/api/crud/users?search=${searchTerm}&with[]=profile`
+                        `/api/crud/users?search=${searchTerm}&with[]=profile&disabledPagination`
                     );
                     if (response.ok) {
                         const data = await response.json();
 
                         // Сортировка данных по имени
-                        const sortedResults = data.data.data.sort((a, b) => {
+                        const sortedResults = data.data.sort((a, b) => {
                             return a.name
                                 .toLowerCase()
                                 .localeCompare(b.name.toLowerCase());
