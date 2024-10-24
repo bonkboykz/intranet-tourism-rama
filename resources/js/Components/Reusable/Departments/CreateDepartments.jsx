@@ -406,14 +406,6 @@ function Card({
             return;
         }
 
-        if (!selectedType.trim()) {
-            toast.error("You did not select a type", {
-                icon: <CircleXIcon className="w-6 h-6 text-white" />,
-                theme: "colored",
-            });
-            return;
-        }
-
         const formData = new FormData();
         formData.append("name", departmentName);
 

@@ -107,6 +107,8 @@ export function AuditTrailTable({
                                 <td className="px-2 py-4 text-sm border border-gray-300 whitespace-nowrap text-neutral-900">
                                     {item.user?.name} {item.event}{" "}
                                     {item.auditable_type}
+                                    {item.auditable_type === "posts" &&
+                                        ` - postId: ${item.auditable_id}`}
                                 </td>
                             </tr>
                         ))}
