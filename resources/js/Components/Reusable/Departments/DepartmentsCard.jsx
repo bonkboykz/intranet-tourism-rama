@@ -17,7 +17,7 @@ const DepartmentsCard = ({
     const threeDotButtonRef = useRef(null);
 
     if (!isMember) {
-        return;
+        return null;
     }
 
     return (
