@@ -21,10 +21,7 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
     });
 
     const renderImages = () => {
-        const sortedImages = [...posts].sort(
-            (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
-        return sortedImages.map((post) =>
+        return posts.map((post) =>
             post.attachments
                 .filter((attachment) => {
                     return attachment.mime_type.startsWith("image/");
@@ -92,7 +89,6 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
 
     const videos = posts
         .filter((post) => post.attachments)
-        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
         .map((post) => post.attachments)
         .flat()
         .filter((attachment) => {
