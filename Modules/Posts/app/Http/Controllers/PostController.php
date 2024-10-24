@@ -515,6 +515,9 @@ class PostController extends Controller
             $community_id = $post->community->id ?? null;
             $department_id = $post->department->id ?? null;
 
+            // delete attachments
+            $post->attachments()->delete();
+
             $post->delete();
             DB::commit();
 
