@@ -25,7 +25,7 @@ export function useMentions({ inputValue, cursorPosition }) {
                     const data = await response.json();
 
                     // Сортировка данных по имени
-                    const sortedResults = data.data.data.sort((a, b) => {
+                    const sortedResults = data.data.sort((a, b) => {
                         return a.name
                             .toLowerCase()
                             .localeCompare(b.name.toLowerCase());
