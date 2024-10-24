@@ -67,6 +67,7 @@ function CommunitySide() {
                 })
                 .map((community) => {
                     return {
+                        ...community,
                         id: community.id,
                         name: community.name,
                         category: community.type,
@@ -121,7 +122,7 @@ function CommunitySide() {
                                 category={community.category}
                                 imgSrc={community.imgSrc}
                                 altText={community.altText}
-                                memberCount={community.memberCount}
+                                memberCount={community.members_count ?? 0}
                                 isMember={community.is_member}
                             />
                         ))
