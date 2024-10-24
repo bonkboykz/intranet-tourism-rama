@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext,useEffect, useState } from "react";
 import { memo } from "react";
-import { useContext } from "react";
 import { FaLock } from "react-icons/fa";
 import axios from "axios";
 
@@ -14,9 +13,10 @@ const CommunityItem = ({
     imgSrc,
     altText,
     memberCount,
+    isMember,
 }) => (
     <a href={`/communityInner?communityId=${id}`}>
-        <article className="flex items-start w-full gap-3 py-1 ">
+        <article className="flex items-start w-full gap-3 py-1">
             <div className="flex flex-col items-center mt-2 text-xs font-semibold uppercase">
                 <img
                     src={imgSrc}
@@ -30,7 +30,7 @@ const CommunityItem = ({
                         {name}
                     </h2>
                     {category === "private" && (
-                        <FaLock className="w-3 h-3 ml-2 text-gray-600 fill-black" /> // Lock icon for private communities
+                        <FaLock className="w-3 h-3 ml-2 text-gray-600 fill-black" />
                     )}
                 </div>
                 <p className="text-xs font-semibold text-neutral-600">
@@ -47,8 +47,6 @@ function CommunitySide() {
     const { hasRole } = usePermissions();
     const isSuperAdmin = hasRole("superadmin");
 
-    const { isMember } = useContext(CommunityContext);
-
     const fetchCommunities = async () => {
         setIsLoading(true);
         try {
@@ -64,8 +62,8 @@ function CommunitySide() {
                 .filter((community) => {
                     if (
                         community.type === "private" &&
-                        !community.isMember &&
-                        !isSuperAdmin
+                        !isSuperAdmin &&
+                        !community.isMember
                     ) {
                         return false;
                     }
@@ -128,6 +126,7 @@ function CommunitySide() {
                                 imgSrc={community.imgSrc}
                                 altText={community.altText}
                                 memberCount={community.memberCount}
+                                isMember={community.is_member}
                             />
                         ))
                     )}
