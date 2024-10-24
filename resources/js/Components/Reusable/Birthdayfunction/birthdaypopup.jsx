@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import axios from "axios";
 
 import { useCsrf } from "@/composables";
+import { toastError } from "@/Utils/toast";
 
 import { People } from "../WallPosting/InputPeople";
 
@@ -105,7 +106,7 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
         // Append the selected background image as an attachment if it's a supported format
         fetch(backgroundImage)
             .then((res) => res.blob())
-            .then((blob) => {
+            .then(async (blob) => {
                 const allowedFormats = [
                     "image/jpeg",
                     "image/png",
@@ -131,28 +132,28 @@ const BirthdayCom = ({ profileImage, name, loggedInUser, selectedID }) => {
                     formData.append(`attachments[${index}]`, file);
                 });
 
-                // Make the API call
-                fetch("/api/posts/posts", {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        Accept: "application/json",
-                        "X-CSRF-Token": csrfToken,
-                    },
-                })
-                    .then((response) => {
-                        if (!response.ok)
-                            throw new Error("Network response was not ok");
-                    })
-                    .then(() => {
-                        // Reset state
-                        setInputValue("");
-                        setAttachments([]);
-                        window.location.reload();
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                    });
+                try {
+                    // Make the API call
+                    const response = await axios.post(
+                        "/api/posts/posts",
+                        formData
+                    );
+
+                    if (![200, 201, 204].includes(response.status)) {
+                        throw new Error(
+                            "An error occurred while posting. Please try again."
+                        );
+                    }
+
+                    // Reset state
+                    setInputValue("");
+                    setAttachments([]);
+                    window.location.reload();
+                } catch (error) {
+                    toastError(
+                        "An error occurred while posting. Please try again."
+                    );
+                }
             });
     };
 
