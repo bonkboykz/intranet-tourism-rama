@@ -136,7 +136,7 @@ export function GlobalSearch() {
                                     name={community.name}
                                     type={community.type}
                                     banner={community.banner}
-                                    membersCount={community.members_count}
+                                    membersCount={community.members_count ?? 0}
                                 />
                             );
                         })}
