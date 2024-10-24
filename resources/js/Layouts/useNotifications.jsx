@@ -36,6 +36,12 @@ export function useSetupNotifications() {
                 // console.log(response.data.data);
 
                 setNotifications(response.data.data);
+
+                const hasUnreadNotfications = response.data.data.some(
+                    (notification) => !notification.read_at
+                );
+
+                setHasNewNotifications(hasUnreadNotfications);
             }
         } catch (e) {
             console.error(e);

@@ -47,7 +47,7 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
             <ul>
                 {filteredNotifications.map((notification) => (
                     <div
-                        className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl"
+                        className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl relative"
                         key={notification.id}
                         onMouseOver={() => markAsRead(notification.id)}
                     >
@@ -179,7 +179,7 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                                 {formatTimeAgo(notification.created_at)}
                             </div>
                         </div>
-                        <div>
+                        <div className="absolute right-[6px]">
                             {!notification.read_at &&
                                 !readMap[notification.id] && (
                                     <img
