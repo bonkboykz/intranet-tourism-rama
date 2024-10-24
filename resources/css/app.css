@@ -209,6 +209,7 @@ pre {
 
 /* Default Theme (Theme 1) */
 :root {
+    background-color: rgb(241 245 249);
     --primary-color: #4880ff;
     --secondary-color: #ff5437;
 }
