@@ -1,8 +1,7 @@
-import { isSameDay } from "date-fns";
-
 import { useSettings } from "@/Layouts/useSettings";
 import { cn } from "@/Utils/cn";
 import useUserData from "@/Utils/hooks/useUserData";
+import { isBirthdayDay } from "@/Utils/isBirthday";
 
 const backgroundImage = "/assets/Birthday-Template-1.png";
 
@@ -11,7 +10,7 @@ export function SystemBirthdayCard() {
 
     const user = useUserData();
 
-    if (!isSameDay(new Date(), new Date(user?.profile?.dob))) {
+    if (!isBirthdayDay(new Date(), new Date(user?.profile?.dob))) {
         return null;
     }
 
