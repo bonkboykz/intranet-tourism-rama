@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+// CreateCommunity.jsx
+import React, { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -13,8 +14,9 @@ import { toastError } from "@/Utils/toast";
 
 import getCroppedImg from "./cropImgCommunity";
 
-import "./css/CreateCommunity.css"; // Import the CSS file where you added the scrollbar styles
+import "./css/CreateCommunity.css"; // Ensure this CSS file includes styles for the scrollbar and other elements
 
+// Header Component
 function Header({ title }) {
     return (
         <header className="flex gap-5 items-start self-center px-5 w-full text-2xl font-bold text-center max-w-[358px] text-neutral-800">
@@ -23,6 +25,7 @@ function Header({ title }) {
     );
 }
 
+// Banner Component with "Save Crop" Button
 function Banner({
     src,
     alt,
@@ -34,6 +37,7 @@ function Banner({
     zoom,
     setZoom,
     onCropComplete,
+    onSaveCrop, // New prop for handling save crop
     cropDisabled = true,
 }) {
     const handleClick = () => {
@@ -49,16 +53,25 @@ function Banner({
                 onClick={handleClick}
             >
                 {src && cropMode ? (
-                    <Cropper
-                        image={src}
-                        crop={crop}
-                        zoom={zoom}
-                        aspect={3 / 1}
-                        onCropChange={setCrop}
-                        onCropComplete={onCropComplete}
-                        onZoomChange={setZoom}
-                        className="rounded-xl"
-                    />
+                    <>
+                        <Cropper
+                            image={src}
+                            crop={crop}
+                            zoom={zoom}
+                            aspect={3 / 1}
+                            onCropChange={setCrop}
+                            onCropComplete={onCropComplete}
+                            onZoomChange={setZoom}
+                            className="rounded-xl"
+                        />
+                        {/* Save Crop Button */}
+                        <button
+                            className="absolute bottom-2 right-2 px-3 py-1 bg-blue-500 text-white rounded"
+                            onClick={onSaveCrop}
+                        >
+                            Save Crop
+                        </button>
+                    </>
                 ) : (
                     <img
                         loading="lazy"
@@ -73,7 +86,11 @@ function Banner({
                     type="file"
                     accept="image/*"
                     id="avatarInput"
-                    onChange={(e) => onImageChange(e.target.files[0])}
+                    onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                            onImageChange(e.target.files[0]);
+                        }
+                    }}
                     className="hidden"
                 />
             )}
@@ -81,7 +98,7 @@ function Banner({
                 <button
                     disabled={cropDisabled}
                     className={cn(
-                        "mt-4 px-4 py-2 font-bold text-white bg-primary rounded-full ",
+                        "mt-4 px-4 py-2 font-bold text-white bg-primary rounded-full",
                         !cropDisabled && "hover:bg-primary-hover"
                     )}
                     onClick={() => setCropMode(true)}
@@ -93,13 +110,14 @@ function Banner({
     );
 }
 
+// UserInfo Component
 function UserInfo({ name, role, src }) {
     return (
         <div className="flex gap-4 items-center justify-start w-full mt-2 text-neutral-800">
             <img
                 loading="lazy"
                 src={src}
-                alt=""
+                alt={`${name}'s profile`}
                 className="shrink-0 aspect-square w-[42px] h-[42px] rounded-full object-cover object-center"
             />
             <div className="flex flex-col grow shrink-0 self-start mt-1.5 basis-0 w-fit">
@@ -110,6 +128,7 @@ function UserInfo({ name, role, src }) {
     );
 }
 
+// Card Component with Cropping Functionality
 function Card({
     title,
     imgSrc,
@@ -131,51 +150,61 @@ function Card({
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(null);
-    const [cropMode, setCropMode] = useState(false);
+    const [cropMode, setCropMode] = useState(false); // Define cropMode and setCropMode
     const csrfToken = useCsrf();
 
-    const onCropComplete = useCallback((_, croppedAreaPixels) => {
+    // Callback when cropping is complete
+    const onCropCompleteCallback = useCallback((_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
+    // Handle image selection
     const handleImageChange = (file) => {
+        if (!file) return;
         const reader = new FileReader();
         reader.onload = async () => {
             setImageSrc(reader.result);
             setOriginalImageSrc(reader.result);
-            setOriginalImageBase64(await blobToBase64(file));
-            const base64 = await blobToBase64(file);
-            setImageBase64(base64); // Reset the base64 string when a new image is selected
-            setCroppedImage(""); // Reset the cropped image when a new image is selected
+            const base64Original = await blobToBase64(file);
+            setOriginalImageBase64(base64Original);
+            setImageBase64(""); // Reset the base64 string when a new image is selected
         };
         reader.readAsDataURL(file);
     };
 
+    // Function to handle saving the cropped image
     const showCroppedImage = useCallback(async () => {
         try {
+            console.log("Starting image cropping...");
             const croppedBlob = await getCroppedImg(
                 imageSrc,
                 croppedAreaPixels
             );
             const croppedImageUrl = URL.createObjectURL(croppedBlob);
-            setCroppedImage(croppedImageUrl);
+            console.log("Cropped image created:", croppedImageUrl);
+            setImageSrc(croppedImageUrl); // Update imageSrc to the cropped image
             const base64 = await blobToBase64(croppedBlob);
             setImageBase64(base64);
+            setCropMode(false); // Exit crop mode
         } catch (e) {
-            console.error(e);
+            console.error("Error cropping image:", e);
+            toastError("Failed to crop image");
         }
     }, [imageSrc, croppedAreaPixels]);
 
+    // Check user permissions
     const { hasRole } = usePermissions();
     const isSuperAdmin = hasRole("superadmin");
 
+    // Handle form submission
     const handleSubmit = async () => {
+        // Validate required fields
         if (!communityName.trim()) {
-            toast.error("You did not fill in the name", {
-                icon: <CircleXIcon className="w-6 h-6 text-white" />,
-                theme: "colored",
-            });
+            toast.error("Community name is required.");
+            return;
+        }
+        if (!selectedType) {
+            toast.error("Please select a community type.");
             return;
         }
 
@@ -186,14 +215,6 @@ function Card({
             updated_by: user.name,
         };
 
-        if (!selectedType.trim()) {
-            toast.error("You did not select a type", {
-                icon: <CircleXIcon className="w-6 h-6 text-white" />,
-                theme: "colored",
-            });
-            return;
-        }
-
         if (imageBase64) {
             data.banner = imageBase64;
             data.banner_original = originalImageBase64;
@@ -202,20 +223,20 @@ function Card({
             data.description = communityDescription;
         }
 
-        // console.log(data.banner.length);
-
         try {
-            // console.log("Creating community:", data);
-
             if (!isSuperAdmin) {
                 const response = await axios.post(
                     `/api/createCommunityCreateRequest`,
-                    data
+                    data,
+                    {
+                        headers: {
+                            "X-CSRF-Token": csrfToken,
+                        },
+                    }
                 );
 
                 if ([200, 201, 204].includes(response.status)) {
                     toast.success("Community create request sent");
-
                     onCreate();
                 }
 
@@ -224,23 +245,23 @@ function Card({
 
             const response = await axios.post(
                 "/api/communities/communities",
-                data
+                data,
+                {
+                    headers: {
+                        "X-CSRF-Token": csrfToken,
+                    },
+                }
             );
-            // const text = await response.text();
-            // const responseData = response.data;
 
             if (![200, 201, 204].includes(response.status)) {
-                // console.error("Server response not OK:", text);
                 throw new Error("Failed to create community");
             }
 
-            // const responseData = text ? JSON.parse(text) : {};
-            // console.log("Community created:", responseData.data);
+            toast.success("Community created successfully!");
             onCreate();
-            // window.location.reload();
+            // Optionally, you can redirect or reset the form here
         } catch (error) {
             console.error("Error creating community:", error.message);
-
             toast.error("Failed to create community", {
                 icon: <CircleXIcon className="w-6 h-6 text-white" />,
                 theme: "colored",
@@ -248,6 +269,7 @@ function Card({
         }
     };
 
+    // Utility function to convert blob to base64
     const blobToBase64 = (blob) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -268,12 +290,13 @@ function Card({
                     alt={imgAlt}
                     onImageChange={handleImageChange}
                     cropMode={cropMode}
-                    setCropMode={setCropMode}
+                    setCropMode={setCropMode} // Pass setCropMode
                     crop={crop}
                     setCrop={setCrop}
                     zoom={zoom}
                     setZoom={setZoom}
-                    onCropComplete={onCropComplete}
+                    onCropComplete={onCropCompleteCallback}
+                    onSaveCrop={showCroppedImage} // Pass the save crop handler
                     cropDisabled={isDefaultImage}
                 />
                 <input
@@ -281,14 +304,14 @@ function Card({
                     placeholder="Community name"
                     value={communityName}
                     onChange={(e) => setCommunityName(e.target.value)}
-                    className="self-stretch mt-7 text-2xl font-extrabold text-neutral-800 border border-solid border-neutral-300 rounded-md"
+                    className="self-stretch mt-7 text-2xl font-extrabold text-neutral-800 border border-solid border-neutral-300 rounded-md p-2"
                 />
-                <input
-                    type="text"
-                    placeholder={description}
+                <textarea
+                    placeholder="Description"
                     value={communityDescription}
                     onChange={(e) => setCommunityDescription(e.target.value)}
-                    className="justify-center items-start px-3.5 py-7 mt-4 max-w-full text-base font-semibold whitespace-nowrap text-neutral-800 w-full rounded-md border border-solid border-neutral-300"
+                    className="justify-center items-start px-3.5 py-3 mt-4 max-w-full text-base font-semibold text-neutral-800 w-full rounded-md border border-solid border-neutral-300"
+                    rows={4}
                 />
                 <UserInfo
                     name={user.name}
@@ -298,7 +321,7 @@ function Card({
                 <select
                     value={selectedType}
                     onChange={(e) => setSelectedType(e.target.value)}
-                    className="mt-4 w-full text-base font-semibold text-neutral-800 border border-solid border-neutral-300 rounded-md"
+                    className="mt-4 w-full text-base font-semibold text-neutral-800 border border-solid border-neutral-300 rounded-md p-2"
                 >
                     <option value="">Select Type</option>
                     <option value="private">Private</option>
@@ -323,11 +346,12 @@ function Card({
     );
 }
 
+// Main CreateCommunity Component
 export default function CreateCommunity({ id, onCancel, onCreate }) {
     const user = useUserData();
 
     return (
-        <div className="scrollable-container">
+        <div className="scrollable-container overflow-auto p-4">
             <Card
                 title="Create New Community"
                 imgSrc="/assets/uploadAnImage.svg"
@@ -337,8 +361,7 @@ export default function CreateCommunity({ id, onCancel, onCreate }) {
                     role: "Admin",
                     profileImage: getProfileImage(user.profile, user.name),
                 }}
-                type="Type"
-                description="Description"
+                description="Describe your community here..."
                 cancelText="Cancel"
                 createText="Create"
                 onCancel={onCancel}
