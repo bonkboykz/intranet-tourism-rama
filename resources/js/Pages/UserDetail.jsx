@@ -425,7 +425,7 @@ function UserDetailContent() {
 
     return (
         <WallContext.Provider
-            value={{ loggedInUserId: user.id, variant: "user-wall" }}
+            value={{ loggedInUserId: loggedInUser.id, variant: "user-wall" }}
         >
             <Example>
                 <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
