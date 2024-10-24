@@ -1,4 +1,4 @@
-import React, { useContext,useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { memo } from "react";
 import { FaLock } from "react-icons/fa";
 import axios from "axios";
@@ -60,11 +60,7 @@ function CommunitySide() {
 
             const communityData = data.data
                 .filter((community) => {
-                    if (
-                        community.type === "private" &&
-                        !isSuperAdmin &&
-                        !community.isMember
-                    ) {
+                    if (community.type === "private" && !isSuperAdmin) {
                         return false;
                     }
                     return true;
