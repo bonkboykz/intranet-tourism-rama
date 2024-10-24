@@ -359,10 +359,7 @@ function ShareYourThoughts({
             }
 
             if (!areAllUnderLimit) {
-                toastError(`File size should be less than ${baseMaxSize}MB`, {
-                    icon: <CircleXIcon className="w-6 h-6 text-white" />,
-                    theme: "colored",
-                });
+                toastError(`File size should be less than ${baseMaxSize}MB`);
 
                 return;
             }
