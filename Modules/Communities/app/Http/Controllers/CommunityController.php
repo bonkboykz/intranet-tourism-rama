@@ -86,7 +86,7 @@ class CommunityController extends Controller
             return $item;
         });
 
-        // attach count of members
+        // attach count of members to 'members_count'
         $data->map(function ($item) {
             $item['members_count'] = $item->members()->count();
             return $item;
@@ -465,6 +465,12 @@ class CommunityController extends Controller
         $query->where('is_archived', false)->orderBy('created_at', 'desc')->limit(5);
 
         $communities = $query->get();
+
+        // attach count of members to 'members_count'
+        $communities->map(function ($item) {
+            $item['members_count'] = $item->members()->count();
+            return $item;
+        });
 
 
         return response()->json([
