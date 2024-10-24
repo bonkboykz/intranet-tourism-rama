@@ -1144,6 +1144,10 @@ class PostController extends Controller
 
         // $output->writeln($fullSql);
 
+        // not birthday, or story
+        $query->where('type', '!=', 'birthday')
+            ->where('type', '!=', 'story');
+
         $query->orderBy('created_at', 'desc');
 
         $posts = $query->paginate(20);
