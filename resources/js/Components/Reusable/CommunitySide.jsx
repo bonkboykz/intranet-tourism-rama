@@ -122,7 +122,7 @@ function CommunitySide() {
                                 category={community.category}
                                 imgSrc={community.imgSrc}
                                 altText={community.altText}
-                                memberCount={community.members_count}
+                                memberCount={community.members_count ?? 0}
                                 isMember={community.is_member}
                             />
                         ))
