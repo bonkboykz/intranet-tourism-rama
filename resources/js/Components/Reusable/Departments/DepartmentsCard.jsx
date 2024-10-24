@@ -16,6 +16,10 @@ const DepartmentsCard = ({
 }) => {
     const threeDotButtonRef = useRef(null);
 
+    if (!isMember) {
+        return null;
+    }
+
     return (
         <div className="staff-member-card">
             <div className="card-header">
