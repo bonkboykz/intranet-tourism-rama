@@ -239,6 +239,10 @@ class PostController extends Controller
             request()->merge(['visibility' => 'public']);
         }
 
+        if (!request()->has('content') || request('content') === null) {
+            request()->merge(['content' => '']);
+        }
+
         // pass albums as an array of ids
         $validated = request()->validate(...Post::rules());
 
