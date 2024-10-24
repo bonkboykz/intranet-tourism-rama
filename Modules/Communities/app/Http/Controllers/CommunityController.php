@@ -314,7 +314,7 @@ class CommunityController extends Controller
             $currentUser = User::where('id', $user->id)->firstOrFail();
 
             $superusers->get()->each(function ($superuser) use ($currentUser, $community) {
-                if($superuser->id !== $currentUser->id) {
+                if ($superuser->id !== $currentUser->id) {
                     $superuser->notify(new AssigningAdminCommunityNotification($currentUser, $community->id, true));
                 }
             });
@@ -370,7 +370,7 @@ class CommunityController extends Controller
             $currentUser = User::where('id', $user->id)->firstOrFail();
 
             $superusers->get()->each(function ($superuser) use ($currentUser, $community) {
-                if($superuser->id !== $currentUser->id) {
+                if ($superuser->id !== $currentUser->id) {
                     $superuser->notify(new RevokingAdminCommunityNotification($currentUser, $community->id, true));
                 }
             });
@@ -436,7 +436,29 @@ class CommunityController extends Controller
 
     public function getLatestCommunities()
     {
-        $communities = Community::query()->where('is_archived', false)->orderBy('created_at', 'desc')->limit(5)->get();
+        $query = Community::query();
+
+        $user = User::findOrFail(auth()->id());
+
+        if (!$user->hasRole('superadmin')) {
+            $query->where(column: function ($query) {
+                // if community is private then limit to communities user is a member of
+                $query->where(function ($query) {
+                    $query->where('type', 'public') // Public community
+                        ->orWhereHas('members', function ($query) {
+                            $query->where('user_id', Auth::id()); // Private community, user is a member
+                        })
+                        ->orWhereHas('admins', function ($query) {
+                            $query->where('user_id', Auth::id()); // Private community, user is an admin
+                        });
+                });
+            });
+        }
+
+        $query->where('is_archived', false)->orderBy('created_at', 'desc')->limit(5);
+
+        $communities = $query->get();
+
 
         return response()->json([
             'data' => $communities
