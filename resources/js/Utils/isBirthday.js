@@ -1,7 +1,11 @@
 import { getDate, getMonth } from "date-fns";
 
-export const isBirthdayDay = (date, today) => {
-    return (
-        getMonth(today) === getMonth(date) && getDate(today) === getDate(date)
-    );
+export const isBirthdayDay = (dob, comparisonDate) => {
+    const dobMonth = getMonth(dob);
+    const dobDay = getDate(dob);
+
+    const comparisonMonth = getMonth(comparisonDate);
+    const comparisonDay = getDate(comparisonDate);
+
+    return dobMonth === comparisonMonth && dobDay === comparisonDay;
 };
