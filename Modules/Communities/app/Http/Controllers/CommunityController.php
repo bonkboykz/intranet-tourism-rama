@@ -7,7 +7,7 @@ use App\Models\Request as AppRequest;
 use App\Notifications\AssigningAdminCommunityNotification;
 use App\Notifications\CommunityNotification;
 use App\Notifications\DeletingCommunityNotification;
-use App\Notifications\LeavingFromCommunityNotification;
+use App\Notifications\LeavingCommunityNotification;
 use App\Notifications\RevokingAdminCommunityNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -246,7 +246,14 @@ class CommunityController extends Controller
 
             $superusers->get()->each(function ($superuser) use ($user, $community) {
                 // notify all superadmins
-                $superuser->notify(new LeavingFromCommunityNotification($community->id, $user));
+                $superuser->notify(new LeavingCommunityNotification($community->id, $user));
+            });
+
+            $admins = $community->admins;
+
+            $admins->each(function ($admin) use ($user, $community) {
+                // notify all admins
+                $admin->notify(new LeavingCommunityNotification($community->id, $user));
             });
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();

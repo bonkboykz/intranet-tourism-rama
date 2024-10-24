@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\User\Models\User;
 
-class LeavingFromCommunityNotification extends Notification implements ShouldQueue
+class LeavingCommunityNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -43,17 +43,19 @@ class LeavingFromCommunityNotification extends Notification implements ShouldQue
         return ['database', 'broadcast'];
     }
 
-    public function toDatabase(object $notifiable): array {
+    public function toDatabase(object $notifiable): array
+    {
         return [
-            'message' => $this->user->name . ' has leaved the community',
+            'message' => $this->user->name . ' has left the community',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ];
     }
 
-    public function toBroadcast(object $notifiable): BroadcastMessage {
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
         return new BroadcastMessage([
-            'message' => $this->user->name . ' has leaved the community',
+            'message' => $this->user->name . ' has left the community',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ]);

@@ -5,6 +5,7 @@ namespace Modules\Department\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Notifications\AddingToDepartmentNotification;
 use App\Notifications\DeletingFromDepartmentNotification;
+use App\Notifications\LeavingDepartmentNotification;
 use Illuminate\Support\Facades\Auth;
 use Modules\Department\Helpers\DepartmentPermissionsHelper;
 use Modules\Department\Models\Department;
@@ -122,6 +123,22 @@ class EmploymentPostController extends Controller
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
             $user->notify(new DeletingFromDepartmentNotification($currentUser, $department->id));
+
+            $superusers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'superadmin');
+            });
+
+            $superusers->get()->each(function ($superuser) use ($user, $department) {
+                // notify all superadmins
+                $superuser->notify(new LeavingDepartmentNotification($department->id, $user));
+            });
+
+            $admins = $department->admins;
+
+            $admins->each(function ($admin) use ($user, $department) {
+                // notify all admins
+                $admin->notify(new LeavingDepartmentNotification($department->id, $user));
+            });
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();
             $output->writeln($tr->getMessage());

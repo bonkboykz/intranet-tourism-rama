@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { usePage } from "@inertiajs/react";
+import axios from "axios";
 import { add, set } from "date-fns";
 
 import { FileTable } from "@/Components/FileManagement";
@@ -242,25 +243,14 @@ function Navigation({ departmentName, type }) {
 
     const addPublicMember = async () => {
         const url = `api/communities/communities/${communityID}/add-member`;
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-        };
 
         const body = {
             user_id: String(id),
         };
 
         try {
-            const response = await fetch(url, {
-                ...options,
-                body: JSON.stringify(body),
-            });
-            if (response.ok) {
+            const response = await axios.post(url, body);
+            if (![200, 201, 204].includes(response.status)) {
                 console.log("Member added successfully");
                 setHasJoined(true);
 
@@ -276,25 +266,14 @@ function Navigation({ departmentName, type }) {
 
     const removePublicMember = async () => {
         const url = `api/communities/communities/${communityID}/delete-member`;
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-        };
 
         const body = {
             user_id: String(id),
         };
 
         try {
-            const response = await fetch(url, {
-                ...options,
-                body: JSON.stringify(body),
-            });
-            if (response.ok) {
+            const response = await axios.post(url, body);
+            if (![200, 201, 204].includes(response.status)) {
                 console.log("Member removed successfully");
                 // TODO: refactor this hack
                 window.location.reload();
@@ -365,17 +344,9 @@ function Navigation({ departmentName, type }) {
     const handleAddMembersToCommunity = async () => {
         try {
             for (const user of selectedUsers) {
-                await fetch(
+                await axios.post(
                     `api/communities/communities/${communityID}/add-member`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
-                            "X-CSRF-Token": csrfToken,
-                        },
-                        body: JSON.stringify({ user_id: String(user.id) }),
-                    }
+                    { user_id: String(user.id) }
                 );
             }
             console.log("All selected members added successfully");
