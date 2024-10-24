@@ -41,7 +41,25 @@ const PopupContent = ({
             }
         };
 
+        // if (showModal) {
+        //     document.documentElement.style.overflow = 'auto';
+        //     document.documentElement.removeAttribute('inert');
+
+        // }
+
+        // const observer = new MutationObserver(() => {
+        //     if (document.documentElement.style.overflow === 'hidden') {
+        //         document.documentElement.style.overflow = 'auto';
+        //     }
+        // });
+
+        // observer.observe(document.documentElement, {
+        //     attributes: true,
+        //     attributeFilter: ['style']
+        // });
+
         document.addEventListener("mousedown", handleClickOutside);
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -131,7 +149,11 @@ const PopupContent = ({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <MenuItems className="absolute right-6 z-10 left-4 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems
+                        portal
+                        anchor={{ to: "bottom" }}
+                        className=" z-[1000] left-4 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    >
                         <div className="py-1">
                             {canEdit && (
                                 <MenuItem>
