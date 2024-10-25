@@ -13,6 +13,7 @@ import { formatTimeAgo } from "@/Utils/format";
 import { getProfileImage } from "@/Utils/getProfileImage";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
+import { IconButton } from "../Popup";
 import LikesPopup from "./LikesPopup";
 import MentionedName from "./MentionedName";
 import { usePolls } from "./PollPostCard/usePolls";
@@ -343,8 +344,9 @@ const Comment = ({
                                 Post
                             </span>
                         </div>
-                        <CancelIcon
-                            className="w-6 h-6 md:w-7 md:h-7"
+                        <IconButton
+                            icon="/assets/cancel.svg"
+                            alt="Close icon"
                             onClick={onClose}
                         />
                     </div>
