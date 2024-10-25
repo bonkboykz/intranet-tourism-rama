@@ -138,8 +138,10 @@ export function Event({ onClose, onSaveEvent, chosenEvent }) {
                 <div className="flex w-full justify-between items-center mb-6">
                     <div className="text-2xl font-bold w-full">Tag Event</div>
                     <div className="w-full flex justify-end">
-                        <CancelIcon
-                            className="self-end w-6 aspect-square cursor-pointer"
+                        <img
+                            src="/assets/cancel.svg"
+                            alt="Close icon"
+                            className="w-6 h-6 cursor-pointer"
                             onClick={onClose}
                         />
                     </div>
