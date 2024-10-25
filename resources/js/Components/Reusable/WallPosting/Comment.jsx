@@ -343,7 +343,10 @@ const Comment = ({
                                 Post
                             </span>
                         </div>
-                        <CancelIcon className="w-6 h-6" onClick={onClose} />
+                        <CancelIcon
+                            className="w-6 h-6 md:w-7 md:h-7"
+                            onClick={onClose}
+                        />
                     </div>
                 </div>
 

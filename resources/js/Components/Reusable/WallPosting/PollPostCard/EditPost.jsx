@@ -145,9 +145,9 @@ export function EditPollPost({
                                 <input
                                     type="text"
                                     value={option}
-                                    className="w-full p-2 border rounded-md"
+                                    className="w-full p-2 border rounded-md bg-gray-100"
                                     placeholder={`Option ${index + 1}`}
-                                    disabled={!canEditPoll}
+                                    disabled={true}
                                 />
                             </div>
                         ))}
@@ -161,7 +161,7 @@ export function EditPollPost({
                                     }
                                     className="w-full p-2 border rounded-md"
                                     placeholder={`Option ${options.length + index + 1}`}
-                                    disabled={!canEditPoll}
+                                    disabled={true}
                                 />
                             </div>
                         ))}
