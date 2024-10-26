@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 import { useCsrf } from "@/composables";
+import { toastError } from "@/Utils/toast";
 
 const AddTitles = () => {
     const [titles, setTitles] = useState([]);
@@ -125,6 +128,25 @@ const AddTitles = () => {
             });
     };
 
+    const deleteTitle = async (id) => {
+        try {
+            const response = await axios.delete(
+                `/api/department/business_posts/${id}`
+            );
+
+            if (![200, 204].includes(response.status)) {
+                throw new Error("Failed to delete title.");
+            }
+
+            setTitles((prevTitles) =>
+                prevTitles.filter((title) => title.id !== id)
+            );
+            toast.success("Title deleted successfully.");
+        } catch (e) {
+            toastError(e.message);
+        }
+    };
+
     return (
         <div className="container p-8 mx-auto">
             <div className="flex items-center justify-between mb-6">
@@ -204,17 +226,27 @@ const AddTitles = () => {
                                                 Save
                                             </button>
                                         ) : (
-                                            <button
-                                                onClick={() =>
-                                                    editTitle(
-                                                        title.id,
-                                                        title.title
-                                                    )
-                                                }
-                                                className="mr-4 text-primary hover:text-blue-700"
-                                            >
-                                                Edit
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() =>
+                                                        editTitle(
+                                                            title.id,
+                                                            title.title
+                                                        )
+                                                    }
+                                                    className="mr-4 text-primary hover:text-blue-700"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className="text-secondary"
+                                                    onClick={() =>
+                                                        deleteTitle(title.id)
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
+                                            </>
                                         )}
                                     </td>
                                 </tr>

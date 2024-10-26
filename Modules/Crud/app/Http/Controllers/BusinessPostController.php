@@ -3,7 +3,10 @@
 namespace Modules\Crud\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use DB;
 use Modules\Crud\Models\BusinessPost;
+use Modules\Department\Models\EmploymentPost;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class BusinessPostController extends Controller
 {

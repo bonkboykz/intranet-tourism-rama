@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 import { useCsrf } from "@/composables";
+import { toastError } from "@/Utils/toast";
 
 const AddUnits = () => {
     const [departments, setDepartments] = useState([]);
@@ -181,6 +184,23 @@ const AddUnits = () => {
             });
     };
 
+    const deleteUnit = async (id) => {
+        try {
+            const response = await axios.delete(
+                `/api/department/business_units/${id}`
+            );
+
+            if (![200, 204].includes(response.status)) {
+                throw new Error("Failed to delete unit.");
+            }
+
+            setUnits((prevUnits) => prevUnits.filter((unit) => unit.id !== id));
+            toast.success("Unit deleted successfully.");
+        } catch (e) {
+            toastError(e.message);
+        }
+    };
+
     return (
         <div className="container p-8 mx-auto">
             <div className="flex items-center justify-between mb-6">
@@ -296,17 +316,29 @@ const AddUnits = () => {
                                                         Save
                                                     </button>
                                                 ) : (
-                                                    <button
-                                                        onClick={() =>
-                                                            editUnit(
-                                                                unit.id,
-                                                                unit.name
-                                                            )
-                                                        }
-                                                        className="mr-4 text-primary hover:text-blue-700"
-                                                    >
-                                                        Edit
-                                                    </button>
+                                                    <>
+                                                        <button
+                                                            onClick={() =>
+                                                                editUnit(
+                                                                    unit.id,
+                                                                    unit.name
+                                                                )
+                                                            }
+                                                            className="mr-4 text-primary hover:text-blue-700"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            className="text-secondary"
+                                                            onClick={() =>
+                                                                deleteUnit(
+                                                                    unit.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </>
                                                 )}
                                             </td>
                                         </tr>
