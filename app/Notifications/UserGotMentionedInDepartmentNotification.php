@@ -26,14 +26,14 @@ class UserGotMentionedInDepartmentNotification extends Notification implements S
     {
         return [
             'message' => $this->user->name . 'mentioned you in department',
-            'department' => $this->department_id,
+            'department_id' => $this->department_id,
         ];
     }
 
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
             'message' => $this->user->name . 'mentioned you in department',
-            'department' => $this->department_id,
+            'department_id' => $this->department_id,
         ]);
     }
 }

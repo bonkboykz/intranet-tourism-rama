@@ -11,11 +11,11 @@ class UserGotMentionedInCommunityNotification extends Notification implements Sh
 {
     use Queueable;
     public $user;
-    public $community_id;
+    public $destination;
 
-    public function __construct($user, $community_id) {
+    public function __construct($user, $destination) {
         $this->user = $user;
-        $this->community_id = $community_id;
+        $this->destination = $destination;
     }
 
     public function via($notifiable) {
@@ -26,14 +26,12 @@ class UserGotMentionedInCommunityNotification extends Notification implements Sh
     {
         return [
             'message' => $this->user->name . 'mentioned you in community',
-            'community_id' => $this->community_id,
         ];
     }
 
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
             'message' => $this->user->name . 'mentioned you in community',
-            'community_id' => $this->community_id,
         ]);
     }
 
