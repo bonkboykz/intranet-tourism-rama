@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { formatTime } from "@/Utils/format.js";
 import { getProfileImage } from "@/Utils/getProfileImage.js";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading.jsx";
 
 const ProfileInformationRow = ({
     name,
@@ -127,7 +128,7 @@ const ProfileInformationRow = ({
                                 <a className="text-xl font-bold">
                                     Unit from{" "}
                                     <span className={"text-primary"}>
-                                        {oldUnit}
+                                        {oldUnit !== null ? oldUnit : "No Unit"}
                                     </span>{" "}
                                     to{" "}
                                     <span className={"text-red-500"}>
@@ -170,77 +171,45 @@ const ProfileInformationRow = ({
 };
 
 const ProfileInformationRequest = () => {
-    const [loading, setLoading] = useState(true);
-    const [requests, setRequests] = useState([]);
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get(
-                `api/getRequestForUpdateProfileDepartment`,
-                {
-                    params: {
-                        sort: [{ created_at: "desc" }],
-                    },
-                }
-            );
-
-            if ([200, 201, 204].includes(response.status)) {
-                const {
-                    data: { data },
-                } = response.data;
-
-                const formattedRequests = data
-                    .filter(
-                        (item) =>
-                            item.status !== "approved" &&
-                            item.status !== "rejected"
-                    )
-                    .map((request) => ({
-                        id: request.id,
-                        name: request.user.name,
-                        department: request.userDepartment,
-                        time: new Date(request.created_at),
-                        profileImage: getProfileImage(
-                            request.userProfile,
-                            request.user.name
-                        ),
-                        status: request.status,
-                        changeType: "Department Information",
-                        oldLocation: request.user.employment_post.location,
-                        newLocation: request.details.location,
-                        oldUnit: request.business_unit.name,
-                        newUnit: request.details.business_unit_name,
-                        oldOfficeNumber:
-                            request.user.employment_post.work_phone,
-                        newOfficeNumber: request.details.work_phone,
-                    }));
-
-                // Update the state with the formatted data
-                setRequests(formattedRequests);
-            }
-        } catch (error) {
-            // Log error to the console
-            console.error("Error fetching requests:", error);
+    const { data: requests, fetchData } = useLazyLoading(
+        "api/getRequestForUpdateProfileDepartment",
+        {
+            sort: [{ created_at: "desc" }],
         }
-        setLoading(false);
-    };
-
-    // Fetch data when the component mounts
-    useEffect(() => {
-        fetchData();
-    }, []);
-
+    );
+    const formattedRequests = requests
+        .filter(
+            (item) => item.status !== "approved" && item.status !== "rejected"
+        )
+        .map((request) => ({
+            id: request.id,
+            name: request.user.name,
+            department: request.userDepartment,
+            time: new Date(request.created_at),
+            profileImage: getProfileImage(
+                request.userProfile,
+                request.user.name
+            ),
+            status: request.status,
+            changeType: "Department Information",
+            oldLocation: request.user.employment_post.location,
+            newLocation: request.details.location,
+            oldUnit: request.business_unit?.name || "No Unit",
+            newUnit: request.details.business_unit_name,
+            oldOfficeNumber: request.user.employment_post.work_phone,
+            newOfficeNumber: request.details.work_phone,
+        }));
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px]">
             <h2 className="mb-4 text-2xl font-bold text-primary">
                 Profile Information
             </h2>
-            {requests.length > 0 ? (
-                requests.map((data, index) => (
+            {formattedRequests.length > 0 ? (
+                formattedRequests.map((data, index) => (
                     <ProfileInformationRow
                         key={index}
                         {...data}
-                        onUpdate={fetchData}
+                        onUpdate={() => fetchData(false)}
                     />
                 ))
             ) : (

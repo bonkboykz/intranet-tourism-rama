@@ -7,15 +7,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class UserGotMentionedInDashboardNotification extends Notification implements ShouldQueue
+class UserGotMentioned extends Notification implements ShouldQueue
 {
     use Queueable;
     public $user;
-    public $post;
+    public $destination;
 
-    function __construct($user, $post) {
+    function __construct($user, $destination) {
         $this->user = $user;
-        $this->post = $post;
+        $this->destination = $destination;
     }
 
     public function via($notifiable) {
@@ -25,13 +25,13 @@ class UserGotMentionedInDashboardNotification extends Notification implements Sh
 
     public function toDatabase($notifiable) {
         return [
-            'message' => $this->user->username . 'mentioned you in' . $this->post->title,
+            'message' => $this->user->name . ' mentioned you in ' . $this->destination,
         ];
     }
 
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
-            'message' => $this->user->username . 'mentioned you in' . $this->post->title,
+            'message' => $this->user->name . ' mentioned you in ' . $this->destination,
         ]);
     }
 
