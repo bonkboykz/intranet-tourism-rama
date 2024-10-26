@@ -173,12 +173,7 @@ const Pautan = () => {
         const newApp = { label: newAppName, url: newAppUrl };
 
         try {
-            const response = await axios.post(API_URL, newApp, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-Token": csrfToken,
-                },
-            });
+            const response = await axios.post(API_URL, newApp);
             const data = response.data;
             setApps(
                 sortAlphabetically(
@@ -224,12 +219,7 @@ const Pautan = () => {
         const updateUrl = urlTemplate.replace("{id}", currentApp.id);
 
         try {
-            const response = await axios.put(updateUrl, updatedApp, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-Token": csrfToken,
-                },
-            });
+            const response = await axios.put(updateUrl, updatedApp);
             const data = response.data;
             setApps(
                 sortAlphabetically(
@@ -248,13 +238,7 @@ const Pautan = () => {
         const deleteUrl = urlTemplate.replace("{id}", currentApp.id);
 
         try {
-            const response = await axios.delete(deleteUrl, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-Token": csrfToken,
-                },
-            });
+            const response = await axios.delete(deleteUrl);
 
             if ([200, 201, 204].includes(response.status)) {
                 setApps(
@@ -268,7 +252,7 @@ const Pautan = () => {
                 throw new Error("Failed to delete app");
             }
         } catch (e) {
-            toastError("Error deleting app:", e);
+            toastError("Error deleting app:", e.message);
         }
     };
 
@@ -357,16 +341,7 @@ const Pautan = () => {
                                                                 }}
                                                             />
                                                         </td>
-                                                        {/* <td className="px-6 max-md:px-2 py-4 text-sm font-semibold text-black whitespace-nowrap url-column">
-                              <input
-                                type="text"
-                                disabled={true}
-                                value={app.url}
-                                readOnly
-                                className="w-full p-1 outline-none border-none"
-                                style={{ borderColor: '#E4E4E4', borderRadius: '0.375rem', borderWidth: '1px' }}
-                              />
-                            </td> */}
+
                                                         <td className="px-6 max-md:px-2 py-4 text-sm font-semibold text-black whitespace-nowrap edit-column">
                                                             <div className="fixed-size-container">
                                                                 <button
