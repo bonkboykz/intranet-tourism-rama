@@ -3,6 +3,7 @@
 namespace Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use DB;
 use Modules\User\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
