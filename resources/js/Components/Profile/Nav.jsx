@@ -18,7 +18,7 @@ function ProfileNav({ activeTab, setActiveTab }) {
         if (searchParams.has("tab")) {
             setActiveTab(searchParams.get("tab"));
         } else {
-            router.replace("/profile?tab=bio", {
+            router.replace(window.location.href + "?tab=bio", {
                 preserveScroll: true,
                 preserveState: true,
             });
@@ -42,10 +42,13 @@ function ProfileNav({ activeTab, setActiveTab }) {
                             className={`cursor-pointer ${activeTab === tab.key ? "font-bold text-primary" : "text-stone-300"}`}
                             onClick={() => {
                                 setActiveTab(tab.key);
-                                router.replace("/profile?tab=" + tab.key, {
-                                    preserveScroll: true,
-                                    preserveState: true,
-                                });
+                                router.replace(
+                                    window.location.href + "?tab=" + tab.key,
+                                    {
+                                        preserveScroll: true,
+                                        preserveState: true,
+                                    }
+                                );
                             }}
                         >
                             {tab.name}
