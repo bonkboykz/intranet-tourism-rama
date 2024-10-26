@@ -5,8 +5,6 @@ import Color from "color";
 export const useSetupTheme = () => {
     const { userTheme } = usePage().props;
 
-    console.log("userTheme", userTheme);
-
     useLayoutEffect(() => {
         const root = document.documentElement;
 

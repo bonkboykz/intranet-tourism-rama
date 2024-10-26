@@ -1,6 +1,6 @@
 import React from "react";
 
-import Pautan from "@/Components/Settings/LinkComponent";
+import Pautan from "@/Components/Settings/Pautan";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 

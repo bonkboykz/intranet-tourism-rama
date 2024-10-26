@@ -4,9 +4,11 @@ import {
     ArrowLongLeftIcon,
     ArrowLongRightIcon,
 } from "@heroicons/react/20/solid";
+import axios from "axios";
 
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew"; // Assuming Example is a layout component
+import { toastError } from "@/Utils/toast";
 
 import "../Components/Settings/ManageLinks.css";
 import "tailwindcss/tailwind.css";
@@ -24,8 +26,7 @@ const Pautan = () => {
     const [newAppUrl, setNewAppUrl] = useState("");
     const [urlError, setUrlError] = useState("");
     const csrfToken = useCsrf();
-    const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errors, setErrors] = useState({});
 
     const fetchData = async () => {
         let allApps = [];
@@ -153,49 +154,37 @@ const Pautan = () => {
         setUrlError("");
     };
 
-    const PautanHandleAddApp = () => {
-        if (!isValidUrl(newAppUrl)) {
-            setUrlError("URL must start with http:// or https://");
-            return;
-        } else {
-            setUrlError("");
-            window.location.reload();
-        }
-
+    const PautanHandleAddApp = async () => {
         const { isNameDuplicate, isUrlDuplicate } = isDuplicateApp(
             newAppName,
             newAppUrl,
             apps
         );
         if (isNameDuplicate) {
-            alert("App name already exists.");
+            toastError("App name already exists.");
             return;
-        } else if (isUrlDuplicate) {
-            alert("App URL already exists.");
+        }
+
+        if (isUrlDuplicate) {
+            toastError("App URL already exists.");
             return;
         }
 
         const newApp = { label: newAppName, url: newAppUrl };
 
-        fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-            body: JSON.stringify(newApp),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setApps(
-                    sortAlphabetically(
-                        apps.map((app) => (app.id === data.id ? data : app))
-                    )
-                );
-                setIsAddModalVisible(false);
-                resetForm();
-            })
-            .catch((error) => console.error("Error adding app:", error));
+        try {
+            const response = await axios.post(API_URL, newApp);
+            const data = response.data;
+            setApps(
+                sortAlphabetically(
+                    apps.map((app) => (app.id === data.id ? data : app))
+                )
+            );
+            setIsAddModalVisible(false);
+            resetForm();
+        } catch (error) {
+            toastError("Error adding app:", error);
+        }
     };
 
     const PautanHandleEditApp = (app) => {
@@ -206,56 +195,22 @@ const Pautan = () => {
         setIsEditModalVisible(true);
     };
 
-    // const PautanHandleUpdateApp = () => {
-    //   if (!isValidUrl(newAppUrl)) {
-    //     setUrlError('URL must start with http:// or https://');
-    //     return;
-    //   } else {
-    //     setUrlError('');
-    //   }
+    const PautanHandleUpdateApp = async () => {
+        const { isNameDuplicate, isUrlDuplicate } = isDuplicateApp(
+            newAppName,
+            newAppUrl,
+            apps
+        );
 
-    //   const { isNameDuplicate, isUrlDuplicate } = isDuplicateApp(newAppName, newAppUrl, apps);
-    //   if (isNameDuplicate) {
-    //     alert('App name already exists.');
-    //     return;
-    //   } else if (isUrlDuplicate) {
-    //     alert('App URL already exists.');
-    //     return;
-    //   }
-
-    //   const updatedApp = { label: newAppName, url: newAppUrl };
-    //   const updateUrl = urlTemplate.replace('{id}', currentApp.id);
-
-    //   fetch(updateUrl, {
-    //     method: 'PUT',
-    //     headers: { 'Content-Type': 'application/json', "X-CSRF-Token": csrfToken },
-    //     body: JSON.stringify(updatedApp)
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       setApps(sortAlphabetically(apps.map(app => (app.id === data.id ? data : app))));
-    //       setIsEditModalVisible(false);
-    //       resetForm();
-    //     })
-    //     .catch(error => console.error('Error updating app:', error));
-    // };
-
-    const PautanHandleUpdateApp = () => {
-        if (newAppUrl && !isValidUrl(newAppUrl)) {
-            setUrlError("URL must start with http:// or https://");
+        if (newAppName && isNameDuplicate && currentApp?.label !== newAppName) {
+            toastError("App name already exists.");
             return;
-        } else {
-            setUrlError("");
         }
 
-        // const { isNameDuplicate, isUrlDuplicate } = isDuplicateApp(newAppName, newAppUrl, apps);
-        // if (newAppName && isNameDuplicate) {
-        //   alert('App name already exists.');
-        //   return;
-        // } else if (newAppUrl && isUrlDuplicate) {
-        //   alert('App URL already exists.');
-        //   return;
-        // }
+        if (newAppUrl && isUrlDuplicate && currentApp?.url !== newAppUrl) {
+            toastError("App URL already exists.");
+            return;
+        }
 
         const updatedApp = {};
         if (newAppName) updatedApp.label = newAppName;
@@ -263,54 +218,42 @@ const Pautan = () => {
 
         const updateUrl = urlTemplate.replace("{id}", currentApp.id);
 
-        fetch(updateUrl, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-            body: JSON.stringify(updatedApp),
-        })
-            // .then(response => response.json())
-            .then((data) => {
-                setApps(
-                    sortAlphabetically(
-                        apps.map((app) => (app.id === data.id ? data : app))
-                    )
-                );
-                resetForm();
-                setIsEditModalVisible(false);
-                fetchData();
-            })
-            .catch((error) => console.error("Error updating app:", error));
+        try {
+            const response = await axios.put(updateUrl, updatedApp);
+            const data = response.data;
+            setApps(
+                sortAlphabetically(
+                    apps.map((app) => (app.id === data.id ? data : app))
+                )
+            );
+            resetForm();
+            setIsEditModalVisible(false);
+            fetchData();
+        } catch (error) {
+            toastError("Error updating app:", error);
+        }
     };
 
-    const PautanHandleDeleteApp = () => {
+    const PautanHandleDeleteApp = async () => {
         const deleteUrl = urlTemplate.replace("{id}", currentApp.id);
 
-        fetch(deleteUrl, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken,
-            },
-        })
-            .then((response) => {
-                if (response.status === 204) {
-                    setApps(
-                        sortAlphabetically(
-                            apps.filter((app) => app.id !== currentApp.id)
-                        )
-                    );
-                    setIsDeleteModalVisible(false);
-                    setCurrentApp(null);
-                } else {
-                    return response.text().then((errorText) => {
-                        throw new Error(`Server error: ${errorText}`);
-                    });
-                }
-            })
-            .catch((error) => console.error("Error deleting app:", error));
+        try {
+            const response = await axios.delete(deleteUrl);
+
+            if ([200, 201, 204].includes(response.status)) {
+                setApps(
+                    sortAlphabetically(
+                        apps.filter((app) => app.id !== currentApp.id)
+                    )
+                );
+                setIsDeleteModalVisible(false);
+                setCurrentApp(null);
+            } else {
+                throw new Error("Failed to delete app");
+            }
+        } catch (e) {
+            toastError("Error deleting app:", e.message);
+        }
     };
 
     const handleBackNavigation = () => {
@@ -398,16 +341,7 @@ const Pautan = () => {
                                                                 }}
                                                             />
                                                         </td>
-                                                        {/* <td className="px-6 max-md:px-2 py-4 text-sm font-semibold text-black whitespace-nowrap url-column">
-                              <input
-                                type="text"
-                                disabled={true}
-                                value={app.url}
-                                readOnly
-                                className="w-full p-1 outline-none border-none"
-                                style={{ borderColor: '#E4E4E4', borderRadius: '0.375rem', borderWidth: '1px' }}
-                              />
-                            </td> */}
+
                                                         <td className="px-6 max-md:px-2 py-4 text-sm font-semibold text-black whitespace-nowrap edit-column">
                                                             <div className="fixed-size-container">
                                                                 <button
@@ -471,6 +405,7 @@ const Pautan = () => {
                             <h2 className="mb-4 text-xl font-bold">
                                 Add New Link
                             </h2>
+
                             <input
                                 type="text"
                                 placeholder="Example.com"
@@ -478,6 +413,12 @@ const Pautan = () => {
                                 onChange={(e) => setNewAppName(e.target.value)}
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
+                            {errors.newAppName && (
+                                <p className="text-secondary -mt-4 mb-5">
+                                    {errors.newAppName}
+                                </p>
+                            )}
+
                             <input
                                 type="text"
                                 placeholder="https://example.com"
@@ -485,6 +426,12 @@ const Pautan = () => {
                                 onChange={(e) => setNewAppUrl(e.target.value)}
                                 className="w-full p-2 mb-4 border rounded-md outline-none border-E4E4E4"
                             />
+                            {errors.newAppUrl && (
+                                <p className="text-secondary -mt-4 mb-5">
+                                    {errors.newAppUrl}
+                                </p>
+                            )}
+
                             <div className="flex justify-end space-x-3 text-sm">
                                 <button
                                     className="px-6 py-2 font-bold text-gray-400 bg-white hover:bg-gray-400 hover:text-white rounded-full border border-gray-400"
@@ -495,45 +442,40 @@ const Pautan = () => {
                                 <button
                                     className="px-8 py-2 font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={() => {
-                                        if (!newAppName && newAppUrl) {
-                                            setErrorMessage(
-                                                "Please provide the app name."
-                                            );
-                                            setIsErrorModalVisible(true); // Показать ошибку
-                                        } else if (!newAppName && !newAppUrl) {
-                                            setErrorMessage(
-                                                "Please provide both the app name and URL."
-                                            );
-                                            setIsErrorModalVisible(true); // Показать ошибку
-                                        } else if (newAppName && !newAppUrl) {
-                                            setErrorMessage(
-                                                "Please provide the app URL."
-                                            );
-                                            setIsErrorModalVisible(true); // Показать ошибку
-                                        } else {
-                                            setErrorMessage("");
-                                            PautanHandleAddApp();
+                                        const formErrors = {};
+
+                                        if (!newAppName) {
+                                            formErrors.newAppName =
+                                                "Please provide the app name.";
                                         }
+                                        if (!newAppUrl) {
+                                            formErrors.newAppUrl =
+                                                "Please provide the app URL.";
+                                        }
+
+                                        if (
+                                            newAppUrl &&
+                                            !isValidUrl(newAppUrl)
+                                        ) {
+                                            formErrors.newAppUrl =
+                                                "URL must start with http:// or https://";
+                                        }
+
+                                        if (
+                                            Object.keys(formErrors).length > 0
+                                        ) {
+                                            setErrors(formErrors);
+                                            return;
+                                        }
+
+                                        setErrors({});
+
+                                        PautanHandleAddApp();
                                     }}
                                 >
                                     Add
                                 </button>
                             </div>
-                        </div>
-                    </div>
-                )}
-
-                {isErrorModalVisible && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-                            <h3 className="text-lg font-bold mb-4">Error</h3>
-                            <p className="text-red-500 mb-4">{errorMessage}</p>
-                            <button
-                                className="px-4 py-2 bg-primary text-white rounded-full"
-                                onClick={() => setIsErrorModalVisible(false)}
-                            >
-                                Close
-                            </button>
                         </div>
                     </div>
                 )}
@@ -575,22 +517,34 @@ const Pautan = () => {
                                 <button
                                     className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover rounded-full"
                                     onClick={() => {
-                                        if (!newAppName && newAppUrl) {
-                                            setUrlError(
-                                                "Please provide the app name."
-                                            );
-                                        } else if (!newAppName && !newAppUrl) {
-                                            setUrlError(
-                                                "Please provide both the app name and URL."
-                                            );
-                                        } else if (newAppName && !newAppUrl) {
-                                            setUrlError(
-                                                "Please provide the app URL."
-                                            );
-                                        } else {
-                                            setUrlError(""); // Clear the error
-                                            PautanHandleUpdateApp(); // Proceed with update
+                                        const formErrors = {};
+
+                                        if (!newAppName) {
+                                            formErrors.newAppName =
+                                                "Please provide the app name.";
                                         }
+                                        if (!newAppUrl) {
+                                            formErrors.newAppUrl =
+                                                "Please provide the app URL.";
+                                        }
+
+                                        if (
+                                            newAppUrl &&
+                                            !isValidUrl(newAppUrl)
+                                        ) {
+                                            formErrors.newAppUrl =
+                                                "URL must start with http:// or https://";
+                                        }
+
+                                        if (
+                                            Object.keys(formErrors).length > 0
+                                        ) {
+                                            setErrors(formErrors);
+                                            return;
+                                        }
+
+                                        setErrors({});
+                                        PautanHandleUpdateApp();
                                     }}
                                 >
                                     Update
