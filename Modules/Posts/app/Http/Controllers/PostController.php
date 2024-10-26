@@ -27,7 +27,6 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Modules\Communities\Helpers\CommunityPermissionsHelper;
 use Modules\Department\Helpers\DepartmentPermissionsHelper;
-use Modules\Events\Models\Event;
 use Modules\Polls\Models\Feedback;
 use Modules\Communities\Models\Community;
 use Modules\Polls\Models\Option;
@@ -43,10 +42,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Posts\Models\PostComment;
 use Modules\Resources\Models\Resource;
-use Str;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Modules\User\Models\User;
-use function Pest\Laravel\get;
 
 class PostController extends Controller
 {
@@ -94,7 +91,9 @@ class PostController extends Controller
                                     // Check if the post is admin or user is a member of the department
                                     $query->where('post_as', 'admin');
                                 });
-                        });
+                        })
+                        // Include posts from the user
+                        ->orWhere('user_id', $user->id);
                 });
             }
         } else {
