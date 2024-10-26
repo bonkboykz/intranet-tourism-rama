@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useMemo } from "react";
+import { useCallback } from "react";
 import axios from "axios";
 
 import { formatTimeAgo } from "@/Utils/format";
@@ -42,14 +43,27 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
             .slice(0, 6);
     }, [activeTab, notifications.length, shouldSlice]);
 
+    const handleNotificationClick = useCallback((notification) => {
+        switch (notification.type) {
+            case "App\\Notifications\\BirthdayWishNotification": {
+                window.location.href = `/profile?tab=activities`;
+                return;
+            }
+            default: {
+                return;
+            }
+        }
+    }, []);
+
     return (
         <div className="notification-list px-2 ">
             <ul>
                 {filteredNotifications.map((notification) => (
                     <div
-                        className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl relative"
+                        className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl relative cursor-pointer"
                         key={notification.id}
                         onMouseOver={() => markAsRead(notification.id)}
+                        onClick={() => handleNotificationClick(notification)}
                     >
                         <div className="flex items-center bg-gray h-16 relative">
                             <img
@@ -73,6 +87,14 @@ function NotificationsList({ activeTab, notifications, shouldSlice }) {
                             />
                             {notification.type ===
                                 "App\\Notifications\\UserBirthdayWishNotification" && (
+                                <img
+                                    className="absolute h-5 w-5 right-0 bottom-0"
+                                    src="/assets/noti-icon-react/birthday_I.png"
+                                    alt=""
+                                />
+                            )}
+                            {notification.type ===
+                                "App\\Notifications\\BirthdayWishNotification" && (
                                 <img
                                     className="absolute h-5 w-5 right-0 bottom-0"
                                     src="/assets/noti-icon-react/birthday_I.png"

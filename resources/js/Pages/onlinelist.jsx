@@ -265,7 +265,7 @@ const MyComponent = () => {
             });
 
         return () => {
-            channel.leave();
+            channel?.leave();
         };
     }, []);
 

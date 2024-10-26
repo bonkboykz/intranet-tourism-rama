@@ -29,7 +29,7 @@ export const OnlineUsersProvider = ({ children }) => {
             });
 
         return () => {
-            channel.leave();
+            channel?.leave();
         };
     }, []);
 
