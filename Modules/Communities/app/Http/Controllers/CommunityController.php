@@ -462,9 +462,17 @@ class CommunityController extends Controller
             });
         }
 
-        $query->where('is_archived', false)->orderBy('created_at', 'desc')->limit(5);
+        $query->where('is_archived', false);
 
-        $communities = $query->get();
+        $query->orderByRaw("
+        CASE
+            WHEN EXISTS (SELECT 1 FROM community_members WHERE community_members.community_id = communities.id AND community_members.user_id = ?) THEN 1
+            ELSE 2
+        END, created_at DESC",
+            [auth()->id()]
+        );
+
+        $communities = $query->limit(5)->get();
 
         // attach count of members to 'members_count'
         $communities->map(function ($item) {
