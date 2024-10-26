@@ -23,6 +23,7 @@ import { WallContext } from "@/Components/Reusable/WallPosting/WallContext";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 
 import FeaturedEvents from "../Components/Reusable/FeaturedEventsWidget/FeaturedEvents";
 import PageTitle from "../Components/Reusable/PageTitle";

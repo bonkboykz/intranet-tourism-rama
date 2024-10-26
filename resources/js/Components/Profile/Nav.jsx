@@ -1,4 +1,8 @@
 import React from "react";
+import { useEffect } from "react";
+import { router } from "@inertiajs/react";
+
+import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 
 function ProfileNav({ activeTab, setActiveTab }) {
     const tabs = [
@@ -7,6 +11,19 @@ function ProfileNav({ activeTab, setActiveTab }) {
         { name: "Gallery", key: "gallery" },
         { name: "Files", key: "files" },
     ];
+
+    const { searchParams } = useSearchParams();
+
+    useEffect(() => {
+        if (searchParams.has("tab")) {
+            setActiveTab(searchParams.get("tab"));
+        } else {
+            router.replace("/profile?tab=bio", {
+                preserveScroll: true,
+                preserveState: true,
+            });
+        }
+    }, [searchParams]);
 
     return (
         <>
@@ -23,7 +40,13 @@ function ProfileNav({ activeTab, setActiveTab }) {
                         <span
                             key={tab.key}
                             className={`cursor-pointer ${activeTab === tab.key ? "font-bold text-primary" : "text-stone-300"}`}
-                            onClick={() => setActiveTab(tab.key)}
+                            onClick={() => {
+                                setActiveTab(tab.key);
+                                router.replace("/profile?tab=" + tab.key, {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
+                            }}
                         >
                             {tab.name}
                         </span>
