@@ -83,7 +83,14 @@ export function AuditTrailSearch({
 }) {
     return (
         <main className="flex flex-col w-full px-8 py-6 bg-white rounded-2xl shadow-custom max-md:px-5">
-            <form className="flex gap-5 text-sm whitespace-nowrap max-md:flex-wrap max-md:max-w-full">
+            <form
+                className="flex gap-5 text-sm whitespace-nowrap max-md:flex-wrap max-md:max-w-full"
+                onSubmit={(e) => {
+                    e.preventDefault();
+
+                    onSearch(search);
+                }}
+            >
                 <label htmlFor="searchInput" className="sr-only">
                     Search
                 </label>
@@ -94,6 +101,11 @@ export function AuditTrailSearch({
                     className="items-start self-start justify-center p-5 text-opacity-50 border border-solid grow rounded-3xl border-neutral-200 text-neutral-800 w-fit max-md:pr-5 max-md:max-w-full"
                     value={search}
                     onChange={(e) => onSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            onSearch(search);
+                        }
+                    }}
                 />
                 <SearchButton>Search</SearchButton>
             </form>

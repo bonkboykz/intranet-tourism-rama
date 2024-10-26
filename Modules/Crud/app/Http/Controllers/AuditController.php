@@ -14,8 +14,9 @@ class AuditController extends Controller
         $query->with(['user.roles']);
 
         if (request()->has('search')) {
-            $query->where('event', 'like', '%' . request('search') . '%')
-                ->orWhere('auditable_type', 'like', '%' . request('search') . '%');
+            $query->where('event', 'ilike', '%' . request('search') . '%')
+                ->orWhere('auditable_type', 'ilike', '%' . request('search') . '%')
+                ->orWhere('auditable_id', 'ilike', '%' . request('search') . '%');
         }
 
         if (request()->has('start_date')) {
