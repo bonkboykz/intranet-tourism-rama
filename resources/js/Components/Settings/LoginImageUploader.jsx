@@ -33,12 +33,14 @@ function FileInputSection({ onFileSelect, imageSrc }) {
         <section className="flex gap-2.5 mt-5 text-center">
             <input
                 type="file"
-                id="fileInput"
+                id="fileLoginInput"
                 className="hidden"
                 onChange={handleFileChange}
             />
             <button
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                    document.getElementById("fileLoginInput").click()
+                }
                 className="justify-center px-2 py-1.5 text-xs font-bold text-white bg-primary rounded-3xl"
             >
                 Choose file
@@ -55,7 +57,7 @@ function FileInputSection({ onFileSelect, imageSrc }) {
 function ImageSection({ imageSrc, onDelete }) {
     return (
         <section className="flex gap-5 justify-between mt-3.5">
-            <figure className="flex justify-center items-center w-[190px] h-[50px] rounded-xl border border-solid border-neutral-200 overflow-hidden">
+            <figure className="flex justify-center items-center w-[551] aspect-[9/10] rounded-xl border border-solid border-neutral-200 overflow-hidden">
                 {imageSrc ? (
                     <img
                         loading="lazy"
@@ -81,15 +83,14 @@ function ImageSection({ imageSrc, onDelete }) {
     );
 }
 
-function LogoUploader() {
+export function LoginImageUploader() {
     const { settings, fetchSettings } = useSettings();
 
-    const defaultImage =
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/d910594555d57a5759d52dbe5805129dbfe12b92da0f4c976f19b7b63e76b9f8?apiKey=285d536833cc4168a8fbec258311d77b&";
+    const defaultImage = "/assets/Login.svg";
     const [imageSrc, setImageSrc] = useState(null);
 
     useEffect(() => {
-        setImageSrc(settings.logo || defaultImage);
+        setImageSrc(settings.login_image || defaultImage);
     }, [settings.logo]);
 
     const handleFileSelect = (fileSrc) => {
@@ -103,7 +104,7 @@ function LogoUploader() {
     const handleSave = async () => {
         try {
             const response = await axios.put(
-                `/api/settings/settings/update_by_key/logo`,
+                `/api/settings/settings/update_by_key/login_image`,
                 {
                     value: imageSrc,
                 }
@@ -117,7 +118,7 @@ function LogoUploader() {
         } catch (e) {
             console.error(e);
 
-            toastError("Error saving logo");
+            toastError("Error saving login image");
         }
     };
 
@@ -129,7 +130,7 @@ function LogoUploader() {
         <article className="flex flex-col px-5 py-4 bg-white rounded-xl shadow-custom max-w-[296px]">
             <header>
                 <h1 className="text-2xl font-bold text-neutral-800">
-                    Jomla! Intranet Logo
+                    Login Page Image
                 </h1>
             </header>
             <FileInputSection
@@ -147,5 +148,3 @@ function LogoUploader() {
         </article>
     );
 }
-
-export default LogoUploader;

@@ -61,7 +61,12 @@ class SettingController extends Controller
 
     public function updateByKey(Request $request, string $key)
     {
-        $setting = Setting::where('key', $key)->first();
+        $setting = Setting::firstOrCreate([
+            'key' => $key,
+        ], [
+            'key' => $key,
+            'value' => '',
+        ]);
 
         $value = $request->value;
 
