@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 
+import { formatWorkNumber } from "@/Utils/format";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import "../../../css/app.css";
@@ -331,7 +332,9 @@ function ProfileDepartment({
                                         />
                                     ) : (
                                         <div className="text-neutral-800 text-opacity-80 font-normal">
-                                            +{localFormData.phone}
+                                            {formatWorkNumber(
+                                                localFormData.phone
+                                            )}
                                         </div>
                                     )}
                                 </td>
