@@ -358,7 +358,9 @@ const StoryNew = ({ userId }) => {
                         setSelectedStory(null);
                         setSelectedUser(null);
 
-                        fetchStories();
+                        // TODO: Return when refactoring
+                        // fetchStories();
+                        window.location.reload();
                     }}
                     onAllStoriesEnd={handleNextGroup}
                     canDeleteStory={selectedUser.id === id || isSuperAdmin}
