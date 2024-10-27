@@ -90,7 +90,11 @@ export default function Pautan({ displayType }) {
                         const urlObject = new URL(refer.url);
                         faviconSrc = `https://icons.duckduckgo.com/i/${urlObject.hostname}.ico`;
                     } catch (error) {
-                        faviconSrc = "/assets/File Management Inactive.svg";
+                        if (displayType === "department") {
+                            faviconSrc = "/assets/File Management Inactive.svg";
+                        } else {
+                            faviconSrc = "/assets/Link Inactive.svg";
+                        }
                     }
 
                     return (
@@ -111,8 +115,13 @@ export default function Pautan({ displayType }) {
                                     alt={`${displayLabel} favicon`}
                                     className="h-6 w-6 flex-none"
                                     onError={(e) => {
-                                        e.target.src =
-                                            "/assets/File Management Inactive.svg";
+                                        if (displayType === "department") {
+                                            e.target.src =
+                                                "/assets/File Management Inactive.svg";
+                                        } else {
+                                            e.target.src =
+                                                "/assets/Link Inactive.svg";
+                                        }
                                     }}
                                 />
                                 <div className="min-w-0 flex-auto self-center pl-2">
