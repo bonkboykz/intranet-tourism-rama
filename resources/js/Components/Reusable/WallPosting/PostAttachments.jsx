@@ -127,7 +127,7 @@ function PostAttachments({ attachments }) {
                 <img
                     src="/assets/downloadIconNo3.svg"
                     alt="Download Icon"
-                    className="w-3.5 h-3.5 opacity-70 cursor-auto"
+                    className="w-3.5 h-3.5 opacity-70 cursor-pointer hover:opacity-40"
                     onClick={(e) => {
                         e.stopPropagation();
                         handleDownload(e, attachment);
