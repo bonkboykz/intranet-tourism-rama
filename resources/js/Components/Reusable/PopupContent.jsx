@@ -131,121 +131,143 @@ const PopupContent = ({
     return (
         <>
             <Menu as="div" className="relative inline-block text-left">
-                <div>
-                    <MenuButton className="inline-flex justify-center items-center w-full pl-5 max-md:pl-1">
-                        <img
-                            src={threeDotsIcon}
-                            alt="Options"
-                            className="h-6 w-6"
-                        />
-                    </MenuButton>
-                </div>
-                <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                >
-                    <MenuItems
-                        portal
-                        anchor={{ to: "bottom" }}
-                        className=" z-[1000] left-4 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    >
-                        <div className="py-1">
-                            {canEdit && (
-                                <MenuItem>
-                                    {({ active, close }) => (
-                                        <button
-                                            onClick={(e) =>
-                                                handleRename(e, close)
-                                            }
-                                            className={classNames(
-                                                active
-                                                    ? "bg-blue-50 text-gray-900"
-                                                    : "text-gray-700",
-                                                "group flex items-center px-2 py-2 text-sm w-full"
-                                            )}
-                                        >
-                                            <img
-                                                src={renameIcon}
-                                                alt="Rename"
-                                                className="mr-3 h-5 w-5"
-                                            />
-                                            Rename
-                                        </button>
-                                    )}
-                                </MenuItem>
-                            )}
-                            <MenuItem>
-                                {({ active }) => (
-                                    <button
-                                        onClick={handleDownload}
-                                        className={classNames(
-                                            active
-                                                ? "bg-blue-50 text-gray-900"
-                                                : "text-gray-700",
-                                            "group flex items-center px-2 py-2 text-sm w-full"
+                {({ open }) => {
+                    if (open) {
+                        try {
+                            document.querySelector("html").style.overflow =
+                                "auto";
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+
+                    return (
+                        <>
+                            <div>
+                                <MenuButton className="inline-flex justify-center items-center w-full pl-5 max-md:pl-1">
+                                    <img
+                                        src={threeDotsIcon}
+                                        alt="Options"
+                                        className="h-6 w-6"
+                                    />
+                                </MenuButton>
+                            </div>
+                            <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-100"
+                                enterFrom="transform opacity-0 scale-95"
+                                enterTo="transform opacity-100 scale-100"
+                                leave="transition ease-in duration-75"
+                                leaveFrom="transform opacity-100 scale-100"
+                                leaveTo="transform opacity-0 scale-95"
+                            >
+                                <MenuItems
+                                    portal
+                                    anchor={{ to: "bottom" }}
+                                    className=" z-[1000] left-4 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                >
+                                    <div className="py-1">
+                                        {canEdit && (
+                                            <MenuItem>
+                                                {({ active, close }) => (
+                                                    <button
+                                                        onClick={(e) =>
+                                                            handleRename(
+                                                                e,
+                                                                close
+                                                            )
+                                                        }
+                                                        className={classNames(
+                                                            active
+                                                                ? "bg-blue-50 text-gray-900"
+                                                                : "text-gray-700",
+                                                            "group flex items-center px-2 py-2 text-sm w-full"
+                                                        )}
+                                                    >
+                                                        <img
+                                                            src={renameIcon}
+                                                            alt="Rename"
+                                                            className="mr-3 h-5 w-5"
+                                                        />
+                                                        Rename
+                                                    </button>
+                                                )}
+                                            </MenuItem>
                                         )}
-                                    >
-                                        <img
-                                            src={downloadIcon}
-                                            alt="Download"
-                                            className="mr-3 h-5 w-5"
-                                        />
-                                        Download
-                                    </button>
-                                )}
-                            </MenuItem>
-                            {canEdit && (
-                                <MenuItem>
-                                    {({ active }) => (
-                                        <button
-                                            onClick={() => setShowModal(true)}
-                                            className={classNames(
-                                                active
-                                                    ? "bg-blue-50 text-gray-900"
-                                                    : "text-gray-700",
-                                                "group flex items-center px-2 py-2 text-sm w-full"
+                                        <MenuItem>
+                                            {({ active }) => (
+                                                <button
+                                                    onClick={handleDownload}
+                                                    className={classNames(
+                                                        active
+                                                            ? "bg-blue-50 text-gray-900"
+                                                            : "text-gray-700",
+                                                        "group flex items-center px-2 py-2 text-sm w-full"
+                                                    )}
+                                                >
+                                                    <img
+                                                        src={downloadIcon}
+                                                        alt="Download"
+                                                        className="mr-3 h-5 w-5"
+                                                    />
+                                                    Download
+                                                </button>
                                             )}
-                                        >
-                                            <img
-                                                src={deleteIcon}
-                                                alt="Delete"
-                                                className="mr-3 h-5 w-5"
-                                            />
-                                            Delete
-                                        </button>
-                                    )}
-                                </MenuItem>
-                            )}
-                            {isPdf && (
-                                <MenuItem>
-                                    {({ active }) => (
-                                        <button
-                                            onClick={handleViewClick}
-                                            className={classNames(
-                                                active
-                                                    ? "bg-blue-50 text-gray-900"
-                                                    : "text-gray-700",
-                                                "group flex items-center px-2 py-2 text-sm w-full"
-                                            )}
-                                        >
-                                            <img
-                                                src={ViewIcon}
-                                                alt="View"
-                                                className="mr-3 h-5 w-5"
-                                            />
-                                            View
-                                        </button>
-                                    )}
-                                </MenuItem>
-                            )}
-                        </div>
-                    </MenuItems>
-                </Transition>
+                                        </MenuItem>
+                                        {canEdit && (
+                                            <MenuItem>
+                                                {({ active }) => (
+                                                    <button
+                                                        onClick={() =>
+                                                            setShowModal(true)
+                                                        }
+                                                        className={classNames(
+                                                            active
+                                                                ? "bg-blue-50 text-gray-900"
+                                                                : "text-gray-700",
+                                                            "group flex items-center px-2 py-2 text-sm w-full"
+                                                        )}
+                                                    >
+                                                        <img
+                                                            src={deleteIcon}
+                                                            alt="Delete"
+                                                            className="mr-3 h-5 w-5"
+                                                        />
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </MenuItem>
+                                        )}
+                                        {isPdf && (
+                                            <MenuItem>
+                                                {({ active }) => (
+                                                    <button
+                                                        onClick={
+                                                            handleViewClick
+                                                        }
+                                                        className={classNames(
+                                                            active
+                                                                ? "bg-blue-50 text-gray-900"
+                                                                : "text-gray-700",
+                                                            "group flex items-center px-2 py-2 text-sm w-full"
+                                                        )}
+                                                    >
+                                                        <img
+                                                            src={ViewIcon}
+                                                            alt="View"
+                                                            className="mr-3 h-5 w-5"
+                                                        />
+                                                        View
+                                                    </button>
+                                                )}
+                                            </MenuItem>
+                                        )}
+                                    </div>
+                                </MenuItems>
+                            </Transition>
+                        </>
+                    );
+                }}
             </Menu>
 
             {showModal &&
