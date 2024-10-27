@@ -5,6 +5,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { useWindowSize } from "@uidotdev/usehooks";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
 import { format } from "date-fns";
@@ -609,6 +610,9 @@ function Calendar() {
         closePrintModal();
     };
 
+    const { width } = useWindowSize();
+    const isMobile = Boolean(width && width < 768);
+
     return (
         <Example>
             <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
@@ -691,7 +695,7 @@ function Calendar() {
                         ref={calendarRef}
                         select={handleDateSelect}
                         eventClick={handleEventClick}
-                        selectLongPressDelay={0}
+                        // selectLongPressDelay={0}
                         height={650}
                         buttonText={{
                             today: "Today",
@@ -699,6 +703,7 @@ function Calendar() {
                             month: "Month",
                             day: "Day",
                         }}
+                        editable={!isMobile}
                         events={events}
                         eventDidMount={(info) => {
                             if (info.event.extendedProps.isBirthday) {
