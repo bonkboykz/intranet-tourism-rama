@@ -4,7 +4,9 @@ import { createPortal } from "react-dom";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
+import { useSettings } from "@/Layouts/useSettings";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import { toastError } from "@/Utils/toast";
 
 import CreateImageStory from "./CreateImageStory";
 import Popup from "./CreateStoryPopup";
@@ -131,10 +133,29 @@ const StoryNew = ({ userId }) => {
         fileInputRef.current.click();
     };
 
+    const { settings } = useSettings();
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
 
         if (file) {
+            let baseMaxSize = settings.max_file_size;
+
+            if (file.type.startsWith("video")) {
+                baseMaxSize = settings.max_video_size;
+            } else if (file.type.startsWith("image")) {
+                baseMaxSize = settings.max_image_size;
+            }
+            const maxSize = baseMaxSize * 1000000;
+
+            if (file.size > maxSize) {
+                fileInputRef.current.value = "";
+
+                toastError(`File size should be less than ${baseMaxSize}MB`);
+
+                return;
+            }
+
             setSelectedFile(file);
             setIsPopupOpen(true);
         }
