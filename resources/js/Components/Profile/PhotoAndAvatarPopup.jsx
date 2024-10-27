@@ -37,12 +37,15 @@ function PhotoAndAvatarPopup({
     const fetchAvatars = async () => {
         try {
             const response = await axios.get("/api/avatar-templates");
-            const data = response.data.data.map((template) => ({
-                ...template,
-                background: template.background.includes("assets")
-                    ? template.background
-                    : `/storage/${template.background}`,
-            }));
+            const data = response.data.data.map((template) =>
+                ({
+                    ...template,
+                    background: template.background.includes("assets")
+                        ? template.background
+                        : `/storage/${template.background}`,
+                }).filter((item) => item.is_enabled)
+            );
+
             setAvatars(data);
         } catch (error) {
             console.error("Failed to fetch avatars:", error);
