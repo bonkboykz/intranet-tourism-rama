@@ -439,7 +439,7 @@ function Card({
             }
 
             if (![200, 201, 204].includes(response.status)) {
-                throw new Error("Failed to create community");
+                throw new Error("Failed to create department");
             }
 
             onCreate();
@@ -447,7 +447,7 @@ function Card({
         } catch (error) {
             console.error("Error creating department:", error.message);
 
-            toast.error("Failed to create community", {
+            toast.error("Failed to create department", {
                 icon: <CircleXIcon className="w-6 h-6 text-white" />,
                 theme: "colored",
             });
