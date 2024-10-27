@@ -37,14 +37,16 @@ function PhotoAndAvatarPopup({
     const fetchAvatars = async () => {
         try {
             const response = await axios.get("/api/avatar-templates");
-            const data = response.data.data.map((template) =>
-                ({
-                    ...template,
-                    background: template.background.includes("assets")
-                        ? template.background
-                        : `/storage/${template.background}`,
-                }).filter((item) => item.is_enabled)
-            );
+            const data = response.data.data
+                .map((item) => {
+                    return {
+                        ...item,
+                        background: item.background.includes("/assets")
+                            ? item.background
+                            : `/storage/${item.background}`,
+                    };
+                })
+                .filter((item) => item.is_enabled);
 
             setAvatars(data);
         } catch (error) {
