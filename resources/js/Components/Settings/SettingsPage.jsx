@@ -35,7 +35,7 @@ const SettingsPage = ({ currentPage }) => {
                 </div>
             )}
             {currentPage === "Themes" && <ThemeComponent onSave={handleSave} />}
-            {currentPage === "Advance Settings" && (
+            {currentPage === "Advanced Settings" && (
                 <>
                     <CoreFeatures onSave={handleSave} />
                     <SizeLimit onSave={handleSave} />

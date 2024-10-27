@@ -33,7 +33,7 @@ const Settings = () => {
                     active: "assets/Active Theme.svg",
                 },
                 isSuperAdmin && {
-                    name: "Advance Settings",
+                    name: "Advanced Settings",
                     href: "#",
                     inactive: "assets/Inactive Advanced Settings.svg",
                     active: "assets/Active Advanced Settings.svg",

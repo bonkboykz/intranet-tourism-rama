@@ -9,6 +9,7 @@ import axios from "axios";
 
 import { useNotifications } from "@/Layouts/useNotifications";
 import { useSettings } from "@/Layouts/useSettings";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 
 import BirthdayNotificationPopup from "../Components/BirthdayNotificationPopup";
@@ -169,6 +170,13 @@ export default function Header({ setSidebarOpen }) {
         window.location.href = `/search?q=${search}`;
     };
 
+    console.log("Settings", settings);
+
+    const { isSuperAdmin } = usePermissions();
+
+    const isNotificationEnabled =
+        settings.notifications_enabled || isSuperAdmin;
+
     return (
         <div className="z-50 fixed w-full lg:pr-16 top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
             <button
@@ -236,30 +244,34 @@ export default function Header({ setSidebarOpen }) {
                         )}
                     </div>
 
-                    <div className="relative" ref={notificationRef}>
-                        <button
-                            type="button"
-                            className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5 relative"
-                            onClick={() => {
-                                togglePopupVisibility(
-                                    setIsNotificationPopupVisible
-                                );
+                    {isNotificationEnabled && (
+                        <div className="relative" ref={notificationRef}>
+                            <button
+                                type="button"
+                                className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 -mt-0.5 relative"
+                                onClick={() => {
+                                    togglePopupVisibility(
+                                        setIsNotificationPopupVisible
+                                    );
 
-                                setHasNewNotifications(false);
-                            }}
-                        >
-                            <img
-                                src={getBellIconSrc()}
-                                className="w-6 h-6"
-                                aria-hidden="true"
-                            />
+                                    setHasNewNotifications(false);
+                                }}
+                            >
+                                <img
+                                    src={getBellIconSrc()}
+                                    className="w-6 h-6"
+                                    aria-hidden="true"
+                                />
 
-                            {hasNewNotifications && (
-                                <span className="absolute bottom-[4px] right-[4px] inline-block w-2 h-2 bg-secondary rounded-full" />
+                                {hasNewNotifications && (
+                                    <span className="absolute bottom-[4px] right-[4px] inline-block w-2 h-2 bg-secondary rounded-full" />
+                                )}
+                            </button>
+                            {isNotificationPopupVisible && (
+                                <NotificationPopup />
                             )}
-                        </button>
-                        {isNotificationPopupVisible && <NotificationPopup />}
-                    </div>
+                        </div>
+                    )}
 
                     <div
                         className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"

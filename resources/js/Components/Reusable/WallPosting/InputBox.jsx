@@ -434,7 +434,7 @@ function ShareYourThoughts({
         setShowReactionPicker(!showReactionPicker);
     };
 
-    const { hasPermission, hasRole } = usePermissions();
+    const { hasPermission, hasRole, isSuperAdmin } = usePermissions();
 
     const canSetAnnouncement =
         (!communityId && !departmentId && hasRole("superadmin")) ||
@@ -442,6 +442,8 @@ function ShareYourThoughts({
             hasPermission(`set unset post as announcement ${communityId}`)) ||
         (departmentId &&
             hasPermission(`set unset post as announcement ${departmentId}`));
+
+    const isPollsEnabled = settings.polls_enabled || isSuperAdmin;
 
     return (
         <section className="flex flex-col justify-center text-sm text-neutral-800 w-full">
@@ -600,15 +602,17 @@ function ShareYourThoughts({
                                                     />
                                                 </div>
                                             )}
-                                            <button
-                                                className="tooltip"
-                                                onClick={handleClickPoll}
-                                            >
-                                                <PollsIcon className="w-4 h-4 text-primary" />
-                                                <span className="tooltiptext">
-                                                    Poll
-                                                </span>
-                                            </button>
+                                            {isPollsEnabled && (
+                                                <button
+                                                    className="tooltip"
+                                                    onClick={handleClickPoll}
+                                                >
+                                                    <PollsIcon className="w-4 h-4 text-primary" />
+                                                    <span className="tooltiptext">
+                                                        Poll
+                                                    </span>
+                                                </button>
+                                            )}
                                             <button
                                                 className="tooltip"
                                                 onClick={handleClickImg}
