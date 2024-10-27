@@ -1,4 +1,3 @@
-// CreateCommunity.jsx
 import React, { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { toast } from "react-toastify";
@@ -167,7 +166,8 @@ function Card({
             setOriginalImageSrc(reader.result);
             const base64Original = await blobToBase64(file);
             setOriginalImageBase64(base64Original);
-            setImageBase64(""); // Reset the base64 string when a new image is selected
+            // Set imageBase64 to original if not cropping
+            setImageBase64(base64Original);
         };
         reader.readAsDataURL(file);
     };
@@ -198,7 +198,6 @@ function Card({
 
     // Handle form submission
     const handleSubmit = async () => {
-        // Validate required fields
         if (!communityName.trim()) {
             toast.error("Community name is required.");
             return;
@@ -215,10 +214,13 @@ function Card({
             updated_by: user.name,
         };
 
-        if (imageBase64) {
-            data.banner = imageBase64;
-            data.banner_original = originalImageBase64;
+        if (imageBase64 || originalImageBase64) {
+            data.banner = imageBase64 || originalImageBase64;
+            if (imageBase64) {
+                data.banner_original = originalImageBase64;
+            }
         }
+
         if (communityDescription) {
             data.description = communityDescription;
         }
