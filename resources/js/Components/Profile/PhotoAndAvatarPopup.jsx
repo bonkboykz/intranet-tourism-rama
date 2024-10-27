@@ -112,15 +112,15 @@ function PhotoAndAvatarPopup({
                 className="p-2 rounded-3xl w-2xl"
                 onClick={(e) => e.stopPropagation()}
             >
-                <section className="flex flex-col py-2.5 bg-white rounded-3xl w-[700px]">
+                <section className="flex flex-col py-2.5 bg-white rounded-3xl w-[700px] max-w-[100vw]">
                     <div className="flex flex-col pr-2.5 pl-5 w-full">
                         <header className="flex gap-5 items-start text-2xl font-bold text-neutral-800">
                             <h1 className="flex-auto mt-4">Pick an Avatar</h1>
                         </header>
-                        <div className="grid grid-cols-6 gap-3 mt-2 px-2">
+                        <div className="grid grid-cols-6 max-md:grid-cols-4 gap-3 mt-2 px-2">
                             {avatars.map((avatar) => (
                                 <div
-                                    className="w-[90px] h-[90px]"
+                                    className="w-[90px] h-[90px] max-md:w-[60px] max-md:h-[60px]"
                                     key={avatar.background}
                                 >
                                     <Avatar
