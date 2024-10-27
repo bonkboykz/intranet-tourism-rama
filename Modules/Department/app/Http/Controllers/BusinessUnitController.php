@@ -66,15 +66,13 @@ class BusinessUnitController extends Controller
             $employment_posts = EmploymentPost::where('business_unit_id', $business_unit->id)->get();
 
             // 2. find business unit with title "No Title"
-            $no_title_business_unit = BusinessUnit::where('name', 'No Unit')->first();
-
-            // 2.1 If not found, create one
-            if (!$no_title_business_unit) {
-                $no_title_business_unit = BusinessUnit::create([
-                    'name' => 'No Unit',
-                    'department_id' => $business_unit->department_id,
-                ]);
-            }
+            $no_title_business_unit = BusinessUnit::firstOrCreate([
+                'name' => 'No Unit',
+                'department_id' => $business_unit->department_id,
+            ], [
+                'name' => 'No Unit',
+                'department_id' => $business_unit->department_id,
+            ]);
 
             // 3. transfer all found employment_posts to business unit with title "No Title"
             foreach ($employment_posts as $employment_post) {

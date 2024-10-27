@@ -59,15 +59,10 @@ class BusinessPostController extends Controller
             // 1. find all employment_posts with such business_post
             $employment_posts = EmploymentPost::where('business_post_id', $business_post->id)->get();
 
-            // 2. find business post with title "No Title"
-            $no_title_business_post = BusinessPost::where('title', 'No title')->first();
-
-            // 2.1 If not found, create one
-            if (!$no_title_business_post) {
-                $no_title_business_post = BusinessPost::create([
-                    'title' => 'No title',
-                ]);
-            }
+            $no_title_business_post = BusinessPost::firstOrCreate(
+                ['title' => 'No title'],
+                ['title' => 'No title']
+            );
 
             // 3. transfer all found employment_posts to business post with title "No Title"
             foreach ($employment_posts as $employment_post) {
