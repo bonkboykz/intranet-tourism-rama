@@ -8,10 +8,10 @@ use App\Models\Traits\QueryableApi;
 // use Modules\User\Models\User;;
 use Database\Factories\ProfileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\User\Models\User;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Crud\Models\User;
 
 class Profile extends Model implements AuditableContract
 {
