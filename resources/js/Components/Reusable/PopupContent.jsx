@@ -134,8 +134,14 @@ const PopupContent = ({
                 {({ open }) => {
                     if (open) {
                         try {
-                            document.querySelector("html").style.overflow =
-                                "auto";
+                            const html = document.querySelector("html");
+                            if (html) {
+                                document.querySelector("html").style.overflow =
+                                    "auto";
+                                document.querySelector(
+                                    "html"
+                                ).style.paddingRight = "0px";
+                            }
                         } catch (e) {
                             console.error(e);
                         }
