@@ -4,6 +4,7 @@ import { InertiaLink } from "@inertiajs/inertia-react";
 
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { cn } from "@/Utils/cn";
+import { formatWorkNumber } from "@/Utils/format";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import deactivateButton from "../../../../public/assets/activatedButton.svg";
@@ -215,7 +216,9 @@ const StaffMemberCard = ({
                             Call is available only on mobile.
                             <br></br>
                             Office Number:
-                            <span className="ml-2 text-primary">+{workNo}</span>
+                            <span className="ml-2 text-primary">
+                                {formatWorkNumber(workNo)}
+                            </span>
                         </p>
                     </div>
                 </div>

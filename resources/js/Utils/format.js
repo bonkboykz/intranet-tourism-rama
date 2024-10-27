@@ -32,3 +32,15 @@ export const formatDateEnd = (time) => {
 
     return date.format("DD/MM/YYYY");
 };
+
+export const formatWorkNumber = (workNo) => {
+    if (!workNo) {
+        return "N/A";
+    }
+
+    if (workNo.includes("+")) {
+        return workNo;
+    }
+
+    return "+" + workNo;
+};
