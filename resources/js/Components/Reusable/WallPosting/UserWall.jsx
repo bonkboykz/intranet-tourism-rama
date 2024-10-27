@@ -2,10 +2,11 @@ import InfiniteScroll from "react-infinite-scroller";
 import { Loader2 } from "lucide-react";
 
 import { DefaultPostCard } from "@/Components/Reusable/WallPosting/DefaultPostCard/DefaultPostCard.jsx";
+import { cn } from "@/Utils/cn";
 
 import { PollPostCard } from "./PollPostCard/PollPostCard";
 
-export function UserWall({ onLoad, hasMore, posts, userId }) {
+export function UserWall({ onLoad, hasMore, posts, userId, limitWidth }) {
     const filderedPosts = posts.filter((post) => {
         const isAuthor = post.user.id === userId;
         const isMentioned =
@@ -29,7 +30,7 @@ export function UserWall({ onLoad, hasMore, posts, userId }) {
                         <Loader2 className="w-12 h-12 animate-spin" />
                     </div>
                 }
-                className="w-full max-w-[700px]"
+                className={cn("w-full", limitWidth && `max-w-[700px]`)}
             >
                 {filderedPosts.map((post, index) => {
                     if (post.type === "poll") {

@@ -1,26 +1,4 @@
-/* .rounded-image {
-    border-radius: 50%;
-}
-
 .profile-image {
-    position: relative;
-}
-
-.profile-image .status-dot {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 20px;
-    height: 20px;
-    background-color: green;
-    border-radius: 50%;
-    border: 2px solid white;
-}
- */
-
-
-
- .profile-image {
     position: relative;
     border-radius: 50%;
 }
@@ -40,46 +18,19 @@
     position: relative;
     width: 100%;
     height: 400px; /* Adjust height as needed */
-  }
-  
-  .cropper-container {
+}
+
+.cropper-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-  }
+}
 
-  .profile-header {
+.profile-header {
     width: 100%;
     max-width: 875px; /* Ensures it doesn't exceed 875px on larger screens */
-  }
-  
-  /* Media Queries for different screen sizes */
-  @media (max-width: 1024px) {
-    .profile-header {
-      max-width: 750px; /* Reduce width on medium screens */
-      margin: 0px 20px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .profile-header {
-      max-width: 90%; /* Use full width on small screens */
-      margin: 0px 20px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .profile-header {
-        max-width: 100%; /* Use full width on small screens */
-    }
-  }
+}
 
-  @media (max-width: 390px) {
-    .profile-header {
-        max-width: 100%; /* Use full width on small screens */
-    }
-  }
-  
-  
+

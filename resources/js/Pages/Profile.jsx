@@ -461,8 +461,8 @@ function ProfileContent() {
                     </div>
 
                     {/* main content */}
-                    <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
-                        <div className="profile-header ml-9 h-0 max-md:h-[385px] bg-red-300 shadow-custom rounded-b-lg">
+                    <div className="flex flex-col justify-center w-full max-w-[1200px] max-sm:px-4 max-md:px-6 gap-6 items-center box-border max-sm:max-w-[100vw]">
+                        <div className="profile-header  shadow-custom rounded-b-lg my-0 mx-auto">
                             <div className="flex-col w-full flex bg-white h-auto rounded-b-lg">
                                 <ProfileHeader
                                     backgroundImage={
@@ -482,8 +482,11 @@ function ProfileContent() {
                                     setActiveTab={setActiveTab}
                                 />
                             </div>
+                        </div>
+
+                        <div className="flex-col w-full flex bg-white h-auto rounded-b-lg max-w-[875px]">
                             {activeTab === "activities" && (
-                                <div className=" flex px-20 w-full justify-center lg:py-6 bg-gray-100 flex-col items-center ">
+                                <div className="flex md:px-20 w-full justify-center lg:py-6 bg-gray-100 flex-col items-center ">
                                     <ShareYourThoughts
                                         userId={id}
                                         postType={"post"}
@@ -494,7 +497,7 @@ function ProfileContent() {
                                         className="mr-10"
                                         onFilterChange={handleFilterChange}
                                     />
-                                    <div className="mb-20"></div>
+                                    <div className="mb-10"></div>
                                     <OutputData
                                         polls={polls}
                                         showUserPosts={true}
@@ -678,7 +681,7 @@ function ProfileContent() {
                                 </section>
                             )}
                             {activeTab === "files" && (
-                                <div>
+                                <div className="max-w-full">
                                     <div className="flex gap-4 whitespace-nowrap">
                                         <SearchInput
                                             onSearch={setFileSearchTerm}

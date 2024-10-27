@@ -18,7 +18,13 @@ function ProfileNav({ activeTab, setActiveTab }) {
         if (searchParams.has("tab")) {
             setActiveTab(searchParams.get("tab"));
         } else {
-            router.replace(window.location.href + "?tab=bio", {
+            const url = new URL(window.location.href);
+
+            if (url.searchParams.has("tab")) {
+                url.searchParams.delete("tab");
+            }
+
+            router.replace(url.href + "?tab=bio", {
                 preserveScroll: true,
                 preserveState: true,
             });
@@ -42,13 +48,17 @@ function ProfileNav({ activeTab, setActiveTab }) {
                             className={`cursor-pointer ${activeTab === tab.key ? "font-bold text-primary" : "text-stone-300"}`}
                             onClick={() => {
                                 setActiveTab(tab.key);
-                                router.replace(
-                                    window.location.href + "?tab=" + tab.key,
-                                    {
-                                        preserveScroll: true,
-                                        preserveState: true,
-                                    }
-                                );
+
+                                const url = new URL(window.location.href);
+
+                                if (url.searchParams.has("tab")) {
+                                    url.searchParams.delete("tab");
+                                }
+
+                                router.replace(url.href + "?tab=" + tab.key, {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
                             }}
                         >
                             {tab.name}

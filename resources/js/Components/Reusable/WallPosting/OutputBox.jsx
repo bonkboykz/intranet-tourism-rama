@@ -59,6 +59,7 @@ function OutputData({
                         onLoad={fetchData}
                         hasMore={hasMore}
                         userId={userId}
+                        limitWidth
                     />
                 );
             case "community":
