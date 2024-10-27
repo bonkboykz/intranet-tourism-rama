@@ -13,6 +13,7 @@ import { AuditTrail } from "./AuditTrail";
 import LogoUploader from "./BasicSettings";
 import { BirthdayTemplate } from "./BirthdayTemplate";
 import Departments from "./Departments";
+import { LoginImageUploader } from "./LoginImageUploader";
 import Permissions from "./Permissions";
 import { Polls } from "./Polls/Polls";
 import Requests from "./Requests";
@@ -28,7 +29,10 @@ const SettingsPage = ({ currentPage }) => {
         <div>
             <h1 className="hidden">{currentPage}</h1>
             {currentPage === "Basic Settings" && (
-                <LogoUploader onSave={handleSave} />
+                <div className="flex flex-col gap-4">
+                    <LogoUploader onSave={handleSave} />
+                    <LoginImageUploader />
+                </div>
             )}
             {currentPage === "Themes" && <ThemeComponent onSave={handleSave} />}
             {currentPage === "Advance Settings" && (
