@@ -55,6 +55,12 @@ const SettingNavigation = ({ current, setCurrent }) => {
                 active: "assets/Active Birthday Template.svg",
             },
             isSuperAdmin && {
+                name: "Avatar Template",
+                href: "#",
+                inactive: "assets/Inactive Profile Template.svg",
+                active: "assets/Active Profile Template.svg",
+            },
+            isSuperAdmin && {
                 name: "Business Units",
                 href: "#",
                 inactive: "assets/Inactive Departments.svg",

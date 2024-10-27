@@ -46,6 +46,9 @@ seed_settings:
 seed_birthday_templates:
 	php artisan db:seed --class=BirthdayTemplateSeeder
 
+seed_avatar_template:
+	php artisan db:seed --class=AvatarTemplateSeeder
+
 seed_offiria:
 	php artisan db:seed --class=CompleteRawSQLSeeder
 

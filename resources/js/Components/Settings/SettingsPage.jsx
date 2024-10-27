@@ -1,4 +1,4 @@
-import { usePermissions } from "@/Utils/hooks/usePermissions";
+import AvatarTemplate from "@/Pages/AvatarTemplate.jsx";
 
 import AddTitles from "./AddTitles";
 import AddUnits from "./AddUnits";
@@ -14,7 +14,6 @@ import LogoUploader from "./BasicSettings";
 import { BirthdayTemplate } from "./BirthdayTemplate";
 import Departments from "./Departments";
 import Permissions from "./Permissions";
-import Feedback from "./Polls/Feedback";
 import { Polls } from "./Polls/Polls";
 import Requests from "./Requests";
 import Roles from "./Roles";
@@ -49,6 +48,7 @@ const SettingsPage = ({ currentPage }) => {
             {currentPage === "Business Units" && <AddUnits />}
             {currentPage === "Roles" && <Roles />}
             {currentPage === "Permissions" && <Permissions />}
+            {currentPage === "Avatar Template" && <AvatarTemplate />}
         </div>
     );
 };

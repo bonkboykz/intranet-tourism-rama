@@ -3,9 +3,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { CircleXIcon } from "lucide-react";
 
-import { useCsrf } from "@/composables.js";
-
-import { BirthdayTemplateTable } from "./BirthdayTemplate/Table";
+import { AvatarTemplateTable } from "@/Components/Settings/AvatarTemplate/Table.jsx";
 
 function Header({ title }) {
     return (
@@ -44,7 +42,7 @@ function Avatar({ src, alt, onImageChange }) {
     );
 }
 
-function DeleteBirthdayPopup({
+function DeleteAvatarPopup({
     title,
     deleteText,
     cancelText,
@@ -87,7 +85,7 @@ function TemplateCard({
     onCreate,
     onCancel,
 }) {
-    const [newBirthdayTemplateText, setNewBirthdayTemplateText] = useState("");
+    const [newAvatarTemplateText, setNewAvatarTemplateText] = useState("");
     const [imageBlob, setImageBlob] = useState(null);
     const [imageSrc, setImageSrc] = useState(imgSrc);
 
@@ -102,7 +100,7 @@ function TemplateCard({
 
     const handleSubmit = async () => {
         const formData = new FormData();
-        formData.append("name", newBirthdayTemplateText);
+        formData.append("name", newAvatarTemplateText);
         formData.append("is_enabled", 1);
         if (imageBlob) {
             formData.append("background", imageBlob);
@@ -110,7 +108,7 @@ function TemplateCard({
 
         try {
             const response = await axios.post(
-                "/api/birthday-templates",
+                "/api/avatar-templates",
                 formData,
                 {
                     headers: {
@@ -148,8 +146,8 @@ function TemplateCard({
                     type="text"
                     className="w-full p-2 mb-4 border rounded-full pl-4"
                     placeholder="Add name"
-                    value={newBirthdayTemplateText}
-                    onChange={(e) => setNewBirthdayTemplateText(e.target.value)}
+                    value={newAvatarTemplateText}
+                    onChange={(e) => setNewAvatarTemplateText(e.target.value)}
                 />
 
                 <div className="flex flex-col items-center space-y-2">
@@ -172,44 +170,45 @@ function TemplateCard({
     );
 }
 
-export const BirthdayTemplate = () => {
+const AvatarTemplate = () => {
+    const [avatarTemplate, setAvatarTemplate] = useState([]);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
-    const [birthdayTemplates, setBirthdayTemplates] = useState([]);
     const [deleteTemplateId, setDeleteTemplateId] = useState(null);
-    const csrfToken = useCsrf();
+    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
 
-    const fetchBirthdayTemplates = () => {
-        axios.get("/api/birthday-templates").then((response) => {
+    const fetchAvatars = async () => {
+        try {
+            const response = await axios.get("/api/avatar-templates");
             const data = response.data.data.map((template) => ({
                 ...template,
                 background: template.background.includes("assets")
                     ? template.background
                     : `/storage/${template.background}`,
             }));
-
-            setBirthdayTemplates(data);
-        });
+            setAvatarTemplate(data);
+        } catch (error) {
+            console.error("Failed to fetch avatars:", error);
+        }
     };
 
     const handleSwitchChange = (template) => {
         axios
-            .put(`/api/birthday-templates/${template.id}/toggle-enabled`)
-            .then(fetchBirthdayTemplates);
+            .put(`/api/avatar-templates/${template.id}/toggle-enabled`)
+            .then(fetchAvatars);
     };
 
     useEffect(() => {
-        fetchBirthdayTemplates();
+        fetchAvatars();
     }, []);
 
     const handleNewTemplate = () => {
-        fetchBirthdayTemplates();
+        fetchAvatars();
         setIsPopupOpen(false);
     };
 
     const handleDelete = async () => {
         try {
-            const url = `/api/birthday-templates/${deleteTemplateId}`;
+            const url = `/api/avatar-templates/${deleteTemplateId}`;
 
             const response = await axios.delete(url);
 
@@ -219,7 +218,7 @@ export const BirthdayTemplate = () => {
             // setBirthdayTemplates((prevState) =>
             //     prevState.filter((template) => template.id !== deleteTemplateId)
             // );
-            fetchBirthdayTemplates();
+            fetchAvatars();
             setIsDeletePopupOpen(false); // Close the popup after deletion
         } catch (e) {
             console.error(e);
@@ -231,12 +230,11 @@ export const BirthdayTemplate = () => {
         setIsDeletePopupOpen(true);
         // Можете открыть модальное окно здесь, например, с setState или с помощью состояния
     };
-
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[844px]">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-primary mb-8">
-                    Enable/Disable Birthday Templates
+                    Enable/Disable Avatar Templates
                 </h2>
                 <button
                     onClick={() => setIsPopupOpen(true)}
@@ -245,15 +243,14 @@ export const BirthdayTemplate = () => {
                     Add New Template
                 </button>
             </div>
-
-            <BirthdayTemplateTable
-                birthdayTemplates={birthdayTemplates}
-                handleSwitchChange={handleSwitchChange}
+            <AvatarTemplateTable
                 isDeletePopupOpen={openDeletePopup}
+                handleSwitchChange={handleSwitchChange}
+                avatarTemplates={avatarTemplate}
             />
 
             {isDeletePopupOpen && (
-                <DeleteBirthdayPopup
+                <DeleteAvatarPopup
                     title="Delete Template?"
                     deleteText="Yes"
                     cancelText="No"
@@ -264,7 +261,7 @@ export const BirthdayTemplate = () => {
 
             {isPopupOpen && (
                 <TemplateCard
-                    title="Create New Birthday Template"
+                    title="Create New Avatar Template"
                     saveText="Save"
                     imgSrc="/assets/uploadAnImage.svg"
                     cancelText="Cancel"
@@ -275,3 +272,5 @@ export const BirthdayTemplate = () => {
         </section>
     );
 };
+
+export default AvatarTemplate;
