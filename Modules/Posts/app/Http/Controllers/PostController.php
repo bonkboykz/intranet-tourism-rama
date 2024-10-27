@@ -629,7 +629,7 @@ class PostController extends Controller
 
         try {
             $user_id = Auth::id();
-            $author = $comment->user;
+            $author = $post->user;
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
             $mentionedUsers = (array) json_decode($comment->mentions);
@@ -642,7 +642,9 @@ class PostController extends Controller
                 $mentionedUser->notify(new UserGotMentionedInCommentNotification($comment, $comment->id, $currentUser));
             });
 
-            $author->notify(new CommentNotification($currentUser, $post));
+            if($author->id !== $currentUser->id) {
+                $author->notify(new CommentNotification($currentUser, $post));
+            }
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
