@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 
 import { formatTime } from "@/Utils/format";
 import { getProfileImage } from "@/Utils/getProfileImage";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading.jsx";
 
 import aishaImage from "../../../../../public/assets/aishaImage.png";
 import community1 from "../../../../../public/assets/community1.png";
@@ -145,71 +146,45 @@ const CommunityCreationRow = ({
 };
 
 export const CommunityCreationRequests = () => {
-    const [loading, setLoading] = useState(true);
-    const [requests, setRequests] = useState([]);
-
-    const fetchRequests = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get(
-                "/api/getCommunityCreateRequests",
-                {
-                    params: {
-                        sort: [{ created_at: "desc" }],
-                    },
-                }
-            );
-
-            if ([200, 201, 204].includes(response.status)) {
-                const {
-                    data: { data },
-                } = response.data;
-                const preparedRequests = data
-                    .filter(
-                        (item) =>
-                            item.status !== "approved" &&
-                            item.status !== "rejected"
-                    )
-                    .map((request) => ({
-                        id: request.id,
-                        name: request.user.name,
-                        department: request.userDepartment,
-                        time: new Date(request.created_at),
-                        group: request.group.name,
-                        profileImage: getProfileImage(
-                            request.userProfile,
-                            request.user.name
-                        ),
-                        groupImage:
-                            request.group.banner ??
-                            "/assets/defaultCommunity.png",
-                        status: request.status,
-                    }));
-
-                setRequests(preparedRequests);
-            }
-        } catch (e) {
-            console.error(e);
+    const { data: requests, fetchData } = useLazyLoading(
+        "api/getCommunityCreateRequests",
+        {
+            sort: [{ created_at: "desc" }],
         }
-
-        setLoading(false);
-    };
-
+    );
     useEffect(() => {
-        fetchRequests();
+        fetchData();
     }, []);
+
+    const preparedRequests = requests
+        .filter(
+            (item) => item.status !== "approved" && item.status !== "rejected"
+        )
+        .map((request) => ({
+            id: request.id,
+            name: request.user.name,
+            department: request.userDepartment,
+            time: new Date(request.created_at),
+            group: request.group.name,
+            profileImage: getProfileImage(
+                request.userProfile,
+                request.user.name
+            ),
+            groupImage: request.group.banner ?? "/assets/defaultCommunity.png",
+            status: request.status,
+        }));
 
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
             <h2 className="mb-4 text-2xl font-bold text-primary">
                 Community Creation
             </h2>
-            {requests.length > 0 ? (
-                requests.map((data, index) => (
+            {preparedRequests.length > 0 ? (
+                preparedRequests.map((data, index) => (
                     <CommunityCreationRow
                         key={index}
                         {...data}
-                        onUpdate={fetchRequests}
+                        onUpdate={() => fetchData(false)}
                     />
                 ))
             ) : (
