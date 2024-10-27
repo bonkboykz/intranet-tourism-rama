@@ -123,56 +123,6 @@ export const GroupJoinRequests = () => {
             sort: [{ created_at: "desc" }],
         }
     );
-
-    // const fetchRequests = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.get("/api/getGroupJoinRequests", {
-    //             params: {
-    //                 sort: [{ created_at: "desc" }],
-    //             },
-    //         });
-    //
-    //         if ([200, 201, 204].includes(response.status)) {
-    //             const {
-    //                 data: { data },
-    //             } = response.data;
-    //
-    //             const preparedRequests = data
-    //                 .filter(
-    //                     (item) =>
-    //                         item.status !== "approved" &&
-    //                         item.status !== "rejected"
-    //                 )
-    //                 .map((request) => ({
-    //                     id: request.id,
-    //                     name: request.user.name,
-    //                     department: request.userDepartment,
-    //                     time: new Date(request.created_at),
-    //                     group: request.group.name,
-    //                     followers: `${request.groupFollowersCount} followers`,
-    //                     profileImage: getProfileImage(
-    //                         request.userProfile,
-    //                         request.user.name
-    //                     ),
-    //                     groupImage:
-    //                         request.group.banner ??
-    //                         "/assets/defaultCommunity.png",
-    //                     status: request.status,
-    //                 }));
-    //             setRequests(preparedRequests);
-    //         }
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    //
-    //     setLoading(false);
-    // };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
     const preparedRequests = requests
         .filter(
             (item) => item.status !== "approved" && item.status !== "rejected"

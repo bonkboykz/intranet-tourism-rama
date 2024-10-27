@@ -152,10 +152,6 @@ export const CommunityCreationRequests = () => {
             sort: [{ created_at: "desc" }],
         }
     );
-    useEffect(() => {
-        fetchData();
-    }, []);
-
     const preparedRequests = requests
         .filter(
             (item) => item.status !== "approved" && item.status !== "rejected"
