@@ -62,10 +62,6 @@ class BusinessPostController extends Controller
             // 2. find business post with title "No Title"
             $no_title_business_post = BusinessPost::where('title', 'No title')->first();
 
-            $output = new ConsoleOutput();
-            $output->writeln($no_title_business_post);
-
-
             // 2.1 If not found, create one
             if (!$no_title_business_post) {
                 $no_title_business_post = BusinessPost::create([
