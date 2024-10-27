@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AvatarTemplateController;
 use App\Http\Controllers\BirthdayTemplateController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Community;
@@ -110,6 +111,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'update']);
     Route::delete('/api/birthday-templates/{birthdayTemplate}', [BirthdayTemplateController::class, 'destroy']);
     Route::put('/api/birthday-templates/{birthdayTemplate}/toggle-enabled', [BirthdayTemplateController::class, 'toggleEnabled']);
+
+    Route::get('/api/avatar-templates', [AvatarTemplateController::class, 'index']);
+    Route::post('/api/avatar-templates', [AvatarTemplateController::class, 'store']);
+    Route::put('/api/avatar-templates/{avatarTemplate}', [AvatarTemplateController::class, 'update']);
+    Route::delete('/api/avatar-templates/{avatarTemplate}', [AvatarTemplateController::class, 'destroy']);
+    Route::put('/api/avatar-templates/{avatarTemplate}/toggle-enabled', [AvatarTemplateController::class, 'toggleEnabled']);
 
     Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
     Route::get('/api/search', [GlobalSearchController::class, 'search'])->name('search.results');

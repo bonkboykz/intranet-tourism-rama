@@ -1,22 +1,20 @@
 import * as React from "react";
+import { useEffect } from "react";
 import axios from "axios";
 
 function Avatar({ src, alt, isSelected, onClick }) {
-    // Ensure the path always starts with 'assets/'
-    let source = `/assets/${src.replace(/^user\//, "").replace(/^assets\//, "")}`;
-
-    console.log("SOURCE", source); // This will output: /assets/Avatar%204.png
-
     return (
         <img
             loading="lazy"
             src={
-                source
-                    ? source
-                    : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${name}`
+                src
+                    ? src
+                    : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${alt}`
             }
             alt={alt}
-            className={`shrink-0 aspect-square w-[94px] cursor-pointer hover:scale-125 transition-transform duration-300 ${isSelected ? "border-4 border-blue-500" : ""}`}
+            className={`shrink-0 aspect-square w-[94px] cursor-pointer hover:scale-125 transition-transform duration-300 ${
+                isSelected ? "border-4 border-blue-500" : ""
+            }`}
             onClick={onClick}
         />
     );
@@ -33,29 +31,30 @@ function PhotoAndAvatarPopup({
     profileId,
 }) {
     const [selectedAvatar, setSelectedAvatar] = React.useState(null);
+    const [avatars, setAvatars] = React.useState([]);
 
-    const avatars = [
-        { src: "Avatar 1.png", alt: "Avatar 1" },
-        { src: "Avatar 2.png", alt: "Avatar 2" },
-        { src: "Avatar 3.png", alt: "Avatar 3" },
-        { src: "Avatar 4.png", alt: "Avatar 4" },
-        { src: "Avatar 5.png", alt: "Avatar 5" },
-        { src: "Avatar 6.png", alt: "Avatar 6" },
-        { src: "Avatar 7.png", alt: "Avatar 7" },
-        { src: "Avatar 8.png", alt: "Avatar 8" },
-        { src: "Avatar 9.png", alt: "Avatar 9" },
-        { src: "Avatar 10.png", alt: "Avatar 10" },
-        { src: "Avatar 11.png", alt: "Avatar 11" },
-        { src: "Avatar 12.png", alt: "Avatar 12" },
-        { src: "Avatar 13.png", alt: "Avatar 13" },
-        { src: "Avatar 14.png", alt: "Avatar 14" },
-        { src: "Avatar 15.png", alt: "Avatar 15" },
-    ];
+    // Fetch avatar templates from the server
+    const fetchAvatars = async () => {
+        try {
+            const response = await axios.get("/api/avatar-templates");
+            const data = response.data.data.map((template) => ({
+                ...template,
+                background: template.background.includes("assets")
+                    ? template.background
+                    : `/storage/${template.background}`,
+            }));
+            setAvatars(data);
+        } catch (error) {
+            console.error("Failed to fetch avatars:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAvatars();
+    }, []);
 
     const handleAvatarClick = (avatar) => {
-        // Ensure the selected avatar is always correctly prefixed
-        const cleanedSrc = `/assets/${avatar.src.replace(/^user\//, "").replace(/^assets\//, "")}`;
-        setSelectedAvatar(cleanedSrc);
+        setSelectedAvatar(avatar.background);
     };
 
     const handleSaveClick = async () => {
@@ -65,14 +64,15 @@ function PhotoAndAvatarPopup({
         }
 
         try {
-            // Fetch the image as a blob
+            console.log("Selected avatar URL:", selectedAvatar);
+            // Fetch the selected avatar image as a blob
             const response = await fetch(selectedAvatar);
             const blob = await response.blob();
 
             // Create a file from the blob
             const file = new File(
                 [blob],
-                `${selectedAvatar.split("/").pop()}`,
+                `background.${blob.type.split("/")[1]}`,
                 { type: blob.type }
             );
 
@@ -82,31 +82,19 @@ function PhotoAndAvatarPopup({
             formData.append("_method", "PUT");
             formData.append("name", userName);
 
-            // const options = {
-            //     method: "POST",
-            //     headers: {
-            //         Accept: "application/json",
-            //         "X-CSRF-TOKEN": csrfToken,
-            //         Authorization: `Bearer ${authToken}`,
-            //     },
-            //     body: formData,
-            // };
-
+            // Send the updated avatar data to the server
             const saveResponse = await axios.post(
                 `/api/profile/profiles/${profileId}/update_profile_image`,
                 formData
             );
 
-            const data = saveResponse.data;
-
-            if (![200, 201, 204].includes(saveResponse.status)) {
-                console.error("Error response from server:", data);
-                throw new Error("Network response was not ok");
+            if ([200, 201, 204].includes(saveResponse.status)) {
+                console.log("Avatar updated successfully:", saveResponse.data);
+                setProfileImage(selectedAvatar);
+                onClose();
+            } else {
+                throw new Error("Failed to update avatar. Please try again.");
             }
-
-            console.log("Avatar updated successfully:", data);
-            setProfileImage(selectedAvatar); // Update the profile image in the parent component
-            onClose(); // Close the popup
         } catch (error) {
             console.error("Error updating avatar:", error);
             window.location.reload();
@@ -124,18 +112,17 @@ function PhotoAndAvatarPopup({
                         <header className="flex gap-5 items-start text-2xl font-bold text-neutral-800">
                             <h1 className="flex-auto mt-4">Pick an Avatar</h1>
                         </header>
-                        <div className="grid grid-cols-6 gap-3 mt-2  px-2">
+                        <div className="grid grid-cols-6 gap-3 mt-2 px-2">
                             {avatars.map((avatar) => (
                                 <div
                                     className="w-[90px] h-[90px]"
-                                    key={avatar.src}
+                                    key={avatar.background}
                                 >
                                     <Avatar
-                                        src={avatar.src}
-                                        alt={avatar.alt}
+                                        src={avatar.background}
+                                        alt={avatar.name}
                                         isSelected={
-                                            selectedAvatar ===
-                                            `/assets/${avatar.src.replace(/^user\//, "").replace(/^assets\//, "")}`
+                                            selectedAvatar === avatar.background
                                         }
                                         onClick={() =>
                                             handleAvatarClick(avatar)
