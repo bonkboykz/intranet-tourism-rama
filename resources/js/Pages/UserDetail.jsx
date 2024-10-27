@@ -442,9 +442,9 @@ function UserDetailContent() {
                     </div>
 
                     {/* main content */}
-                    <div className="flex flex-col justify-center w-full max-w-[1200px] max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
-                        <div>
-                            <div className="profile-header w-full bg-white max-md:h-[385px] shadow-custom rounded-lg ml-8">
+                    <div className="flex flex-col justify-center w-full max-w-[1200px] max-sm:px-4 max-md:px-6 gap-6 items-center box-border max-sm:max-w-[100vw]">
+                        <div className="profile-header my-0 mx-auto">
+                            <div className="flex-col w-full flex bg-white h-auto">
                                 <ProfileHeader
                                     backgroundImage={
                                         profileData.backgroundImage
@@ -453,7 +453,11 @@ function UserDetailContent() {
                                     name={profileData.name}
                                     username={profileData.username}
                                     status={profileData.status}
-                                    onEditBanner={() => setIsPopupOpen(true)}
+                                    onEditBanner={() => {
+                                        if (!canEdit) return;
+
+                                        setIsPopupOpen(true);
+                                    }}
                                     rounded={true}
                                     userId={user.id}
                                     profileId={profileData.profile?.id}
@@ -463,6 +467,9 @@ function UserDetailContent() {
                                     activeTab={activeTab}
                                     setActiveTab={setActiveTab}
                                 />
+                            </div>
+
+                            <div className="flex-col w-full flex bg-white h-auto rounded-b-lg max-w-[875px]">
                                 {activeTab === "activities" && (
                                     <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 flex flex-col items-center ">
                                         {/* <ShareYourThoughts userId={user.id} postType={'post'} onCreatePoll={handleCreatePoll} /> */}
@@ -662,7 +669,7 @@ function UserDetailContent() {
                                     </section>
                                 )}
                                 {activeTab === "files" && (
-                                    <div>
+                                    <div className="max-w-full">
                                         <div className="flex gap-4 whitespace-nowrap">
                                             <SearchInput
                                                 onSearch={setFileSearchTerm}

@@ -253,16 +253,16 @@ function ProfileHeader({
         <>
             <OnlineUsersProvider>
                 <header
-                    className="flex overflow-hidden bg-white relative z-999 flex-col items-start pt-0 max-md:pt-10 -mt-6 max-md:-mt-10 w-full min-h-[400px] max-md:h-[100px] max-md:px-0 max-md:max-w-full"
+                    className="flex overflow-hidden bg-white relative z-999 flex-col items-start pt-0 max-md:pt-10 -mt-6 max-md:-mt-10 w-full min-h-[300px] md:min-h-[400px] max-md:h-[100px] max-md:px-0 max-md:max-w-full"
                     onClick={handleEditBanner}
                 >
                     <img
                         src={backgroundImage}
                         alt=""
-                        className="object-cover relative inset-0 w-full h-[290px] max-md:h-1/3"
+                        className="object-cover inset-0 w-full h-[290px] max-sm:h-1/2 max-md:h-1/3 z-0 relative"
                     />
 
-                    <div className="flex-row max-md:flex-col z-100 w-auto h-auto bg-white flex gap-4 -mt-16 max-md:-mt-14 max-md:-ml-7 px-10">
+                    <div className="flex-row max-md:flex-col z-100 w-auto h-auto bg-white flex gap-4 -mt-16 max-md:-mt-14 max-md:-ml-7 px-10 z-1">
                         <div onClick={handleIconClick}>
                             <div className=" flex">
                                 <ProfileImage
