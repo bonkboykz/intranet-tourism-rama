@@ -11,7 +11,7 @@ export const NotificationsContext = createContext({
     hasNewNotifications: false,
 });
 
-export function useSetupNotifications() {
+export function useSetupNotifications(type = "recent") {
     // TODO: When optimizing return to this
     // const { notifications: initialNotifications = [] } = usePage().props;
 
@@ -26,7 +26,7 @@ export function useSetupNotifications() {
 
     const fetchNotifications = async () => {
         try {
-            const response = await axios.get("/api/notifications/recent");
+            const response = await axios.get(`/api/notifications/${type}`);
 
             if ([200, 201, 204].includes(response.status)) {
                 // const {

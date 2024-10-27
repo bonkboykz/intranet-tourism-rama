@@ -85,7 +85,8 @@ Route::middleware(['auth'])->group(function () {
 
     // TODO: Separate to modules later
     Route::get('/api/notifications', [NotificationController::class, 'apiIndex'])->name('notification');
-    Route::get('/api/notifications/recent', [NotificationController::class, 'getRecentNotifications'])->name('recentNotifications');
+    Route::get('/api/notifications/recent', action: [NotificationController::class, 'getRecentNotifications'])->name('recentNotifications');
+    Route::get('/api/notifications/unread', action: [NotificationController::class, 'getUnreadNotifications'])->name('recentNotifications');
     Route::post('/api/markAsRead/{notificationId}', [NotificationController::class, 'markAsRead'])->name('markAsRead');
 
     Route::post('/api/createJoinGroupRequest', [RequestController::class, 'createJoinGroupRequest'])->name('createJoinGroupRequest');

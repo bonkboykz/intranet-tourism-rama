@@ -12,7 +12,7 @@ import {
 import { getProfileImage } from "@/Utils/getProfileImage";
 
 const AllNotificationsPage = () => {
-    const { notifications } = useSetupNotifications();
+    const { notifications } = useSetupNotifications("unread");
 
     return (
         <Example>

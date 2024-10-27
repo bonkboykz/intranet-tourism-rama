@@ -61,6 +61,16 @@ class NotificationController extends Controller
         return response()->json(data: ['status' => 'read']);
     }
 
+    public function getUnreadNotifications()
+    {
+        $user = User::find(auth()->id());
+        $notifications = Notification::where('notifiable_id', $user->id)->with(['notifiable.profile'])->where('read_at', null)->latest()->get();
+
+        return response()->json([
+            'data' => $notifications,
+        ]);
+    }
+
     // public function index_unread()
     // {
     //     return Inertia::render('Notification_unread', ['id' => auth()->id()]);
