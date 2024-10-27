@@ -144,7 +144,7 @@ const StaffMemberCard = ({
                 <h3 className="staff-member-name">{name}</h3>
                 <p className="staff-member-role">{role}</p>
                 {/* <p className={`staff-member-status ${isDeactivated ? 'deactiate-offline' : status.toLowerCase()}`}>{isDeactivated ? 'Offline' : status}</p> */}
-                <p className="staff-member-extension">{extension}</p>
+                <p className="staff-member-extension">{workNo}</p>
             </div>
             <div className="card-footer">
                 <button
