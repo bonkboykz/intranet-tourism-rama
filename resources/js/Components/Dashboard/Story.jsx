@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMemo } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 
@@ -142,6 +143,12 @@ const StoryNew = ({ userId }) => {
             let baseMaxSize = settings.max_file_size;
 
             if (file.type.startsWith("video")) {
+                if (file.type !== "video/mp4") {
+                    fileInputRef.current.value = "";
+                    toastError("Only MP4 videos are supported");
+                    return;
+                }
+
                 baseMaxSize = settings.max_video_size;
             } else if (file.type.startsWith("image")) {
                 baseMaxSize = settings.max_image_size;
