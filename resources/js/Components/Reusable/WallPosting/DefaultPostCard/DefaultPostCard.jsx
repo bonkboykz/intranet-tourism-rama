@@ -77,7 +77,7 @@ function EventTag({ event }) {
     }
 
     return (
-        <div className="flex gap-2  overflow-x-auto max-w-full pb-2">
+        <div className="flex gap-2 flex-wrap  max-w-full pb-2">
             {events.map((event) => {
                 return (
                     <Whisper
@@ -139,7 +139,7 @@ function EventTag({ event }) {
                             </Popover>
                         }
                     >
-                        <div className="px-2 py-0 rounded-md bg-red-100">
+                        <div className="px-2 py-0 rounded-md bg-red-100 inline-flex">
                             <p className="mt-0 text-xs font-semibold leading-6 text-secondary max-md:max-w-full cursor-pointer">
                                 {event.title}
                             </p>
