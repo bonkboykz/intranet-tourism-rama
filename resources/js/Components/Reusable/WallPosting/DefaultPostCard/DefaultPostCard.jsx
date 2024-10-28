@@ -498,24 +498,30 @@ export function DefaultPostCard({ post }) {
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
-                        <CardHeader post={cachedPost} />
-                        <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
-                            <CardImage post={cachedPost} />
-                            <div className="flex items-center gap-2">
-                                {canEdit && (
-                                    <img
-                                        ref={buttonRef}
-                                        loading="lazy"
-                                        src="/assets/wallpost-dotbutton.svg"
-                                        alt="Options"
-                                        className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
-                                        onClick={() =>
-                                            setShowDetails(!showDetails)
-                                        }
-                                    />
-                                )}
+                        <a
+                            className="cursor-pointer"
+                            href={`/user/${cachedPost.user_id}`}
+                        >
+                            <CardHeader post={cachedPost} />
+
+                            <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
+                                <CardImage post={cachedPost} />
+                                <div className="flex items-center gap-2">
+                                    {canEdit && (
+                                        <img
+                                            ref={buttonRef}
+                                            loading="lazy"
+                                            src="/assets/wallpost-dotbutton.svg"
+                                            alt="Options"
+                                            className="shrink-0 my-auto aspect-[1.23] fill-red-500 w-6 cursor-pointer mt-1"
+                                            onClick={() =>
+                                                setShowDetails(!showDetails)
+                                            }
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     {showDetails && canEdit && (
