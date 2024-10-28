@@ -108,6 +108,7 @@ function UserDetailContent() {
                 setProfileData((pv) => ({
                     ...pv,
                     ...data,
+                    is_active: data.is_active,
                     icon1: canEdit ? pv.icon1 : "",
                     backgroundImage:
                         data.profile && data.profile.cover_photo
@@ -560,6 +561,23 @@ function UserDetailContent() {
                                                                 }
                                                                 isFirstIcon
                                                             />
+                                                        </div>
+
+                                                        <div className="flex ml-4 flex-row space-x-36 mt-4 my-auto max-md:max-w-full md:flex-row max-md:gap-0">
+                                                            <div className="text-base font-medium">
+                                                                Status
+                                                            </div>
+                                                            <div
+                                                                className={`status-badge ${
+                                                                    profileData.is_active
+                                                                        ? "bg-red-500"
+                                                                        : "bg-green-500"
+                                                                } text-white text-xs px-3 py-2   rounded-full`}
+                                                            >
+                                                                {profileData.is_active
+                                                                    ? "Deactivated"
+                                                                    : "Activated"}
+                                                            </div>
                                                         </div>
                                                         <div className="flex-auto my-auto max-md:max-w-full">
                                                             <div className="flex gap-5 flex-col md:flex-row max-md:gap-0">
