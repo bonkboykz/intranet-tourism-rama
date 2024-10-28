@@ -13,6 +13,7 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
     const [text, setText] = useState("");
     const [previewUrl, setPreviewUrl] = useState("");
     const [storyType, setStoryType] = useState("image");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (file) {
@@ -43,11 +44,14 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (loading) return;
+        setLoading(true);
+
         const formData = new FormData();
         formData.append("user_id", userId);
         formData.append("type", "story");
         formData.append("visibility", "public");
-        formData.append("content", text || ""); // Ensure text is a string
+        formData.append("content", text || "");
         formData.append("tag", JSON.stringify([]));
 
         if (image) {
@@ -73,6 +77,8 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -144,8 +150,9 @@ const CreateImageStory = ({ file, onClose, onPostStory, userId, onGoBack }) => {
                             <button
                                 type="submit"
                                 className="w-full py-2 max-md:py-2 px-4 font-bold bg-primary hover:bg-primary-hover text-white rounded-full mb-2 md:mb-0"
+                                disabled={loading}
                             >
-                                Post
+                                {loading ? "Posting..." : "Post"}
                             </button>
                         </div>
                     </form>
