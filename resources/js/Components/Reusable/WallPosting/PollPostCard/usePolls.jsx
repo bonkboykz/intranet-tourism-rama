@@ -234,6 +234,12 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
                     ))}
                 </div>
 
+                <div className="text-sm text-gray-500 my-2">
+                    {isSingleChoice
+                        ? "Deselect your current choice to change your vote"
+                        : "Select one or more"}
+                </div>
+
                 {!hasSubmittedFeedback && (
                     <div className="mt-4 flex w-full gap-2">
                         <input
