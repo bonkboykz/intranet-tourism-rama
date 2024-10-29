@@ -1243,8 +1243,7 @@ class PostController extends Controller
 
         $query->orderBy('created_at', 'desc');
 
-        // $posts = $query->paginate(20);
-        $posts = $query->paginate(5);
+        $posts = $query->paginate(1);
 
         // Return the result as JSON
         return response()->json([
