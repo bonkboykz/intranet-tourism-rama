@@ -17,6 +17,7 @@ const OrgChartPhotoChangeRow = ({
     status,
 }) => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [isStatus, setIsStatus] = useState("");
 
     const [loading, setLoading] = useState(false);
     const onApprove = async () => {
@@ -30,9 +31,9 @@ const OrgChartPhotoChangeRow = ({
             );
 
             if ([200, 201, 204].includes(response.status)) {
-                console.log("Approved");
+                setIsStatus("approved");
 
-                onUpdate();
+                setTimeout(() => onUpdate(), 10000);
             }
         } catch (e) {
             console.error(e);
@@ -53,9 +54,9 @@ const OrgChartPhotoChangeRow = ({
             );
 
             if ([200, 201, 204].includes(response.status)) {
-                console.log("Rejected");
+                setIsStatus("rejected");
 
-                onUpdate();
+                setTimeout(() => onUpdate(), 10000);
             }
         } catch (e) {
             console.error(e);
@@ -95,8 +96,16 @@ const OrgChartPhotoChangeRow = ({
                 </div>
                 {status === "pending" && (
                     <div className="flex justify-end w-1/4">
-                        {loading === true ? (
+                        {loading ? (
                             <Loader2 className="w-6 h-6 animate-spin" />
+                        ) : isStatus === "approved" ? (
+                            <span className="text-green-600 font-bold">
+                                Approved
+                            </span>
+                        ) : isStatus === "rejected" ? (
+                            <span className="text-red-600 font-bold">
+                                Rejected
+                            </span>
                         ) : (
                             <>
                                 <button
