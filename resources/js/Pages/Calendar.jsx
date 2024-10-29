@@ -695,7 +695,7 @@ function Calendar() {
                         ref={calendarRef}
                         select={handleDateSelect}
                         eventClick={handleEventClick}
-                        // selectLongPressDelay={0}
+                        selectLongPressDelay={0}
                         height={650}
                         buttonText={{
                             today: "Today",
@@ -703,7 +703,7 @@ function Calendar() {
                             month: "Month",
                             day: "Day",
                         }}
-                        editable={!isMobile}
+                        // editable={!isMobile}
                         events={events}
                         eventDidMount={(info) => {
                             if (info.event.extendedProps.isBirthday) {
