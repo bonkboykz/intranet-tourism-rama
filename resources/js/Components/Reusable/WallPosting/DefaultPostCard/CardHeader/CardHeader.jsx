@@ -1,4 +1,4 @@
-export function CardHeader({ post }) {
+export function CardHeader({ post, isClosed }) {
     if (post.community) {
         return (
             <div className="flex w-full items-center justify-between h-auto mb-4">
@@ -39,6 +39,15 @@ export function CardHeader({ post }) {
                     ))}
                     {post.departmentNames ? post.departmentNames : post.type}
                 </span>
+            )}
+            {isClosed && (
+                <div
+                    className={
+                        "p-2 rounded-3xl min-w-20 font-bold bg-secondary text-white border-none"
+                    }
+                >
+                    Post is closed
+                </div>
             )}
         </div>
     );
