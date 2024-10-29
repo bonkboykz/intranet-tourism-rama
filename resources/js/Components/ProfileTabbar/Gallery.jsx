@@ -20,25 +20,30 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
         department_id: departmentId,
     });
 
+    const MAX_IMAGES = 20;
+
     const renderImages = () => {
-        return posts.map((post) =>
-            post.attachments
-                .filter((attachment) => {
-                    return attachment.mime_type.startsWith("image/");
-                })
-                .map((imageAttachment) => (
-                    <PhotoView
-                        key={imageAttachment.id}
-                        src={`/storage/${imageAttachment.path}`}
-                    >
-                        <img
-                            src={`/storage/${imageAttachment.path}`}
-                            alt="Image Attachment"
-                            className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                        />
-                    </PhotoView>
-                ))
-        );
+        // Отбираем только изображения и обрезаем массив до MAX_IMAGES
+        const images = posts
+            .flatMap((post) =>
+                post.attachments.filter((attachment) =>
+                    attachment.mime_type.startsWith("image/")
+                )
+            )
+            .slice(0, MAX_IMAGES);
+
+        return images.map((imageAttachment) => (
+            <PhotoView
+                key={imageAttachment.id}
+                src={`/storage/${imageAttachment.path}`}
+            >
+                <img
+                    src={`/storage/${imageAttachment.path}`}
+                    alt="Image Attachment"
+                    className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                />
+            </PhotoView>
+        ));
     };
 
     return (
@@ -56,7 +61,12 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
                     </div>
                 </PhotoProvider>
 
-                {hasMoreImages && (
+                {(hasMoreImages ||
+                    posts.flatMap((post) =>
+                        post.attachments.filter((att) =>
+                            att.mime_type.startsWith("image/")
+                        )
+                    ).length > MAX_IMAGES) && (
                     <button
                         disabled={isImagesLoading}
                         onClick={loadMoreImages}
@@ -98,7 +108,6 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
             ...attachment,
             path: `/storage/${attachment.path}`,
         }));
-
     return (
         <section className="flex flex-col px-4 pt-4 py-3 pb-3 max-w-[1500px] max-md:px-5 bg-white rounded-lg shadow-custom mt-4">
             <header>
