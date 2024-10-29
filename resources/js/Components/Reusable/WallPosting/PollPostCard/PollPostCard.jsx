@@ -31,6 +31,7 @@ export function PollPostCard({ post }) {
     const [showDetails, setShowDetails] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [isClosed, setIsClosed] = useState(false);
     const { variant, loggedInUserId } = useContext(WallContext);
 
     const refetchPost = async () => {
@@ -121,6 +122,8 @@ export function PollPostCard({ post }) {
             if (![200, 201, 204].includes(response.status)) {
                 throw new Error("Failed to close poll");
             }
+
+            setIsClosed(true);
 
             refetchPost();
         } catch (error) {
@@ -218,7 +221,13 @@ export function PollPostCard({ post }) {
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">
                     <div className="flex gap-1 mt-2"></div>
                     <div className="flex flex-col justify-between items-start px-1 w-full mb-4 p-2 -ml-2 -mt-3">
-                        <CardHeader post={cachedPost} />
+                        <CardHeader
+                            post={cachedPost}
+                            isClosed={
+                                cachedPost.poll.end_date &&
+                                new Date(cachedPost.poll.end_date) < new Date()
+                            }
+                        />
                         <div className="flex gap-5 justify-between w-full max-md:flex-wrap max-md:max-w-full">
                             <a
                                 className="cursor-pointer"
@@ -226,7 +235,6 @@ export function PollPostCard({ post }) {
                             >
                                 <CardImage post={cachedPost} />
                             </a>
-
                             <div className="flex items-center gap-2">
                                 {canEdit && (
                                     <>
