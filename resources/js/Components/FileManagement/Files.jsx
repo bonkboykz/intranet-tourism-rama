@@ -50,6 +50,7 @@ const FileTable = ({
     departmentId,
     userId,
     isManagement,
+    filterBy,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -86,24 +87,32 @@ const FileTable = ({
             const newFilter = [];
 
             if (searchTerm !== "") {
-                newFilter.push({
-                    field: "metadata",
-                    subfield: "extension",
-                    type: "ilike",
-                    value: searchTerm,
-                });
-                newFilter.push({
-                    field: "metadata",
-                    subfield: "original_name",
-                    type: "ilike",
-                    value: searchTerm,
-                });
-                newFilter.push({
-                    field: "metadata",
-                    subfield: "mime_type",
-                    type: "ilike",
-                    value: searchTerm,
-                });
+                if (filterBy === "name") {
+                    newFilter.push({
+                        field: "metadata",
+                        subfield: "extension",
+                        type: "ilike",
+                        value: searchTerm,
+                    });
+                    newFilter.push({
+                        field: "metadata",
+                        subfield: "original_name",
+                        type: "ilike",
+                        value: searchTerm,
+                    });
+                    newFilter.push({
+                        field: "metadata",
+                        subfield: "mime_type",
+                        type: "ilike",
+                        value: searchTerm,
+                    });
+                } else if (filterBy === "author") {
+                    newFilter.push({
+                        field: "user.name",
+                        type: "ilike",
+                        value: searchTerm,
+                    });
+                }
             }
 
             if (communityId) {
@@ -159,7 +168,7 @@ const FileTable = ({
 
             const filesData = data.map((file) => ({
                 ...file,
-                uploader: file.author.name, // Assuming the API provides an 'uploader' field with the uploader's name
+                uploader: file.user.name, // Assuming the API provides an 'uploader' field with the uploader's name
                 metadata:
                     typeof file.metadata === "string"
                         ? JSON.parse(file.metadata)
@@ -347,7 +356,7 @@ const FileTable = ({
                                         hasRole("superadmin") ||
                                         isCommunityAdmin ||
                                         isDepartmentAdmin ||
-                                        item.author.id === user.id;
+                                        item.user.id === user.id;
 
                                     const isEditing = editingIndex === index;
 
