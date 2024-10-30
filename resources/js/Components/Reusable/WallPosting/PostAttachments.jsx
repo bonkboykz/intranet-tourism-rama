@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { cn } from "@/Utils/cn";
 
@@ -28,6 +30,17 @@ function PostAttachments({ attachments }) {
             att.mime_type.startsWith("image/") ||
             att.mime_type.startsWith("video/")
     );
+
+    const handleNext = () => {
+        setCurrentMediaIndex((prev) => (prev + 1) % imagesAndVideos.length);
+    };
+
+    const handlePrev = () => {
+        setCurrentMediaIndex(
+            (prev) =>
+                (prev - 1 + imagesAndVideos.length) % imagesAndVideos.length
+        );
+    };
 
     const renderImageOrVideo = (attachment, index, isMore = false) => (
         <div
@@ -304,6 +317,34 @@ function PostAttachments({ attachments }) {
                                               </div>
                                           )
                                       )}
+                            </div>
+                            <div className="flex justify-between mt-4 w-full">
+                                <button
+                                    onClick={() =>
+                                        setCurrentMediaIndex(
+                                            (prev) =>
+                                                (prev -
+                                                    1 +
+                                                    imagesAndVideos.length) %
+                                                imagesAndVideos.length
+                                        )
+                                    }
+                                    className="transform bg-white rounded-full p-2"
+                                >
+                                    <ArrowLeft />
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        setCurrentMediaIndex(
+                                            (prev) =>
+                                                (prev + 1) %
+                                                imagesAndVideos.length
+                                        )
+                                    }
+                                    className="transform bg-white rounded-full p-2"
+                                >
+                                    <ArrowRight />
+                                </button>
                             </div>
                         </div>
                     </div>
