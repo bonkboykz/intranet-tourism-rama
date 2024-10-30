@@ -111,7 +111,13 @@ export default function Pautan({ displayType }) {
                                 className="flex min-w-0 gap-x-4 w-full px-4"
                             >
                                 <img
-                                    src={faviconSrc}
+                                    src={(() => {
+                                        if (displayType === "department") {
+                                            return "/assets/File Management Inactive.svg";
+                                        } else {
+                                            return faviconSrc;
+                                        }
+                                    })()}
                                     alt={`${displayLabel} favicon`}
                                     className="h-6 w-6 flex-none"
                                     onError={(e) => {
