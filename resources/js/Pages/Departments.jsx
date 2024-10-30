@@ -28,6 +28,7 @@ const Departments = () => {
     const [isCreateDepartmentOpen, setIsCreateDepartmentOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // State for error modal
     const csrfToken = useCsrf();
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     const toggleCreateCommunity = () =>
         setIsCreateDepartmentOpen(!isCreateDepartmentOpen);
@@ -78,6 +79,9 @@ const Departments = () => {
 
             if (data.data.next_page_url) {
                 fetchDepartments(data.data.next_page_url);
+            }
+            if (!data.data.next_page_url) {
+                setIsDataLoaded(true);
             }
         } catch (error) {
             console.error("Error fetching departments:", error);
@@ -162,24 +166,25 @@ const Departments = () => {
         );
     };
 
-    const handleVisitClick = (departmentID) => {
-        window.location.href = `/departmentInner?departmentId=${departmentID[0].id}`;
-    };
-
     const filteredDepartments = departmentsList.filter((department) =>
         department.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    useEffect(() => {
-        console.log(filteredDepartments);
-        const userDepartments = filteredDepartments.filter(
-            (department) => department.role === "member"
-        );
+    console.log(filteredDepartments);
 
-        if (userDepartments.length === 1) {
-            window.location.href = `/departmentInner?departmentId=${userDepartments[0].id}`;
+    useEffect(() => {
+        if (isDataLoaded) {
+            console.log(filteredDepartments);
+            const userDepartments = filteredDepartments.filter(
+                (department) => department.role === "member"
+            );
+            console.log("user deppppps: ", userDepartments);
+
+            if (userDepartments.length === 1) {
+                window.location.href = `/departmentInner?departmentId=${userDepartments[0].id}`;
+            }
         }
-    }, [filteredDepartments]);
+    }, [filteredDepartments, isDataLoaded]);
 
     return (
         <Example>
