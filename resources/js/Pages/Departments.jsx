@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/react";
 
 import { CancelIcon } from "@/Components/Icons/CancelIcon";
@@ -161,9 +162,24 @@ const Departments = () => {
         );
     };
 
+    const handleVisitClick = (departmentID) => {
+        window.location.href = `/departmentInner?departmentId=${departmentID[0].id}`;
+    };
+
     const filteredDepartments = departmentsList.filter((department) =>
         department.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    useEffect(() => {
+        console.log(filteredDepartments);
+        const userDepartments = filteredDepartments.filter(
+            (department) => department.role === "member"
+        );
+
+        if (userDepartments.length === 1) {
+            window.location.href = `/departmentInner?departmentId=${userDepartments[0].id}`;
+        }
+    }, [filteredDepartments]);
 
     return (
         <Example>
