@@ -97,7 +97,7 @@ function LogoUploader() {
     };
 
     const handleDelete = () => {
-        setImageSrc(null);
+        setImageSrc(defaultImage);
     };
 
     const handleSave = async () => {

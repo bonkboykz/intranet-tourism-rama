@@ -1,8 +1,6 @@
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { toast,ToastContainer } from "react-toastify";
 
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { useClickOutside } from "@/Utils/hooks/useClickOutside";
@@ -12,6 +10,8 @@ import { Avatar } from "./Avatar";
 import { PopupMenu } from "./PopupMenu";
 import { PopupMenuAdmin } from "./PopupMenuAdmin";
 import { UserInfo } from "./UserInfo";
+
+import "react-toastify/dist/ReactToastify.css";
 
 export const MemberCard = ({
     id,
@@ -24,33 +24,42 @@ export const MemberCard = ({
     isActive,
     onAssign,
     onRemove,
+    isOnlyAdmin,
+    adminCount,
 }) => {
     const [showPopup, setShowPopup] = useState(false);
-
-    const handleDotClick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        setShowPopup(!showPopup);
-    };
+    const [showModal, setShowModal] = useState(false);
 
     const { hasRole } = usePermissions();
     const { isAdmin, user } = useContext(CommunityContext);
 
     const canAssignAdmin = hasRole("superadmin") || isAdmin;
-
     const canRemoveMember = hasRole("superadmin") || isAdmin || user?.id === id;
-
     const showThreeDots = canAssignAdmin || canRemoveMember;
 
-    const [showModal, setShowModal] = useState(false);
+    const handleDotClick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setShowPopup(!showPopup);
+    };
 
     const handleConfirmRemove = (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        onRemove(employment_post_id);
-        setShowModal(false);
+        if (isOnlyAdmin) {
+            toast.error("A community group needs at least 1 admin.", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            onRemove(employment_post_id);
+            setShowModal(false);
+        }
     };
 
     const { buttonRef, popupRef, modalRef } = useClickOutside(() => {
@@ -61,6 +70,7 @@ export const MemberCard = ({
     return (
         <a href={`/user/${id}`}>
             <div className="relative flex p-2 text-neutral-800 rounded-2xl align-center hover:bg-blue-100">
+                <ToastContainer />
                 <Avatar
                     src={imageUrl}
                     className="shrink-0 aspect-[0.95] w-[62px] rounded-full mb-4"
@@ -97,6 +107,8 @@ export const MemberCard = ({
                                         setShowPopup(false);
                                         onAssign(id);
                                     }}
+                                    isOnlyAdmin={isOnlyAdmin}
+                                    adminCount={adminCount}
                                 />
                             ) : (
                                 <PopupMenu
@@ -118,7 +130,6 @@ export const MemberCard = ({
                             )}
                         </div>
                     )}
-
                     {showModal &&
                         createPortal(
                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
