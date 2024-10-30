@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { toast,ToastContainer } from "react-toastify";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
 import { Admins } from "./Members/Admins";
 import { Members } from "./Members/Members";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function CommunityMembers({ communityID, loggedInID }) {
     const [searchInput, setSearchInput] = useState("");
@@ -26,6 +29,10 @@ function CommunityMembers({ communityID, loggedInID }) {
             const adminsData = response.data.data || [];
             setAdmins(adminsData);
         } catch (e) {
+            toast.error("Error fetching admins", {
+                position: "top-right",
+                icon: <Loader2 className="w-6 h-6 text-white" />,
+            });
             console.error("Error fetching admins:", e);
         }
 
@@ -44,13 +51,15 @@ function CommunityMembers({ communityID, loggedInID }) {
             }
 
             const membersData = response.data;
-
             const fetchedMembers = membersData || [];
             fetchedMembers.sort((a, b) => a.order - b.order);
 
-            // setAdmins(updatedAdmins);
             setMembers(fetchedMembers);
         } catch (error) {
+            toast.error("Error fetching members", {
+                position: "top-right",
+                icon: <Loader2 className="w-6 h-6 text-white" />,
+            });
             console.error("Error fetching data:", error);
         } finally {
             setIsLoading(false);
@@ -88,6 +97,58 @@ function CommunityMembers({ communityID, loggedInID }) {
         (member) => !admins.some((admin) => admin.id === member.user_id)
     );
 
+    const handleDemotion = async (admin, withRemove = false) => {
+        try {
+            const rolesResponse = await axios.post(
+                `/api/communities/communities/${communityID}/revoke-community-admin`,
+                {
+                    user_id: admin.id,
+                    community_id: communityID,
+                    ...(withRemove && { remove: true }),
+                }
+            );
+
+            if (![200, 201, 204].includes(rolesResponse.status)) {
+                console.error(
+                    "Failed to demote user:",
+                    rolesResponse.statusText
+                );
+                toast.error("Failed to demote user", {
+                    position: "top-right",
+                    icon: <Loader2 className="w-6 h-6 text-white" />,
+                });
+                return;
+            }
+
+            if (admin.id === loggedInID) {
+                window.location.reload();
+                return;
+            }
+
+            toast.success("User demoted successfully", {
+                position: "top-right",
+                icon: <Loader2 className="w-6 h-6 text-white" />,
+            });
+
+            fetchAdmins();
+            fetchMembers();
+        } catch (error) {
+            console.error("Error demoting user:", error);
+            toast.error("Error demoting user", {
+                position: "top-right",
+                icon: <Loader2 className="w-6 h-6 text-white" />,
+            });
+        }
+    };
+
+    const handleAdminRemove = async (admin) => {
+        if (admins.length === 1) {
+            toast.error("Community name is required.");
+            return;
+        }
+        await handleDemotion(admin, true);
+    };
+
     if (isLoading) {
         return (
             <div className="loading-screen flex w-full justify-center items-center">
@@ -98,6 +159,7 @@ function CommunityMembers({ communityID, loggedInID }) {
 
     return (
         <section className="flex flex-col h-auto max-w-full p-6 rounded-3xl max-md:px-5">
+            <ToastContainer />
             <div className="flex items-center gap-3.5 text-base font-bold text-white max-md:flex-wrap max-md:max-w-full">
                 <input
                     type="text"
@@ -122,6 +184,7 @@ function CommunityMembers({ communityID, loggedInID }) {
                     fetchMembers();
                 }}
                 loggedInID={loggedInID}
+                onRemoveAdmin={handleAdminRemove} // Pass handleAdminRemove to Admins
             />
 
             <Members

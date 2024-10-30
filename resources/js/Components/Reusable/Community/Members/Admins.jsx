@@ -18,7 +18,7 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
                 {
                     user_id: admin.id,
                     community_id: communityID,
-                    ...(withRemove == true && { remove: true }),
+                    ...(withRemove === true && { remove: true }),
                 }
             );
 
@@ -31,7 +31,6 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
 
             if (admin.id === loggedInID) {
                 window.location.reload();
-
                 return;
             }
 
@@ -45,6 +44,10 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
     };
 
     const handleAdminRemove = async (member) => {
+        if (admins.length <= 1) {
+            alert("A community group needs at least 1 admin.");
+            return;
+        }
         await handleDemotion(member, true);
     };
 
@@ -58,6 +61,7 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
             </header>
 
             {admins.map((admin, index) => {
+                const isOnlyAdmin = admins.length === 1;
                 return (
                     <MemberCard
                         key={index}
@@ -73,7 +77,7 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
                         titles={
                             admin.business_post_titles
                                 ? admin.business_post_titles
-                                : "No Title Avialable"
+                                : "No Title Available"
                         }
                         isActive={admin.is_active}
                         activePopupId={activePopupId}
@@ -81,6 +85,7 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
                         onAssign={() => handleDemotion(admin)}
                         onRemove={() => handleAdminRemove(admin)}
                         closePopup={closePopup}
+                        isOnlyAdmin={isOnlyAdmin}
                     />
                 );
             })}
