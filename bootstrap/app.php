@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         // Every day at 08:00 Kuala Lumpur time, 00:00 UTC time
-        $schedule->job(new BirthdayWishJob)->dailyAt('00:00');
+        $schedule->job(new BirthdayWishJob)->dailyAt('01:00');
         $schedule->command('telescope:prune')->daily();
         $schedule->job(new UpdateSearchIndex)->everyFiveMinutes();
     })
