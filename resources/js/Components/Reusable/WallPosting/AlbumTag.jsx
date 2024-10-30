@@ -69,7 +69,7 @@ const TagInput = ({ tag, setTag, onClose, onSave }) => {
                         </div>
                         <div className="w-full flex justify-end">
                             <img
-                                src="/assets/cancel.svg"
+                                src="assets/cancel.svg"
                                 alt="Close icon"
                                 className="w-6 h-6 sm:w-4 sm:h-4 md:w-6 md:h-6 cursor-pointer"
                                 onClick={onClose}
