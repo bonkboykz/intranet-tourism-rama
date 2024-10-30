@@ -4,6 +4,7 @@ namespace Modules\Crud\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Crud\Models\Resource;
+use Modules\Posts\Models\Post;
 
 class ResourceController extends Controller
 {
@@ -39,7 +40,28 @@ class ResourceController extends Controller
 
     public function destroy(Resource $resource)
     {
-        $resource->delete();
+        try {
+            $post = null;
+
+            if ($resource->attachable_type === 'posts') {
+                $post = Post::find($resource->attachable_id);
+
+            }
+
+            $resource->delete();
+
+            if ($post !== null) {
+                // if post does not have any more resources or content, delete it
+                if ($post->resources()->count() === 0 && ($post->content === null || $post->content === '')) {
+                    $post->delete();
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
 
         return response()->noContent();
     }
