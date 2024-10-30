@@ -1,13 +1,11 @@
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { PopupMenuAdmin } from "@/Components/Reusable/Community/Members/PopupMenuAdmin";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { useClickOutside } from "@/Utils/hooks/useClickOutside";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
+import useUserData from "@/Utils/hooks/useUserData"; // Import useUserData
 
 import { Avatar } from "./Avatar";
 import { PopupMenu } from "./PopupMenu";
@@ -26,29 +24,31 @@ export const MemberCard = ({
     onRemove,
 }) => {
     const [showPopup, setShowPopup] = useState(false);
+    const { hasRole } = usePermissions();
+    const { isAdmin } = useContext(DepartmentContext);
+    const userData = useUserData();
+    const [showModal, setShowModal] = useState(false);
+
+    const isSuperAdmin = hasRole("superadmin");
+    const isSelf = id === userData?.id;
+
+    const canAssignAdmin =
+        (isSuperAdmin || isAdmin) && !(isAdmin && isSelf && !isSuperAdmin);
+
+    const canRemoveMember =
+        (isSuperAdmin || isAdmin) && !(isAdmin && isSelf && !isSuperAdmin);
+
+    const showThreeDots = canAssignAdmin || canRemoveMember;
 
     const handleDotClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         setShowPopup(!showPopup);
     };
-
-    const { hasRole } = usePermissions();
-    const { isAdmin } = useContext(DepartmentContext);
-
-    const canAssignAdmin = hasRole("superadmin") || isAdmin;
-
-    const canRemoveMember = hasRole("superadmin") || isAdmin;
-
-    const showThreeDots = canAssignAdmin || canRemoveMember;
-
-    const [showModal, setShowModal] = useState(false);
 
     const handleConfirmRemove = (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         onRemove(employment_post_id);
         setShowModal(false);
     };
@@ -97,6 +97,8 @@ export const MemberCard = ({
                                         setShowPopup(false);
                                         onAssign(id);
                                     }}
+                                    canAssignAdmin={canAssignAdmin}
+                                    canRemoveMember={canRemoveMember}
                                 />
                             ) : (
                                 <PopupMenu
