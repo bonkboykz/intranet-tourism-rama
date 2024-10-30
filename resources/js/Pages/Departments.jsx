@@ -28,7 +28,6 @@ const Departments = () => {
     const [isCreateDepartmentOpen, setIsCreateDepartmentOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // State for error modal
     const csrfToken = useCsrf();
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     const toggleCreateCommunity = () =>
         setIsCreateDepartmentOpen(!isCreateDepartmentOpen);
@@ -81,12 +80,11 @@ const Departments = () => {
                 fetchDepartments(data.data.next_page_url);
             }
             if (!data.data.next_page_url) {
-                setIsDataLoaded(true);
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Error fetching departments:", error);
         }
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -172,8 +170,10 @@ const Departments = () => {
 
     console.log(filteredDepartments);
 
+    const [isOne, setIsOne] = useState(false);
+
     useEffect(() => {
-        if (isDataLoaded) {
+        if (!isLoading) {
             console.log(filteredDepartments);
             const userDepartments = filteredDepartments.filter(
                 (department) => department.role === "member"
@@ -184,7 +184,7 @@ const Departments = () => {
                 window.location.href = `/departmentInner?departmentId=${userDepartments[0].id}`;
             }
         }
-    }, [filteredDepartments, isDataLoaded]);
+    }, [filteredDepartments, isLoading]);
 
     return (
         <Example>
