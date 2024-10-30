@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "@/Utils/cn";
 
@@ -44,20 +43,27 @@ function PostAttachments({ attachments }) {
 
     const renderImageOrVideo = (attachment, index, isMore = false) => (
         <div
-            key={attachment.path} // Use a unique key based on the attachment
+            key={attachment.path}
             className={`attachment ${
                 attachment.height > attachment.width ? "tall" : ""
-            } ${isMore ? "relative" : ""}`}
+            } ${isMore ? "relative" : ""} cursor-pointer`}
             onClick={() => openPopup(index)}
         >
             {attachment.mime_type.startsWith("image/") ? (
                 <img
                     src={`/storage/${attachment.path}`}
                     alt="attachment"
-                    className="w-full h-auto rounded-xl object-cover"
+                    className="w-full h-auto rounded-xl object-cover cursor-pointer"
                 />
             ) : (
-                <video controls className="w-full h-auto rounded-lg">
+                // Добавляем autoPlay и muted, чтобы видео проигрывалось автоматически, но без звука
+                <video
+                    autoPlay
+                    muted
+                    controls
+                    loop
+                    className="w-full h-auto rounded-lg cursor-pointer"
+                >
                     <source src={`/storage/${attachment.path}`} />
                     Your browser does not support the video tag.
                 </video>
@@ -74,7 +80,6 @@ function PostAttachments({ attachments }) {
         const handleDownload = (e, attachment) => {
             e.preventDefault();
             const fileUrl = `/storage/${attachment.path}`;
-            // For SVG icons, open the file in a new tab
             if (attachment.extension === "svg") {
                 window.open(fileUrl, "_blank");
             } else {
@@ -237,7 +242,7 @@ function PostAttachments({ attachments }) {
                                             }`}
                                             alt="Current attachment"
                                             className={cn(
-                                                "object-contain rounded-none",
+                                                "object-contain rounded-none cursor-pointer",
                                                 imagesAndVideos.length === 1 &&
                                                     "w-full h-auto"
                                             )}
@@ -257,7 +262,9 @@ function PostAttachments({ attachments }) {
                                                 ].path
                                             }
                                             controls
-                                            className="rounded-lg"
+                                            autoPlay
+                                            muted
+                                            className="rounded-lg cursor-pointer"
                                             style={{
                                                 maxWidth: "50vw",
                                                 maxHeight: "70vh",
@@ -280,67 +287,15 @@ function PostAttachments({ attachments }) {
                                 </div>
                             </div>
 
-                            <div className="flex justify-start mt-4 overflow-x-scroll w-full">
-                                {imagesAndVideos.length === 1
-                                    ? null
-                                    : imagesAndVideos.map(
-                                          (attachment, index) => (
-                                              <div
-                                                  key={index}
-                                                  className={cn(
-                                                      `cursor-pointer mx-1 min-w-20 max-w-20 h-20`,
-                                                      currentMediaIndex ===
-                                                          index &&
-                                                          "border-2 border-blue-500"
-                                                  )}
-                                                  onClick={() =>
-                                                      setCurrentMediaIndex(
-                                                          index
-                                                      )
-                                                  }
-                                              >
-                                                  {attachment.mime_type.startsWith(
-                                                      "image/"
-                                                  ) ? (
-                                                      <img
-                                                          src={`/storage/${attachment.path}`}
-                                                          alt="Thumbnail"
-                                                          className="w-full h-full object-cover rounded-lg"
-                                                      />
-                                                  ) : (
-                                                      <video className="w-full h-full object-cover rounded-lg">
-                                                          <source
-                                                              src={`/storage/${attachment.path}`}
-                                                          />
-                                                      </video>
-                                                  )}
-                                              </div>
-                                          )
-                                      )}
-                            </div>
                             <div className="flex justify-between mt-4 w-full">
                                 <button
-                                    onClick={() =>
-                                        setCurrentMediaIndex(
-                                            (prev) =>
-                                                (prev -
-                                                    1 +
-                                                    imagesAndVideos.length) %
-                                                imagesAndVideos.length
-                                        )
-                                    }
+                                    onClick={handlePrev}
                                     className="transform bg-white rounded-full p-2"
                                 >
                                     <ArrowLeft />
                                 </button>
                                 <button
-                                    onClick={() =>
-                                        setCurrentMediaIndex(
-                                            (prev) =>
-                                                (prev + 1) %
-                                                imagesAndVideos.length
-                                        )
-                                    }
+                                    onClick={handleNext}
                                     className="transform bg-white rounded-full p-2"
                                 >
                                     <ArrowRight />
