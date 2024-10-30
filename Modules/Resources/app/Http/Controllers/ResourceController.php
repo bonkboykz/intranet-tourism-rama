@@ -3,7 +3,8 @@
 namespace Modules\Resources\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Auth;
+//use Auth;
+use Illuminate\Support\Facades\Auth;
 use Modules\Posts\Models\Post;
 use Modules\Resources\Models\Resource;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -77,7 +78,7 @@ class ResourceController extends Controller
 
 
         // Eager load the author and attachable relationships (for standalone and attached resources)
-        $query->with(relations: ['author', 'attachable']);
+        $query->with(relations: ['user', 'attachable']);
 
         $is_community = false;
         $is_department = false;
