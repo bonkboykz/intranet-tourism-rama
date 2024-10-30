@@ -147,6 +147,11 @@ class Post extends Model implements AuditableContract
         return $this->hasOne(related: Poll::class);
     }
 
+    public function resources()
+    {
+        return $this->morphMany(Resource::class, 'attachable');
+    }
+
     public function toSearchableArray()
     {
         $albums = $this->albums->pluck('name')->toArray();

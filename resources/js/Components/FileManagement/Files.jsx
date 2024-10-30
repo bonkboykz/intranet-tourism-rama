@@ -298,10 +298,6 @@ const FileTable = ({
 
     const handleDelete = async (fileId, index) => {
         const url = `/api/crud/resources/${fileId}`;
-        const options = {
-            method: "DELETE",
-            headers: { Accept: "application/json", "X-CSRF-Token": csrfToken },
-        };
 
         // const startEditing = (index, currentName) => {
         //     setEditingIndex(index);
@@ -309,13 +305,14 @@ const FileTable = ({
         // };
 
         try {
-            const response = await fetch(url, options);
-            const data = await response.json();
+            const response = await axios.delete(url);
+            const data = response.data;
             console.log("Delete response:", data);
+
+            window.location.reload(); // Reload the page
         } catch (error) {
             console.error("Error deleting file:", error);
         }
-        window.location.reload(); // Reload the page
     };
 
     const startEditing = (index, currentName) => {
