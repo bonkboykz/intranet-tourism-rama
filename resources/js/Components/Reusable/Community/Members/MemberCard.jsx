@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { toast,ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { CommunityContext } from "@/Pages/CommunityContext";
 import { useClickOutside } from "@/Utils/hooks/useClickOutside";
@@ -68,100 +68,115 @@ export const MemberCard = ({
     });
 
     return (
-        <a href={`/user/${id}`}>
-            <div className="relative flex p-2 text-neutral-800 rounded-2xl align-center hover:bg-blue-100">
-                <ToastContainer />
+        <div className="relative flex p-2 text-neutral-800 rounded-2xl align-center hover:bg-blue-100">
+            <a href={`/user/${id}`} className="flex items-center">
                 <Avatar
                     src={imageUrl}
                     className="shrink-0 aspect-[0.95] w-[62px] rounded-full mb-4"
                     status={status}
                 />
                 <UserInfo name={name} titles={titles} isActive={isActive} />
-                <div className="ml-auto">
-                    {showThreeDots && (
-                        <button
-                            ref={buttonRef}
-                            onClick={handleDotClick}
-                            className="relative p-2"
-                        >
-                            <img
-                                src="/assets/threedots.svg"
-                                alt="Menu"
-                                className="h-8 w-9"
+            </a>
+
+            <div className="ml-auto">
+                {showThreeDots && (
+                    <button
+                        ref={buttonRef}
+                        onClick={handleDotClick}
+                        className="relative p-2"
+                    >
+                        <img
+                            src="/assets/threedots.svg"
+                            alt="Menu"
+                            className="h-8 w-9"
+                        />
+                    </button>
+                )}
+                {showPopup && (
+                    <div ref={popupRef}>
+                        {flag === "admin" ? (
+                            <PopupMenuAdmin
+                                onRemove={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setShowPopup(false);
+                                    setShowModal(true);
+                                }}
+                                onAssign={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    if (isOnlyAdmin) {
+                                        toast.error(
+                                            "A community group needs at least 1 admin.",
+                                            {
+                                                position: "top-right",
+                                                autoClose: 5000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                            }
+                                        );
+                                    } else {
+                                        setShowPopup(false);
+                                        onAssign(id);
+                                    }
+                                }}
+                                isOnlyAdmin={isOnlyAdmin}
+                                adminCount={adminCount}
                             />
-                        </button>
-                    )}
-                    {showPopup && (
-                        <div ref={popupRef}>
-                            {flag === "admin" ? (
-                                <PopupMenuAdmin
-                                    onRemove={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setShowPopup(false);
-                                        setShowModal(true);
-                                    }}
-                                    onAssign={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setShowPopup(false);
-                                        onAssign(id);
-                                    }}
-                                    isOnlyAdmin={isOnlyAdmin}
-                                    adminCount={adminCount}
-                                />
-                            ) : (
-                                <PopupMenu
-                                    onRemove={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setShowPopup(false);
-                                        setShowModal(true);
-                                    }}
-                                    onAssign={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        setShowPopup(false);
-                                        onAssign(id);
-                                    }}
-                                    canAssignAdmin={canAssignAdmin}
-                                    canRemoveMember={canRemoveMember}
-                                />
-                            )}
-                        </div>
-                    )}
-                    {showModal &&
-                        createPortal(
-                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                <div
-                                    className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
-                                    ref={modalRef}
-                                >
-                                    <h2 className="mb-4 text-xl font-bold text-center">
-                                        Delete member?
-                                    </h2>
-                                    <div className="flex justify-center space-x-4">
-                                        <button
-                                            className="px-6 py-2 text-base font-bold text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
-                                            onClick={() => {
-                                                setShowModal(false);
-                                            }}
-                                        >
-                                            No
-                                        </button>
-                                        <button
-                                            className="px-8 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
-                                            onClick={handleConfirmRemove}
-                                        >
-                                            Yes
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>,
-                            document.body
+                        ) : (
+                            <PopupMenu
+                                onRemove={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setShowPopup(false);
+                                    setShowModal(true);
+                                }}
+                                onAssign={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setShowPopup(false);
+                                    onAssign(id);
+                                }}
+                                canAssignAdmin={canAssignAdmin}
+                                canRemoveMember={canRemoveMember}
+                            />
                         )}
-                </div>
+                    </div>
+                )}
+                {showModal &&
+                    createPortal(
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div
+                                className="relative p-8 bg-white shadow-lg rounded-2xl w-96"
+                                ref={modalRef}
+                            >
+                                <h2 className="mb-4 text-xl font-bold text-center">
+                                    Delete member?
+                                </h2>
+                                <div className="flex justify-center space-x-4">
+                                    <button
+                                        className="px-6 py-2 text-base font-bold text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
+                                        onClick={() => {
+                                            setShowModal(false);
+                                        }}
+                                    >
+                                        No
+                                    </button>
+                                    <button
+                                        className="px-8 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
+                                        onClick={handleConfirmRemove}
+                                    >
+                                        Yes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>,
+                        document.body
+                    )}
             </div>
-        </a>
+        </div>
     );
 };

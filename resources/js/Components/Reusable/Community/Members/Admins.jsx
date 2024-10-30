@@ -80,11 +80,8 @@ export function Admins({ admins, communityID, onRefetch, loggedInID }) {
                                 : "No Title Available"
                         }
                         isActive={admin.is_active}
-                        activePopupId={activePopupId}
-                        setActivePopupId={setActivePopupId}
                         onAssign={() => handleDemotion(admin)}
                         onRemove={() => handleAdminRemove(admin)}
-                        closePopup={closePopup}
                         isOnlyAdmin={isOnlyAdmin}
                     />
                 );
