@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { usePage } from "@inertiajs/react";
 
 import { FileTable } from "@/Components/FileManagement";
@@ -11,71 +11,6 @@ import WhosOnline from "../Components/Reusable/WhosOnlineWidget/WhosOnline";
 
 import "./css/StaffDirectory.css";
 import "../Components/Reusable/css/FileManagementSearchBar.css";
-
-const Filter = ({ onFilterChange }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedFilter, setSelectedFilter] = useState("By Name");
-    const menuRef = useRef(null);
-
-    const filters = [
-        { value: "name", label: "By Name" },
-        { value: "author", label: "By Author" },
-    ];
-
-    const toggleDropdown = () => {
-        setIsOpen((prev) => !prev);
-    };
-
-    const handleFilterSelect = (filter) => {
-        setSelectedFilter(filter.label);
-        onFilterChange(filter.value);
-        setIsOpen(false);
-    };
-
-    const handleClickOutside = (event) => {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
-            setIsOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        if (isOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isOpen]);
-
-    return (
-        <div className="relative w-32" ref={menuRef}>
-            <button
-                className="flex justify-between w-full p-2 border rounded-md"
-                onClick={toggleDropdown}
-            >
-                <span>{selectedFilter}</span>
-                <span className={`transform ${isOpen ? "rotate-180" : ""}`}>
-                    ▼
-                </span>
-            </button>
-            {isOpen && (
-                <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
-                    {filters.map((filter) => (
-                        <button
-                            key={filter.value}
-                            className="block w-full text-left p-2 hover:bg-gray-200"
-                            onClick={() => handleFilterSelect(filter)}
-                        >
-                            {filter.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-};
 
 const FileManage = ({ requiredData, onFileUploaded }) => {
     const { id } = usePage().props; // Retrieve the user_id from the Inertia view
@@ -108,10 +43,8 @@ const FileManage = ({ requiredData, onFileUploaded }) => {
                         onSearch={setSearchTerm}
                         requiredData={requiredData}
                         onFileUploaded={onFileUploaded}
+                        onFilterChange={setFilterBy}
                     />
-
-                    <Filter onFilterChange={setFilterBy} />
-
                     <FileTable
                         filterBy={filterBy}
                         searchTerm={searchTerm}

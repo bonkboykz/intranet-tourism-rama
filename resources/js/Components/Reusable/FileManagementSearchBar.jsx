@@ -6,17 +6,26 @@ import "./css/FileManagementSearchBar.css";
 import "./css/General.css";
 
 const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
-    const [searchTerm, setSearchTerm] = useState("");
+    const [nameSearchTerm, setNameSearchTerm] = useState("");
+    const [authorSearchTerm, setAuthorSearchTerm] = useState("");
     const [file, setFile] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [newFilename, setnewFilename] = useState("");
     const [tags, setTags] = useState([]);
     const csrfToken = useCsrf();
 
-    const handleSearchChange = (e) => {
+    // Handle search term change for name
+    const handleNameSearchChange = (e) => {
         const term = e.target.value;
-        setSearchTerm(term);
-        onSearch(term); // Call the parent's setSearchTerm to filter the table
+        setNameSearchTerm(term);
+        onSearch(term, "name"); // передаем тип фильтра
+    };
+
+    // Handle search term change for author
+    const handleAuthorSearchChange = (e) => {
+        const term = e.target.value;
+        setAuthorSearchTerm(term);
+        onSearch(term, "author"); // передаем тип фильтра
     };
 
     const handleFileChange = (event) => {
@@ -95,22 +104,22 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
             <div className="file-search-bar-title -mt-1">
                 <h2>Search Files</h2>
             </div>
-            <div className="file-search-bar">
+            <div className="file-search-bar gap-4">
                 <input
                     type="text"
-                    // className="search-input font-bold py-4 px-4 bg-gray-100 border-gray-100"
-                    className="text-md px-6 bg-gray-100 border-gray-100 rounded-full flex-grow w-full py-3 search-input-staff-search-bar sm:w-auto"
-                    placeholder="Search file name"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    style={{ paddingLeft: "1.5rem" }}
-                    // style={{ paddingLeft: '1.2rem' }}
+                    className="text-md px-6 bg-gray-100 border-gray-100 rounded-full flex-grow w-full py-3"
+                    placeholder="Search by file name"
+                    value={nameSearchTerm}
+                    onChange={handleNameSearchChange}
                 />
-                {/* <button
-          onClick={handleSearchChange}
-          className="visit-department-btn text-md font-bold rounded-full px-4 py-3 mx-3 bg-primary text-white hover:bg-primary-hover">
-          Search
-        </button> */}
+                <input
+                    type="text"
+                    className="text-md px-6 bg-gray-100 border-gray-100 rounded-full flex-grow w-full py-3"
+                    placeholder="Search by file author"
+                    value={authorSearchTerm}
+                    onChange={handleAuthorSearchChange}
+                />
+
                 <label htmlFor="file-upload" style={{ cursor: "pointer" }}>
                     <input
                         type="file"
@@ -127,13 +136,6 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                         />
                     </div> */}
                 </label>
-                {/* <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
-          <input type="file" id="file-upload" style={{ display: 'none' }} onChange={handleFileChange}/>
-          <div
-            className="flex items-center ml-2 bg-primary hover:bg-primary-hover px-4 py-1.5 rounded-full">
-            <img src="/assets/addFile.svg" alt="add new file" className="w-10 h-8" />
-          </div>
-        </label> */}
             </div>
             {showPopup && (
                 <div className="file-popup px-4">

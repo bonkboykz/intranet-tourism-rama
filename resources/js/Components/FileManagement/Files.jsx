@@ -11,7 +11,6 @@ import { CommunityContext } from "@/Pages/CommunityContext";
 import { DepartmentContext } from "@/Pages/DepartmentContext";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
-import PopupContent from "../Reusable/PopupContent";
 import { FileRow } from "./FileRow";
 
 const excludedExtensions = [
@@ -64,9 +63,7 @@ const FileTable = ({
     const csrfToken = useCsrf();
     const inputRef = useRef(null);
 
-    console.log("SEARCHTERM", currentSearchTerm);
     const searchTerm = useDebounce(currentSearchTerm, 500);
-    console.log("DEBOUNCED SEARCHTERM", searchTerm);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -164,7 +161,6 @@ const FileTable = ({
             const {
                 data: { last_page, data },
             } = response.data;
-            console.log("RESPONSEDATA", data);
 
             const filesData = data.map((file) => ({
                 ...file,
@@ -174,8 +170,6 @@ const FileTable = ({
                         ? JSON.parse(file.metadata)
                         : file.metadata,
             }));
-
-            console.log("FILES", filesData);
 
             // Accumulate all files data across pages
             // allFilesData = [...allFilesData, ...filesData];
@@ -409,7 +403,11 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                     <button
                         disabled={!hasNextButton.prev_page_url}
                         onClick={() => paginate((pv) => pv - 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.prev_page_url ? "text-primary" : "text-black-500"}`}
+                        className={`px-4 py-2 mx-1 rounded-lg ${
+                            hasNextButton.prev_page_url
+                                ? "text-primary"
+                                : "text-black-500"
+                        }`}
                     >
                         PREV
                     </button>
@@ -419,7 +417,11 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                     <button
                         key={i}
                         onClick={() => paginate(i + 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-200 text-primary" : "bg-white text-primary"}`}
+                        className={`px-4 py-2 mx-1 rounded-lg ${
+                            currentPage === i + 1
+                                ? "bg-blue-200 text-primary"
+                                : "bg-white text-primary"
+                        }`}
                     >
                         {i + 1}
                     </button>
@@ -428,7 +430,11 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                     <button
                         disabled={!hasNextButton.next_page_url}
                         onClick={() => paginate((pv) => pv + 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${hasNextButton.next_page_url ? "text-primary" : "text-black-500"}`}
+                        className={`px-4 py-2 mx-1 rounded-lg ${
+                            hasNextButton.next_page_url
+                                ? "text-primary"
+                                : "text-black-500"
+                        }`}
                     >
                         NEXT
                     </button>
