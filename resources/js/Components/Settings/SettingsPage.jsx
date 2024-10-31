@@ -40,7 +40,7 @@ const SettingsPage = ({ currentPage }) => {
                     <CoreFeatures onSave={handleSave} />
                     <SizeLimit onSave={handleSave} />
                     {/* <Media onSave={handleSave} /> */}
-                    <CoverPhotos onSave={handleSave} />
+                    {/* <CoverPhotos onSave={handleSave} /> */}
                     {/* <MailSettings onSave={handleSave} /> */}
                 </>
             )}
