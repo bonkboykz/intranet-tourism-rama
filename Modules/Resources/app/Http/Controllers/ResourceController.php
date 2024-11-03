@@ -72,7 +72,7 @@ class ResourceController extends Controller
 
     public function getPublicResources()
     {
-        $user = Auth::user(); // Get the authenticated user
+        $user = Auth::user();
 
         $query = Resource::queryable(); // Start a new query for the Resource model
 
@@ -99,6 +99,13 @@ class ResourceController extends Controller
             }
         }
 
+        // Если в фильтрах указан "Uploaded By"
+        if (request()->has('uploaded_by')) {
+            $uploadedByName = request('uploaded_by');
+            $query->whereHas('user', function ($query) use ($uploadedByName) {
+                $query->where('name', 'like', '%' . $uploadedByName . '%');
+            });
+        }
 
         if ((request()->has('isManagement') && !$user->hasRole('superadmin')) && !$is_community && !$is_department && !$is_user) {
             $query->where(function ($query) use ($user) {
