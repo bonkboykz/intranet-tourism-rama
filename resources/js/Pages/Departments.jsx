@@ -203,7 +203,7 @@ const Departments = () => {
                 </div>
 
                 {/* main content */}
-                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                     <DepartmentSearchBar
                         onSearch={(value) => setSearchTerm(value)}
                         toggleCreateCommunity={toggleCreateCommunity}

@@ -324,6 +324,14 @@
       grid-template-columns: repeat(2, 1fr); /* 1 column for small screens */
   }
 }
+@media (max-width: 375px) {
+  .dept-grid-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .staff-member-card {
+    margin: 0 auto;
+  }
+}
 
  /* STFFDRTRY Add responsive styles for smaller screens */ 
 @media (max-width: 768px) {
