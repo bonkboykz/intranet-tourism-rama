@@ -176,7 +176,8 @@ const Departments = () => {
         if (!isLoading) {
             console.log(filteredDepartments);
             const userDepartments = filteredDepartments.filter(
-                (department) => department.role === "member"
+                (department) =>
+                    department.role === "member" || department.role === "admin"
             );
             console.log("user deppppps: ", userDepartments);
 
