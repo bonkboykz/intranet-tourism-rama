@@ -49,7 +49,6 @@ const FileTable = ({
     departmentId,
     userId,
     isManagement,
-    filterBy,
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -84,34 +83,78 @@ const FileTable = ({
             const newFilter = [];
 
             if (searchTerm !== "") {
-                if (filterBy === "name") {
-                    newFilter.push({
-                        field: "metadata",
-                        subfield: "extension",
-                        type: "ilike",
-                        value: searchTerm,
-                    });
-                    newFilter.push({
-                        field: "metadata",
-                        subfield: "original_name",
-                        type: "ilike",
-                        value: searchTerm,
-                    });
-                    newFilter.push({
-                        field: "metadata",
-                        subfield: "mime_type",
-                        type: "ilike",
-                        value: searchTerm,
-                    });
-                } else if (filterBy === "author") {
-                    newFilter.push({
-                        field: "user.name",
-                        type: "ilike",
-                        value: searchTerm,
-                    });
+                // First attempt to search by metadata fields (extension, original_name, mime_type)
+                newFilter.push({
+                    field: "metadata",
+                    subfield: "extension",
+                    type: "ilike",
+                    value: searchTerm,
+                });
+                newFilter.push({
+                    field: "metadata",
+                    subfield: "original_name",
+                    type: "ilike",
+                    value: searchTerm,
+                });
+                newFilter.push({
+                    field: "metadata",
+                    subfield: "mime_type",
+                    type: "ilike",
+                    value: searchTerm,
+                });
+
+                const response = await axios.get(
+                    `/api/resources/public-resources`,
+                    {
+                        params: {
+                            isManagement,
+                            page: currentPage,
+                            perpage: itemsPerPage,
+                            filter: [
+                                {
+                                    field: "metadata",
+                                    subfield: "extension",
+                                    type: "not_in",
+                                    value: excludedExtensions,
+                                },
+                                ...newFilter,
+                            ].filter(Boolean),
+                        },
+                    }
+                );
+
+                // Check if any results were found
+                const {
+                    data: { last_page, data },
+                } = response.data;
+
+                if (data.length > 0) {
+                    // Files found, set the files data
+                    const filesData = data.map((file) => ({
+                        ...file,
+                        uploader: file.user.name,
+                        metadata:
+                            typeof file.metadata === "string"
+                                ? JSON.parse(file.metadata)
+                                : file.metadata,
+                    }));
+
+                    setTotalPages(last_page);
+                    setFiles(filesData);
+                    setLoading(false);
+                    return; // Exit early if files were found
                 }
+
+                // If no files were found, clear the newFilter to search by author
+                newFilter.length = 0; // Clear the previous filters
+                newFilter.push({
+                    field: "user.name",
+                    type: "ilike",
+                    value: searchTerm,
+                });
             }
 
+            // Add community, department, and user filters as before
             if (communityId) {
                 newFilter.push({
                     field: "attachable.community_id",
@@ -136,6 +179,7 @@ const FileTable = ({
                 });
             }
 
+            // Fetch again with the new filter for author if no files were found previously
             const response = await axios.get(
                 `/api/resources/public-resources`,
                 {
@@ -155,33 +199,21 @@ const FileTable = ({
                     },
                 }
             );
-            if (![200, 201, 204].includes(response.status)) {
-                throw new Error("Failed to fetch files");
-            }
+
             const {
                 data: { last_page, data },
             } = response.data;
 
             const filesData = data.map((file) => ({
                 ...file,
-                uploader: file.user.name, // Assuming the API provides an 'uploader' field with the uploader's name
+                uploader: file.user.name,
                 metadata:
                     typeof file.metadata === "string"
                         ? JSON.parse(file.metadata)
                         : file.metadata,
             }));
 
-            // Accumulate all files data across pages
-            // allFilesData = [...allFilesData, ...filesData];
-
-            // Determine the total number of pages
-            // totalPages = responseData.data.last_page;
-            // currentPage++;
-
             setTotalPages(last_page);
-
-            // Sort files by the `created_at` date in descending order (newest first)
-
             setFiles(filesData);
         } catch (error) {
             console.error("Error fetching files:", error);
@@ -189,9 +221,9 @@ const FileTable = ({
                 icon: <CircleXIcon className="w-6 h-6 text-white" />,
                 theme: "colored",
             });
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     useEffect(() => {
