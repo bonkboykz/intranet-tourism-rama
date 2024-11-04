@@ -152,7 +152,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     const navigation = useMemo(
         () =>
             [
-                (settings.wall_enabled || isSuperAdmin) && {
+                {
                     name: "Dashboard",
                     href: "/dashboard",
                     inactive: "/assets/Dashboard Inactive.svg",
