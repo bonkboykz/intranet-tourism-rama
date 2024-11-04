@@ -41,6 +41,23 @@ function PostAttachments({ attachments }) {
         );
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === "ArrowRight") {
+            handleNext();
+        } else if (event.key === "ArrowLeft") {
+            handlePrev();
+        }
+    };
+
+    React.useEffect(() => {
+        if (showPopup) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [showPopup]);
+
     const renderImageOrVideo = (attachment, index, isMore = false) => (
         <div
             key={attachment.path}
@@ -247,7 +264,7 @@ function PostAttachments({ attachments }) {
                                             )}
                                             style={{
                                                 maxWidth: "50vw",
-                                                maxHeight: "80vh",
+                                                maxHeight: "70vh",
                                                 display: "block",
                                                 margin: "auto",
                                             }}
