@@ -6,8 +6,7 @@ import "./css/FileManagementSearchBar.css";
 import "./css/General.css";
 
 const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
-    const [nameSearchTerm, setNameSearchTerm] = useState("");
-    const [authorSearchTerm, setAuthorSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     const [file, setFile] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [newFilename, setnewFilename] = useState("");
@@ -17,15 +16,8 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
     // Handle search term change for name
     const handleNameSearchChange = (e) => {
         const term = e.target.value;
-        setNameSearchTerm(term);
-        onSearch(term, "name"); // передаем тип фильтра
-    };
-
-    // Handle search term change for author
-    const handleAuthorSearchChange = (e) => {
-        const term = e.target.value;
-        setAuthorSearchTerm(term);
-        onSearch(term, "author"); // передаем тип фильтра
+        setSearchTerm(term);
+        onSearch(term); // передаем тип фильтра
     };
 
     const handleFileChange = (event) => {
@@ -109,15 +101,8 @@ const SearchFile = ({ onSearch, userId, requiredData, onFileUploaded }) => {
                     type="text"
                     className="text-md px-6 bg-gray-100 border-gray-100 rounded-full flex-grow w-full py-3"
                     placeholder="Search by file name"
-                    value={nameSearchTerm}
+                    value={searchTerm}
                     onChange={handleNameSearchChange}
-                />
-                <input
-                    type="text"
-                    className="text-md px-6 bg-gray-100 border-gray-100 rounded-full flex-grow w-full py-3"
-                    placeholder="Search by file author"
-                    value={authorSearchTerm}
-                    onChange={handleAuthorSearchChange}
                 />
 
                 <label htmlFor="file-upload" style={{ cursor: "pointer" }}>

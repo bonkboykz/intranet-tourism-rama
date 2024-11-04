@@ -17,8 +17,9 @@ const FileManage = ({ requiredData, onFileUploaded }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterBy, setFilterBy] = useState("name");
 
-    const handleSearch = (term) => {
+    const handleSearch = (term, type) => {
         setSearchTerm(term);
+        setFilterBy(type);
     };
 
     return (
@@ -43,13 +44,8 @@ const FileManage = ({ requiredData, onFileUploaded }) => {
                         onSearch={setSearchTerm}
                         requiredData={requiredData}
                         onFileUploaded={onFileUploaded}
-                        onFilterChange={setFilterBy}
                     />
-                    <FileTable
-                        filterBy={filterBy}
-                        searchTerm={searchTerm}
-                        isManagement
-                    />
+                    <FileTable searchTerm={searchTerm} isManagement />
                 </div>
             </main>
             {/* <aside className="fixed bottom-0 hidden px-4 py-6 overflow-y-auto border-r border-gray-200 left-20 top-16 w-96 sm:px-6 lg:px-8 xl:block">
