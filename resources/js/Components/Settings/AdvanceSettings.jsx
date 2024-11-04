@@ -71,7 +71,7 @@ const CoreFeatures = () => {
             <div className="w-full">
                 <ul role="list" className="divide-y divide-gray-200">
                     {[
-                        { label: "Wall", state: wall, setState: setWall },
+                        // { label: "Wall", state: wall, setState: setWall },
                         {
                             label: "Calendar of Events",
                             state: calendarOfEvents,
@@ -82,7 +82,7 @@ const CoreFeatures = () => {
                             state: notifications,
                             setState: setNotifications,
                         },
-                        { label: "Pages", state: pages, setState: setPages },
+                        // { label: "Pages", state: pages, setState: setPages },
                         { label: "Poll", state: poll, setState: setPoll },
                         {
                             label: "Organisation Chart",

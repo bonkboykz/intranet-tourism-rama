@@ -224,9 +224,7 @@ const AddMemberPopup = ({
                     const urlObj = new URL(data.next_page_url);
                     const params = new URLSearchParams(urlObj.search);
                     params.set("department_id", departmentId);
-                    url = `${urlObj.origin}${
-                        urlObj.pathname
-                    }?${params.toString()}`;
+                    url = `${urlObj.origin}${urlObj.pathname}?${params.toString()}`;
                 } else {
                     hasMorePages = false;
                 }
@@ -591,34 +589,42 @@ const AddMemberPopup = ({
                                     <div className="w-16 h-16 border-b-2 border-gray-900 rounded-full animate-spin"></div>
                                 </div>
                             ) : (
-                                searchResults.map((person, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center p-2 cursor-pointer"
-                                        onClick={() =>
-                                            handleSelectPerson(person)
-                                        }
-                                    >
-                                        <img
-                                            src={getImageSource(
-                                                person.profile?.staff_image ||
-                                                    defaultImage
-                                            )}
-                                            alt={person.name}
-                                            className="object-cover w-10 h-10 mr-4 rounded-full"
-                                        />
-                                        <div>
-                                            <div className="text-lg font-bold">
-                                                {person.name}
-                                            </div>
-                                            <div>
-                                                {renderTitles(
-                                                    person.employment_posts
+                                searchResults
+                                    .filter((i) =>
+                                        selectedPerson
+                                            ? i.name.toLocaleLowerCase() ===
+                                              searchTerm.toLocaleLowerCase()
+                                            : i
+                                    )
+                                    .map((person, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-center p-2 cursor-pointer"
+                                            onClick={() =>
+                                                handleSelectPerson(person)
+                                            }
+                                        >
+                                            <img
+                                                src={getImageSource(
+                                                    person.profile
+                                                        ?.staff_image ||
+                                                        defaultImage
                                                 )}
+                                                alt={person.name}
+                                                className="object-cover w-10 h-10 mr-4 rounded-full"
+                                            />
+                                            <div>
+                                                <div className="text-lg font-bold">
+                                                    {person.name}
+                                                </div>
+                                                <div>
+                                                    {renderTitles(
+                                                        person.employment_posts
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))
+                                    ))
                             )}
                             {error && (
                                 <div className="mt-2 text-secondary">

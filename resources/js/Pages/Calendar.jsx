@@ -617,17 +617,17 @@ function Calendar() {
         <Example>
             <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
                 <div
-                    className="container mx-auto mt-4 bg-white"
+                    className="container mx-auto mt-4 bg-white rounded-md"
                     style={{ maxWidth: "90%" }}
                 >
-                    <h1 className="mb-3 font-sans text-4xl font-bold text-left">
+                    <h1 className="mb-3 font-sans p-2 text-4xl font-bold text-left">
                         Calendar
                     </h1>
                     <hr
                         className="mx-auto my-2"
                         style={{ borderColor: "#E4E4E4", borderWidth: "1px" }}
                     />
-                    <div className="flex flex-col items-center w-full mt-3 mb-8">
+                    <div className="flex flex-col items-center w-full mt-3 mb-8 p-2">
                         <div className="flex items-center justify-between w-full">
                             <input
                                 type="search"
@@ -780,7 +780,12 @@ function Calendar() {
                                         whiteSpace: "nowrap",
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
-                                        border: `2px solid ${searchParams.get("event") === eventInfo.event.id ? "blue" : borderColor}`,
+                                        border: `2px solid ${
+                                            searchParams.get("event") ===
+                                            eventInfo.event.id
+                                                ? "blue"
+                                                : borderColor
+                                        }`,
                                     }}
                                     className="fc-event-title"
                                 >

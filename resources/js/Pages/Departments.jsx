@@ -79,10 +79,12 @@ const Departments = () => {
             if (data.data.next_page_url) {
                 fetchDepartments(data.data.next_page_url);
             }
+            if (!data.data.next_page_url) {
+                setIsLoading(false);
+            }
         } catch (error) {
             console.error("Error fetching departments:", error);
         }
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -162,24 +164,28 @@ const Departments = () => {
         );
     };
 
-    const handleVisitClick = (departmentID) => {
-        window.location.href = `/departmentInner?departmentId=${departmentID[0].id}`;
-    };
-
     const filteredDepartments = departmentsList.filter((department) =>
         department.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    useEffect(() => {
-        console.log(filteredDepartments);
-        const userDepartments = filteredDepartments.filter(
-            (department) => department.role === "member"
-        );
+    console.log(filteredDepartments);
 
-        if (userDepartments.length === 1) {
-            window.location.href = `/departmentInner?departmentId=${userDepartments[0].id}`;
+    const [isOne, setIsOne] = useState(false);
+
+    useEffect(() => {
+        if (!isLoading) {
+            console.log(filteredDepartments);
+            const userDepartments = filteredDepartments.filter(
+                (department) =>
+                    department.role === "member" || department.role === "admin"
+            );
+            console.log("user deppppps: ", userDepartments);
+
+            if (userDepartments.length === 1) {
+                window.location.href = `/departmentInner?departmentId=${userDepartments[0].id}`;
+            }
         }
-    }, [filteredDepartments]);
+    }, [filteredDepartments, isLoading]);
 
     return (
         <Example>
@@ -197,7 +203,7 @@ const Departments = () => {
                 </div>
 
                 {/* main content */}
-                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 max-md:px-6 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
+                <div className="flex flex-col justify-center w-full max-w-[1200px] pt-10 mr-10 max-md:ml-10 lg:ml-0 md:ml-10">
                     <DepartmentSearchBar
                         onSearch={(value) => setSearchTerm(value)}
                         toggleCreateCommunity={toggleCreateCommunity}
