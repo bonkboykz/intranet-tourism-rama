@@ -177,7 +177,6 @@ const SizeLimit = () => {
             fetchSettings();
         } catch (e) {
             console.error(e);
-
             toastError("Error saving settings");
         }
     };
@@ -203,20 +202,23 @@ const SizeLimit = () => {
                             limit: fileLimit,
                             setLimit: setFileLimit,
                             type: "file",
+                            options: [5, 10, 20, 30], // File size options
                         },
                         {
                             label: "Video",
                             limit: videoLimit,
                             setLimit: setVideoLimit,
                             type: "video",
+                            options: [10, 20, 50, 100], // Video size options
                         },
                         {
                             label: "Photo",
                             limit: photoLimit,
                             setLimit: setPhotoLimit,
                             type: "photo",
+                            options: [5, 10, 20, 30], // Photo size options
                         },
-                    ].map(({ label, limit, setLimit, type }) => (
+                    ].map(({ label, limit, setLimit, type, options }) => (
                         <li
                             key={label}
                             className="flex items-center justify-between w-full py-4"
@@ -249,7 +251,7 @@ const SizeLimit = () => {
                                 >
                                     <Menu.Items className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-custom ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <div className="py-1">
-                                            {[5, 10, 20, 30].map((option) => (
+                                            {options.map((option) => (
                                                 <Menu.Item
                                                     key={option}
                                                     as="div"
@@ -264,7 +266,6 @@ const SizeLimit = () => {
                                                                     type,
                                                                     event
                                                                 );
-
                                                                 close();
                                                             }}
                                                             className={classNames(
