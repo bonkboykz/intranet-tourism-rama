@@ -155,11 +155,15 @@ const Settings = () => {
             </aside>
             <div className="fixed bottom-5 left-5 lg:hidden">
                 <button
-                    className={`text-blue-700 p-3 rounded-full ${isOpen ? "bg-blue-600" : "bg-white"} shadow-[0_0_20px_3px_rgba(0,0,0,0.4)] focus:outline-none`}
+                    className={`text-blue-700 p-3 rounded-full ${
+                        isOpen ? "bg-blue-600" : "bg-white"
+                    } shadow-[0_0_20px_3px_rgba(0,0,0,0.4)] focus:outline-none`}
                     onClick={toggleMenu}
                 >
                     <CogIcon
-                        className={`h-8 w-8 transition-colors duration-200 ${isOpen ? "text-white bg-blue-600" : "text-blue-700"}`}
+                        className={`h-8 w-8 transition-colors duration-200 ${
+                            isOpen ? "text-white bg-blue-600" : "text-blue-700"
+                        }`}
                         aria-hidden="true"
                     />
                 </button>

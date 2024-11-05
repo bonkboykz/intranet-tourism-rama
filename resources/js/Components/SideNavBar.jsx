@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const Sidebar = () => {
     // Path to buttons
@@ -131,7 +131,7 @@ const Sidebar = () => {
                     );
                 })}
             </nav>
-            {showText && (
+            {/* {showText && (
                 <div
                     className="absolute bg-gray-700 text-white text-xs rounded py-1 px-2 z-20"
                     style={{
@@ -141,7 +141,7 @@ const Sidebar = () => {
                 >
                     {showText}
                 </div>
-            )}
+            )} */}
         </aside>
     );
 };
