@@ -424,55 +424,55 @@ const FileTable = ({
 
 const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
     return (
-        <>
-            <div
-                className="py-3 flex w-full max-w-full overflow-x-scroll"
-                style={{
-                    justifyContent: "safe center",
-                }}
-            >
-                {hasNextButton && (
-                    <button
-                        disabled={!hasNextButton.prev_page_url}
-                        onClick={() => paginate((pv) => pv - 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${
-                            hasNextButton.prev_page_url
-                                ? "text-primary"
-                                : "text-black-500"
-                        }`}
-                    >
-                        PREV
-                    </button>
-                )}
+        <div
+            className="py-3 flex w-full max-w-full overflow-x-auto whitespace-nowrap"
+            style={{
+                justifyContent: "safe center",
+            }}
+        >
+            {hasNextButton && (
+                <button
+                    disabled={!hasNextButton.prev_page_url}
+                    onClick={() => paginate((pv) => pv - 1)}
+                    className={`px-2 py-1 mx-1 rounded-lg ${
+                        hasNextButton.prev_page_url
+                            ? "text-primary"
+                            : "text-gray-400"
+                    }`}
+                >
+                    PREV
+                </button>
+            )}
 
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => paginate(i + 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${
-                            currentPage === i + 1
-                                ? "bg-blue-200 text-primary"
-                                : "bg-white text-primary"
-                        }`}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-                {hasNextButton && (
-                    <button
-                        disabled={!hasNextButton.next_page_url}
-                        onClick={() => paginate((pv) => pv + 1)}
-                        className={`px-4 py-2 mx-1 rounded-lg ${
-                            hasNextButton.next_page_url
-                                ? "text-primary"
-                                : "text-black-500"
-                        }`}
-                    >
-                        NEXT
-                    </button>
-                )}
-            </div>
-        </>
+            {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                    key={i}
+                    onClick={() => paginate(i + 1)}
+                    className={`px-2 py-1 mx-1 rounded-lg ${
+                        currentPage === i + 1
+                            ? "bg-blue-200 text-primary"
+                            : "bg-white text-primary"
+                    }`}
+                    style={{ minWidth: "32px" }}
+                >
+                    {i + 1}
+                </button>
+            ))}
+
+            {hasNextButton && (
+                <button
+                    disabled={!hasNextButton.next_page_url}
+                    onClick={() => paginate((pv) => pv + 1)}
+                    className={`px-2 py-1 mx-1 rounded-lg ${
+                        hasNextButton.next_page_url
+                            ? "text-primary"
+                            : "text-gray-400"
+                    }`}
+                >
+                    NEXT
+                </button>
+            )}
+        </div>
     );
 };
 
