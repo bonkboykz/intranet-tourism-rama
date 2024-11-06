@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import { CancelIcon } from "../Icons/CancelIcon";
+
 import "./Popup.css"; // Make sure to create the relevant CSS for styling
 
 export function IconButton({ icon, alt, onClick }) {
@@ -24,11 +26,7 @@ const Popup = ({ isOpen, onClose, children }) => {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="popup-close w-full flex justify-end">
-                    <IconButton
-                        icon="/assets/cancel.svg"
-                        alt="Close icon"
-                        onClick={onClose}
-                    />
+                    <CancelIcon onClick={onClose} />
                 </div>
                 {children}
             </div>

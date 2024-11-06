@@ -1,8 +1,11 @@
-import { Loader2 } from "lucide-react";
 import React from "react";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
+
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 
 const LikesPopup = ({ onClose, postId, commentId }) => {
     const [users, setUsers] = useState([]);
@@ -38,12 +41,7 @@ const LikesPopup = ({ onClose, postId, commentId }) => {
             <div className="bg-white rounded-2xl shadow-lg w-[300px] mx-2 overflow-auto max-h-[90vh]">
                 <div className="px-4 py-2 border-b flex justify-between items-center">
                     <h2 className="text-lg font-semibold">Likes</h2>
-                    <img
-                        src="/assets/cancel.svg"
-                        alt="Close"
-                        className="w-6 h-6 cursor-pointer"
-                        onClick={onClose}
-                    />
+                    <CancelIcon className="w-6 h-6" onClick={onClose} />
                 </div>
                 <div className="p-4 space-y-4">
                     {loading ? (

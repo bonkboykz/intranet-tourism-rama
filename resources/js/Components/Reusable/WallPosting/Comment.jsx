@@ -344,11 +344,7 @@ const Comment = ({
                                 Post
                             </span>
                         </div>
-                        <IconButton
-                            icon="/assets/cancel.svg"
-                            alt="Close icon"
-                            onClick={onClose}
-                        />
+                        <CancelIcon className="w-6 h-6" onClick={onClose} />
                     </div>
                 </div>
 

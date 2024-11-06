@@ -4,6 +4,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { add, format, startOfDay } from "date-fns";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { cn } from "@/Utils/cn";
 import useUserData from "@/Utils/hooks/useUserData";
 
@@ -157,11 +158,7 @@ export function InputPolls({
                 <header className="flex justify-between items-start mb-6 text-2xl font-bold text-neutral-800">
                     <h1>Create Poll</h1>
                     <button onClick={onClose}>
-                        <img
-                            src="assets/cancel.svg"
-                            alt="Close icon"
-                            className="w-6 cursor-pointer"
-                        />
+                        <CancelIcon className="w-6" />
                     </button>
                 </header>
                 <main className="flex flex-col space-y-4">

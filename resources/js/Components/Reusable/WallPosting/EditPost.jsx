@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { cn } from "@/Utils/cn";
 
 import { MentionPopup } from "./DefaultPostCard/MentionPopup";
@@ -219,11 +220,7 @@ function EditPost({
             <div className="flex flex-row justify-between items-center w-full max-md:w-full mb-4">
                 <h2 className="font-bold text-2xl">Edit Post</h2>
                 <button onClick={onClose}>
-                    <img
-                        src="/assets/cancel.svg"
-                        alt="Close icon"
-                        className="w-6 h-6"
-                    />
+                    <CancelIcon className="w-6 h-6" />
                 </button>
             </div>
 

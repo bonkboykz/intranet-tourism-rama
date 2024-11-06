@@ -68,12 +68,7 @@ const TagInput = ({ tag, setTag, onClose, onSave }) => {
                             Tag Album
                         </div>
                         <div className="w-full flex justify-end">
-                            <img
-                                src="assets/cancel.svg"
-                                alt="Close icon"
-                                className="w-6 h-6 sm:w-4 sm:h-4 md:w-6 md:h-6 cursor-pointer"
-                                onClick={onClose}
-                            />
+                            <CancelIcon className="w-6 h-6" onClick={onClose} />
                         </div>
                     </div>
                     <div className="flex flex-col px-5 mt-0">
