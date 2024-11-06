@@ -8,10 +8,7 @@ import "yet-another-react-lightbox/styles.css";
 
 export function VideoGallery({ videos }) {
     const [index, setIndex] = useState(-1);
-
     const size = useWindowSize();
-
-    console.log(videos);
 
     const slides = useMemo(() => {
         if (!size.width) {
@@ -19,7 +16,6 @@ export function VideoGallery({ videos }) {
         }
 
         const videoWidth = size.width - 200;
-        // aspect ratio 1.19
         const videoHeight = videoWidth / 1.19;
 
         return videos.map((video) => ({
@@ -38,13 +34,14 @@ export function VideoGallery({ videos }) {
     return (
         <>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
-                {videos.map((video, index) => (
-                    <video
+                {videos.map((video, idx) => (
+                    <img
                         key={video.id}
                         className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                        src={video.path}
-                        onClick={() => setIndex(index)}
-                    ></video>
+                        src={`${video.path}#t=0.1`}
+                        alt="Video Thumbnail"
+                        onClick={() => setIndex(idx)}
+                    />
                 ))}
             </div>
 
