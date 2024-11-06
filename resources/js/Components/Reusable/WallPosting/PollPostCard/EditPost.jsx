@@ -3,6 +3,7 @@ import axios from "axios";
 import { add, format, startOfDay } from "date-fns";
 import { Loader2 } from "lucide-react";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { cn } from "@/Utils/cn";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 
@@ -103,11 +104,7 @@ export function EditPollPost({
             <div className="flex flex-row justify-between items-center w-full max-md:w-full mb-4">
                 <h2 className="font-bold text-2xl">Edit Poll</h2>
                 <button onClick={onClose}>
-                    <img
-                        src="/assets/cancel.svg"
-                        alt="Close icon"
-                        className="w-6 h-6"
-                    />
+                    <CancelIcon className="w-6 h-6" />
                 </button>
             </div>
 

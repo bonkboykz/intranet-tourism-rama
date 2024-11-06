@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useCsrf } from "@/composables";
 
+import { CancelIcon } from "../Icons/CancelIcon";
 import PhotoAndAvatarPopup from "./PhotoAndAvatarPopup";
 import UpdatePhotoButton from "./UpdatePhoto";
 
@@ -103,11 +104,7 @@ function EditProfilePhoto({
                             <h1 className="flex-auto mt-4 ml-10">
                                 Edit Profile Photo
                             </h1>
-                            <IconButton
-                                icon="/assets/cancel.svg"
-                                alt="Close icon"
-                                onClick={onClose}
-                            />
+                            <CancelIcon onClick={onClose} />
                         </header>
                         <div className="flex flex-col -mt-1 mb-4">
                             {listItems.map((item, index) => (

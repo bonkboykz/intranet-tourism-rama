@@ -14,6 +14,7 @@ import phoneActiveIcon from "../../../../public/assets/phoneActiveIcon.png";
 import threeDotsIcon from "../../../../public/assets/threeDotButton.png";
 import whatsappActiveIcon from "../../../../public/assets/whatsappGreen.png";
 import whatsappIcon from "../../../../public/assets/whatsappIcon.png";
+import { CancelIcon } from "../Icons/CancelIcon";
 
 import "./css/StaffMemberCard.css";
 
@@ -200,12 +201,7 @@ const StaffMemberCard = ({
                         className="popup w-[475px] rounded-none"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <img
-                            src="assets/cancel.svg"
-                            className="close-button"
-                            onClick={closeCallPopup}
-                            alt="Close"
-                        />
+                        <CancelIcon onClick={closeCallPopup} />
                         <p
                             style={{
                                 fontSize: "16px",

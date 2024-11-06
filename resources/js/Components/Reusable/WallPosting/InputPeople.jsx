@@ -1,5 +1,7 @@
 import * as React from "react";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
+
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 
 function SearchPeopleInput({ onSearchResults }) {
     const [searchTerm, setSearchTerm] = useState("");

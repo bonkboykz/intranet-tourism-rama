@@ -944,11 +944,7 @@ function Calendar() {
                                     onClick={closeEditModal}
                                     className="mt-2 mr-2 modal-close-button"
                                 >
-                                    <img
-                                        src="/assets/cancel.svg"
-                                        alt="Close icon"
-                                        className="w-6 h-6"
-                                    />
+                                    <CancelIcon className="w-6 h-6" />
                                 </button>
                                 <form onSubmit={handleEditSubmit}>
                                     <input

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
+import { CancelIcon } from "@/Components/Icons/CancelIcon";
 import { cn } from "@/Utils/cn";
 
 import DOC from "../../../../../public/assets/Docs.svg";
@@ -234,11 +235,7 @@ function PostAttachments({ attachments }) {
                                 onClick={closePopup}
                                 className="absolute top-2 right-2"
                             >
-                                <img
-                                    src="/assets/cancel.svg"
-                                    alt="Close icon"
-                                    className="ml-4 w-5 h-5"
-                                />
+                                <CancelIcon className="ml-4 w-5 h-5" />
                             </button>
                             <div className="flex justify-center w-full">
                                 <div className="bg-gray-200 h-full w-full flex justify-center items-center">
