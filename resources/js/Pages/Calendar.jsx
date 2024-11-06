@@ -757,9 +757,9 @@ function Calendar() {
                             if (isBirthday) {
                                 return;
                             }
+
                             const borderColor =
                                 eventInfo.event.backgroundColor || "gray";
-
                             const isAuthor =
                                 user.id ===
                                     eventInfo.event.extendedProps.user.id ||
@@ -786,8 +786,14 @@ function Calendar() {
                                                 ? "blue"
                                                 : borderColor
                                         }`,
+                                        cursor: "pointer",
                                     }}
                                     className="fc-event-title"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        handleEditClick(eventInfo.event);
+                                    }}
                                 >
                                     <div
                                         style={{
