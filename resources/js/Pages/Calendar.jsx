@@ -727,16 +727,16 @@ function Calendar() {
                                 : "";
 
                             const popoverContent = `
-                            <div>
-                                <p class="event-title"><strong>${info.event.title}</strong></p>
-                                <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
-                                ${venueContent}
-                                ${descContent}
-                            </div>`;
+                                <div>
+                                    <p class="event-title"><strong>${info.event.title}</strong></p>
+                                    <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
+                                    ${venueContent}
+                                    ${descContent}
+                                </div>`;
 
                             new bootstrap.Popover(info.el, {
                                 placement: "auto",
-                                trigger: "hover",
+                                trigger: isMobile ? "manual" : "hover",
                                 container: "body",
                                 customClass: "custom-popover",
                                 content: popoverContent,
@@ -753,7 +753,6 @@ function Calendar() {
                         eventContent={(eventInfo) => {
                             const isBirthday =
                                 eventInfo.event.extendedProps.isBirthday;
-
                             if (isBirthday) {
                                 return;
                             }
@@ -765,6 +764,28 @@ function Calendar() {
                                     eventInfo.event.extendedProps.user.id ||
                                 hasRole("superadmin");
 
+                            const handlePopupOpen = (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const popover = new bootstrap.Popover(
+                                    e.target,
+                                    {
+                                        placement: "auto",
+                                        trigger: "manual",
+                                        container: "body",
+                                        customClass: "custom-popover",
+                                        content: `
+                                        <div>
+                                            <p><strong>${eventInfo.event.title}</strong></p>
+                                            <p><strong>Created by:</strong> ${eventInfo.event.extendedProps.userName}</p>
+                                            <p><strong>Venue:</strong> ${eventInfo.event.extendedProps.venue || "No venue specified"}</p>
+                                        </div>`,
+                                        html: true,
+                                    }
+                                );
+                                popover.show();
+                            };
+
                             return (
                                 <div
                                     key={eventInfo.event.id}
@@ -775,7 +796,8 @@ function Calendar() {
                                         borderRadius: "2px",
                                         display: "flex",
                                         alignItems: "center",
-                                        height: "30px",
+                                        minHeight: "30px",
+                                        minWidth: "50px",
                                         width: "100%",
                                         whiteSpace: "nowrap",
                                         overflow: "hidden",
@@ -789,11 +811,9 @@ function Calendar() {
                                         cursor: "pointer",
                                     }}
                                     className="fc-event-title"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                        handleEditClick(eventInfo.event);
-                                    }}
+                                    onClick={
+                                        isMobile ? handlePopupOpen : undefined
+                                    }
                                 >
                                     <div
                                         style={{
@@ -804,10 +824,7 @@ function Calendar() {
                                     />
                                     <span
                                         className="event-title"
-                                        style={{
-                                            color: "white",
-                                            flexGrow: 1,
-                                        }}
+                                        style={{ color: "white", flexGrow: 1 }}
                                     >
                                         {eventInfo.event.title}
                                     </span>
