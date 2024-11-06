@@ -132,6 +132,7 @@ export function Gallery({ selectedTag }) {
                                             path: `/storage/${videoAttachment.path}`,
                                         }))
                                 )}
+                            className="w-full h-auto"
                         />
 
                         {hasMoreVideo && (
