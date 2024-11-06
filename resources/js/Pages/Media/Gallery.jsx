@@ -33,8 +33,6 @@ export function Gallery({ selectedTag }) {
         only_video: true,
     });
 
-    // console.log(images);
-    // console.log(videos);
     return (
         <>
             <div>
@@ -129,7 +127,7 @@ export function Gallery({ selectedTag }) {
                                         )
                                         .map((videoAttachment) => ({
                                             ...videoAttachment,
-                                            path: `/storage/${videoAttachment.path}`,
+                                            path: `/storage/${videoAttachment.path}?cache-bust=${Date.now()}`,
                                         }))
                                 )}
                             className="w-full h-auto"
