@@ -832,7 +832,7 @@ function Calendar() {
                                         <img
                                             src={pencilIcon}
                                             alt="Edit"
-                                            className="inline-block w-4 h-4 ml-2 cursor-pointer"
+                                            className={`inline-block ${isMobile ? "w-8 h-8" : "w-6 h-6"} cursor-pointer`}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 e.preventDefault();
