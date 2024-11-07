@@ -5,7 +5,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { useWindowSize } from "@uidotdev/usehooks";
 import axios from "axios";
 import * as bootstrap from "bootstrap";
 import { format } from "date-fns";
@@ -24,7 +23,6 @@ import { isBirthdayDay } from "@/Utils/isBirthday";
 import { toastError } from "@/Utils/toast";
 
 import pencilIcon from "../../../public/assets/EditIcon.svg";
-import printIcon from "../../../public/assets/PrintPDF.svg";
 import PrintCalendar from "./Calendar/PrintCalendar";
 
 import "./Calendar/index.css";
@@ -137,8 +135,8 @@ const DayCellContent = ({ birthdays, user, ...dayInfo }) => {
 function Calendar() {
     const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [events, setEvents] = useState([]);
-    const [showAllEvents, setShowAllEvents] = useState(false);
-    const [filteredEvents, setFilteredEvents] = useState([]);
+    //  const [showAllEvents, setShowAllEvents] = useState(false);
+    const [filteredEvents /*setFilteredEvents*/] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [eventData, setEventData] = useState({
@@ -152,22 +150,22 @@ function Calendar() {
         color: "purple",
         url: "",
     });
-    const [includeUrl, setIncludeUrl] = useState(false);
+    const [, /*includeUrl*/ setIncludeUrl] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const csrfToken = useCsrf();
-    const [showPrint, setShowPrint] = useState(false);
+    const [showPrint /*setShowPrint*/] = useState(false);
     const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
     const [printRange, setPrintRange] = useState({
         startDate: "",
         endDate: "",
     });
-    const [isUrlFieldVisible, setIsUrlFieldVisible] = useState(false);
+    //    const [isUrlFieldVisible, setIsUrlFieldVisible] = useState(false);
     const [eventId, setEventId] = useState(null);
     const calendarRef = useRef(null);
 
-    const toggleShowAllEvents = () => {
-        setShowAllEvents(!showAllEvents);
-    };
+    //    const toggleShowAllEvents = () => {
+    //        setShowAllEvents(!showAllEvents);
+    //    };
 
     useEffect(() => {
         // fetchEvents();
@@ -396,32 +394,52 @@ function Calendar() {
         setIsPrintModalOpen(true);
     };
 
-    // const handleEventClick = (eventInfo) => {
-    //     eventInfo.jsEvent.preventDefault();
-    //     // Trigger handleEditClick with the event data
-    //     handleEditClick(eventInfo.event);
-    // };
-
     const user = useUserData();
     const { hasRole } = usePermissions();
 
     const handleEventClick = (eventInfo) => {
+        if (window.innerWidth >= 768) return;
+
         eventInfo.jsEvent.preventDefault();
 
-        const isAuthor = user.id === eventInfo.event.extendedProps.user.id;
-
-        if (!isAuthor) {
-            return;
-        }
-
-        // Check if the event is a birthday event
         if (eventInfo.event.extendedProps.isBirthday) {
-            // If it's a birthday event, do nothing (or you could add custom behavior here)
             return;
         }
 
-        // Trigger handleEditClick with the event data for non-birthday events
-        handleEditClick(eventInfo.event);
+        const descContent = eventInfo.event.extendedProps.description
+            ? `<p><strong>Description:</strong> ${eventInfo.event.extendedProps.description}</p>`
+            : "";
+        const venueContent = eventInfo.event.extendedProps.venue
+            ? `<p><strong>Venue:</strong> ${eventInfo.event.extendedProps.venue}</p>`
+            : "";
+        const popoverContent = `
+            <div>
+                <p class="event-title"><strong>${eventInfo.event.title}</strong></p>
+                <p><strong>Created by:</strong> ${eventInfo.event.extendedProps.userName}</p>
+                ${venueContent}
+                ${descContent}
+            </div>`;
+
+        const popover = new bootstrap.Popover(eventInfo.el, {
+            placement: "bottom",
+            trigger: "manual",
+            container: "body",
+            customClass: "custom-popover",
+            content: popoverContent,
+            html: true,
+        });
+        popover.show();
+
+        const hidePopover = (e) => {
+            if (!eventInfo.el.contains(e.target)) {
+                popover.hide();
+                document.removeEventListener("click", hidePopover);
+            }
+        };
+
+        setTimeout(() => {
+            document.addEventListener("click", hidePopover);
+        }, 0);
     };
 
     const handleEditClick = (event) => {
@@ -431,9 +449,9 @@ function Calendar() {
             return `${hours}:${minutes}`;
         };
 
-        const url = event.url !== "null" ? event.url : ""; // Handle 'null' or undefined
+        const url = event.url !== "null" ? event.url : "";
 
-        setEventId(event.id); // Set the event ID
+        setEventId(event.id);
         setEventData({
             title: event.title,
             venue: event.extendedProps.venue,
@@ -446,7 +464,7 @@ function Calendar() {
             url: url,
         });
 
-        setIncludeUrl(url !== ""); // Only set to true if URL is not an empty string
+        setIncludeUrl(url !== "");
         setIsEditModalOpen(true);
     };
 
@@ -539,9 +557,9 @@ function Calendar() {
         setDeleteConfirmOpen(true);
     };
 
-    const handleDeleteClick = () => {
-        openDeleteConfirm();
-    };
+    //    const handleDeleteClick = () => {
+    //        openDeleteConfirm();
+    //    };
 
     const [currentRange, setCurrentRange] = useState({
         start: null,
@@ -609,9 +627,6 @@ function Calendar() {
 
         closePrintModal();
     };
-
-    const { width } = useWindowSize();
-    const isMobile = Boolean(width && width < 768);
 
     return (
         <Example>
@@ -733,26 +748,17 @@ function Calendar() {
                         // editable={!isMobile}
                         events={events}
                         eventDidMount={(info) => {
-                            if (info.event.extendedProps.isBirthday) {
-                                return;
-                            }
-                            const formattedStartTime = new Date(
-                                info.event.start
-                            ).toLocaleString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                            });
+                            if (window.innerWidth < 768) return;
+
+                            if (info.event.extendedProps.isBirthday) return;
 
                             const descContent = info.event.extendedProps
                                 .description
                                 ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
                                 : "";
-
                             const venueContent = info.event.extendedProps.venue
                                 ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
                                 : "";
-
                             const popoverContent = `
                                 <div>
                                     <p class="event-title"><strong>${info.event.title}</strong></p>
@@ -763,7 +769,7 @@ function Calendar() {
 
                             new bootstrap.Popover(info.el, {
                                 placement: "auto",
-                                trigger: isMobile ? "manual" : "hover",
+                                trigger: "hover",
                                 container: "body",
                                 customClass: "custom-popover",
                                 content: popoverContent,
@@ -791,32 +797,6 @@ function Calendar() {
                                     eventInfo.event.extendedProps.user.id ||
                                 hasRole("superadmin");
 
-                            const handlePopupOpen = (e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                const popover = new bootstrap.Popover(
-                                    e.target,
-                                    {
-                                        placement: "auto",
-                                        trigger: "manual",
-                                        container: "body",
-                                        customClass: "custom-popover",
-                                        content: `
-                                        <div>
-                                            <p><strong>${eventInfo.event.title}</strong></p>
-                                            <p><strong>Created by:</strong> ${eventInfo.event.extendedProps.userName}</p>
-                                            <p><strong>Venue:</strong> ${
-                                                eventInfo.event.extendedProps
-                                                    .venue ||
-                                                "No venue specified"
-                                            }</p>
-                                        </div>`,
-                                        html: true,
-                                    }
-                                );
-                                popover.show();
-                            };
-
                             return (
                                 <div
                                     key={eventInfo.event.id}
@@ -842,7 +822,6 @@ function Calendar() {
                                         cursor: "pointer",
                                     }}
                                     className="fc-event-title"
-                                    onClick={handlePopupOpen}
                                 >
                                     <div
                                         style={{

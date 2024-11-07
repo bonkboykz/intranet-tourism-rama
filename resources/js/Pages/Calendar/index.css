@@ -219,7 +219,8 @@ a {
 
 @media screen and (max-width: 768px) {
     .custom-popover {
-        display: none;
+        max-width: 200px; 
+        font-size: 0.9em; 
     }
 }
 
