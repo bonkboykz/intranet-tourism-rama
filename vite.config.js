@@ -16,8 +16,8 @@ export default defineConfig({
             "@": path.resolve(/*__dirname,*/ "resources/js"),
         },
     },
-    server: {
-        host: true,
-        origin: "http://ipconfig:5173",
-    },
+    // server: {
+    //     host: true,
+    //     origin: "http://ipconfig:5173",
+    // },
 });
