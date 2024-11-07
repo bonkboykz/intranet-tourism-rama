@@ -99,17 +99,17 @@ class ResourceController extends Controller
             }
         }
 
-        if ($searchTerm = request('searchTerm')) {
-            $query->where(function ($query) use ($searchTerm) {
-                $query->orWhere('metadata->extension', 'ilike', "%$searchTerm%")
-                    ->orWhere('metadata->mime_type', 'ilike', "%$searchTerm%")
-                    ->orWhere('metadata->original_name', 'ilike', "%$searchTerm%")
-                    ->orWhereHas('user', function ($q) use ($searchTerm) {
-                        $q->where('name', 'ilike', "%$searchTerm%");
-                    });
-            });
-
-        }
+//        if ($searchTerm = request('searchTerm')) {
+//            $query->where(function ($query) use ($searchTerm) {
+//                $query->orWhere('metadata->extension', 'ilike', "%$searchTerm%")
+//                    ->orWhere('metadata->mime_type', 'ilike', "%$searchTerm%")
+//                    ->orWhere('metadata->original_name', 'ilike', "%$searchTerm%")
+//                    ->orWhereHas('user', function ($q) use ($searchTerm) {
+//                        $q->where('name', 'ilike', "%$searchTerm%");
+//                    });
+//            });
+//
+//        }
 
 
 
