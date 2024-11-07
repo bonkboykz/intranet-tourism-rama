@@ -82,79 +82,42 @@ const FileTable = ({
         try {
             const newFilter = [];
 
-            if (searchTerm !== "") {
-                // First attempt to search by metadata fields (extension, original_name, mime_type)
-                newFilter.push({
-                    field: "metadata",
-                    subfield: "extension",
-                    type: "ilike",
-                    value: searchTerm,
-                });
-                newFilter.push({
-                    field: "metadata",
-                    subfield: "original_name",
-                    type: "ilike",
-                    value: searchTerm,
-                });
-                newFilter.push({
-                    field: "metadata",
-                    subfield: "mime_type",
-                    type: "ilike",
-                    value: searchTerm,
+            // Check if searchTerm is provided and not empty
+            if (searchTerm && searchTerm.trim() !== "") {
+                const metadataFields = [
+                    "extension",
+                    "original_name",
+                    "mime_type",
+                ];
+
+                // Add filters for metadata fields and user.name
+                metadataFields.forEach((subfield) => {
+                    newFilter.push({
+                        field: "metadata",
+                        subfield,
+                        type: "ilike",
+                        value: searchTerm,
+                    });
                 });
 
-                const response = await axios.get(
-                    `/api/resources/public-resources`,
-                    {
-                        params: {
-                            isManagement,
-                            page: currentPage,
-                            perpage: itemsPerPage,
-                            filter: [
-                                {
-                                    field: "metadata",
-                                    subfield: "extension",
-                                    type: "not_in",
-                                    value: excludedExtensions,
-                                },
-                                ...newFilter,
-                            ].filter(Boolean),
-                        },
-                    }
-                );
-
-                // Check if any results were found
-                const {
-                    data: { last_page, data },
-                } = response.data;
-
-                if (data.length > 0) {
-                    // Files found, set the files data
-                    const filesData = data.map((file) => ({
-                        ...file,
-                        uploader: file.user.name,
-                        metadata:
-                            typeof file.metadata === "string"
-                                ? JSON.parse(file.metadata)
-                                : file.metadata,
-                    }));
-
-                    setTotalPages(last_page);
-                    setFiles(filesData);
-                    setLoading(false);
-                    return; // Exit early if files were found
-                }
-
-                // If no files were found, clear the newFilter to search by author
-                newFilter.length = 0; // Clear the previous filters
                 newFilter.push({
-                    field: "user.name",
+                    field: "user",
+                    subfield: "name",
                     type: "ilike",
                     value: searchTerm,
                 });
             }
 
-            // Add community, department, and user filters as before
+            // Exclude specified extensions
+            newFilter.push({
+                field: "metadata",
+                subfield: "extension",
+
+                type: "not_in",
+                value: excludedExtensions,
+            });
+
+            // Add community, department, and user-specific filters if they exist
             if (communityId) {
                 newFilter.push({
                     field: "attachable.community_id",
@@ -179,7 +142,7 @@ const FileTable = ({
                 });
             }
 
-            // Fetch again with the new filter for author if no files were found previously
+            // Fetch data with the combined filters
             const response = await axios.get(
                 `/api/resources/public-resources`,
                 {
@@ -187,23 +150,16 @@ const FileTable = ({
                         isManagement,
                         page: currentPage,
                         perpage: itemsPerPage,
-                        filter: [
-                            {
-                                field: "metadata",
-                                subfield: "extension",
-                                type: "not_in",
-                                value: excludedExtensions,
-                            },
-                            ...newFilter,
-                        ].filter(Boolean),
+                        searchTerm: searchTerm.trim(), // Pass searchTerm to backend
+                        filter: newFilter.filter(Boolean), // Remove any empty filters
                     },
                 }
             );
 
+            // Process response data
             const {
                 data: { last_page, data },
             } = response.data;
-
             const filesData = data.map((file) => ({
                 ...file,
                 uploader: file.user.name,

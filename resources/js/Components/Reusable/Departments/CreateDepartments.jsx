@@ -492,6 +492,17 @@ function Card({
                     role={userData.role}
                     src={userData.profileImage}
                 />
+                <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    defaultValue={"All"}
+                    className="mt-4 w-full text-base font-semibold text-neutral-800 border border-solid border-neutral-300 rounded-md p-2"
+                >
+                    <option value="All">All</option>
+                    <option value="HQ/Department">HQ/Department</option>
+                    <option value="State/Region">State/Region</option>
+                    <option value="Overseas">Overseas</option>
+                </select>
                 <div className="flex justify-between w-full gap-5 mt-6 text-sm">
                     <button
                         className="font-semibold text-neutral-800"
