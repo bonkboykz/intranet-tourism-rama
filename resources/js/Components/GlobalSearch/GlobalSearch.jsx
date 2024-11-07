@@ -7,7 +7,9 @@ import { getProfileImage } from "@/Utils/getProfileImage";
 import { getUserPosition } from "@/Utils/getUserPosition";
 import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
 import { useSearchParams } from "@/Utils/hooks/useSearchParams";
+import { renderDocument } from "@/Utils/renderDocument";
 
+import { Gallery } from "../Reusable/Gallery";
 import { PersonalWall } from "../Reusable/WallPosting/PersonalWall";
 import { WallContext } from "../Reusable/WallPosting/WallContext";
 
@@ -94,6 +96,14 @@ export function GlobalSearch() {
         return data?.users?.data ?? [];
     }, [data]);
 
+    const media = useMemo(() => {
+        return data?.media?.slice(0, 10) ?? [];
+    }, [data]);
+
+    const files = useMemo(() => {
+        return data?.files.slice(0, 10) ?? [];
+    }, [data]);
+
     if (q === "") {
         return (
             <div className="flex items-center justify-center h-64">
@@ -175,6 +185,46 @@ export function GlobalSearch() {
                                     )}
                                 />
                             );
+                        })}
+                    </div>
+                </section>
+            )}
+
+            {media.length > 0 && (
+                <section className="flex flex-col items-start py-2 px-4 bg-white border-2 rounded-2xl shadow-custom  max-w-[700px]">
+                    <Gallery
+                        images={[
+                            {
+                                attachments: media,
+                            },
+                        ]}
+                        videos={[
+                            {
+                                attachments: media,
+                            },
+                        ]}
+                    />
+                </section>
+            )}
+
+            {files.length > 0 && (
+                <section className="flex flex-col items-start py-2 px-4 bg-white border-2 rounded-2xl shadow-custom  max-w-[700px]">
+                    <h2
+                        style={{
+                            fontWeight: "bold",
+                            fontSize: "24px",
+                            fontFamily: "Nunito Sans",
+                            marginTop: "10px",
+                            textAlign: "start",
+                        }}
+                    >
+                        Files
+                    </h2>
+                    <hr className="border border-gray-200 w-full"></hr>
+
+                    <div className="flex flex-col justify-center w-full py-4">
+                        {files.map((file, index) => {
+                            return renderDocument(file, index, true);
                         })}
                     </div>
                 </section>

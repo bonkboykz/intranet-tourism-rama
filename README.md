@@ -192,6 +192,7 @@ php artisan db:seed --class=AvatarTemplateSeeder
 php artisan scout:import "Modules\Posts\Models\Post"
 php artisan scout:import "Modules\User\Models\User"
 php artisan scout:import "Modules\Communities\Models\Community"
+php artisan scout:import "Modules\Crud\Models\Resource"
 ```
 
 -   `http://localhost:7700` - Meilisearch
