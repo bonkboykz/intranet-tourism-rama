@@ -171,15 +171,18 @@ const Departments = () => {
 
     const filteredDepartments = departmentsList
         .filter((department) => {
-            if (filter === "All") {
-                return true;
+            switch (filter) {
+                case "All":
+                    return true;
+                case "HQ/Department":
+                    return department.type === "HQ/Department";
+                case "State/Region":
+                    return department.type === "State/Region";
+                case "Overseas":
+                    return department.type === "Overseas";
+                default:
+                    return false;
             }
-            if (filter === "HQ/Department")
-                return department.type === "HQ/Department";
-            if (filter === "State/Region")
-                return department.type === "State/Region";
-            if (filter === "Overseas") return department.type === "Overseas";
-            return false;
         })
         .filter((department) =>
             department.name.toLowerCase().includes(searchTerm.toLowerCase())

@@ -4,6 +4,7 @@ namespace Modules\Resources\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Modules\Posts\Models\Post;
 use Modules\Resources\Models\Resource;
 use Modules\User\Models\User;
@@ -72,13 +73,14 @@ class ResourceController extends Controller
 
     public function getPublicResources()
     {
-        $user = User::where('users.id', Auth::id())->firstOrFail();
+        $user = User::where('id', Auth::id())->firstOrFail();;
+        $query = Resource::query();
 
-        $query = Resource::queryable(); // Start a new query for the Resource model
+//        $query = Resource::queryable(); // Start a new query for the Resource model
+        $query->with(['user', 'attachable']);
 
-
-        // Eager load the author and attachable relationships (for standalone and attached resources)
-        $query->with(relations: ['user', 'attachable']);
+        $excludedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'mp4', 'mov'];
+        $query->whereNotIn(DB::raw("metadata->>'extension'"), $excludedExtensions);
 
         $is_community = false;
         $is_department = false;
@@ -99,79 +101,56 @@ class ResourceController extends Controller
             }
         }
 
-//        if ($searchTerm = request('searchTerm')) {
-//            $query->where(function ($query) use ($searchTerm) {
-//                $query->orWhere('metadata->extension', 'ilike', "%$searchTerm%")
-//                    ->orWhere('metadata->mime_type', 'ilike', "%$searchTerm%")
-//                    ->orWhere('metadata->original_name', 'ilike', "%$searchTerm%")
-//                    ->orWhereHas('user', function ($q) use ($searchTerm) {
-//                        $q->where('name', 'ilike', "%$searchTerm%");
-//                    });
-//            });
-//
-//        }
-
+        if ($searchTerm = request('searchTerm')) {
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->orWhere('metadata->extension', 'ilike', "%$searchTerm%")
+                        ->orWhere('metadata->mime_type', 'ilike', "%$searchTerm%")
+                        ->orWhere('metadata->original_name', 'ilike', "%$searchTerm%")
+                        ->orWhereHas('user', function ($q) use ($searchTerm) {
+                            $q->where('name', 'ilike', "%$searchTerm%");
+                        });
+                });
+        }
 
 
         if ((request()->has('isManagement') && !$user->hasRole('superadmin')) && !$is_community && !$is_department && !$is_user) {
             $query->where(function ($query) use ($user) {
                 // User's own files (where they are the author)
                 $query->where('user_id', $user->id) // User's own files
-                    ->orWhere(function ($query) use ($user) {
-                        // Resources attached to posts with type 'files'
-                        $query->where('attachable_type', "posts") // Attached to posts
-                            ->whereHas('attachable', function ($query) use ($user) {
-                            $query->where(function ($query) use ($user) {
-                                // Check if the post belongs to no community or a public community, or the user is a member of the private community
-                                $query->whereNull('community_id')
-                                    ->orWhereHas('community', function ($query) use ($user) {
+                ->orWhere(function ($query) use ($user) {
+                    // Resources attached to posts with type 'files'
+                    $query->where('attachable_type', "posts") // Attached to posts
+                    ->whereHas('attachable', function ($query) use ($user) {
+                        $query->where(function ($query) use ($user) {
+                            // Check if the post belongs to no community or a public community, or the user is a member of the private community
+                            $query->whereNull('community_id')
+                                ->orWhereHas('community', function ($query) use ($user) {
                                     $query->whereHas('members', function ($query) use ($user) {
                                         $query->where('user_id', $user->id); // User is a member of the private community
                                     });
                                 });
-                            })
-                                ->where(function ($query) use ($user) {
-                                    // Check if the post belongs to no department or if the user is employed in the department
-                                    $query->whereNull('department_id')
-                                        ->orWhereHas('department', function ($query) use ($user) {
+                        })
+                            ->where(function ($query) use ($user) {
+                                // Check if the post belongs to no department or if the user is employed in the department
+                                $query->whereNull('department_id')
+                                    ->orWhereHas('department', function ($query) use ($user) {
                                         $query->whereHas('employmentPosts', function ($query) use ($user) {
                                             $query->where('user_id', $user->id); // User is employed in the department
                                         });
                                     });
-                                });
-                        });
+                            });
                     });
+                });
             });
         }
 
-        // order by created at desc
         $query->orderBy('created_at', 'desc');
 
-         $output = new ConsoleOutput();
-
-         function replaceBindings($sql, $bindings)
-         {
-             foreach ($bindings as $binding) {
-                 $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
-                 $sql = preg_replace('/\?/', $value, $sql, 1);
-             }
-             return $sql;
-         }
-
-        $sql = $query->toSql(); // Get the raw SQL query
-        $bindings = $query->getBindings(); // Get the query bindings (parameters)
-        $fullSql = replaceBindings($sql, $bindings); // This function replaces bindings in the SQL
-        $output->writeln($fullSql); // Outputs the full SQL for debugging
-
-
-        $output->writeln($fullSql);
-
-        // Pagination or other data handling logic
         $data = $this->shouldPaginate($query);
 
-        // Return the result as JSON
         return response()->json([
             'data' => $data,
         ]);
     }
+
 }
