@@ -5,6 +5,7 @@ namespace Modules\Crud\Models;
 use App\Models\BaseModel as Model;
 use App\Models\Traits\Authorizable;
 use App\Models\Traits\QueryableApi;
+use Laravel\Scout\Searchable;
 use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Resource extends Model implements AuditableContract
 {
-    use Auditable, Authorizable, HasFactory, QueryableApi, HasUuids;
+    use Auditable, Authorizable, HasFactory, QueryableApi, HasUuids, Searchable;
 
     protected $table = 'resources';
 
@@ -107,5 +108,22 @@ class Resource extends Model implements AuditableContract
                 ;
             });
         });
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'attachable_type' => $this->attachable_type,
+            'attachable_id' => $this->attachable_id,
+            'for' => $this->for,
+            'path' => $this->path,
+            'extension' => $this->extension,
+            'mime_type' => $this->mime_type,
+            'filesize' => $this->filesize,
+            'duration' => $this->duration,
+            'metadata' => $this->metadata,
+        ];
     }
 }

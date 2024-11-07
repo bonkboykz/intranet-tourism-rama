@@ -31,5 +31,6 @@ class UpdateSearchIndex implements ShouldQueue
         Artisan::call('scout:import', ['model' => 'Modules\Posts\Models\Post']);
         Artisan::call('scout:import', ['model' => 'Modules\User\Models\User']);
         Artisan::call('scout:import', ['model' => 'Modules\Communities\Models\Community']);
+        Artisan::call('scout:import', parameters: ['model' => 'Modules\Crud\Models\Resource']);
     }
 }
