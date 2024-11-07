@@ -642,7 +642,7 @@ class PostController extends Controller
                 $mentionedUser->notify(new UserGotMentionedInCommentNotification($comment, $comment->id, $currentUser));
             });
 
-            if($author->id !== $currentUser->id) {
+            if ($author->id !== $currentUser->id) {
                 $author->notify(new CommentNotification($currentUser, $post));
             }
         } catch (\Throwable $th) {
@@ -1084,7 +1084,7 @@ class PostController extends Controller
     {
         $query = Post::query();
 
-        $query->with(relations: 'attachments');
+        $query->with(['attachments', 'user.profile', 'department', 'community']);
 
         // Apply filters for image and video MIME types
         if (request()->has('only_video')) {
@@ -1183,11 +1183,9 @@ class PostController extends Controller
         $query = Post::query();
 
         // Apply eager loading for attachments
-        $query->with(relations: 'attachments');
-
+        $query->with(['attachments', 'user.profile', 'department', 'community']);
 
         // Apply filters for image and video MIME types
-
         if (request()->has('only_video')) {
             $query->whereHas('attachments', function ($query) {
                 $query->where('mime_type', 'like', 'video/%');
@@ -1213,7 +1211,7 @@ class PostController extends Controller
             $query->where('user_id', request('user_id'));
         }
 
-        $user = Auth::user();
+        // $user = Auth::user();
 
         // if (!$user->hasRole('superadmin')) {
         //     $query->where(function ($query) use ($user) {

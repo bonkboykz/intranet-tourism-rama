@@ -5,6 +5,8 @@ import { Loader2 } from "lucide-react";
 import { VideoGallery } from "@/Pages/Media/Video";
 import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
+import { GalleryOverlay } from "../Reusable/GalleryOverlay";
+
 import "react-photo-view/dist/react-photo-view.css";
 
 const ImageProfile = ({ userId, communityId, departmentId }) => {
@@ -50,7 +52,19 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
                 <hr className="underline" />
             </header>
             <section className="mt-8 max-md:max-w-full sm::max-s-full">
-                <PhotoProvider maskOpacity={0.8} maskClassName="backdrop">
+                <PhotoProvider
+                    maskOpacity={0.8}
+                    maskClassName="backdrop"
+                    overlayRender={({ images: sliderAttachments, index }) => {
+                        return (
+                            <GalleryOverlay
+                                sliderAttachments={sliderAttachments}
+                                index={index}
+                                images={posts}
+                            />
+                        );
+                    }}
+                >
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                         {renderImages()}
                     </div>

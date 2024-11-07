@@ -1,7 +1,9 @@
 import { useCallback } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 
+import { GalleryOverlay } from "@/Components/Reusable/GalleryOverlay";
 import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
 import { VideoGallery } from "./Video";
@@ -47,6 +49,18 @@ export function Gallery({ selectedTag }) {
                         <PhotoProvider
                             maskOpacity={0.8}
                             maskClassName="backdrop"
+                            overlayRender={({
+                                images: sliderAttachments,
+                                index,
+                            }) => {
+                                return (
+                                    <GalleryOverlay
+                                        sliderAttachments={sliderAttachments}
+                                        index={index}
+                                        images={images}
+                                    />
+                                );
+                            }}
                         >
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
                                 {images
@@ -128,6 +142,7 @@ export function Gallery({ selectedTag }) {
                                         .map((videoAttachment) => ({
                                             ...videoAttachment,
                                             path: `/storage/${videoAttachment.path}?cache-bust=${Date.now()}`,
+                                            post,
                                         }))
                                 )}
                             className="w-full h-auto"

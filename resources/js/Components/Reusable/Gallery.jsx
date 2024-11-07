@@ -44,6 +44,7 @@ export function Gallery({ images, videos }) {
                 .map((videoAttachment) => ({
                     ...videoAttachment,
                     path: `/storage/${videoAttachment.path}?cache-bust=${Date.now()}`,
+                    post,
                 }))
         );
 
