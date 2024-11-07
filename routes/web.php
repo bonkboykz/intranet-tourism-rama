@@ -98,6 +98,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/approveChangeStaffImageRequest', [RequestController::class, 'approveChangeStaffImageRequest'])->name('approveChangeStaffImageRequest');
     Route::post('/api/rejectChangeStaffImageRequest', [RequestController::class, 'rejectChangeStaffImageRequest'])->name('rejectChangeStaffImageRequest');
     Route::post('/api/createCommunityCreateRequest', [RequestController::class, 'createCommunityCreateRequest'])->name('createCommunityCreateRequest');
+    Route::post('/api/deleteCommunityDeleteRequest', [RequestController::class, 'deleteCommunityDeleteRequest'])->name('deleteCommunityDeleteRequest');
+    Route::get('/api/getCommunityDeleteRequests', [RequestController::class, 'getCommunityDeleteRequests'])->name('getCommunityDeleteRequests');
+    Route::post('/api/approveCommunityDeleteRequest', [RequestController::class, 'approveCommunityDeleteRequest'])->name('approveCommunityDeleteRequest');
+    Route::post('/api/rejectCommunityDeleteRequest', [RequestController::class, 'rejectCommunityDeleteRequest'])->name('rejectCommunityDeleteRequest');
     Route::get('/api/getCommunityCreateRequests', [RequestController::class, 'getCommunityCreateRequests'])->name('getCommunityCreateRequests');
     Route::post('/api/approveCommunityCreateRequest', [RequestController::class, 'approveCommunityCreateRequest'])->name('approveCommunityCreateRequest');
     Route::post('/api/rejectCommunityCreateRequest', [RequestController::class, 'rejectCommunityCreateRequest'])->name('rejectCommunityCreateRequest');

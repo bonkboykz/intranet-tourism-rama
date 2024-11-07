@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const PopupMenu = ({
     onArchiveToggle,
@@ -7,8 +9,10 @@ const PopupMenu = ({
     onClose,
     onDelete,
     isArchived,
+    isSuperAdmin,
     popupRef,
     modalRef,
+    csrfToken,
 }) => {
     const [showConfirm, setShowConfirm] = useState(false);
 
@@ -16,8 +20,33 @@ const PopupMenu = ({
         setShowConfirm(true);
     };
 
-    const handleConfirmDelete = () => {
-        onDelete(selectedDepartmentId);
+    const handleConfirmDelete = async () => {
+        if (isSuperAdmin) {
+            onDelete(selectedDepartmentId);
+        } else {
+            try {
+                const response = await axios.post(
+                    `/api/deleteCommunityDeleteRequest`,
+                    {
+                        community_id: selectedDepartmentId,
+                    },
+                    {
+                        headers: {
+                            "X-CSRF-Token": csrfToken,
+                        },
+                    }
+                );
+
+                if ([200, 201].includes(response.status)) {
+                    toast.success("Community delete request sent");
+                } else {
+                    throw new Error("Failed to send delete request");
+                }
+            } catch (error) {
+                console.error("Error sending delete request:", error.message);
+                toast.error("Failed to send delete request");
+            }
+        }
         setShowConfirm(false);
         onClose();
     };
@@ -65,7 +94,7 @@ const PopupMenu = ({
                                 </button>
                                 <button
                                     onClick={handleConfirmDelete}
-                                    className="px-8 py-1 text-base text-gray-400 bg-white border border-gray-400 rounded-full hover:bg-gray-400 hover:text-white"
+                                    className={`px-8 py-1 text-base ${isSuperAdmin ? "text-gray-400 bg-white border border-gray-400 hover:bg-gray-400 hover:text-white" : "text-white bg-red-600 hover:bg-red-700"} rounded-full`}
                                 >
                                     Yes
                                 </button>
