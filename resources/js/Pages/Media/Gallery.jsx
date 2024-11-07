@@ -1,6 +1,4 @@
-import { useCallback } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 import { GalleryOverlay } from "@/Components/Reusable/GalleryOverlay";
@@ -49,18 +47,9 @@ export function Gallery({ selectedTag }) {
                         <PhotoProvider
                             maskOpacity={0.8}
                             maskClassName="backdrop"
-                            overlayRender={({
-                                images: sliderAttachments,
-                                index,
-                            }) => {
-                                return (
-                                    <GalleryOverlay
-                                        sliderAttachments={sliderAttachments}
-                                        index={index}
-                                        images={images}
-                                    />
-                                );
-                            }}
+                            overlayRender={(props) => (
+                                <GalleryOverlay {...props} images={images} />
+                            )}
                         >
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
                                 {images
@@ -76,26 +65,20 @@ export function Gallery({ selectedTag }) {
                                                     "image/"
                                                 )
                                             )
-                                            .map((imageAttachment) => {
-                                                return (
-                                                    <div
+                                            .map((imageAttachment) => (
+                                                <div key={imageAttachment.id}>
+                                                    <PhotoView
                                                         key={imageAttachment.id}
+                                                        src={`/storage/${imageAttachment.path}`}
                                                     >
-                                                        <PhotoView
-                                                            key={
-                                                                imageAttachment.id
-                                                            }
+                                                        <img
                                                             src={`/storage/${imageAttachment.path}`}
-                                                        >
-                                                            <img
-                                                                src={`/storage/${imageAttachment.path}`}
-                                                                alt="Image Attachment"
-                                                                className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                                                            />
-                                                        </PhotoView>
-                                                    </div>
-                                                );
-                                            })
+                                                            alt="Image Attachment"
+                                                            className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
+                                                        />
+                                                    </PhotoView>
+                                                </div>
+                                            ))
                                     )}
                             </div>
                         </PhotoProvider>
@@ -142,6 +125,7 @@ export function Gallery({ selectedTag }) {
                                         .map((videoAttachment) => ({
                                             ...videoAttachment,
                                             path: `/storage/${videoAttachment.path}?cache-bust=${Date.now()}`,
+                                            posterPath: `/path/to/poster-images/${videoAttachment.id}-preview.jpg`, // Укажите здесь путь к превью
                                             post,
                                         }))
                                 )}
