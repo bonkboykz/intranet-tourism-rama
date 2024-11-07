@@ -28,7 +28,12 @@ class Department extends Model implements AuditableContract
         'name',
         'banner',
         'description',
+        'type',
         'order',
+    ];
+
+    protected $attributes = [
+        'type' => 'All',  // Значение по умолчанию для 'type'
     ];
 
     public static function rules($scenario = 'create')
@@ -38,6 +43,7 @@ class Department extends Model implements AuditableContract
                 [
                     'name' => ['string', 'required'],
                     'banner' => ['file'],
+                    'type' => ['string', 'nullable'],
                     'description' => ['string', 'nullable'],
                     'order' => ['integer', 'nullable'],
                 ],
@@ -47,6 +53,7 @@ class Department extends Model implements AuditableContract
                 [
                     'name' => ['string', 'required'],
                     'banner' => ['file'],
+                    'type' => ['string', 'nullable'],
                     'description' => ['string', 'nullable'],
                     'order' => ['integer', 'nullable'],
                 ],

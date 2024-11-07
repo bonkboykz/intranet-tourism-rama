@@ -3,10 +3,10 @@
 namespace Modules\Resources\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-//use Auth;
 use Illuminate\Support\Facades\Auth;
 use Modules\Posts\Models\Post;
 use Modules\Resources\Models\Resource;
+use Modules\User\Models\User;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ResourceController extends Controller
@@ -72,7 +72,7 @@ class ResourceController extends Controller
 
     public function getPublicResources()
     {
-        $user = Auth::user();
+        $user = User::where('users.id', Auth::id())->firstOrFail();
 
         $query = Resource::queryable(); // Start a new query for the Resource model
 
@@ -99,13 +99,19 @@ class ResourceController extends Controller
             }
         }
 
-        // Если в фильтрах указан "Uploaded By"
-        if (request()->has('uploaded_by')) {
-            $uploadedByName = request('uploaded_by');
-            $query->whereHas('user', function ($query) use ($uploadedByName) {
-                $query->where('name', 'like', '%' . $uploadedByName . '%');
-            });
-        }
+//        if ($searchTerm = request('searchTerm')) {
+//            $query->where(function ($query) use ($searchTerm) {
+//                $query->orWhere('metadata->extension', 'ilike', "%$searchTerm%")
+//                    ->orWhere('metadata->mime_type', 'ilike', "%$searchTerm%")
+//                    ->orWhere('metadata->original_name', 'ilike', "%$searchTerm%")
+//                    ->orWhereHas('user', function ($q) use ($searchTerm) {
+//                        $q->where('name', 'ilike', "%$searchTerm%");
+//                    });
+//            });
+//
+//        }
+
+
 
         if ((request()->has('isManagement') && !$user->hasRole('superadmin')) && !$is_community && !$is_department && !$is_user) {
             $query->where(function ($query) use ($user) {
@@ -141,23 +147,24 @@ class ResourceController extends Controller
         // order by created at desc
         $query->orderBy('created_at', 'desc');
 
-        // $output = new ConsoleOutput();
+         $output = new ConsoleOutput();
 
-        // function replaceBindings($sql, $bindings)
-        // {
-        //     foreach ($bindings as $binding) {
-        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
-        //         $sql = preg_replace('/\?/', $value, $sql, 1);
-        //     }
-        //     return $sql;
-        // }
+         function replaceBindings($sql, $bindings)
+         {
+             foreach ($bindings as $binding) {
+                 $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+                 $sql = preg_replace('/\?/', $value, $sql, 1);
+             }
+             return $sql;
+         }
 
-        // $sql = $query->toSql(); // Get the raw SQL query
-        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
-        // // Show the full SQL query with bindings replaced
-        // $fullSql = replaceBindings($sql, $bindings);
+        $sql = $query->toSql(); // Get the raw SQL query
+        $bindings = $query->getBindings(); // Get the query bindings (parameters)
+        $fullSql = replaceBindings($sql, $bindings); // This function replaces bindings in the SQL
+        $output->writeln($fullSql); // Outputs the full SQL for debugging
 
-        // $output->writeln($fullSql);
+
+        $output->writeln($fullSql);
 
         // Pagination or other data handling logic
         $data = $this->shouldPaginate($query);

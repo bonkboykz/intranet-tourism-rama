@@ -77,6 +77,110 @@ const FileTable = ({
         fetchFiles();
     }, [currentPage]);
 
+    // const fetchFiles = async () => {
+    //     setLoading(true);
+    //     try {
+    //         const newFilter = [];
+    //
+    //         // Check if searchTerm is provided and not empty
+    //         if (searchTerm && searchTerm.trim() !== "") {
+    //             const metadataFields = [
+    //                 "extension",
+    //                 "original_name",
+    //                 "mime_type",
+    //             ];
+    //
+    //             // Add filters for metadata fields and user.name
+    //             metadataFields.forEach((subfield) => {
+    //                 newFilter.push({
+    //                     field: "metadata",
+    //                     subfield,
+    //                     type: "ilike",
+    //                     value: searchTerm,
+    //                 });
+    //             });
+    //
+    //             newFilter.push({
+    //                 field: "user",
+    //                 subfield: "name",
+    //                 type: "ilike",
+    //                 value: searchTerm,
+    //             });
+    //         }
+    //
+    //         // Exclude specified extensions
+    //         newFilter.push({
+    //             field: "metadata",
+    //             subfield: "extension",
+    //
+    //             type: "not_in",
+    //             value: excludedExtensions,
+    //         });
+    //
+    //         // Add community, department, and user-specific filters if they exist
+    //         if (communityId) {
+    //             newFilter.push({
+    //                 field: "attachable.community_id",
+    //                 type: "=",
+    //                 value: communityId,
+    //             });
+    //         }
+    //
+    //         if (departmentId) {
+    //             newFilter.push({
+    //                 field: "attachable.department_id",
+    //                 type: "=",
+    //                 value: departmentId,
+    //             });
+    //         }
+    //
+    //         if (userId) {
+    //             newFilter.push({
+    //                 field: "user_id",
+    //                 type: "=",
+    //                 value: userId,
+    //             });
+    //         }
+    //
+    //         // Fetch data with the combined filters
+    //         const response = await axios.get(
+    //             `/api/resources/public-resources`,
+    //             {
+    //                 params: {
+    //                     isManagement,
+    //                     page: currentPage,
+    //                     perpage: itemsPerPage,
+    //                     searchTerm: searchTerm.trim(), // Pass searchTerm to backend
+    //                     filter: newFilter.filter(Boolean), // Remove any empty filters
+    //                 },
+    //             }
+    //         );
+    //
+    //         // Process response data
+    //         const {
+    //             data: { last_page, data },
+    //         } = response.data;
+    //         const filesData = data.map((file) => ({
+    //             ...file,
+    //             uploader: file.user.name,
+    //             metadata:
+    //                 typeof file.metadata === "string"
+    //                     ? JSON.parse(file.metadata)
+    //                     : file.metadata,
+    //         }));
+    //
+    //         setTotalPages(last_page);
+    //         setFiles(filesData);
+    //     } catch (error) {
+    //         console.error("Error fetching files:", error);
+    //         toast.error("Failed to fetch files", {
+    //             icon: <CircleXIcon className="w-6 h-6 text-white" />,
+    //             theme: "colored",
+    //         });
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
     const fetchFiles = async () => {
         setLoading(true);
         try {

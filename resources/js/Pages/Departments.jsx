@@ -7,6 +7,7 @@ import Birthdaypopup from "@/Components/Reusable/Birthdayfunction/birthdayalert"
 import DepartmentDropdown from "@/Components/Reusable/Departments/DepartmentsDropdown";
 import { useCsrf } from "@/composables";
 import Example from "@/Layouts/DashboardLayoutNew";
+import { usePermissions } from "@/Utils/hooks/usePermissions.jsx";
 
 import CreateDepartments from "../Components/Reusable/Departments/CreateDepartments";
 import DepartmentsCard from "../Components/Reusable/Departments/DepartmentsCard";
@@ -27,6 +28,7 @@ const Departments = () => {
     const [currentDepartmentId, setCurrentDepartmentId] = useState(null);
     const [isCreateDepartmentOpen, setIsCreateDepartmentOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // State for error modal
+    const [filter, setFilter] = useState("All");
     const csrfToken = useCsrf();
 
     const toggleCreateCommunity = () =>
@@ -52,6 +54,7 @@ const Departments = () => {
                     ? `/storage/${department.banner}`
                     : "assets/departmentsDefault.jpg",
                 isMember: department.is_member,
+                type: department.type,
                 role: department.role,
             }));
 
@@ -163,10 +166,24 @@ const Departments = () => {
             )
         );
     };
+    const { hasRole } = usePermissions();
+    const isSuperAdmin = hasRole("superadmin");
 
-    const filteredDepartments = departmentsList.filter((department) =>
-        department.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredDepartments = departmentsList
+        .filter((department) => {
+            if (filter === "All") {
+                return true;
+            }
+            if (filter === "HQ/Department")
+                return department.type === "HQ/Department";
+            if (filter === "State/Region")
+                return department.type === "State/Region";
+            if (filter === "Overseas") return department.type === "Overseas";
+            return false;
+        })
+        .filter((department) =>
+            department.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
     console.log(filteredDepartments);
 
@@ -186,6 +203,10 @@ const Departments = () => {
             }
         }
     }, [filteredDepartments, isLoading]);
+
+    const handleFilterChange = (selectedFilter) => {
+        setFilter(selectedFilter);
+    };
 
     return (
         <Example>
@@ -212,6 +233,7 @@ const Departments = () => {
                         departments={filteredDepartments}
                         onSelectDepartment={() => {}}
                         onCreateDepartment={handleNewDepartment}
+                        onSelectFilter={handleFilterChange}
                     />
                     <div className="dept-grid-container max-w-[1230px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-2 sm:py-4 md:py-6 lg:py-8">
                         {isLoading ? (

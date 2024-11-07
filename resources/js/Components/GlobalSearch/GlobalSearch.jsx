@@ -101,7 +101,7 @@ export function GlobalSearch() {
     }, [data]);
 
     const files = useMemo(() => {
-        return data?.files.slice(0, 10) ?? [];
+        return data?.files?.slice(0, 10) ?? [];
     }, [data]);
 
     if (q === "") {
