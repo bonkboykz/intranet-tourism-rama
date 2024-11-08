@@ -1,8 +1,6 @@
 import { format } from "date-fns";
 
-export function GalleryOverlay({ sliderAttachments, index, images }) {
-    const currentImage = sliderAttachments[index];
-
+export function GalleryOverlay({ currentImage, images }) {
     const post = images.find((post) =>
         post.attachments.some((attachment) =>
             currentImage.src?.includes(attachment.path)
