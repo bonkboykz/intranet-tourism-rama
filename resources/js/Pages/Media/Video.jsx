@@ -1,4 +1,4 @@
-import { useCallback,useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import Captions from "yet-another-react-lightbox/plugins/captions";
 import Video from "yet-another-react-lightbox/plugins/video";
@@ -37,13 +37,11 @@ export function VideoGallery({ videos }) {
                         key={video.id}
                         className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
                         src={video.path}
-                        poster={video.posterPath}
                         onClick={() => setIndex(index)}
                         preload="metadata"
                         muted
                         width="100%"
                         height="auto"
-                        controls
                     />
                 ))}
             </div>
