@@ -58,10 +58,6 @@ function EditProfilePhoto({
         setShowPopup(true);
     };
 
-    useEffect(() => {
-        console.log("showUpdatePopup changed to:", showUpdatePopup);
-    }, [showUpdatePopup]);
-
     const handleAvatarClose = (e) => {
         e.stopPropagation();
         setShowPopup(false);

@@ -244,7 +244,13 @@ export function PollCard({ post, className }) {
                     )}
                 </header>
 
-                <div className="break-words overflow-hidden">
+                <div
+                    className="break-words overflow-hidden"
+                    style={{
+                        wordBreak: "break-word",
+                        whiteSpace: "pre-wrap",
+                    }}
+                >
                     {poll.question?.question_text}
                 </div>
 

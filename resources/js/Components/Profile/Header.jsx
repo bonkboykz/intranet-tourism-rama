@@ -4,10 +4,12 @@ import { toast } from "react-toastify";
 import { useClickAway } from "@uidotdev/usehooks";
 
 import { useCsrf } from "@/composables";
+import { useUser } from "@/Layouts/useUser";
 import {
     OnlineUsersContext,
     OnlineUsersProvider,
 } from "@/Pages/OnlineUsersContext";
+import { usePermissions } from "@/Utils/hooks/usePermissions";
 
 import getCroppedImg from "./cropImage";
 import EditProfilePhoto from "./EditProfilePhoto";
@@ -114,8 +116,15 @@ function ProfileHeader({
         console.log("Popup closed");
     };
 
+    const { user } = useUser();
+    const { isSuperAdmin } = usePermissions();
+
     const handleIconClick = (e) => {
         e.stopPropagation();
+        if (!isSuperAdmin && user.id !== userId) {
+            return;
+        }
+
         if (!isPopupOpen) {
             openPopup();
         }
