@@ -36,7 +36,7 @@ export function VideoGallery({ videos }) {
                     <video
                         key={video.id}
                         className="grow shrink-0 max-w-full aspect-[1.19] w-full object-cover cursor-pointer"
-                        src={video.path}
+                        src={`${video.path}#t=0.001`}
                         onClick={() => setIndex(index)}
                         preload="metadata"
                         muted
