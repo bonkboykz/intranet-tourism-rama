@@ -133,6 +133,10 @@ export function EditPollPost({
                         rows="4"
                         placeholder="Edit question"
                         disabled={!canEditPoll}
+                        style={{
+                            wordBreak: "break-word",
+                            whiteSpace: "pre-wrap",
+                        }}
                     />
 
                     <div className="mt-4">
