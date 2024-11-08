@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { formatTime } from "@/Utils/format";
 import { getProfileImage } from "@/Utils/getProfileImage";
 import { useLazyLoading } from "@/Utils/hooks/useLazyLoading.jsx";
+
 const CommunityDeletionRow = ({
     id,
     communityId,
@@ -146,7 +147,7 @@ export const CommunityDeletionRequests = () => {
     };
 
     const updateRequests = () => {
-        fetchData(true);
+        fetchData(false);
     };
 
     useEffect(() => {
@@ -173,7 +174,7 @@ export const CommunityDeletionRequests = () => {
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-5">
             <h2 className="mb-4 text-2xl font-bold text-primary">
-                Community Deletion Requests
+                Community Deletion
             </h2>
             {preparedRequests.length > 0 ? (
                 preparedRequests.map((data, index) => (

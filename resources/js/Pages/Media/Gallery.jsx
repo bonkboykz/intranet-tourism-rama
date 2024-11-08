@@ -140,7 +140,7 @@ export function Gallery({ selectedTag }) {
                                         .map((videoAttachment) => ({
                                             ...videoAttachment,
                                             path: `/storage/${videoAttachment.path}?cache-bust=${Date.now()}`,
-                                            posterPath: `/path/to/poster-images/${videoAttachment.id}-preview.jpg`, // Укажите здесь путь к превью
+                                            posterPath: `/path/to/poster-images/${videoAttachment.id}-preview.jpg`,
                                             post,
                                         }))
                                 )}
