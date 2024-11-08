@@ -1,6 +1,10 @@
 import { format } from "date-fns";
 
 export function GalleryOverlay({ currentImage, images }) {
+    if (!currentImage || !currentImage.src) {
+        return null;
+    }
+
     const post = images.find((post) =>
         post.attachments.some((attachment) =>
             currentImage.src?.includes(attachment.path)
