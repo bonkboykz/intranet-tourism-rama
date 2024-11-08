@@ -31,7 +31,17 @@ export function CommunityTitle({ post }) {
 export function DepartmentTitle({ post }) {
     const { isAdmin } = useContext(DepartmentContext);
 
+    const { isSuperAdmin } = usePermissions();
+
     if (post.post_as === "member") {
+        return (
+            <div className="text-base font-semibold text-neutral-800">
+                {post.user.name}
+            </div>
+        );
+    }
+
+    if (isSuperAdmin) {
         return (
             <div className="text-base font-semibold text-neutral-800">
                 {post.user.name}
@@ -43,10 +53,7 @@ export function DepartmentTitle({ post }) {
         post.department.name + (isAdmin ? ` (${post.user.name})` : "");
 
     return (
-        <div className="text-base font-semibold text-neutral-800">
-            {" "}
-            {post.user.name}
-        </div>
+        <div className="text-base font-semibold text-neutral-800">{title}</div>
     );
 }
 
