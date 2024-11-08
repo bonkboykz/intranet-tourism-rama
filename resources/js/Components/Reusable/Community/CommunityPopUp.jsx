@@ -3,13 +3,14 @@ import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { usePermissions } from "@/Utils/hooks/usePermissions";
+
 const PopupMenu = ({
     onArchiveToggle,
     selectedDepartmentId,
     onClose,
     onDelete,
     isArchived,
-    isSuperAdmin,
     popupRef,
     modalRef,
     csrfToken,
@@ -19,6 +20,8 @@ const PopupMenu = ({
     const handleDeleteClick = () => {
         setShowConfirm(true);
     };
+
+    const { isSuperAdmin } = usePermissions();
 
     const handleConfirmDelete = async () => {
         if (isSuperAdmin) {
