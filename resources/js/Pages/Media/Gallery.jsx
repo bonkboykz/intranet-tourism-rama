@@ -47,9 +47,24 @@ export function Gallery({ selectedTag }) {
                         <PhotoProvider
                             maskOpacity={0.8}
                             maskClassName="backdrop"
-                            overlayRender={(props) => (
-                                <GalleryOverlay {...props} images={images} />
-                            )}
+                            overlayRender={({
+                                images: sliderAttachments,
+                                index,
+                            }) => {
+                                const currentImage = sliderAttachments[index];
+
+                                if (!currentImage) {
+                                    return null;
+                                }
+
+                                return (
+                                    <GalleryOverlay
+                                        currentImage={currentImage}
+                                        index={index}
+                                        images={images}
+                                    />
+                                );
+                            }}
                         >
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-2">
                                 {images
