@@ -18,6 +18,5 @@ export default defineConfig({
     },
     // server: {
     //     host: true,
-    //     origin: "http://ipconfig:5173",
     // },
 });
