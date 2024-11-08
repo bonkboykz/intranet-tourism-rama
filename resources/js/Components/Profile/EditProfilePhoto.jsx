@@ -39,7 +39,6 @@ function EditProfilePhoto({
     profileId,
     source,
 }) {
-    console.log("yuyu", userName);
     const [showPopup, setShowPopup] = useState(false);
     const [showUpdatePopup, setShowUpdatePopup] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -129,8 +128,7 @@ function EditProfilePhoto({
                     profileId={profileId}
                     src={source}
                 />
-            )}{" "}
-            {/* Ensure CSRF token is passed */}
+            )}
             {showUpdatePopup && (
                 <UpdatePhotoButton
                     onClose={handleCloseUpdatePopup}

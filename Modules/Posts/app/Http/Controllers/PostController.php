@@ -1041,16 +1041,30 @@ class PostController extends Controller
     {
         $posts = Post::where('user_id', '=', $user->id)
             ->where('type', 'poll')
-            ->with(['poll', 'poll.question', 'poll.question.options', 'department', 'community'])
+            ->with(['poll', 'poll.question', 'poll.question.options', 'department', 'community', 'user.profile'])
             ->get();
 
-        // attach user profile
-        $posts->map(function ($post) {
-            $post->user = User::find($post->user_id);
-            $post->userProfile = $post->user->profile;
-            return $post;
-        });
 
+        return response()->json([
+            'data' => $posts,
+        ]);
+    }
+
+    public function getAllPolls()
+    {
+
+        $query = Post::queryable()
+            ->where('type', 'poll')
+            ->with(['poll', 'poll.question', 'poll.question.options', 'department', 'community', 'user.profile'])
+            ->orderBy('created_at', 'desc');
+
+        $current_user = Auth::user();
+
+        if (!$current_user->hasRole('superadmin')) {
+            $query->where('user_id', $current_user->id);
+        }
+
+        $posts = $this->shouldPaginate($query);
 
         return response()->json([
             'data' => $posts,
