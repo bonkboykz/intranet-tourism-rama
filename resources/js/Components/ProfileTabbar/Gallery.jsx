@@ -56,9 +56,15 @@ const ImageProfile = ({ userId, communityId, departmentId }) => {
                     maskOpacity={0.8}
                     maskClassName="backdrop"
                     overlayRender={({ images: sliderAttachments, index }) => {
+                        const currentImage = sliderAttachments[index];
+
+                        if (!currentImage) {
+                            return null;
+                        }
+
                         return (
                             <GalleryOverlay
-                                sliderAttachments={sliderAttachments}
+                                currentImage={currentImage}
                                 index={index}
                                 images={posts}
                             />
