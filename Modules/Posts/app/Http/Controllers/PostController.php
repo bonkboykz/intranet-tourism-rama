@@ -1052,10 +1052,17 @@ class PostController extends Controller
 
     public function getAllPolls()
     {
+
         $query = Post::queryable()
             ->where('type', 'poll')
             ->with(['poll', 'poll.question', 'poll.question.options', 'department', 'community', 'user.profile'])
             ->orderBy('created_at', 'desc');
+
+        $current_user = Auth::user();
+
+        if (!$current_user->hasRole('superadmin')) {
+            $query->where('user_id', $current_user->id);
+        }
 
         $posts = $this->shouldPaginate($query);
 
