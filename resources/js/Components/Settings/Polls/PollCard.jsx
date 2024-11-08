@@ -37,7 +37,7 @@ function PollOptionAnswered({ option, percentage }) {
     );
 }
 
-export function PollCard({ post }) {
+export function PollCard({ post, className }) {
     const [cachedPost, setCachedPost] = useState(post);
     const [showDetails, setShowDetails] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -205,7 +205,8 @@ export function PollCard({ post }) {
                     cachedPost.announced &&
                         (cachedPost.community_id || cachedPost.department_id
                             ? "relative pt-20"
-                            : "relative pt-16")
+                            : "relative pt-16"),
+                    className
                 )}
             >
                 <header className="flex px-px w-full max-md:flex-wrap max-md:max-w-full">

@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('albums', [PostController::class, 'getAlbums'])->name('post.getAlbums');
     Route::get('users/{user}/polls', [PostController::class, 'getUserPolls'])->name('post.getUserPolls');
+    Route::get('all-polls', [PostController::class, 'getAllPolls'])->name('post.getAllPolls');
     Route::get('{post}/poll_feedback', [PostController::class, 'getPollFeedback'])->name('post.getPollFeedback');
     Route::get('public_media', [PostController::class, 'getPublicMedia'])->name('post.getPublicMedia');
     Route::get('get_media', [PostController::class, 'getMedia'])->name('post.getMedia');

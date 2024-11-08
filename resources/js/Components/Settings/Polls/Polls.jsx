@@ -1,47 +1,38 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { Loader2 } from "lucide-react";
 
-import { CardHeader } from "@/Components/Reusable/WallPosting/DefaultPostCard/CardHeader/CardHeader.jsx";
-import { useUser } from "@/Layouts/useUser";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
 import { PollCard } from "./PollCard";
 
 export function Polls() {
-    const { user } = useUser();
+    const {
+        data: userPolls,
+        hasMore,
+        isLoading,
+        nextPage,
+    } = useLazyLoading("/api/posts/all-polls");
 
-    const [userPolls, setUserPolls] = useState([]);
+    return (
+        <>
+            {userPolls.map((post) => (
+                <div key={post.id}>
+                    <PollCard post={post} className="max-w-full" />
+                </div>
+            ))}
 
-    const fetchUserPolls = async () => {
-        try {
-            const response = await axios.get(
-                `/api/posts/users/${user.id}/polls`
-            );
-
-            if (![200, 201, 204].includes(response.status)) {
-                throw new Error("Failed to fetch user polls");
-            }
-
-            const responseData = response.data.data;
-
-            console.log(responseData);
-
-            const sortedPolls = responseData.sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
-
-            setUserPolls(sortedPolls);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUserPolls();
-    }, []);
-
-    return userPolls.map((post) => (
-        <div key={post.id}>
-            <PollCard post={post} />
-        </div>
-    ));
+            {hasMore && (
+                <button
+                    disabled={isLoading}
+                    onClick={nextPage}
+                    className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-primary hover:bg-primary-hover flex align-center justify-center"
+                >
+                    {isLoading ? (
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                    ) : (
+                        "Load More"
+                    )}
+                </button>
+            )}
+        </>
+    );
 }
