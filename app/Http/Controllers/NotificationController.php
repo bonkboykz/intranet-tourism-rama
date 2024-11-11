@@ -31,7 +31,7 @@ class NotificationController extends Controller
     public function apiIndex()
     {
         $user = User::find(auth()->id());
-        $notifications = $user->notifications()->with('notifiable.profile')->latest()->get();
+        $notifications = $user->notifications()->with('notifiable.profile')->paginate();
 
         return response()->json([
             'data' => $notifications,

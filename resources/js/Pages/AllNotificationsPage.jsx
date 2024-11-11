@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import NotificationsList from "@/Components/NotificationsList";
 import Example from "@/Layouts/DashboardLayoutNew";
 import { useSetupNotifications } from "@/Layouts/useNotifications";
 import { getProfileImage } from "@/Utils/getProfileImage";
-import { useLoading } from "@/Utils/hooks/useLazyLoading";
+import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
 
 import icon_noti_orange from "../../../public/assets/icon/notification/Ellipse-orange.png";
 
@@ -112,8 +112,15 @@ const notificationData = [
 ];
 
 const AllNotificationsPage = () => {
-    const { data: notifications } = useLoading(`/api/notifications`);
+    // const { data: notifications } = useLoading(`/api/notifications`);
+    const { data: notifications, fetchData } =
+        useLazyLoading(`/api/notifications`);
 
+    console.log("NOTIFICATIONS", notifications);
+
+    useEffect(() => {
+        fetchData(false);
+    }, []);
     return (
         <Example>
             <div className="w-full min-h-screen bg-slate-100">
