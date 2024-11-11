@@ -116,8 +116,6 @@ const AllNotificationsPage = () => {
     const { data: notifications, fetchData } =
         useLazyLoading(`/api/notifications`);
 
-    console.log("NOTIFICATIONS", notifications);
-
     useEffect(() => {
         fetchData(false);
     }, []);
