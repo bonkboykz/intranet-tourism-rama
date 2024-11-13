@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { Loader2 } from "lucide-react";
 
 import NotificationsList from "@/Components/NotificationsList";
 import Example from "@/Layouts/DashboardLayoutNew";
-import { useSetupNotifications } from "@/Layouts/useNotifications";
 import { getProfileImage } from "@/Utils/getProfileImage";
-import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
 import icon_noti_orange from "../../../public/assets/icon/notification/Ellipse-orange.png";
 
@@ -123,8 +122,6 @@ const AllNotificationsPage = () => {
         currentPage,
         setCurrentPage,
     } = useLazyLoading(`/api/notifications`);
-
-    console.log(currentPage);
 
     const loadMore = async () => {
         if (hasMore) {

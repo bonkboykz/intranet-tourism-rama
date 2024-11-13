@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
+import React, { useCallback, useMemo, useState } from "react";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
 
 import { formatTimeAgo } from "@/Utils/format";
 import {
