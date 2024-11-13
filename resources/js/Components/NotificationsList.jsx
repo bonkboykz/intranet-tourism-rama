@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 import { formatTimeAgo } from "@/Utils/format";
 import {
@@ -13,6 +15,7 @@ function NotificationsList({
     shouldSlice,
     loadMore,
     hasMore,
+    currentPage,
 }) {
     const [readMap, setReadmap] = useState({});
 
@@ -27,24 +30,33 @@ function NotificationsList({
     };
 
     const filteredNotifications = useMemo(() => {
+        const uniqueNotifications = Array.from(
+            new Map(
+                notifications.map((notification) => [
+                    notification.id,
+                    notification,
+                ])
+            ).values()
+        );
+
         if (!shouldSlice && activeTab === "all") {
-            return notifications;
+            return uniqueNotifications;
         }
 
         if (!shouldSlice && activeTab !== "all") {
-            return notifications.filter(
+            return uniqueNotifications.filter(
                 (notification) => !notification.read_at
             );
         }
 
         if (activeTab === "all") {
-            return notifications.slice(0, 4);
+            return uniqueNotifications.slice(0, 4);
         }
 
-        return notifications
+        return uniqueNotifications
             .filter((notification) => !notification.read_at)
             .slice(0, 6);
-    }, [activeTab, notifications.length, shouldSlice]);
+    }, [activeTab, notifications, shouldSlice]);
 
     const handleNotificationClick = useCallback((notification) => {
         switch (notification.type) {
@@ -59,70 +71,87 @@ function NotificationsList({
     }, []);
 
     return (
-        <div className="notification-list px-2 ">
-            <ul>
-                {filteredNotifications.map((notification) => (
-                    <div
-                        className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl relative cursor-pointer"
-                        key={notification.id}
-                        onMouseOver={() => markAsRead(notification.id)}
-                        onClick={() => handleNotificationClick(notification)}
-                    >
-                        <div className="flex items-center bg-gray h-16 relative">
-                            <img
-                                className="h-10 w-10 ml-2"
-                                src={
-                                    notification.data.user_avatar
-                                        ? getNotificationAvatar(
-                                              notification.data.user_avatar
-                                          )
-                                        : getProfileImage(
-                                              notification.notifiable.profile,
-                                              notification.notifiable.name
-                                          )
-                                }
-                                alt=""
-                                style={{
-                                    height: "60px",
-                                    width: "60px",
-                                    borderRadius: "100%",
-                                }}
-                            />
-                            {/* Icons for different notification types */}
-                            {notification.status && (
+        <InfiniteScroll
+            pageStart={currentPage}
+            loadMore={loadMore}
+            hasMore={hasMore}
+            loader={
+                <div
+                    className="loader min-h-32 flex items-center justify-center"
+                    key={0}
+                >
+                    <Loader2 className="w-12 h-12 animate-spin" />
+                </div>
+            }
+        >
+            <div className="notification-list px-2 ">
+                <ul>
+                    {filteredNotifications.map((notification) => (
+                        <div
+                            className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl relative cursor-pointer"
+                            key={notification.id}
+                            onMouseOver={() => markAsRead(notification.id)}
+                            onClick={() =>
+                                handleNotificationClick(notification)
+                            }
+                        >
+                            <div className="flex items-center bg-gray h-16 relative">
                                 <img
-                                    className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
-                                    src={`/assets/noti-icon-react/${notification.status}.svg`}
+                                    className="h-10 w-10 ml-2"
+                                    src={
+                                        notification.data.user_avatar
+                                            ? getNotificationAvatar(
+                                                  notification.data.user_avatar
+                                              )
+                                            : getProfileImage(
+                                                  notification.notifiable
+                                                      .profile,
+                                                  notification.notifiable.name
+                                              )
+                                    }
                                     alt=""
+                                    style={{
+                                        height: "60px",
+                                        width: "60px",
+                                        borderRadius: "100%",
+                                    }}
                                 />
-                            )}
-                        </div>
-                        <div className="flex flex-col w-48 h-50 ml-2">
-                            <div className="block px-1 py-1 text-sm font-semibold notification-message">
-                                <span>{notification.data.message}</span>
-                            </div>
-                            <div className="block px-1 py-1 text-sm font-medium text-neutral-800 text-opacity-50">
-                                {formatTimeAgo(notification.created_at)}
-                            </div>
-                        </div>
-                        <div className="absolute right-[6px]">
-                            {!notification.read_at &&
-                                !readMap[notification.id] && (
+                                {/* Icons for different notification types */}
+                                {notification.status && (
                                     <img
-                                        src="/assets/orangeball.png"
-                                        alt="Unread"
-                                        style={{
-                                            width: "10px",
-                                            height: "10px",
-                                            marginLeft: "10px",
-                                        }}
+                                        className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
+                                        src={`/assets/noti-icon-react/${notification.status}.svg`}
+                                        alt=""
                                     />
                                 )}
+                            </div>
+                            <div className="flex flex-col w-48 h-50 ml-2">
+                                <div className="block px-1 py-1 text-sm font-semibold notification-message">
+                                    <span>{notification.data.message}</span>
+                                </div>
+                                <div className="block px-1 py-1 text-sm font-medium text-neutral-800 text-opacity-50">
+                                    {formatTimeAgo(notification.created_at)}
+                                </div>
+                            </div>
+                            <div className="absolute right-[6px]">
+                                {!notification.read_at &&
+                                    !readMap[notification.id] && (
+                                        <img
+                                            src="/assets/orangeball.png"
+                                            alt="Unread"
+                                            style={{
+                                                width: "10px",
+                                                height: "10px",
+                                                marginLeft: "10px",
+                                            }}
+                                        />
+                                    )}
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </ul>
-        </div>
+                    ))}
+                </ul>
+            </div>
+        </InfiniteScroll>
     );
 }
 

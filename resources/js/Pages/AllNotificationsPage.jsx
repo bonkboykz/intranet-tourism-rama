@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { Loader2 } from "lucide-react";
 
@@ -121,15 +121,13 @@ const AllNotificationsPage = () => {
         hasMore,
         currentPage,
         setCurrentPage,
+        isLoading,
     } = useLazyLoading(`/api/notifications`);
 
-    const loadMore = async () => {
-        if (hasMore) {
-            setCurrentPage(currentPage + 1);
-            await fetchData(false);
-        }
+    const loadMore = () => {
+        if (isLoading || !hasMore) return;
+        setCurrentPage((prevState) => prevState + 1);
     };
-
     return (
         <Example>
             <div className="w-full min-h-screen bg-slate-100">
@@ -168,25 +166,14 @@ const AllNotificationsPage = () => {
                                     </a>
                                 </nav>
                                 <div>
-                                    <InfiniteScroll
-                                        pageStart={currentPage}
-                                        loadMore={loadMore}
+                                    <NotificationsList
+                                        notifications={notifications}
+                                        shouldSlice={false}
+                                        activeTab="all"
+                                        currentPage={currentPage}
                                         hasMore={hasMore}
-                                        loader={
-                                            <div
-                                                className="loader min-h-32 flex items-center justify-center"
-                                                key={0}
-                                            >
-                                                <Loader2 className="w-12 h-12 animate-spin" />
-                                            </div>
-                                        }
-                                    >
-                                        <NotificationsList
-                                            notifications={notifications}
-                                            shouldSlice={false}
-                                            activeTab="all"
-                                        />
-                                    </InfiniteScroll>
+                                        loadMore={loadMore}
+                                    />
                                 </div>
                             </div>
                         </section>
