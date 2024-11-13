@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 import NotificationsList from "@/Components/NotificationsList";
 import Example from "@/Layouts/DashboardLayoutNew";
@@ -113,8 +114,11 @@ const notificationData = [
 
 const AllNotificationsPage = () => {
     // const { data: notifications } = useLoading(`/api/notifications`);
-    const { data: notifications, fetchData } =
-        useLazyLoading(`/api/notifications`);
+    const {
+        data: notifications,
+        fetchData,
+        hasMore,
+    } = useLazyLoading(`/api/notifications`);
 
     useEffect(() => {
         fetchData(false);
@@ -161,6 +165,8 @@ const AllNotificationsPage = () => {
                                         notifications={notifications}
                                         shouldSlice={false}
                                         activeTab="all"
+                                        onLoad={fetchData}
+                                        hasMore={hasMore}
                                     />
                                 </div>
                             </div>

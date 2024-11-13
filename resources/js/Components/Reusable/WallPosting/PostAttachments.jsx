@@ -228,7 +228,7 @@ function PostAttachments({ attachments }) {
                 >
                     <div className="flex flex-row w-full justify-center items-start px-8">
                         <div
-                            className="bg-white lg:p-6 p-4 rounded-2xl max-w-3xl max-h-screen relative max-md:mx-4 max-md:w-full mx-6"
+                            className="bg-white lg:p-6 p-4 rounded-2xl  max-h-screen relative max-md:mx-4 max-md:w-full mx-6"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button
