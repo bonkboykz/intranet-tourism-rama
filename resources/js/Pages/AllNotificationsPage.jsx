@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { Loader2 } from "lucide-react";
 
 import NotificationsList from "@/Components/NotificationsList";
 import Example from "@/Layouts/DashboardLayoutNew";
-import { useSetupNotifications } from "@/Layouts/useNotifications";
 import { getProfileImage } from "@/Utils/getProfileImage";
-import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
 import icon_noti_orange from "../../../public/assets/icon/notification/Ellipse-orange.png";
 
@@ -114,15 +114,22 @@ const notificationData = [
 
 const AllNotificationsPage = () => {
     // const { data: notifications } = useLoading(`/api/notifications`);
+
     const {
         data: notifications,
         fetchData,
         hasMore,
+        currentPage,
+        setCurrentPage,
     } = useLazyLoading(`/api/notifications`);
 
-    useEffect(() => {
-        fetchData(false);
-    }, []);
+    const loadMore = async () => {
+        if (hasMore) {
+            setCurrentPage(currentPage + 1);
+            await fetchData(false);
+        }
+    };
+
     return (
         <Example>
             <div className="w-full min-h-screen bg-slate-100">
@@ -161,13 +168,25 @@ const AllNotificationsPage = () => {
                                     </a>
                                 </nav>
                                 <div>
-                                    <NotificationsList
-                                        notifications={notifications}
-                                        shouldSlice={false}
-                                        activeTab="all"
-                                        onLoad={fetchData}
+                                    <InfiniteScroll
+                                        pageStart={currentPage}
+                                        loadMore={loadMore}
                                         hasMore={hasMore}
-                                    />
+                                        loader={
+                                            <div
+                                                className="loader min-h-32 flex items-center justify-center"
+                                                key={0}
+                                            >
+                                                <Loader2 className="w-12 h-12 animate-spin" />
+                                            </div>
+                                        }
+                                    >
+                                        <NotificationsList
+                                            notifications={notifications}
+                                            shouldSlice={false}
+                                            activeTab="all"
+                                        />
+                                    </InfiniteScroll>
                                 </div>
                             </div>
                         </section>
