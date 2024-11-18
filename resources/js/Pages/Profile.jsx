@@ -451,7 +451,7 @@ function ProfileContent() {
                     {/* left widgets */}
                     <div className="z-0 pl-10 pt-10 pb-20 overflow-y-auto h-auto w-full max-w-[330px] max-h-[100vh] sticky top-0 hidden md:hidden lg:block no-scrollbar">
                         <div className="file-directory-header">
-                            <PageTitle title="Your Profile" />
+                            <PageTitle title="My Profile" />
                         </div>
                         <hr className="file-directory-underline" />
                         <div>
