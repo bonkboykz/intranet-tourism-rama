@@ -8,6 +8,7 @@ use App\Notifications\AssigningAdminCommunityNotification;
 use App\Notifications\CommunityNotification;
 use App\Notifications\DeletingCommunityNotification;
 use App\Notifications\LeavingCommunityNotification;
+use App\Notifications\RemovingFromCommunityNotification;
 use App\Notifications\RevokingAdminCommunityNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -238,7 +239,7 @@ class CommunityController extends Controller
         $community->members()->detach($user->id);
 
         try {
-            $user->notify(new CommunityNotification(Auth::user(), $community, 'removed'));
+            $user->notify(new RemovingFromCommunityNotification($community, Auth::user()));
 
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
