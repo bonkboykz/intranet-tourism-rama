@@ -112,7 +112,7 @@ export default function Header({ setSidebarOpen }) {
     };
 
     const userNavigation = [
-        { name: "Your profile", href: "../profile" },
+        { name: "My profile", href: "../profile" },
         { name: "Log out", href: "/logout", onClick: handleLogout },
     ];
 
