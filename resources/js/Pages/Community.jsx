@@ -194,7 +194,13 @@ const Community = () => {
         })
         .filter((community) =>
             community.name?.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        )
+        .filter((community) => {
+            if (!isSuperAdmin) {
+                return !community.is_archived;
+            }
+            return true;
+        });
 
     return (
         <Example>
