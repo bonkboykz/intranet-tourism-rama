@@ -192,6 +192,10 @@ class CommunityController extends Controller
             $superusers->get()->each(function ($superuser) use ($currentUser, $communityId) {
                 $superuser->notify(new DeletingCommunityNotification($communityId, $currentUser));
             });
+
+            $community->members()->each(function ($communityMember) use ($currentUser, $communityId) {
+                $communityMember->notify(new DeletingCommunityNotification($communityId, $currentUser));
+            });
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
