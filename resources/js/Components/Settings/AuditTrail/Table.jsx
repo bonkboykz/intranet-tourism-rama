@@ -5,7 +5,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { useDebounce } from "@uidotdev/usehooks";
 import axios from "axios";
-import { format } from "date-fns";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 
 const ITEMS_PER_PAGE = 25;
 
@@ -19,7 +19,6 @@ export function AuditTrailTable({
     const [totalPages, setTotalPages] = useState(0);
     const [items, setItems] = useState([]);
     const debouncedSearch = useDebounce(search, 500);
-
     const fetchItems = async () => {
         try {
             const response = await axios.get(`/api/audits`, {
@@ -28,14 +27,17 @@ export function AuditTrailTable({
                     perpage: ITEMS_PER_PAGE,
                     sort: [{ created_at: "desc" }],
                     ...(debouncedSearch && { search: debouncedSearch }),
-                    ...(startDate && { start_date: startDate }),
-                    ...(endDate && { end_date: endDate }),
+                    ...(startDate && {
+                        start_date: startOfDay(new Date(startDate)),
+                    }),
+                    ...(endDate && {
+                        end_date: endOfDay(new Date(endDate)),
+                    }),
                     ...(role !== "All" && { role: role }),
                 },
             });
-            const data = response.data.data;
-            console.log(data);
 
+            const data = response.data.data;
             setTotalPages(data.last_page);
             setItems(
                 data.data.map((item) => ({
@@ -53,7 +55,7 @@ export function AuditTrailTable({
 
     useEffect(() => {
         fetchItems();
-    }, [currentPage, debouncedSearch, startDate, endDate, role]); // Add userType as a dependency
+    }, [currentPage, debouncedSearch, startDate, endDate, role]);
 
     const handlePageChange = (newPage) => {
         if (newPage > totalPages || newPage < 1) return;
