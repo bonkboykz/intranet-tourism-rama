@@ -174,6 +174,8 @@ class CommunityController extends Controller
 
         $communityId = $community->id;
 
+        $communityMember = $community->members()->get();
+
         // remove all members and admins
         $community->admins()->detach();
         $community->members()->detach();
@@ -193,8 +195,8 @@ class CommunityController extends Controller
                 $superuser->notify(new DeletingCommunityNotification($communityId, $currentUser));
             });
 
-            $community->members()->each(function ($communityMember) use ($currentUser, $communityId) {
-                $communityMember->notify(new DeletingCommunityNotification($communityId, $currentUser));
+            $communityMember->each(function ($member) use ($currentUser, $communityId) {
+                $member->notify(new DeletingCommunityNotification($communityId, $currentUser));
             });
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
