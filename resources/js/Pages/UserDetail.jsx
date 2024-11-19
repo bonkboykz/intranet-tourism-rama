@@ -66,7 +66,7 @@ function UserDetailContent() {
         grade: "",
         location: "",
         phone: "",
-        dateofbirth: "",
+        dob: "",
         whatsapp: "",
         photo: "",
         employmentPosts: [], // Initialize with an empty array
@@ -131,7 +131,7 @@ function UserDetailContent() {
                     name: data.name,
                     username: data.username || "N/A",
                     email: data.email,
-                    dateofbirth: data.profile?.dob || "", // Use an empty string if no value
+                    dob: data.profile?.dob || "", // Use an empty string if no value
                     phone: data.profile?.work_phone || "", // Use an empty string if no value
                     whatsapp: data.profile?.phone_no || "", // Use an empty string if no value
                     photo:
@@ -143,7 +143,7 @@ function UserDetailContent() {
                     name: data.name,
                     username: data.username || "N/A",
                     email: data.email,
-                    dateofbirth: data.profile?.dob || "", // Ensure originalFormData is correctly set
+                    dob: data.profile?.dob || "", // Ensure originalFormData is correctly set
                     phone: data.profile?.work_phone || "", // Ensure originalFormData is correctly set
                     whatsapp: data.profile?.phone_no || "", // Ensure originalFormData is correctly set
                     photo:
@@ -236,8 +236,8 @@ function UserDetailContent() {
             if (newFormData.email) {
                 FfData.append("email", newFormData.email);
             }
-            if (newFormData.dateofbirth) {
-                FfData.append("dob", newFormData.dateofbirth);
+            if (newFormData.dob) {
+                FfData.append("dob", newFormData.dob);
             }
             if (newFormData.whatsapp) {
                 FfData.append("phone_no", newFormData.whatsapp);
