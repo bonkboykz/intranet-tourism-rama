@@ -9,6 +9,7 @@ use App\Notifications\DeletingCommunityNotification;
 use App\Notifications\GroupJoinRequestNotification;
 use App\Notifications\PhotoChangeRequestNotification;
 use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\Auth;
 use Modules\Communities\Helpers\CommunityPermissionsHelper;
 use Modules\Communities\Models\Community;
 use Modules\Communities\Models\CommunityMember;
@@ -528,6 +529,7 @@ class RequestController extends Controller
             $requestToUpdate->save();
 
             $community = Community::findOrFail($communityId);
+            $communityMember = $community->members();
 
             // delete all community members
             CommunityMember::where('community_id', $communityId)->delete();
@@ -535,12 +537,18 @@ class RequestController extends Controller
             $community->delete();
 
             try {
+                $user_id = Auth::id();
+                $currentUser = User::where('id', $user_id)->firstOrFail();
                 $superusers = User::whereHas('roles', function ($query) {
                     $query->where('name', 'superadmin');
                 });
 
                 $superusers->get()->each(function ($superuser) use ($requestToUpdate) {
                     $superuser->notify(new DeleteCommunityRequestNotification($requestToUpdate));
+                });
+
+                $communityMember->each(function ($member) use ($currentUser, $communityId) {
+                    $member->notify(new DeletingCommunityNotification($communityId, $currentUser));
                 });
             } catch (\Throwable $th) {
                 $output = new ConsoleOutput();
