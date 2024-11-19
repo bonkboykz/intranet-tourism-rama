@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Request;
 use App\Notifications\CreateCommunityRequestNotification;
 use App\Notifications\CreateRequestForUpdateProfileDepartmentNotification;
+use App\Notifications\DeletingCommunityNotification;
 use App\Notifications\GroupJoinRequestNotification;
 use App\Notifications\PhotoChangeRequestNotification;
 use Illuminate\Http\Request as HttpRequest;
@@ -495,7 +496,7 @@ class RequestController extends Controller
             });
 
             $superusers->get()->each(function ($superuser) use ($newRequest) {
-                $superuser->notify(new CreateCommunityRequestNotification($newRequest));
+                $superuser->notify(new DeleteCommunityRequestNotification($newRequest));
             });
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
@@ -533,6 +534,19 @@ class RequestController extends Controller
 
             $community->delete();
 
+            try {
+                $superusers = User::whereHas('roles', function ($query) {
+                    $query->where('name', 'superadmin');
+                });
+
+                $superusers->get()->each(function ($superuser) use ($requestToUpdate) {
+                    $superuser->notify(new DeleteCommunityRequestNotification($requestToUpdate));
+                });
+            } catch (\Throwable $th) {
+                $output = new ConsoleOutput();
+                $output->writeln($th->getMessage());
+            }
+
             return response()->json(['status' => 'approved', 'request_id' => $requestId, 'community_id' => $communityId]);
         } catch (\Exception $e) {
             Log::error("Error approving community deletion request: " . $e->getMessage());
@@ -558,6 +572,7 @@ class RequestController extends Controller
         $requestToUpdate->status = 'rejected';
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
+
 
         try {
             $user = User::find($requestToUpdate->user_id);
