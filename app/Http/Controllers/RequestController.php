@@ -495,7 +495,7 @@ class RequestController extends Controller
             });
 
             $superusers->get()->each(function ($superuser) use ($newRequest) {
-                $superuser->notify(new DeleteCommunityRequestNotification($newRequest));
+                $superuser->notify(new CreateCommunityRequestNotification($newRequest));
             });
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
