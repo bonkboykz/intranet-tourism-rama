@@ -24,7 +24,7 @@ class PollsController extends Controller
 
     public function store()
     {
-        $validated = request()->validate(...Poll::rules());
+        $validated = request()->validate(...Poll::rules('create'));
         Poll::create($validated);
 
         return response()->noContent();
