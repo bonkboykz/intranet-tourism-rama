@@ -410,6 +410,12 @@ class CommunityController extends Controller
             $superusers->get()->each(function ($superuser) use ($community) {
                 $superuser->notify(new CommunityNotification(Auth::user(), $community, 'archived'));
             });
+
+            $community->members()->each(function ($communityMember) use ($community) {
+                $communityMember->notify(new CommunityNotification(Auth::user(), $community, 'archived'));
+            });
+
+
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();
             $output->writeln($tr->getMessage());
