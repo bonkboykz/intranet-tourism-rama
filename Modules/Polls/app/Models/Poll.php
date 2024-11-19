@@ -56,7 +56,7 @@ class Poll extends Model implements AuditableContract
                     'user_id' => ['string', 'required'],
                     'title' => ['string'],
                     'description' => ['string'],
-                    'end_date' => ['required', 'date'],
+                    'end_date' => ['date', 'required'],
 
                 ],
                 // [],
@@ -66,7 +66,7 @@ class Poll extends Model implements AuditableContract
                     'user_id' => ['string', 'required'],
                     'title' => ['string'],
                     'description' => ['string'],
-                    'end_date' => ['required', 'date'],
+                    'end_date' => ['date','required'],
                 ],
                 // [],
             ],

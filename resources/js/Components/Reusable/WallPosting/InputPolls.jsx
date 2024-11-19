@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Switch from "react-switch";
+import { toast } from "react-toastify";
 import { useForm, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { add, format, startOfDay } from "date-fns";
@@ -58,6 +59,10 @@ export function InputPolls({
     onCreatePoll,
 }) {
     const [inputValue, setInputValue] = useState("");
+    const [includeEndDate, setIncludeEndDate] = useState(false);
+    const [endDate, setEndDate] = useState(new Date());
+
+    const [postAs, setPostAs] = useState("Post as");
     const textAreaRef = useRef(null);
 
     const handleChange = (event) => {
@@ -109,7 +114,10 @@ export function InputPolls({
             formData.append("multiple", isMultiple);
         }
 
-        if (includeEndDate) {
+        if (!includeEndDate) {
+            toast.error("End date must be included");
+            return;
+        } else {
             formData.append("end_date", endDate);
         }
 
@@ -143,11 +151,6 @@ export function InputPolls({
 
         onClose();
     };
-
-    const [includeEndDate, setIncludeEndDate] = useState(false);
-    const [endDate, setEndDate] = useState(new Date());
-
-    const [postAs, setPostAs] = useState("Post as");
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
