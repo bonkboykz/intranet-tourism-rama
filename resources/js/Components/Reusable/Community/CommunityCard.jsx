@@ -84,14 +84,16 @@ const CommunityCard = ({
                 </div>
             </div>
             <div className="card-footer items-center">
-                <a href={`/communityInner?communityId=${communityID}`}>
-                    <button
-                        className="justify-center text-primary font-semibold px-5 rounded-3xl border border-blue-500 bg-transparent hover:bg-primary-hover hover:text-white"
-                        aria-label="Visit"
-                    >
-                        Visit
-                    </button>
-                </a>
+                {!isArchived && (
+                    <a href={`/communityInner?communityId=${communityID}`}>
+                        <button
+                            className="justify-center text-primary font-semibold px-5 rounded-3xl border border-blue-500 bg-transparent hover:bg-primary-hover hover:text-white"
+                            aria-label="Visit"
+                        >
+                            Visit
+                        </button>
+                    </a>
+                )}
             </div>
         </div>
     );
