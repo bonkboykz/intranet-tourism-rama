@@ -164,24 +164,25 @@ class CommunityController extends Controller
 
     public function destroy(Community $community)
     {
-        // revoke permission from all admins
+
         $admins = $community->admins;
+
 
 
         foreach ($admins as $admin) {
             CommunityPermissionsHelper::revokeCommunityAdminPermissions($admin, $community);
         }
 
-        $communityId = $community->id;
-
+        $community_id = $community->id;
+        $community_name = $community->name;
         $communityMember = $community->members()->get();
+
 
         // remove all members and admins
         $community->admins()->detach();
         $community->members()->detach();
 
         $community->delete();
-
 
         try {
             $user_id = Auth::id();
@@ -191,17 +192,19 @@ class CommunityController extends Controller
                 $query->where('name', 'superadmin');
             });
 
-            $superusers->get()->each(function ($superuser) use ($currentUser, $communityId) {
-                $superuser->notify(new DeletingCommunityNotification($communityId, $currentUser));
+            $superusers->get()->each(function ($superuser) use ($currentUser, $community_id, $community_name) {
+                $superuser->notify(new DeletingCommunityNotification($community_id, $community_name, $currentUser));
             });
 
-            $communityMember->each(function ($member) use ($currentUser, $communityId) {
-                $member->notify(new DeletingCommunityNotification($communityId, $currentUser));
+            $communityMember->each(function ($member) use ($currentUser, $community_id, $community_name) {
+                $member->notify(new DeletingCommunityNotification($community_id, $community_name, $currentUser));
             });
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
         }
+
+
 
         return response()->noContent();
     }
