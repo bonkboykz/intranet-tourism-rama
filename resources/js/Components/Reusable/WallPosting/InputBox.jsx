@@ -46,6 +46,7 @@ function ShareYourThoughts({
     onCommentPosted,
     communityId,
     departmentId,
+    type,
 }) {
     const [postAs, setPostAs] = useState("Post as");
     const [inputValue, setInputValue] = useState("");
@@ -697,15 +698,21 @@ function ShareYourThoughts({
                                                             </label>
                                                         </div>
                                                     )}
+                                                {type === "private" && (
+                                                    <SendAs
+                                                        postAs={postAs}
+                                                        onChange={(newPostAs) =>
+                                                            setPostAs(newPostAs)
+                                                        }
+                                                        communityId={
+                                                            communityId
+                                                        }
+                                                        departmentId={
+                                                            departmentId
+                                                        }
+                                                    />
+                                                )}
 
-                                                <SendAs
-                                                    postAs={postAs}
-                                                    onChange={(newPostAs) =>
-                                                        setPostAs(newPostAs)
-                                                    }
-                                                    communityId={communityId}
-                                                    departmentId={departmentId}
-                                                />
                                                 <div className="flex justify-end max-md:w-full">
                                                     <button
                                                         onClick={
