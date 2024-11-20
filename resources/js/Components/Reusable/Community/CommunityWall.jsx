@@ -506,6 +506,7 @@ function Navigation({ departmentName, type }) {
                                         onCreatePoll={handleCreatePoll}
                                         includeAccessibilities={true}
                                         communityId={communityID}
+                                        type={type}
                                     />
                                 )}
                                 <Filter
