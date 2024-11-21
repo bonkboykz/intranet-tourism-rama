@@ -107,17 +107,6 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
         department_id: departmentId,
     });
 
-    const videos = posts
-        .filter((post) => post.attachments)
-        .map((post) => post.attachments)
-        .flat()
-        .filter((attachment) => {
-            return attachment.mime_type.startsWith("video/");
-        })
-        .map((attachment) => ({
-            ...attachment,
-            path: `/storage/${attachment.path}`,
-        }));
     return (
         <section className="flex flex-col px-4 pt-4 py-3 pb-3 max-w-[1500px] max-md:px-5 bg-white rounded-lg shadow-custom mt-4">
             <header>
@@ -127,7 +116,7 @@ const VideoProfile = ({ userId, communityId, departmentId }) => {
                 <hr className="underline" />
             </header>
             <section className="mt-8 max-md:max-w-full">
-                <VideoGallery videos={videos} />
+                <VideoGallery posts={posts} />
 
                 {hasMoreVideo && (
                     <button
