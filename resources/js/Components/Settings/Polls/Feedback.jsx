@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useMemo } from "react";
+import React, { useEffect, useMemo,useState } from "react";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import moment from "moment";
@@ -29,18 +27,15 @@ const formatTime = (time) => {
     }
 };
 
-// Feedback Row Component
 const FeedbackRow = ({ feedback, onRead, onDelete }) => {
     const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-    // Function to handle read feedback and show modal
     const handleRead = () => {
         onRead(feedback.id);
         setIsFeedbackModalVisible(true);
     };
 
-    // Function to handle delete feedback
     const handleDelete = () => {
         onDelete(feedback.id);
         setIsDeleteModalVisible(false);
@@ -80,14 +75,11 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
                     </div>
                 </div>
                 <div className="flex justify-start">
-                    <p className="pl-20 text-sm font-semibold text-center text-black ">
+                    <p className="pl-20 text-sm font-semibold text-center text-black">
                         {truncatedFeedback}
                     </p>
                 </div>
                 <div className="flex items-center justify-end">
-                    {/* {!feedback.read && (
-                        <div className="w-3 h-3 mr-10 bg-[#FF5436] rounded-full"></div>
-                    )} */}
                     <button
                         className="rounded-full bg-[#FF5436] text-white w-6 h-6 flex items-center justify-center"
                         onClick={(e) => {
@@ -135,14 +127,14 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
             )}
             {isDeleteModalVisible && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm "
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm"
                     onClick={() => setIsDeleteModalVisible(false)}
                 >
                     <div
                         className="relative p-8 bg-white rounded-lg shadow-custom w-96"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="text-center ">
+                        <div className="text-center">
                             <h2 className="mb-4 text-lg font-bold">
                                 Delete the feedback permanently?
                             </h2>
@@ -170,27 +162,24 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
     );
 };
 
-// Main Feedback Component
 const Feedback = ({ postId }) => {
     const [feedbackData, setFeedbackData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 7;
 
     const fetchFeedbackData = async () => {
         setIsLoading(true);
         try {
-            // Fetch feedback data from API
             const response = await axios.get(
                 `/api/posts/${postId}/poll_feedback`
             );
-
-            console.log(response);
 
             if (![200, 201, 204].includes(response.status)) {
                 throw new Error("Failed to fetch feedback data");
             }
 
             const responseData = response.data.data;
-
             setFeedbackData(responseData);
         } catch (error) {
             console.error(error);
@@ -201,10 +190,18 @@ const Feedback = ({ postId }) => {
 
     useEffect(() => {
         fetchFeedbackData();
-    }, []);
+    }, [postId]);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 7;
+    const feedbackList = useMemo(() => {
+        const indexOfLastRow = currentPage * rowsPerPage;
+        const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+
+        return feedbackData
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(indexOfFirstRow, indexOfLastRow);
+    }, [feedbackData, currentPage, rowsPerPage]);
+
+    const totalPages = Math.ceil(feedbackData.length / rowsPerPage);
 
     // Function to mark feedback as read
     const markAsRead = (id) => {
@@ -216,34 +213,17 @@ const Feedback = ({ postId }) => {
         // );
     };
 
-    // Function to delete feedback
     const deleteFeedback = async (id) => {
-        // TODO:
-
-        const response = await axios.delete(`/api/polls/feedbacks/${id}`);
-
-        if (![200, 201, 204].includes(response.status)) {
-            throw new Error("Network response was not ok");
+        try {
+            const response = await axios.delete(`/api/polls/feedbacks/${id}`);
+            if (![200, 201, 204].includes(response.status)) {
+                throw new Error("Failed to delete feedback");
+            }
+            fetchFeedbackData();
+        } catch (error) {
+            console.error(error);
         }
-
-        fetchFeedbackData();
     };
-
-    const indexOfLastRow = currentPage * rowsPerPage;
-    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    // const currentFeedback = feedbackList.slice(indexOfFirstRow, indexOfLastRow);
-
-    const feedbackList = useMemo(() => {
-        return feedbackData
-            .sort((a, b) => {
-                return new Date(b.created_at) - new Date(a.created_at);
-            })
-            .slice(indexOfFirstRow, indexOfLastRow);
-    }, [feedbackData]);
-
-    const totalPages = Math.ceil(feedbackData.length / rowsPerPage);
-
-    console.log(feedbackList, indexOfFirstRow, indexOfLastRow);
 
     return (
         <>
@@ -269,7 +249,9 @@ const Feedback = ({ postId }) => {
             <div className="max-w-[900px]">
                 <div className="flex items-center justify-end">
                     <button
-                        className={`px-4 py-2 bg-[#FAFBFD] border border-[#D5D5D5] rounded-l-lg shadow-custom ${currentPage === 1 ? "opacity-60 cursor-default" : ""}`}
+                        className={`px-4 py-2 bg-[#FAFBFD] border border-[#D5D5D5] rounded-l-lg shadow-custom ${
+                            currentPage === 1 ? "opacity-60 cursor-default" : ""
+                        }`}
                         onClick={() =>
                             setCurrentPage((prev) => Math.max(prev - 1, 1))
                         }
@@ -291,7 +273,11 @@ const Feedback = ({ postId }) => {
                         </svg>
                     </button>
                     <button
-                        className={`px-4 py-2 bg-[#FAFBFD] border border-[#D5D5D5] rounded-r-lg shadow-custom ${currentPage === totalPages ? "opacity-60 cursor-default" : ""}`}
+                        className={`px-4 py-2 bg-[#FAFBFD] border border-[#D5D5D5] rounded-r-lg shadow-custom ${
+                            currentPage === totalPages
+                                ? "opacity-60 cursor-default"
+                                : ""
+                        }`}
                         onClick={() =>
                             setCurrentPage((prev) =>
                                 Math.min(prev + 1, totalPages)
