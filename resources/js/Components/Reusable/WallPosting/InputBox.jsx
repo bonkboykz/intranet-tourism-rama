@@ -698,7 +698,7 @@ function ShareYourThoughts({
                                                             </label>
                                                         </div>
                                                     )}
-                                                {type === "private" && (
+                                                {type !== "private" && (
                                                     <SendAs
                                                         postAs={postAs}
                                                         onChange={(newPostAs) =>
