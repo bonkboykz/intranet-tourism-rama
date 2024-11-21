@@ -89,18 +89,34 @@ export function GlobalSearch() {
     } = useLazyLoading("/api/search-posts?q=" + q);
 
     const communities = useMemo(() => {
+        if (!data || !data.communities) {
+            return [];
+        }
+
         return data?.communities?.data ?? [];
     }, [data]);
 
     const users = useMemo(() => {
+        if (!data || !data.users) {
+            return [];
+        }
+
         return data?.users?.data ?? [];
     }, [data]);
 
     const media = useMemo(() => {
+        if (!data || !data.media || !Array.isArray(data.media)) {
+            return [];
+        }
+
         return data?.media?.slice(0, 10) ?? [];
     }, [data]);
 
     const files = useMemo(() => {
+        if (!data || !data.files) {
+            return [];
+        }
+
         return data?.files?.slice(0, 10) ?? [];
     }, [data]);
 
