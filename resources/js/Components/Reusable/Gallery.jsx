@@ -83,7 +83,7 @@ export function Gallery({ images, videos }) {
                         </header>
                         <section className="mt-4 max-md:max-w-full">
                             <VideoGallery
-                                videos={videosAttachments}
+                                posts={videos}
                                 className="w-full h-auto"
                             />
                         </section>
