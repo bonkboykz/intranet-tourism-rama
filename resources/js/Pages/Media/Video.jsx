@@ -101,15 +101,15 @@ export function VideoGallery({ posts }) {
                 slides={slides}
                 open={index >= 0}
                 close={() => setIndex(-1)}
-                captions={{
-                    // showToggle: true,
-                    descriptionTextAlign: "start",
-                    renderCaptions: (captions) => (
-                        <div style={{ color: "white" }}>
-                            {captions.description}
-                        </div>
-                    ),
-                }}
+                // captions={{
+                //     // showToggle: true,
+                //     descriptionTextAlign: "start",
+                //     renderCaptions: (captions) => (
+                //         <div style={{ color: "white" }}>
+                //             {captions.description}
+                //         </div>
+                //     ),
+                // }}
             />
         </>
     );
