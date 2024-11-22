@@ -30,7 +30,7 @@ function ActionButtons({ onSave, onCancel }) {
                 onClick={onSave}
                 className="gap-2 self-stretch py-2 px-4 text-md text-white bg-primary hover:bg-primary-hover rounded-full"
             >
-                Add
+                Save
             </button>
         </footer>
     );

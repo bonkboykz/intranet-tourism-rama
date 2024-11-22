@@ -92,12 +92,6 @@ const PopupMenu = ({
                             </p>
                             <div className="flex justify-center space-x-4">
                                 <button
-                                    onClick={handleCancelDelete}
-                                    className="px-8 py-1 text-white bg-secondary rounded-full hover:bg-secondary-hover"
-                                >
-                                    No
-                                </button>
-                                <button
                                     onClick={handleConfirmDelete}
                                     className={`px-8 py-1 text-base ${
                                         isSuperAdmin
@@ -106,6 +100,12 @@ const PopupMenu = ({
                                     } rounded-full`}
                                 >
                                     Yes
+                                </button>
+                                <button
+                                    onClick={handleCancelDelete}
+                                    className="px-8 py-1 text-white bg-secondary rounded-full hover:bg-secondary-hover"
+                                >
+                                    No
                                 </button>
                             </div>
                         </div>
