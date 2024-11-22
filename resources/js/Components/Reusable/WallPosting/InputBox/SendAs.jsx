@@ -1,18 +1,16 @@
-import { useContext } from "react";
 import { useState } from "react";
 
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import useUserData from "@/Utils/hooks/useUserData";
 
 export function SendAs({ postAs, onChange, departmentId, communityId }) {
-    const { isSuperAdmin, id } = useUserData();
-
+    const { isSuperAdmin } = useUserData();
     const { hasRole } = usePermissions();
 
     const [postAsOpen, setPostAsOpen] = useState(false);
 
     const isCommunityAdmin = hasRole(`community admin ${communityId}`);
-    const isDeparmtentAdmin = hasRole(`department admin ${departmentId}`);
+    const isDepartmentAdmin = hasRole(`department admin ${departmentId}`);
 
     const togglePostAsDropdown = () => {
         setPostAsOpen(!postAsOpen);
@@ -27,7 +25,7 @@ export function SendAs({ postAs, onChange, departmentId, communityId }) {
         return null;
     }
 
-    if (!isSuperAdmin && !isCommunityAdmin && !isDeparmtentAdmin) {
+    if (!isSuperAdmin && !isCommunityAdmin && !isDepartmentAdmin) {
         return null;
     }
 

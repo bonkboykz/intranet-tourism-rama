@@ -124,26 +124,7 @@ export function Gallery({ selectedTag }) {
                     </header>
                     <section className="mt-4 max-md:max-w-full">
                         <VideoGallery
-                            videos={videos
-                                .sort(
-                                    (a, b) =>
-                                        new Date(b.created_at) -
-                                        new Date(a.created_at)
-                                )
-                                .flatMap((post) =>
-                                    post.attachments
-                                        .filter((attachment) =>
-                                            attachment.mime_type.startsWith(
-                                                "video/"
-                                            )
-                                        )
-                                        .map((videoAttachment) => ({
-                                            ...videoAttachment,
-                                            path: `/storage/${videoAttachment.path}?cache-bust=${Date.now()}`,
-                                            posterPath: `/path/to/poster-images/${videoAttachment.id}-preview.jpg`,
-                                            post,
-                                        }))
-                                )}
+                            posts={videos}
                             className="w-full h-auto"
                         />
 

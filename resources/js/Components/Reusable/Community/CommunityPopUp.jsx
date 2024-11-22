@@ -59,8 +59,8 @@ const PopupMenu = ({
     };
 
     return (
-        <div ref={popupRef} className="relative z-50">
-            <div className="absolute right-0 z-50 bg-white border shadow-lg w-[190px] rounded-xl -mt-20">
+        <div ref={popupRef}>
+            <div className="absolute -right-2 bg-white border shadow-lg w-[190px] rounded-xl -mt-20">
                 {isSuperAdmin && (
                     <button
                         onClick={() => {
@@ -99,7 +99,11 @@ const PopupMenu = ({
                                 </button>
                                 <button
                                     onClick={handleConfirmDelete}
-                                    className={`px-8 py-1 text-base ${isSuperAdmin ? "text-gray-400 bg-white border border-gray-400 hover:bg-gray-400 hover:text-white" : "text-white bg-red-600 hover:bg-red-700"} rounded-full`}
+                                    className={`px-8 py-1 text-base ${
+                                        isSuperAdmin
+                                            ? "text-gray-400 bg-white border border-gray-400 hover:bg-gray-400 hover:text-white"
+                                            : "text-white bg-red-600 hover:bg-red-700"
+                                    } rounded-full`}
                                 >
                                     Yes
                                 </button>
