@@ -123,7 +123,7 @@ class EmploymentPostController extends Controller
             $user_id = Auth::id();
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
-            $user->notify(new RemovingFromDepartmentNotification($department,$currentUser));
+            $user->notify(new RemovingFromDepartmentNotification($department, $currentUser));
 
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
