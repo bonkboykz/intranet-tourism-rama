@@ -35,14 +35,14 @@ class RemovingFromDepartmentNotification extends Notification implements ShouldQ
 
     public function toDatabase($notifiable) {
         return [
-            'message' => 'You have left ' . $this->department->name . ' department.',
+            'message' => $this->user->name . ' removed you from ' . $this->department->name . ' department.',
             'user_avatar' => $this->user_avatar,
         ];
     }
 
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
-            'message' => 'You have left ' . $this->department->name . ' department.',
+            'message' => $this->user->name . ' removed you from ' . $this->department->name . ' department.',
             'user_avatar' => $this->user_avatar,
         ]);
     }
