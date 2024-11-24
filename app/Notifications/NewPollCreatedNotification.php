@@ -14,13 +14,25 @@ class NewPollCreatedNotification extends Notification implements ShouldQueue
     use Queueable;
 
     public $post;
+    public $user;
+    public $user_avatar;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Post $post)
+    public function __construct(Post $post, $user)
     {
         $this->post = $post;
+        $this->user = $user;
+
+
+        if ($this->user->profile->image) {
+            $this->user_avatar = $this->user->profile->image;
+        } elseif ($this->user->profile->staff_image) {
+            $this->user_avatar = $this->user->profile->staff_image;
+        } else {
+            $this->user_avatar = 'https://ui-avatars.com/api/?name=' . $this->user->name . '&color=7F9CF5&background=EBF4FF';
+        }
     }
 
     /**
@@ -61,6 +73,7 @@ class NewPollCreatedNotification extends Notification implements ShouldQueue
         return new BroadcastMessage([
             'message' => 'New poll created.',
             'post_id' => $this->post->id,
+            'user_avatar' => $this->user_avatar,
             'details' => []
         ]);
     }
@@ -70,6 +83,7 @@ class NewPollCreatedNotification extends Notification implements ShouldQueue
         return [
             'message' => 'New poll created.',
             'post_id' => $this->post->id,
+            'user_avatar' => $this->user_avatar,
             'details' => []
         ];
     }
