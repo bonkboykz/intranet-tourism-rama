@@ -4,6 +4,7 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Auth;
+use Modules\Department\Models\Department;
 use Modules\User\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -22,7 +23,7 @@ class UserController extends Controller
             $search = $request->input('search');
             $modelBuilder->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
 
-            $modelBuilder->with(['profile', 'roles', 'employmentPosts.department', 'employmentPosts.businessPost', 'employmentPosts.businessUnit']);
+            $modelBuilder->with(['profile', 'roles', 'employmentPosts.department', 'employmentPosts.businessPost', 'employmentPosts.businessUnit', 'employmentPosts.supervisor']);
 
             if (!$user->hasRole('superadmin')) {
                 // TODO: is_active due to legacy means is_deactivated, should be renamed
@@ -47,8 +48,8 @@ class UserController extends Controller
 
         // Attach employment_posts if empty
         $data->each(function ($user) {
-            $user->employment_posts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get();
-            $user->employment_post = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->first();
+            $user->employment_posts = $user->employmentPosts()->with(['department', 'businessPost', 'businessUnit', 'supervisor'])->get();
+            $user->employment_post = $user->employmentPosts()->with(['department', 'businessPost', 'businessUnit', 'supervisor'])->first();
         });
 
         return response()->json(['data' => $data]);
@@ -64,9 +65,10 @@ class UserController extends Controller
         if ($user->employmentPost) {
             $user->employmentPost->department = $user->employmentPost->department()->first();
             $user->employmentPost->businessPost = $user->employmentPost->businessPost()->first();
+            $user->employmentPost->supervisor = $user->employmentPost->supervisor()->first();
         }
         // with relations expanded: department, businessPost, businessUnit
-        $user->employment_posts = $user->employmentPosts()->with('department', 'businessPost', 'businessUnit')->get() ?? [];
+        $user->employment_posts = $user->employmentPosts()->with(['department', 'businessPost', 'businessUnit', 'supervisor.parent.user'])->get() ?? [];
         $user->employmentPosts = $user->employment_posts;
 
         return response()->json([
@@ -95,5 +97,14 @@ class UserController extends Controller
         $user->delete();
 
         return response()->noContent();
+    }
+
+    public function byDepartment(Department $department)
+    {
+        return response()->json([
+            'data' => [
+                'data' => $department->members()->has('employmentPost')->get(),
+            ],
+        ]);
     }
 }

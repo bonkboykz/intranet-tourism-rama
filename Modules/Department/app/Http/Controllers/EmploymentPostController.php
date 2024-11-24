@@ -24,7 +24,7 @@ class EmploymentPostController extends Controller
             $departmentId = $request->get('department_id');
 
             $members = EmploymentPost::where('department_id', $departmentId)
-                ->with(['user.profile', 'businessPost', 'businessGrade']) // Use relationships
+                ->with(['user.profile', 'businessPost', 'businessGrade', 'businessUnit', 'department', 'supervisor'])
                 ->get()
                 ->map(function ($employmentPost) {
                     $profile = $employmentPost->user->profile; // Get the profile if it exists
@@ -40,6 +40,13 @@ class EmploymentPostController extends Controller
                         'work_phone' => $employmentPost->work_phone,
                         'phone_no' => $profile ? $profile->phone_no : 'N/A', // Check if profile exists
                         'profile' => $profile,
+                        'email' => $employmentPost->user->email,
+                        'is_hod' => $employmentPost->is_hod,
+                        'is_assistance' => $employmentPost->is_assistance,
+                        'department_id' => $employmentPost->department_id,
+                        'department_name' => $employmentPost->department->name,
+                        'unit_id' => $employmentPost->businessUnit->id,
+                        'parent_id' => $employmentPost->supervisor ? $employmentPost->supervisor->parent_id : null,
                     ];
                 });
 
@@ -102,6 +109,29 @@ class EmploymentPostController extends Controller
     {
         $validated = request()->validate(...EmploymentPost::rules('update'));
         $employment_post->update($validated);
+        try {
+            if (request()->has('report_to')) {
+                $user = User::whereKey(request('report_to'))
+                    ->has('employmentPost')
+                    ->firstOrFail();
+                if (!$employment_post->supervisor()->exists()) {
+                    $employment_post->supervisor()->create([
+                        'parent_id' => $user->employmentPost->id,
+                    ]);
+                } else {
+                    $employment_post->supervisor->update([
+                        'parent_id' => $user->employmentPost->id,
+                    ]);
+                }
+            }
+        } catch (\Throwable $tr) {
+            $output = new ConsoleOutput();
+            $output->writeln($tr->getMessage());
+
+            return response()->json([
+                'message' => 'An error occurred',
+            ], 400);
+        }
 
         return response()->noContent();
     }
