@@ -13,7 +13,7 @@ export function CommunityTitle({ post }) {
     if (post.post_as === "member") {
         return (
             <div className="text-base font-semibold text-neutral-800">
-                {post.user.name}
+                {post.community.name}
             </div>
         );
     }
@@ -23,7 +23,7 @@ export function CommunityTitle({ post }) {
 
     return (
         <div className="text-base font-semibold text-neutral-800">
-            {post.user.name}
+            {post.community.name}
         </div>
     );
 }
@@ -59,6 +59,7 @@ export function DepartmentTitle({ post }) {
 
 export function UserPostTitle({ post }) {
     if (post.community) {
+        console.log("bahapost", post);
         return <CommunityTitle post={post} />;
     }
 

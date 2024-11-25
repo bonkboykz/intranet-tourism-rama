@@ -48,7 +48,7 @@ class LeavingCommunityNotification extends Notification implements ShouldQueue
     public function toDatabase(object $notifiable): array
     {
         return [
-            'message' => $this->user->name . ' has left the community' . $this->community_name . '.',
+            'message' => $this->user->name . ' has left the community ' . $this->community_name . '.',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ];
@@ -57,7 +57,7 @@ class LeavingCommunityNotification extends Notification implements ShouldQueue
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'message' => $this->user->name . ' has left the community' . $this->community_name . '.',
+            'message' => $this->user->name . ' has left the community ' . $this->community_name . '.',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ]);

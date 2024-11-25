@@ -6,6 +6,7 @@ import { usePage } from "@inertiajs/inertia-react";
 import { getProfileImage } from "@/Utils/getProfileImage";
 import { getUserPosition } from "@/Utils/getUserPosition";
 import { useLazyLoading, useLoading } from "@/Utils/hooks/useLazyLoading";
+import { usePermissions } from "@/Utils/hooks/usePermissions.jsx";
 import { useSearchParams } from "@/Utils/hooks/useSearchParams";
 import { renderDocument } from "@/Utils/renderDocument";
 
@@ -82,6 +83,8 @@ export function GlobalSearch() {
 
     const { data, isLoading } = useLoading("/api/search?q=" + q);
 
+    const { isSuperAdmin } = usePermissions();
+
     const {
         data: posts,
         hasMore,
@@ -101,7 +104,11 @@ export function GlobalSearch() {
             return [];
         }
 
-        return data?.users?.data ?? [];
+        if (isSuperAdmin) {
+            return data?.users?.data ?? [];
+        }
+
+        return (data?.users?.data ?? []).filter((user) => user.is_active);
     }, [data]);
 
     const media = useMemo(() => {
