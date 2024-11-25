@@ -1,10 +1,6 @@
 import React from "react";
 import { useContext } from "react";
 
-import useUserData from "@/Utils/hooks/useUserData";
-import { isBirthdayDay } from "@/Utils/isBirthday";
-
-import { DefaultPostCard } from "./DefaultPostCard/DefaultPostCard";
 import { PersonalWall } from "./PersonalWall";
 import { SystemBirthdayCard } from "./SystemBirthdayCard/SystemBirthdayCard";
 import { useInfiniteScroll } from "./useInfiniteScroll";

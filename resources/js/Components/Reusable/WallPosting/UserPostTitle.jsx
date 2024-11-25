@@ -23,7 +23,7 @@ export function CommunityTitle({ post }) {
 
     return (
         <div className="text-base font-semibold text-neutral-800">
-            {post.user.name}
+            {post.community.name}
         </div>
     );
 }
