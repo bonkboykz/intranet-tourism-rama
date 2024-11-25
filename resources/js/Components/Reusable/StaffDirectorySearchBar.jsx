@@ -149,8 +149,7 @@ const SearchMembers = ({
                             alt="Staff List"
                         />
                     </button>
-                    {/* TODO: return after implementation */}
-                    {/* <button
+                    <button
                         onClick={handleOrgChartButton}
                         className="shrink=0 w-10 aspect-square"
                     >
@@ -162,7 +161,7 @@ const SearchMembers = ({
                             }
                             alt="Org Chart"
                         />
-                    </button> */}
+                    </button>
                 </div>
             </div>
             {searchTerm && (

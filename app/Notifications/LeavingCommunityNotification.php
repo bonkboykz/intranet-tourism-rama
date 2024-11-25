@@ -14,15 +14,17 @@ class LeavingCommunityNotification extends Notification implements ShouldQueue
     use Queueable;
 
     public $community_id;
+    public $community_name;
     public $user;
     public $user_avatar;
     /**
      * Create a new notification instance.
      */
-    public function __construct($community_id, User $user)
+    public function __construct($community_id, $community_name, User $user)
     {
         $this->community_id = $community_id;
         $this->user = $user;
+        $this->community_name = $community_name;
 
         if ($this->user->profile->image) {
             $this->user_avatar = $this->user->profile->image;
@@ -46,7 +48,7 @@ class LeavingCommunityNotification extends Notification implements ShouldQueue
     public function toDatabase(object $notifiable): array
     {
         return [
-            'message' => $this->user->name . ' has left the community',
+            'message' => $this->user->name . ' has left the community' . $this->community_name . '.',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ];
@@ -55,7 +57,7 @@ class LeavingCommunityNotification extends Notification implements ShouldQueue
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'message' => $this->user->name . ' has left the community',
+            'message' => $this->user->name . ' has left the community' . $this->community_name . '.',
             'community_id' => $this->community_id,
             'user_avatar' => $this->user_avatar,
         ]);

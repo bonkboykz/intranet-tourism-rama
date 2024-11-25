@@ -36,6 +36,8 @@ class EmploymentPost extends Model implements AuditableContract
         'order',
         'work_phone',
         'position',
+        'is_hod',
+        'is_assistance',
     ];
 
     protected $appends = [
@@ -57,6 +59,8 @@ class EmploymentPost extends Model implements AuditableContract
                     'order' => ['numeric'],
                     'work_phone' => ['string'],
                     'position' => ['string'],
+                    'is_hod' => ['boolean'],
+                    'is_assistance' => ['boolean'],
                 ],
                 // [],
             ],
@@ -72,6 +76,8 @@ class EmploymentPost extends Model implements AuditableContract
                     'order' => ['numeric'],
                     'work_phone' => ['string'],
                     'position' => ['string'],
+                    'is_hod' => ['boolean'],
+                    'is_assistance' => ['boolean'],
                 ],
                 // [],
             ],
@@ -118,8 +124,13 @@ class EmploymentPost extends Model implements AuditableContract
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function supervisors()
+    public function supervisor()
     {
-        return $this->hasMany(Supervisor::class);
+        return $this->hasOne(Supervisor::class, 'child_id', 'id');
+    }
+
+    public function parentSupervisor()
+    {
+        return $this->hasOne(Supervisor::class, 'parent_id', 'id');
     }
 }

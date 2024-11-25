@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { usePage } from "@inertiajs/react";
+import axios from "axios";
 
 import { FileTable } from "@/Components/FileManagement";
 import { Popup, ProfileHeader, ProfileNav } from "@/Components/Profile";
@@ -97,14 +98,15 @@ function UserDetailContent() {
     const canEdit = loggedInUser.id === user.id || hasRole("superadmin");
 
     useEffect(() => {
-        fetch(
-            `/api/users/users/${user.id}?with[]=profile&with[]=employmentPosts.department&with[]=employmentPosts.businessPost&with[]=employmentPosts.businessUnit`,
-            {
-                method: "GET",
-            }
-        )
-            .then((response) => response.json())
-            .then(({ data }) => {
+        axios
+            .get(`/api/users/users/${user.id}`, {
+                params: {
+                    with: ["profile"],
+                },
+            })
+            .then(({ data: axiosData }) => {
+                const data = axiosData.data;
+
                 setProfileData((pv) => ({
                     ...pv,
                     ...data,
@@ -310,6 +312,14 @@ function UserDetailContent() {
                 "business_grade_id",
                 employmentPost.business_grade_id
             );
+            FfData.append("is_hod", employmentPost.is_hod ? 1 : 0);
+            FfData.append(
+                "is_assistance",
+                employmentPost.is_assistance ? 1 : 0
+            );
+            if (employmentPost.report_to) {
+                FfData.append("report_to", employmentPost.report_to);
+            }
             FfData.append("location", employmentPost.location);
             FfData.append("work_phone", employmentPost.work_phone);
             FfData.append("position", employmentPost.position);
@@ -612,6 +622,20 @@ function UserDetailContent() {
                                                                             .business_grade
                                                                             ?.code ||
                                                                         ""
+                                                                    }
+                                                                    is_hod={
+                                                                        employmentPost.is_hod
+                                                                    }
+                                                                    is_assistance={
+                                                                        employmentPost.is_assistance
+                                                                    }
+                                                                    report_to={
+                                                                        employmentPost
+                                                                            .supervisor
+                                                                            ?.parent
+                                                                            ?.user
+                                                                            ?.name ||
+                                                                        "N/A"
                                                                     }
                                                                     location={
                                                                         employmentPost.location ||

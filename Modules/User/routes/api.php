@@ -32,3 +32,4 @@ Route::apiResources([
     'users' => UserController::class,
     'birthday_reminders' => BirthdayReminderController::class,
 ]);
+Route::get('by-department/{department}', [UserController::class, 'byDepartment'])->name('user.byDepartment');

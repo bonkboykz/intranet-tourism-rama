@@ -14,6 +14,9 @@ function ProfileDepartment({
     jobtitle,
     position,
     grade,
+    report_to,
+    is_hod,
+    is_assistance,
     location,
     phone,
     isEditing,
@@ -26,6 +29,9 @@ function ProfileDepartment({
         jobtitle,
         position,
         grade,
+        report_to,
+        is_hod,
+        is_assistance,
         location,
         phone,
         countryCode: "",
@@ -34,12 +40,15 @@ function ProfileDepartment({
     const [departmentOptions, setDepartmentOptions] = useState([]);
     const [unitOptions, setUnitOptions] = useState([]);
     const [jobTitleOptions, setJobTitleOptions] = useState([]);
+    const [isHod, setIsHod] = useState(false);
+    const [isAssistance, setIsAssistance] = useState(false);
     const [positionOptions, setPositionOptions] = useState([
         "Tetap",
         "Kontrak",
         "MySTEP",
     ]);
     const [gradeOptions, setGradeOptions] = useState([]);
+    const [supervisorsOptions, setSupervisorsOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
     const [phoneOptions, setPhoneOptions] = useState([]);
 
@@ -48,6 +57,8 @@ function ProfileDepartment({
     const csrfToken = ""; // Add your CSRF token here if needed
 
     useEffect(() => {
+        setIsHod(localFormData.is_hod);
+        setIsAssistance(localFormData.is_assistance);
         fetchData(
             "/api/department/departments",
             setDepartmentOptions,
@@ -60,6 +71,11 @@ function ProfileDepartment({
             "Job Title"
         );
         fetchData("/api/department/business_grades", setGradeOptions, "Grades");
+        fetchData(
+            `/api/users/by-department/${departmentId}`,
+            setSupervisorsOptions,
+            "Supervisors"
+        );
         // TODO: get the list of location options
         // fetchData(
         //     "/api/department/employment_posts",
@@ -141,7 +157,7 @@ function ProfileDepartment({
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, checked } = e.target;
 
         setLocalFormData((prevData) => ({
             ...prevData,
@@ -159,6 +175,14 @@ function ProfileDepartment({
                 updatedData.business_post_id = value;
             } else if (name === "grade") {
                 updatedData.business_grade_id = value;
+            } else if (name === "is_hod") {
+                updatedData.is_hod = checked;
+                setIsHod(checked);
+            } else if (name === "is_assistance") {
+                updatedData.is_assistance = checked;
+                setIsAssistance(checked);
+            } else if (name === "report_to") {
+                updatedData.report_to = value;
             } else if (name === "location") {
                 updatedData.location = value;
             } else if (name === "phone") {
@@ -292,6 +316,60 @@ function ProfileDepartment({
                                 isSuperAdmin,
                                 handleInputChange
                             )}
+                            {renderField(
+                                "Report To",
+                                "report_to",
+                                localFormData.report_to,
+                                supervisorsOptions,
+                                true,
+                                handleInputChange
+                            )}
+                            <tr>
+                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
+                                    Is HOD
+                                </td>
+                                <td className="w-2/3 py-2 align-center">
+                                    {isEditing ? (
+                                        <input
+                                            type="checkbox"
+                                            name="is_hod"
+                                            value={localFormData.is_hod}
+                                            checked={isHod}
+                                            onChange={handleInputChange}
+                                            className="block p-2 mt-1 text-sm border-2 text-neutral-800 text-opacity-80 border-stone-300"
+                                        />
+                                    ) : (
+                                        <div className="block w-full p-2 mt-1 text-sm border-2 border-transparent rounded-md text-neutral-800 text-opacity-80">
+                                            {localFormData.is_hod
+                                                ? "Yes"
+                                                : "No"}
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
+                                    Is Assistance
+                                </td>
+                                <td className="w-2/3 py-2 align-center">
+                                    {isEditing ? (
+                                        <input
+                                            type="checkbox"
+                                            name="is_assistance"
+                                            value={localFormData.is_assistance}
+                                            checked={isAssistance}
+                                            onChange={handleInputChange}
+                                            className="block p-2 mt-1 text-sm border-2 text-neutral-800 text-opacity-80 border-stone-300"
+                                        />
+                                    ) : (
+                                        <div className="block w-full p-2 mt-1 text-sm border-2 border-transparent rounded-md text-neutral-800 text-opacity-80">
+                                            {localFormData.is_assistance
+                                                ? "Yes"
+                                                : "No"}
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
                             <tr>
                                 <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
                                     Location

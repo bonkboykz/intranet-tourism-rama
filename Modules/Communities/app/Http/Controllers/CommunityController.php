@@ -256,14 +256,14 @@ class CommunityController extends Controller
 
             $superusers->get()->each(function ($superuser) use ($user, $community) {
                 // notify all superadmins
-                $superuser->notify(new LeavingCommunityNotification($community->id, $user));
+                $superuser->notify(new LeavingCommunityNotification($community->id, $community->name,  $user));
             });
 
             $admins = $community->admins;
 
             $admins->each(function ($admin) use ($user, $community) {
                 // notify all admins
-                $admin->notify(new LeavingCommunityNotification($community->id, $user));
+                $admin->notify(new LeavingCommunityNotification($community->id, $community->name, $user));
             });
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();
