@@ -7,6 +7,7 @@ use App\Models\Request as AppRequest;
 use App\Notifications\AssigningAdminCommunityNotification;
 use App\Notifications\CommunityNotification;
 use App\Notifications\DeletingCommunityNotification;
+use App\Notifications\DeletingFromCommunityNotification;
 use App\Notifications\LeavingCommunityNotification;
 use App\Notifications\RemovingFromCommunityNotification;
 use App\Notifications\RevokingAdminCommunityNotification;
@@ -31,9 +32,9 @@ class CommunityController extends Controller
                 // if community is private then limit to communities user is a member of
                 $query->where(function ($query) {
                     $query->where('type', 'public') // Public community
-                        ->orWhereHas('members', function ($query) {
-                            $query->where('user_id', Auth::id()); // Private community, user is a member
-                        })
+                    ->orWhereHas('members', function ($query) {
+                        $query->where('user_id', Auth::id()); // Private community, user is a member
+                    })
                         ->orWhereHas('admins', function ($query) {
                             $query->where('user_id', Auth::id()); // Private community, user is an admin
                         });
@@ -168,7 +169,6 @@ class CommunityController extends Controller
         $admins = $community->admins;
 
 
-
         foreach ($admins as $admin) {
             CommunityPermissionsHelper::revokeCommunityAdminPermissions($admin, $community);
         }
@@ -203,7 +203,6 @@ class CommunityController extends Controller
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
         }
-
 
 
         return response()->noContent();
@@ -248,7 +247,15 @@ class CommunityController extends Controller
         $community->members()->detach($user->id);
 
         try {
-            $user->notify(new RemovingFromCommunityNotification($community, Auth::user()));
+            $currentUserId = Auth::id();
+
+
+            if ($currentUserId === $user->id) {
+                $user->notify(new RemovingFromCommunityNotification($community, Auth::user()));
+
+            } else {
+                $user->notify(new DeletingFromCommunityNotification($community, Auth::user()));
+            }
 
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
@@ -256,7 +263,7 @@ class CommunityController extends Controller
 
             $superusers->get()->each(function ($superuser) use ($user, $community) {
                 // notify all superadmins
-                $superuser->notify(new LeavingCommunityNotification($community->id, $community->name,  $user));
+                $superuser->notify(new LeavingCommunityNotification($community->id, $community->name, $user));
             });
 
             $admins = $community->admins;
@@ -269,7 +276,6 @@ class CommunityController extends Controller
             $output = new ConsoleOutput();
             $output->writeln($tr->getMessage());
         }
-
 
 
         return response()->noContent();
@@ -404,7 +410,6 @@ class CommunityController extends Controller
     }
 
 
-
     public function archive(Community $community)
     {
         $community->is_archived = true;
@@ -468,9 +473,9 @@ class CommunityController extends Controller
                 // if community is private then limit to communities user is a member of
                 $query->where(function ($query) {
                     $query->where('type', 'public') // Public community
-                        ->orWhereHas('members', function ($query) {
-                            $query->where('user_id', Auth::id()); // Private community, user is a member
-                        })
+                    ->orWhereHas('members', function ($query) {
+                        $query->where('user_id', Auth::id()); // Private community, user is a member
+                    })
                         ->orWhereHas('admins', function ($query) {
                             $query->where('user_id', Auth::id()); // Private community, user is an admin
                         });
