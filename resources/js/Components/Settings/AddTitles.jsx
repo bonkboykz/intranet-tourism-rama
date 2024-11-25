@@ -13,6 +13,7 @@ const AddTitles = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // Loading state
+    const [searchQuery, setSearchQuery] = useState(""); // Search query state
     const csrfToken = useCsrf();
 
     const fetchTitles = async (url) => {
@@ -147,6 +148,11 @@ const AddTitles = () => {
         }
     };
 
+    // Filtered titles based on the search query
+    const filteredTitles = titles.filter((title) =>
+        title.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className="container p-8 mx-auto">
             <div className="flex items-center justify-between mb-6">
@@ -165,6 +171,17 @@ const AddTitles = () => {
                 >
                     Add New Title
                 </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="Search titles..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
             </div>
 
             {/* Message Display */}
@@ -199,7 +216,7 @@ const AddTitles = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {titles.map((title) => (
+                            {filteredTitles.map((title) => (
                                 <tr key={title.id}>
                                     <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                         {editingTitleId === title.id ? (
@@ -259,31 +276,29 @@ const AddTitles = () => {
             {/* Popup for adding a new title */}
             {isPopupOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                    <div className="w-full max-w-sm p-6 bg-white shadow-lg rounded-2xl">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold ">
-                                Add New Title
-                            </h2>
-                        </div>
+                    <div className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
+                        <h2 className="mb-4 text-xl font-bold text-center text-gray-900">
+                            Add a New Title
+                        </h2>
                         <input
                             type="text"
-                            className="w-full p-2 mb-4 border rounded"
-                            placeholder="Title Name"
+                            placeholder="Enter title name"
                             value={newTitle}
                             onChange={(e) => setNewTitle(e.target.value)}
+                            className="w-full p-2 mb-4 border border-gray-300 rounded"
                         />
-                        <div className="flex justify-end space-x-2">
-                            <button
-                                onClick={() => setIsPopupOpen(false)}
-                                className="px-4 py-2 bg-white border-2 border-gray-500 rounded-full hover:bg-gray-500 hover:text-white"
-                            >
-                                Cancel
-                            </button>
+                        <div className="flex justify-between">
                             <button
                                 onClick={createTitle}
-                                className="px-4 py-2 text-white bg-primary rounded-full hover:bg-primary-hover"
+                                className="px-4 py-2 text-white bg-primary rounded hover:bg-primary-hover"
                             >
                                 Add
+                            </button>
+                            <button
+                                onClick={() => setIsPopupOpen(false)}
+                                className="px-4 py-2 text-gray-800 bg-gray-300 rounded hover:bg-gray-400"
+                            >
+                                Cancel
                             </button>
                         </div>
                     </div>

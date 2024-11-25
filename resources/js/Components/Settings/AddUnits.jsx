@@ -16,6 +16,7 @@ const AddUnits = () => {
     const [message, setMessage] = useState(null);
     const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
     const [isLoadingUnits, setIsLoadingUnits] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const csrfToken = useCsrf();
 
     const fetchDepartments = async (url) => {
@@ -97,6 +98,7 @@ const AddUnits = () => {
 
     useEffect(() => {
         if (selectedDepartmentId) {
+            console.log("Fetching units for department:", selectedDepartmentId);
             fetchUnits(
                 `/api/department/business_units?department_id=${selectedDepartmentId}&page=1`
             );
@@ -143,6 +145,10 @@ const AddUnits = () => {
                 showMessage("error", error.message);
             });
     };
+
+    const filteredUnits = units.filter((unit) =>
+        unit.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const editUnit = (id, name) => {
         setEditingUnitId(id);
@@ -255,6 +261,17 @@ const AddUnits = () => {
                 )}
             </div>
 
+            {/* Search Input */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="Search units..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+
             {/* Message Display */}
             {message && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -289,7 +306,7 @@ const AddUnits = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {units.map((unit) => (
+                                    {filteredUnits.map((unit) => (
                                         <tr key={unit.id}>
                                             <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                                 {editingUnitId === unit.id ? (

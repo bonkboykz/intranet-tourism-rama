@@ -386,6 +386,33 @@ const FileTable = ({
 };
 
 const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
+    // Generate pagination numbers
+    const getPaginationNumbers = () => {
+        const pages = new Set();
+
+        // Always include the first and last pages
+        pages.add(1);
+        pages.add(totalPages);
+
+        // Add the previous page if it exists
+        if (currentPage > 1) {
+            pages.add(currentPage - 1);
+        }
+
+        // Add the current page
+        pages.add(currentPage);
+
+        // Add the next page if it exists
+        if (currentPage < totalPages) {
+            pages.add(currentPage + 1);
+        }
+
+        // Convert to sorted array
+        return Array.from(pages).sort((a, b) => a - b);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
+
     return (
         <div
             className="py-3 flex w-full max-w-full overflow-x-auto whitespace-nowrap"
@@ -396,7 +423,7 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
             {hasNextButton && (
                 <button
                     disabled={!hasNextButton.prev_page_url}
-                    onClick={() => paginate((pv) => pv - 1)}
+                    onClick={() => paginate(currentPage - 1)}
                     className={`px-2 py-1 mx-1 rounded-lg ${
                         hasNextButton.prev_page_url
                             ? "text-primary"
@@ -407,25 +434,31 @@ const Pagination = ({ currentPage, totalPages, paginate, hasNextButton }) => {
                 </button>
             )}
 
-            {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                    key={i}
-                    onClick={() => paginate(i + 1)}
-                    className={`px-2 py-1 mx-1 rounded-lg ${
-                        currentPage === i + 1
-                            ? "bg-blue-200 text-primary"
-                            : "bg-white text-primary"
-                    }`}
-                    style={{ minWidth: "32px" }}
-                >
-                    {i + 1}
-                </button>
+            {paginationNumbers.map((number, index, arr) => (
+                <React.Fragment key={index}>
+                    <button
+                        onClick={() => paginate(number)}
+                        className={`px-2 py-1 mx-1 rounded-lg ${
+                            currentPage === number
+                                ? "bg-blue-200 text-primary"
+                                : "bg-white text-primary"
+                        }`}
+                        style={{ minWidth: "32px" }}
+                    >
+                        {number}
+                    </button>
+
+                    {/* Add ellipsis between non-consecutive pages */}
+                    {index < arr.length - 1 && arr[index + 1] > number + 1 && (
+                        <span className="px-2 text-gray-400">...</span>
+                    )}
+                </React.Fragment>
             ))}
 
             {hasNextButton && (
                 <button
                     disabled={!hasNextButton.next_page_url}
-                    onClick={() => paginate((pv) => pv + 1)}
+                    onClick={() => paginate(currentPage + 1)}
                     className={`px-2 py-1 mx-1 rounded-lg ${
                         hasNextButton.next_page_url
                             ? "text-primary"
