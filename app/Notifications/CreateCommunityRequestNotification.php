@@ -23,6 +23,8 @@ class CreateCommunityRequestNotification extends Notification implements ShouldQ
     {
         $this->request = $request;
 
+
+
     }
 
     public function via($notifiable)

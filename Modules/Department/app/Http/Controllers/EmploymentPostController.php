@@ -95,7 +95,7 @@ class EmploymentPostController extends Controller
             $department = Department::where('id', $validated['department_id'])->first();
 
             // Send notification to the user who has been added
-            $user->notify(new AddingToDepartmentNotification($department->id, $currentUser));
+            $user->notify(new AddingToDepartmentNotification($department->id, $department->name, $currentUser));
 
         } catch (\Throwable $tr) {
             $output = new ConsoleOutput();
