@@ -108,7 +108,9 @@ export function GlobalSearch() {
             return data?.users?.data ?? [];
         }
 
-        return (data?.users?.data ?? []).filter((user) => user.is_active);
+        return (data?.users?.data ?? []).filter(
+            (user) => user.is_active === false
+        );
     }, [data]);
 
     const media = useMemo(() => {
