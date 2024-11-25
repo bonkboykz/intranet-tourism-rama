@@ -46,7 +46,7 @@ export function CardHeader({ post, isClosed }) {
                         "p-2 rounded-3xl min-w-20 font-bold bg-secondary text-white border-none"
                     }
                 >
-                    Post is closed
+                    Poll is closed
                 </div>
             )}
         </div>
