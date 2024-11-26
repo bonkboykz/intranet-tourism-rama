@@ -134,12 +134,13 @@ export function GlobalSearch() {
             return [];
         }
 
-        const files = data?.files?.data?.filter((file) => {
-            return (
-                !file.mime_type.includes("image") &&
-                !file.mime_type.includes("video")
-            );
-        }, []);
+        const files =
+            data?.files?.data?.filter((file) => {
+                return (
+                    !file.mime_type.includes("image") &&
+                    !file.mime_type.includes("video")
+                );
+            }) ?? [];
 
         return files.slice(0, 10);
     }, [data]);
