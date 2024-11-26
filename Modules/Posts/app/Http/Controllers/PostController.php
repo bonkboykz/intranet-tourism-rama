@@ -76,11 +76,11 @@ class PostController extends Controller
                                 $query->where(['type' => 'public', 'post_as' => 'admin'])
                                     // For private communities, check if user is a member
                                     ->orWhere(function ($query) use ($user) {
-                                        $query->where('type', 'private')
-                                            ->whereHas('members', function ($query) use ($user) {
-                                                $query->where('user_id', $user->id);
-                                            });
-                                    });
+                                    $query->where('type', 'private')
+                                        ->whereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id);
+                                        });
+                                });
                             });
 
                     })
@@ -108,11 +108,11 @@ class PostController extends Controller
                                 $query->where('type', 'public')
                                     // For private communities, check if user is a member
                                     ->orWhere(function ($query) use ($user) {
-                                        $query->where('type', 'private')
-                                            ->whereHas('members', function ($query) use ($user) {
-                                                $query->where('user_id', $user->id);
-                                            });
-                                    });
+                                    $query->where('type', 'private')
+                                        ->whereHas('members', function ($query) use ($user) {
+                                            $query->where('user_id', $user->id);
+                                        });
+                                });
                             });
                     })
                         // Departments should also check membership, post_as admin bypasses checks
@@ -122,8 +122,8 @@ class PostController extends Controller
                                     // Check for admin posts or user being part of the department
                                     $query->where('post_as', 'admin')
                                         ->orWhereHas('employmentPosts', function ($query) use ($user) {
-                                            $query->where('user_id', $user->id);
-                                        });
+                                        $query->where('user_id', $user->id);
+                                    });
                                 });
                         });
                 });
@@ -260,7 +260,6 @@ class PostController extends Controller
                 $post->accessibilities()->createMany($validatedAccessibilities);
             }
 
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
@@ -269,7 +268,6 @@ class PostController extends Controller
 
         try {
             $current_user = User::findOrFail(Auth::id()); // Fetch current user directly
-
 
             // Handle birthday mentions
             if (isset($validated['type']) && $validated['type'] === 'birthday') {
@@ -304,7 +302,8 @@ class PostController extends Controller
                         $member->notify(new DepartmentAnnouncementNotification($current_user, $department));
                     });
                 }
-            } // Handle community announcements
+            }
+            // Handle community announcements
             elseif (isset($validated['community_id']) && isset($validated['announced']) && $validated['announced'] == '1') {
                 $community = Community::find($validated['community_id']);
                 if ($community) {
@@ -312,7 +311,8 @@ class PostController extends Controller
                         $member->notify(new CommunityAnnouncementNotification($current_user, $community));
                     });
                 }
-            } // Handle dashboard announcements for all other cases
+            }
+            // Handle dashboard announcements for all other cases
             elseif (isset($validated['announced']) && $validated['announced'] == '1') {
                 User::where('id', '!=', $current_user->id)->chunk(10, function ($users) use ($current_user) {
                     foreach ($users as $user) {
@@ -339,7 +339,8 @@ class PostController extends Controller
                         $member->notify(new AdminCreatedPostNotification($current_user, $department->name));
                     });
                 }
-            } // Handle community mentions
+            }
+            // Handle community mentions
             elseif (isset($validated['community_id'])) {
                 $community = Community::find($validated['community_id']);
                 $mentionedUsers = json_decode($post->mentions, true);
@@ -357,7 +358,8 @@ class PostController extends Controller
                         $member->notify(new AdminCreatedPostNotification($current_user, $community->name));
                     });
                 }
-            } // Handle default notifications
+            }
+            // Handle default notifications
             else {
                 $mentionedUsers = json_decode($post->mentions, true);
                 $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
@@ -376,7 +378,6 @@ class PostController extends Controller
                     });
                 }
             }
-
 
         } catch (\Throwable $th) {
             $output->writeln($th->getMessage());
@@ -487,7 +488,7 @@ class PostController extends Controller
         try {
             $current_user = User::where('id', Auth::id())->firstOrFail();
 
-            $mentionedUsers = (array)json_decode($post->mentions);
+            $mentionedUsers = (array) json_decode($post->mentions);
             $mentionedUsers = array_map(function ($user) {
                 return $user->id;
             }, $mentionedUsers);
@@ -631,7 +632,7 @@ class PostController extends Controller
             $author = $post->user;
             $currentUser = User::where('id', $user_id)->firstOrFail();
 
-            $mentionedUsers = (array)json_decode($comment->mentions);
+            $mentionedUsers = (array) json_decode($comment->mentions);
             $mentionedUsers = array_map(function ($user) {
                 return $user->id;
             }, $mentionedUsers);
@@ -746,10 +747,10 @@ class PostController extends Controller
         // json tag is array of strings which are album names, they could be on any type of post
         // get unique string values from all posts' tag field
         $albums = Post::all()->whereNotNull('tag') // Only consider posts where the 'tag' column is not null
-        ->pluck('tag')        // Extract the 'tag' JSON column
-        ->flatMap(function ($tags) {
-            return json_decode($tags, true); // Decode the JSON to an array
-        })
+            ->pluck('tag')        // Extract the 'tag' JSON column
+            ->flatMap(function ($tags) {
+                return json_decode($tags, true); // Decode the JSON to an array
+            })
             ->unique()            // Get only unique tags
             ->values()
             ->sort()           // Re-index the collection
@@ -813,24 +814,23 @@ class PostController extends Controller
             DB::commit();
 
             try {
-                $user_id = Auth::id();
                 // find all superadmins
                 $superusers = User::whereHas('roles', function ($query) {
                     $query->where('name', 'superadmin');
                 });
 
-                $currentUser = User::where('id', $user_id)->firstOrFail();
+                $currentUser = User::where('id', $user->id)->firstOrFail();
 
                 // Notify all superusers with a reference to the request
-                $superusers->get()->each(function ($superuser) use ($post, $currentUser) {
+                $superusers->get()->each(function ($superuser) use ($post) {
                     $department_id = $post->department->id ?? null;
                     $community_id = $post->community->id ?? null;
                     if ($department_id) {
-                        $superuser->notify(new NewPollCreatedInDepartmentNotification($department_id, $currentUser));
+                        $superuser->notify(new NewPollCreatedInDepartmentNotification($department_id));
                     } elseif ($community_id) {
-                        $superuser->notify(new NewPollCreatedInCommunityNotification($community_id, $currentUser));
+                        $superuser->notify(new NewPollCreatedInCommunityNotification($community_id));
                     } else {
-                        $superuser->notify(new NewPollCreatedNotification($post, $currentUser));
+                        $superuser->notify(new NewPollCreatedNotification($post));
                     }
                 });
             } catch (\Throwable $th) {
@@ -1094,13 +1094,109 @@ class PostController extends Controller
         ]);
     }
 
+    // public function getPublicMedia()
+    // {
+    //     $query = Post::query();
+
+    //     $query->with(['attachments', 'user.profile', 'department', 'community']);
+
+    //     // Apply filters for image and video MIME types
+    //     if (request()->has('only_video')) {
+    //         $query->whereHas('attachments', function ($query) {
+    //             $query->where('mime_type', 'like', 'video/%');
+    //         });
+    //     } else if (request()->has('only_image')) {
+    //         $query->whereHas('attachments', function ($query) {
+    //             $query->where('mime_type', 'like', 'image/%');
+    //         });
+    //     } else {
+    //         $query->whereHas('attachments', function ($query) {
+    //             $query->where(function ($query) {
+    //                 $query->where('mime_type', 'like', 'image/%')
+    //                     ->orWhere('mime_type', 'like', 'video/%');
+    //             });
+    //         });
+    //     }
+
+    //     if (request()->has('album_id')) {
+    //         $query->whereHas('albums', function ($query) {
+    //             $query->where('albums.id', request('album_id'));
+    //         });
+    //     }
+
+    //     // Filter by either user is superadmin or post has albums, or user is author
+    //     $query->where(function ($query) {
+    //         $query->whereHas('albums') // Posts with albums
+    //         ->orWhereHas('user.roles', function ($query) {
+    //             $query->where('name', 'superadmin'); // User is superadmin
+    //         })
+    //             ->orWhereHas('user', function ($query) {
+    //                 $query->where('id', Auth::id()); // User is author
+    //             });
+    //     });
+
+    //     $user = Auth::user();
+
+    //     if (!$user->hasRole('superadmin')) {
+    //         $query->where(function ($query) use ($user) {
+    //             $query->where(function ($query) use ($user) {
+    //                 $query->whereNull('community_id')
+    //                     ->orWhereHas('community', function ($query) use ($user) {
+    //                         $query->whereHas('members', function ($query) use ($user) {
+    //                             $query->where('user_id', $user->id);
+    //                         });
+    //                     });
+    //             })
+    //                 ->where(function ($query) use ($user) {
+    //                     $query->whereNull('department_id')
+    //                         ->orWhereHas('department', function ($query) use ($user) {
+    //                             $query->whereHas('employmentPosts', function ($query) use ($user) {
+    //                                 $query->where('user_id', $user->id);
+    //                             });
+    //                         });
+    //                 });
+    //         });
+    //     }
+
+    //     // $output = new ConsoleOutput();
+
+    //     // $output->writeln(request()->has('only_video') ? 'true' : 'false');
+    //     // function replaceBindings($sql, $bindings)
+    //     // {
+    //     //     foreach ($bindings as $binding) {
+    //     //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
+    //     //         $sql = preg_replace('/\?/', $value, $sql, 1);
+    //     //     }
+    //     //     return $sql;
+    //     // }
+
+    //     // $sql = $query->toSql(); // Get the raw SQL query
+    //     // $bindings = $query->getBindings(); // Get the query bindings (parameters)
+    //     // // Show the full SQL query with bindings replaced
+    //     // $fullSql = replaceBindings($sql, $bindings);
+
+    //     // $output->writeln($fullSql);
+
+    //     // not birthday, or story
+    //     $query->where('type', '!=', 'birthday')
+    //         ->where('type', '!=', 'story');
+
+    //     $query->orderBy('created_at', 'desc');
+
+    //     $posts = $query->paginate(20);
+
+    //     // Return the result as JSON
+    //     return response()->json([
+    //         'data' => $posts
+    //     ]);
+    // }
+
     public function getPublicMedia()
     {
         $query = Post::query();
-
+    
         $query->with(['attachments', 'user.profile', 'department', 'community']);
-
-        // Apply filters for image and video MIME types
+    
         if (request()->has('only_video')) {
             $query->whereHas('attachments', function ($query) {
                 $query->where('mime_type', 'like', 'video/%');
@@ -1110,87 +1206,56 @@ class PostController extends Controller
                 $query->where('mime_type', 'like', 'image/%');
             });
         } else {
-            $query->whereHas('attachments', function ($query) {
-                $query->where(function ($query) {
-                    $query->where('mime_type', 'like', 'image/%')
-                        ->orWhere('mime_type', 'like', 'video/%');
-                });
-            });
+            $query->whereHas('attachments');
         }
-
+    
         if (request()->has('album_id')) {
             $query->whereHas('albums', function ($query) {
                 $query->where('albums.id', request('album_id'));
             });
         }
-
-        // Filter by either user is superadmin or post has albums, or user is author
+    
         $query->where(function ($query) {
-            $query->whereHas('albums') // Posts with albums
-            ->orWhereHas('user.roles', function ($query) {
-                $query->where('name', 'superadmin'); // User is superadmin
-            })
-                ->orWhereHas('user', function ($query) {
-                    $query->where('id', Auth::id()); // User is author
-                });
+            $query->whereHas('albums')
+                ->orWhereHas('attachments');
         });
-
+    
         $user = Auth::user();
-
+    
         if (!$user->hasRole('superadmin')) {
             $query->where(function ($query) use ($user) {
                 $query->where(function ($query) use ($user) {
                     $query->whereNull('community_id')
-                        ->orWhereHas('community', function ($query) use ($user) {
-                            $query->whereHas('members', function ($query) use ($user) {
-                                $query->where('user_id', $user->id);
-                            });
+                        ->orWhereHas('community', function ($query) {
+                            $query->where('type', '!=', 'private');
                         });
                 })
-                    ->where(function ($query) use ($user) {
-                        $query->whereNull('department_id')
-                            ->orWhereHas('department', function ($query) use ($user) {
-                                $query->whereHas('employmentPosts', function ($query) use ($user) {
-                                    $query->where('user_id', $user->id);
-                                });
-                            });
+                ->where(function ($query) use ($user) {
+                    $query->whereNull('department_id')
+                        ->orWhereHas('department');
+                });
+            });
+        } else {
+            $query->where(function ($query) {
+                $query->whereNull('community_id')
+                    ->orWhereHas('community', function ($query) {
+                        $query->where('type', '!=', 'private'); 
                     });
             });
         }
-
-        // $output = new ConsoleOutput();
-
-        // $output->writeln(request()->has('only_video') ? 'true' : 'false');
-        // function replaceBindings($sql, $bindings)
-        // {
-        //     foreach ($bindings as $binding) {
-        //         $value = is_numeric($binding) ? $binding : "'" . addslashes($binding) . "'";
-        //         $sql = preg_replace('/\?/', $value, $sql, 1);
-        //     }
-        //     return $sql;
-        // }
-
-        // $sql = $query->toSql(); // Get the raw SQL query
-        // $bindings = $query->getBindings(); // Get the query bindings (parameters)
-        // // Show the full SQL query with bindings replaced
-        // $fullSql = replaceBindings($sql, $bindings);
-
-        // $output->writeln($fullSql);
-
-        // not birthday, or story
+    
         $query->where('type', '!=', 'birthday')
             ->where('type', '!=', 'story');
-
+    
         $query->orderBy('created_at', 'desc');
-
+    
         $posts = $query->paginate(20);
-
-        // Return the result as JSON
+    
         return response()->json([
             'data' => $posts
         ]);
     }
-
+    
 
     public function getMedia()
     {
