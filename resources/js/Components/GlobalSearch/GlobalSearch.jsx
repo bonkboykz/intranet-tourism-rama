@@ -119,7 +119,7 @@ export function GlobalSearch() {
         }
 
         const filteredMedia =
-            data?.media?.filter((item) => {
+            data?.media?.data?.filter((item) => {
                 return (
                     item.mime_type.includes("image") ||
                     item.mime_type.includes("video")
@@ -134,12 +134,13 @@ export function GlobalSearch() {
             return [];
         }
 
-        const files = data?.files?.filter((file) => {
-            return (
-                !file.mime_type.includes("image") &&
-                !file.mime_type.includes("video")
-            );
-        }, []);
+        const files =
+            data?.files?.data?.filter((file) => {
+                return (
+                    !file.mime_type.includes("image") &&
+                    !file.mime_type.includes("video")
+                );
+            }) ?? [];
 
         return files.slice(0, 10);
     }, [data]);
