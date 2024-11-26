@@ -19,7 +19,7 @@ class SuperadminCreatePostInCommunity implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public $user_id)
+    public function __construct(public $user_id, public $community_id)
     {
         //
     }
@@ -29,13 +29,11 @@ class SuperadminCreatePostInCommunity implements ShouldQueue
      */
     public function handle(): void
     {
-        //
-        $communities = Community::with('members')->get();
+
+        $community = Community::with('members')->find($this->community_id);
         $currentUser = User::where('id', $this->user_id)->firstOrFail();
 
-        foreach ($communities as $community) {
-            $members = $community->members;
-            Notification::send($members, new AdminCreatedPostNotification($currentUser, $community->name));
-        }
+        $members = $community->members;
+        Notification::send($members, new AdminCreatedPostNotification($currentUser, $community->name));
     }
 }

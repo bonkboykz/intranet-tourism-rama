@@ -20,18 +20,20 @@ class SuperadminCreatePostInDepartment implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public $user_id) {}
+    public function __construct(public $user_id, public $department_id)
+    {
+    }
 
 
     public function handle()
     {
-        $departments = Department::with('members')->get();
+
         $currentUser = User::find($this->user_id);
 
-        foreach ($departments as $department) {
-            $members = $department->members;
-            Notification::send($members, new AdminCreatedPostNotification($currentUser, $department->name));
-        }
+        $department = Department::with('members')->find($this->department_id);
+
+        $members = $department->members;
+        Notification::send($members, new AdminCreatedPostNotification($currentUser, $department->name));
 
 
     }
