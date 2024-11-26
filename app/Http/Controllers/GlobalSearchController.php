@@ -53,7 +53,6 @@ class GlobalSearchController extends Controller
 
         $media = Cache::remember('media_search_' . $query, 300, function () use ($query) {
             $resources = Resource::search($query)
-                ->where('mime_type', 'image%')
                 ->paginate(100);
 
             // // filter out by mime type to include only images and videos
