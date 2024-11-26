@@ -196,56 +196,56 @@ class ModelHasRoleController extends Controller
     }
 
     public function getUsersWithRoles()
-    {
-        // users who have roles
-        $users = User::with(relations: 'roles')->whereHas('roles')->get();
+{
+    // Get paginated users who have roles
+    $users = User::with('roles')->whereHas('roles')->paginate(10); // Adjust the page size as needed
 
-        $users->map(callback: function ($user) {
-            $user->department = $user->employmentPosts()->first();
+    // Transform the paginated data
+    $users->getCollection()->transform(function ($user) {
+        $user->department = $user->employmentPosts()->first();
 
-            if ($user->department) {
-                $user->department = $user->department->department;
-                $user->title = $user->employmentPosts()->first()->position;
-            } else {
-                $user->department = ['id' => null, 'name' => 'No department'];
-                $user->title = 'No title';
+        if ($user->department) {
+            $user->department = $user->department->department;
+            $user->title = $user->employmentPosts()->first()->position;
+        } else {
+            $user->department = ['id' => null, 'name' => 'No department'];
+            $user->title = 'No title';
+        }
+
+        $user->roles = $user->roles()->get();
+
+        $user->image = $user->profile->image;
+
+        if (!$user->image) {
+            $user->image = $user->profile->staff_image;
+        }
+
+        if (!$user->image) {
+            $user->image = '/assets/dummyStaffPlaceHolder.jpg';
+        }
+
+        if (strpos($user->image, 'avatar') === 0) {
+            $user->image = '/storage/' . $user->image;
+        }
+
+        unset($user->password);
+
+        $user->rolesWithCommunities = $user->roles->map(function ($role) {
+            if (strpos($role->name, 'community') !== false) {
+                $role->community_id = explode(' ', $role->name)[2];
+                $role->community = Community::find($role->community_id);
             }
 
-            $user->roles = $user->roles()->get();
-
-            $user->image = $user->profile->image;
-
-            if (!$user->image) {
-                $user->image = $user->profile->staff_image;
-            }
-
-            if (!$user->image) {
-                $user->image = '/assets/dummyStaffPlaceHolder.jpg';
-            }
-
-            // if image includes avatar place / at the start
-            if (strpos($user->image, 'avatar') === 0) {
-                $user->image = '/storage/' . $user->image;
-            }
-
-            // remove unneded fields
-            unset($user->password);
-
-            $user->rolesWithCommunities = $user->roles->map(function ($role) {
-                // if role name includes community
-                if (strpos($role->name, 'community') !== false) {
-                    // role name will be like community admin 3, we need to get the community id
-                    $role->community_id = explode(' ', $role->name)[2];
-                    $role->community = Community::find($role->community_id);
-                }
-
-                return $role;
-            });
+            return $role;
         });
+        return $user;
+    });
+
+    return response()->json([
+        'data' => $users,
+    ]);
+}
 
 
-        return response()->json([
-            'data' => $users,
-        ]);
-    }
+
 }
