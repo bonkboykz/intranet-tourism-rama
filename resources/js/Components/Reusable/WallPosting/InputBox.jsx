@@ -289,14 +289,13 @@ function ShareYourThoughts({
                     if (response.ok) {
                         const data = await response.json();
 
-                        // Сортировка данных по имени
                         const sortedResults = data.data.sort((a, b) => {
                             return a.name
                                 .toLowerCase()
                                 .localeCompare(b.name.toLowerCase());
                         });
 
-                        setSearchResults(sortedResults); // Установка отсортированных данных
+                        setSearchResults(sortedResults);
                         console.log("Sorted searchResults:", sortedResults);
                     } else {
                         console.error("Failed to fetch recommended people");
