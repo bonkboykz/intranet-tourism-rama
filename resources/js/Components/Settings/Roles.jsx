@@ -131,15 +131,15 @@ export default function Roles() {
     console.log("users with roles: ", usersWithRoles);
 
     const fetchUsersWithRoles = () => {
-        console.log("    Filtering users...");
         if (usersWithRoles && usersWithRoles.length > 0) {
             const filtered = usersWithRoles.filter((person) => {
-                const superadminRole = person.roles.find(
+                const superadminRole = person.roles?.find(
                     (role) => role.name === "superadmin"
                 );
-                const departmentAdminRoles = person.roles.filter((role) =>
-                    role.name.includes("department admin")
-                );
+                const departmentAdminRoles =
+                    person.roles?.filter((role) =>
+                        role.name.includes("department admin")
+                    ) || [];
                 const communityAdminRoles =
                     person.rolesWithCommunities?.filter((role) =>
                         role.name.includes("community admin")
@@ -152,11 +152,8 @@ export default function Roles() {
                 );
             });
 
-            console.log("Filtered data:", filtered);
             setFilteredPeople(filtered);
             setLoading(false);
-        } else {
-            console.log("No users to filter.");
         }
     };
 
@@ -211,8 +208,10 @@ export default function Roles() {
     };
 
     useEffect(() => {
-        if (usersWithRoles && usersWithRoles.length > 0) {
+        if (usersWithRoles?.length > 0) {
             fetchUsersWithRoles();
+        } else {
+            console.warn("usersWithRoles is empty or undefined");
         }
     }, [usersWithRoles]);
 
@@ -268,17 +267,19 @@ export default function Roles() {
     };
 
     const renderRoles = (person) => {
-        const superadminRole = person.roles.find(
+        const superadminRole = person.roles?.find(
             (role) => role.name === "superadmin"
         );
 
-        const departmentAdminRoles = person.roles.filter((role) =>
-            role.name.includes("department admin")
-        );
+        const departmentAdminRoles =
+            person.roles?.filter((role) =>
+                role.name.includes("department admin")
+            ) || [];
 
-        const communityAdminRoles = person.rolesWithCommunities.filter((role) =>
-            role.name.includes("community admin")
-        );
+        const communityAdminRoles =
+            person.rolesWithCommunities?.filter((role) =>
+                role.name.includes("community admin")
+            ) || [];
 
         if (
             !superadminRole &&
@@ -328,35 +329,29 @@ export default function Roles() {
 
                 {communityAdminRoles.length > 0 && (
                     <>
-                        {
-                            <select
-                                className={cn(
-                                    `w-full flex items-center justify-center text-center px-6 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
-                                    roleColor["community admin"]
-                                )}
-                                onChange={(e) => {
-                                    const communityId = e.target.value;
+                        <select
+                            className={cn(
+                                `w-full flex items-center justify-center text-center px-6 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
+                                roleColor["community admin"]
+                            )}
+                            onChange={(e) => {
+                                const communityId = e.target.value;
+                                if (communityId) {
                                     window.location.href = `/communityInner?communityId=${communityId}`;
-                                }}
-                            >
-                                <option>Select community</option>
-                                {communityAdminRoles.map((role, index) => {
-                                    return (
-                                        <option
-                                            key={index}
-                                            className={cn(
-                                                `flex items-center justify-center text-center px-4 py-2 mt-2 text-xs font-medium rounded-full  hover:bg-yellow-200 cursor-pointer`,
-                                                roleColor["community admin"]
-                                            )}
-                                            value={role.community.id}
-                                        >
-                                            Community Admin (
-                                            {role.community.name.slice(0, 20)})
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        }
+                                }
+                            }}
+                        >
+                            <option>Select community</option>
+                            {communityAdminRoles.map((role, index) => (
+                                <option
+                                    key={index}
+                                    value={role.community?.id || ""}
+                                >
+                                    Community Admin (
+                                    {role.community?.name?.slice(0, 20) || ""})
+                                </option>
+                            ))}
+                        </select>
                     </>
                 )}
             </>
