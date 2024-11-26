@@ -102,7 +102,9 @@ class DepartmentPermissionsHelper
 
     public static function isAdmin(User $user, Department $department)
     {
-        return $department->admins()->where('id', $user->id)->exists();
+        return $department->admins()
+            ->where('users.id', $user->id)  // Explicitly reference users.id
+            ->exists();
     }
 }
 
