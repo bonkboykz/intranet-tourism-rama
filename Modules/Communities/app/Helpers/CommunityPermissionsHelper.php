@@ -125,7 +125,9 @@ class CommunityPermissionsHelper
 
     public static function isAdmin(User $user, Community $community)
     {
-        return $community->admins()->where('id', $user->id)->exists();
+        return $community->admins()
+            ->where('users.id', $user->id)  // Explicitly reference users.id
+            ->exists();
     }
 }
 

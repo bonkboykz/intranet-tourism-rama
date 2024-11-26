@@ -3,6 +3,9 @@
 namespace Modules\Posts\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SuperadminCreatePostInCommunity;
+use App\Jobs\SuperadminCreatePostInDashboard;
+use App\Jobs\SuperadminCreatePostInDepartment;
 use App\Notifications\AdminCreatedPostNotification;
 use App\Notifications\AlbumTagNotification;
 use App\Notifications\CommentNotification;
@@ -325,57 +328,55 @@ class PostController extends Controller
             if (isset($validated['department_id'])) {
                 $department = Department::find($validated['department_id']);
                 $mentionedUsers = json_decode($post->mentions, true);
-                $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
-                $mentionedUsers = User::whereIn('id', $mentionedUserIds)->get();
+                if ($mentionedUsers !== null && is_array($mentionedUsers)) {
+                    $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
+                    $mentionedUsers = User::whereIn('id', $mentionedUserIds)->get();
 
-                // Notify mentioned users
-                foreach ($mentionedUsers as $user) {
-                    $user->notify(new UserGotMentioned($current_user, $department->name));
+                    foreach ($mentionedUsers as $user) {
+                        $user->notify(new UserGotMentioned($current_user, $department->name));
+                    }
                 }
 
                 // Notify all department members if the current user is an admin
                 if (DepartmentPermissionsHelper::isAdmin($current_user, $department)) {
-                    $department->members()->each(function ($member) use ($current_user, $department) {
-                        $member->notify(new AdminCreatedPostNotification($current_user, $department->name));
-                    });
+                    SuperadminCreatePostInDepartment::dispatch(Auth::id());
+
                 }
             }
             // Handle community mentions
             elseif (isset($validated['community_id'])) {
                 $community = Community::find($validated['community_id']);
                 $mentionedUsers = json_decode($post->mentions, true);
-                $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
-                $mentionedUsers = User::whereIn('id', $mentionedUserIds)->get();
+                if ($mentionedUsers !== null && is_array($mentionedUsers)) {
+                    $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
+                    $mentionedUsers = User::whereIn('id', $mentionedUserIds)->get();
 
-                // Notify mentioned users
-                foreach ($mentionedUsers as $user) {
-                    $user->notify(new UserGotMentioned($current_user, $community->name));
+                    foreach ($mentionedUsers as $user) {
+                        $user->notify(new UserGotMentioned($current_user, $community->name));
+                    }
                 }
 
                 // Notify all community members if the current user is an admin
                 if (CommunityPermissionsHelper::isAdmin($current_user, $community)) {
-                    $community->members()->each(function ($member) use ($current_user, $community) {
-                        $member->notify(new AdminCreatedPostNotification($current_user, $community->name));
-                    });
+                    SuperadminCreatePostInCommunity::dispatch(Auth::id());
+
                 }
             }
             // Handle default notifications
             else {
                 $mentionedUsers = json_decode($post->mentions, true);
-                $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
-                $mentionedUsers = User::whereIn('id', $mentionedUserIds)->get();
+                if ($mentionedUsers !== null && is_array($mentionedUsers)) {
+                    $mentionedUserIds = array_map(fn($user) => $user['id'], $mentionedUsers);
+                    $mentionedUsers = User::whereIn('id', $mentionedUserIds)->get();
 
-                foreach ($mentionedUsers as $user) {
-                    $user->notify(new UserGotMentioned($current_user, 'Dashboard'));
+                    foreach ($mentionedUsers as $user) {
+                        $user->notify(new UserGotMentioned($current_user, 'Dashboard'));
+                    }
                 }
 
                 // Notify other users if the current user is a superadmin
                 if ($current_user->hasRole('superadmin')) {
-                    User::where('id', '!=', $current_user->id)->chunk(10, function ($users) use ($current_user) {
-                        foreach ($users as $user) {
-                            $user->notify(new AdminCreatedPostNotification($current_user, 'Dashboard'));
-                        }
-                    });
+                    SuperadminCreatePostInDashboard::dispatch(Auth::id());
                 }
             }
 
