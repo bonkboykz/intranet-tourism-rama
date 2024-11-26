@@ -4,6 +4,7 @@ import axios from "axios";
 import { useCsrf } from "@/composables";
 import { cn } from "@/Utils/cn";
 import { getAvatarSource, getProfileImage } from "@/Utils/getProfileImage";
+import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 import { usePermissions } from "@/Utils/hooks/usePermissions";
 import { toastError } from "@/Utils/toast";
 
@@ -119,59 +120,44 @@ export default function Roles() {
         }
     };
 
-    const fetchUsersWithRoles = async (
-        pageUrl = "/api/permission/model-has-roles"
-    ) => {
-        try {
-            const response = await axios.get(
-                "/api/permission/get-users-with-roles"
-            );
+    const [filteredPeople, setFilteredPeople] = useState([]);
+    const {
+        data: usersWithRoles,
+        isLoading,
+        error,
+        fetchData,
+    } = useLazyLoading("/api/permission/get-users-with-roles");
 
-            if (![200, 201, 204].includes(response.status)) {
-                console.error(
-                    "Failed to fetch users with roles:",
-                    response.statusText
-                );
+    console.log("users with roles: ", usersWithRoles);
 
-                throw new Error("Failed to fetch users with roles");
-            }
-
-            const data = response.data.data;
-
-            console.log("Users with roles:", data);
-
-            const filteredPersons = data.filter((person) => {
+    const fetchUsersWithRoles = () => {
+        console.log("    Filtering users...");
+        if (usersWithRoles && usersWithRoles.length > 0) {
+            const filtered = usersWithRoles.filter((person) => {
                 const superadminRole = person.roles.find(
                     (role) => role.name === "superadmin"
                 );
-
                 const departmentAdminRoles = person.roles.filter((role) =>
                     role.name.includes("department admin")
                 );
+                const communityAdminRoles =
+                    person.rolesWithCommunities?.filter((role) =>
+                        role.name.includes("community admin")
+                    ) || [];
 
-                const communityAdminRoles = person.rolesWithCommunities.filter(
-                    (role) => role.name.includes("community admin")
+                return (
+                    superadminRole ||
+                    departmentAdminRoles.length > 0 ||
+                    communityAdminRoles.length > 0
                 );
-
-                if (
-                    !superadminRole &&
-                    departmentAdminRoles.length === 0 &&
-                    communityAdminRoles.length === 0
-                ) {
-                    return false;
-                }
-
-                return true;
             });
 
-            setPeople(filteredPersons);
-        } catch (error) {
-            console.error("Error fetching users with roles:", error);
-
-            toastError("Error fetching users with roles");
+            console.log("Filtered data:", filtered);
+            setFilteredPeople(filtered);
+            setLoading(false);
+        } else {
+            console.log("No users to filter.");
         }
-
-        setLoading(false);
     };
 
     const fetchAllSearchResults = async (query) => {
@@ -225,8 +211,10 @@ export default function Roles() {
     };
 
     useEffect(() => {
-        fetchUsersWithRoles();
-    }, [csrfToken]);
+        if (usersWithRoles && usersWithRoles.length > 0) {
+            fetchUsersWithRoles();
+        }
+    }, [usersWithRoles]);
 
     const handleAssignSuperAdmin = async () => {
         try {
@@ -375,6 +363,7 @@ export default function Roles() {
         );
     };
 
+    console.log("filtered people: ", filteredPeople);
     return (
         <div className="flow-root">
             <div className="container p-8 mx-auto">
@@ -432,7 +421,7 @@ export default function Roles() {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {people.map((person) => (
+                                    {filteredPeople.map((person) => (
                                         <tr key={person.id}>
                                             <td className="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
                                                 <div className="flex items-center">
