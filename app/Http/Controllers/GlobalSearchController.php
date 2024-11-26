@@ -53,26 +53,27 @@ class GlobalSearchController extends Controller
 
         $media = Cache::remember('media_search_' . $query, 300, function () use ($query) {
             $resources = Resource::search($query)
+                ->where('mime_type', 'image%')
                 ->paginate(100);
 
-            // filter out by mime type to include only images and videos
-            $media = $resources->filter(function ($resource) {
-                return in_array($resource->mime_type, ['image/jpeg', 'image/png', 'image/gif', 'video/mp4']);
-            });
+            // // filter out by mime type to include only images and videos
+            // $media = $resources->filter(function ($resource) {
+            //     return in_array($resource->mime_type, ['image/jpeg', 'image/png', 'image/gif', 'video/mp4']);
+            // });
 
-            return $media;
+            return $resources;
         });
 
         $files = Cache::remember('files_search_' . $query, 300, function () use ($query) {
             $resources = Resource::search($query)
                 ->paginate(100);
 
-            // filter out by mime type to include only files
-            $files = $resources->filter(function ($resource) {
-                return in_array($resource->mime_type, ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
-            });
+            // // filter out by mime type to include only files
+            // $files = $resources->filter(function ($resource) {
+            //     return in_array($resource->mime_type, ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']);
+            // });
 
-            return $files;
+            return $resources;
         });
 
         return response()->json([
