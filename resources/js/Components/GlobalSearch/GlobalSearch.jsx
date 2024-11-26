@@ -118,7 +118,15 @@ export function GlobalSearch() {
             return [];
         }
 
-        return data?.media?.slice(0, 10) ?? [];
+        const filteredMedia =
+            data?.media?.filter((item) => {
+                return (
+                    item.mime_type.includes("image") ||
+                    item.mime_type.includes("video")
+                );
+            }) ?? [];
+
+        return filteredMedia.slice(0, 10);
     }, [data]);
 
     const files = useMemo(() => {
@@ -126,7 +134,14 @@ export function GlobalSearch() {
             return [];
         }
 
-        return data?.files?.slice(0, 10) ?? [];
+        const files = data?.files?.filter((file) => {
+            return (
+                !file.mime_type.includes("image") &&
+                !file.mime_type.includes("video")
+            );
+        }, []);
+
+        return files.slice(0, 10);
     }, [data]);
 
     if (q === "") {
