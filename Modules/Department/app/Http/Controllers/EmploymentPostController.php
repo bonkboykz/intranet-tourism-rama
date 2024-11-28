@@ -45,7 +45,7 @@ class EmploymentPostController extends Controller
                         'is_assistance' => $employmentPost->is_assistance,
                         'department_id' => $employmentPost->department_id,
                         'department_name' => $employmentPost->department->name,
-                        'unit_id' => $employmentPost->businessUnit->id,
+                        'unit_id' => $employmentPost->businessUnit ? $employmentPost->businessUnit->id : null,
                         'parent_id' => $employmentPost->supervisor ? $employmentPost->supervisor->parent_id : null,
                     ];
                 });
