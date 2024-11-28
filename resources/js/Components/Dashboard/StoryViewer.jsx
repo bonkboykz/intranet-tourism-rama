@@ -4,7 +4,7 @@ import Stories from "react-insta-stories";
 import axios from "axios";
 
 import { CancelIcon } from "../Icons/CancelIcon";
-import { ThrashIcon } from "../Icons/ThrashIcon";
+import { TrashIcon2 } from "../Icons/TrashIcon2";
 
 const StoryViewer = ({
     setCurrentStoryIndex,
@@ -182,7 +182,7 @@ const StoryViewer = ({
                                     cursor: "pointer",
                                 }}
                             >
-                                <ThrashIcon className="w-[30px] h-[30px] mt-[-10px] text-secondary" />
+                                <TrashIcon2 className="w-[30px] h-[30px] mt-[-10px] text-secondary" />
                             </button>
                         )}
                         <button
