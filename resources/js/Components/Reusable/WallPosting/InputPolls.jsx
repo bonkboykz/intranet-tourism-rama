@@ -61,7 +61,7 @@ export function InputPolls({
     const [inputValue, setInputValue] = useState("");
     const [includeEndDate, setIncludeEndDate] = useState(false);
     const [endDate, setEndDate] = useState(new Date());
-
+    const [isLoading, setIsLoading] = useState(false);
     const [postAs, setPostAs] = useState("Post as");
     const textAreaRef = useRef(null);
 
@@ -103,6 +103,7 @@ export function InputPolls({
     const userData = useUserData(userId);
 
     const handlePostPoll = async () => {
+        setIsLoading(true); // Start loading
         const formData = new FormData();
 
         formData.append("question", inputValue);
@@ -116,6 +117,7 @@ export function InputPolls({
 
         if (!includeEndDate) {
             toast.error("End date must be included");
+            setIsLoading(false); // Stop loading on error
             return;
         } else {
             formData.append("end_date", endDate);
@@ -147,6 +149,9 @@ export function InputPolls({
             onCreatePoll();
         } catch (e) {
             console.error(e);
+            toast.error("Failed to post the poll");
+        } finally {
+            setIsLoading(false); // Stop loading after the API call
         }
 
         onClose();
@@ -270,8 +275,9 @@ export function InputPolls({
                     <button
                         className="w-full py-2 mt-4 text-white bg-primary hover:bg-primary-hover rounded-3xl"
                         onClick={handlePostPoll}
+                        disabled={isLoading} // Disable button when loading
                     >
-                        Post poll
+                        {isLoading ? "Posting..." : "Post poll"}
                     </button>
                 </main>
             </div>
