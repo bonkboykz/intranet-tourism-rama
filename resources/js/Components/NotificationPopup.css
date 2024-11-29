@@ -1,11 +1,10 @@
 .notification-message {
                     display: -webkit-box;
                     -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 2;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    max-height: 2.5em; /* 2 lines * 1.1em line height */
+                    -webkit-line-clamp: auto;
+                    max-height: 2.6em; /* 2 lines * 1.1em line height */
                     line-height: 1.1em;
+                    margin-bottom: 8px;
                 }
                 .tab-button {
                     margin-left: 10px;
