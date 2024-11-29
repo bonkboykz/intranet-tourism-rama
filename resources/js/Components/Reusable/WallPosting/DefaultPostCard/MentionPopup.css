@@ -6,4 +6,6 @@
     overflow-y: auto;
     width: 20%;
     z-index: 1000;
+    margin-top: 50px;
+    margin-left: 10px;
   }
