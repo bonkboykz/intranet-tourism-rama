@@ -14,7 +14,7 @@ export function PersonalStory({
                 // marginRight: "10px",
                 marginBottom: "10px",
                 position: "relative",
-                marginRight: "30px",
+                marginRight: "10px",
                 flexShrink: 0,
             }}
         >
@@ -31,7 +31,7 @@ export function PersonalStory({
                     style={{
                         borderRadius: "50%",
                         width: "84px",
-                        height: "84pxpx",
+                        height: "84px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
