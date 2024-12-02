@@ -400,21 +400,32 @@ function Card({
     const [initialDepartmentDescription, setInitialDepartmentDescription] =
         useState(department?.description || "");
 
+    const [selectedType, setSelectedType] = useState(department?.type || "All");
+
+    const [initialSelectedType, setInitialSelectedType] = useState(
+        department?.type || "All"
+    );
+
     const [error, setError] = useState("");
     const csrfToken = useCsrf();
     const { props } = usePage();
     const { id, authToken } = props;
 
     useEffect(() => {
-        setDepartmentName(department?.name || "");
-        setInitialDepartmentName(department?.name || "");
+        if (department) {
+            setDepartmentName(department.name || "");
+            setInitialDepartmentName(department.name || "");
 
-        setImageSrc(department?.banner || imgSrc);
-        setInitialImageSrc(department?.banner || imgSrc);
+            setImageSrc(department.banner || imgSrc);
+            setInitialImageSrc(department.banner || imgSrc);
 
-        setDepartmentDescription(department?.description || "");
-        setInitialDepartmentDescription(department?.description || "");
-    }, [department, imgSrc]);
+            setDepartmentDescription(department.description || "");
+            setInitialDepartmentDescription(department.description || "");
+
+            setSelectedType(department.type || "All");
+            setInitialSelectedType(department.type || "All");
+        }
+    }, [department]);
 
     const handleImageChange = (croppedImage) => {
         if (!croppedImage) return;
@@ -431,7 +442,8 @@ function Card({
         if (
             departmentName === initialDepartmentName &&
             imageSrc === initialImageSrc &&
-            departmentDescription === initialDepartmentDescription
+            departmentDescription === initialDepartmentDescription &&
+            selectedType == initialSelectedType
         ) {
             setError("No changes detected.");
             return;
@@ -443,7 +455,7 @@ function Card({
         formData.append("_method", "PUT");
         formData.append("name", departmentName);
         formData.append("description", departmentDescription);
-
+        formData.append("type", selectedType);
         if (imageFile) {
             formData.append("banner", imageFile);
         }
@@ -510,11 +522,22 @@ function Card({
                             }
                             className="self-stretch mt-3 border border-solid rounded-md text-neutral-800 border-neutral-300 font-bold"
                         />
+                        <select
+                            value={selectedType} // Controlled component
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            className="mt-4 w-full text-base font-semibold text-neutral-800 border border-solid border-neutral-300 rounded-md p-2"
+                        >
+                            <option value="All">All</option>
+                            <option value="HQ/Department">HQ/Department</option>
+                            <option value="State/Region">State/Region</option>
+                            <option value="Overseas">Overseas</option>
+                        </select>
                     </>
                 )}
                 {error && (
                     <p className="mt-2 text-sm text-secondary">{error}</p>
                 )}
+
                 <div className="flex justify-end w-full mt-4 space-x-2">
                     <button
                         onClick={onCancel}
