@@ -118,12 +118,12 @@ function TemplateCard({
             );
 
             if (![200, 201, 204].includes(response.status)) {
-                throw new Error("Failed to create birthday template");
+                throw new Error("Failed to create avatar template");
             }
             onCreate(response.data);
         } catch (e) {
             console.error(e);
-            toast.error("Failed to create birthday template", {
+            toast.error("Failed to create avatar template", {
                 icon: <CircleXIcon className="w-6 h-6 text-white" />,
                 theme: "colored",
             });
