@@ -139,7 +139,7 @@ const AllNotificationsPage = () => {
                         </div>
                     </header>
                     <div className=" rounded-xl shadow-sm max-w-full mb-10 w-full">
-                        <section className="flex flex-col gap-5 pt-7 w-full bg-white rounded-2xl shadow-2xl">
+                        <section className="flex flex-col gap-5 pt-7 w-full sm:w-[300px] md:w-[400px] lg:w-[500px] bg-white rounded-2xl shadow-2xl">
                             <div className="flex flex-col pb-5">
                                 <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-800 pl-6 pr-6 flex justify-between">
                                     <span>All Notifications</span>

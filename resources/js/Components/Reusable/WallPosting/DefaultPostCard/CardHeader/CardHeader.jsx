@@ -25,7 +25,7 @@ export function CardHeader({ post, isClosed }) {
                 </span>
             </div>
         );
-    }
+    } //sini
 
     return (
         <div className="flex w-full items-center justify-between h-auto mb-4">

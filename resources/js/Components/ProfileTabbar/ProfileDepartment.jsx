@@ -195,6 +195,10 @@ function ProfileDepartment({
         }
     };
 
+    const userDepartment = departmentOptions.find(
+        (option) => option.id === departmentId
+    );
+
     const formatPhoneNumber = (number) => {
         // Remove non-digit characters
         const cleaned = ("" + number).replace(/\D/g, "");
@@ -247,30 +251,15 @@ function ProfileDepartment({
                             {localFormData[`${name}_display`] || value}
                         </option>
                         {options &&
-                            [...options]
-                                .sort((a, b) => {
-                                    const nameA =
-                                        typeof a === "object"
-                                            ? a.name || a.title || a.code || ""
-                                            : a;
-                                    const nameB =
-                                        typeof b === "object"
-                                            ? b.name || b.title || b.code || ""
-                                            : b;
-                                    return nameA.localeCompare(nameB); // Compare strings alphabetically
-                                })
-                                .map((option, index) => (
-                                    <option
-                                        key={index}
-                                        value={option.id || option}
-                                    >
-                                        {typeof option === "object"
-                                            ? option.name ||
-                                              option.title ||
-                                              option.code
-                                            : option}
-                                    </option>
-                                ))}
+                            options.map((option, index) => (
+                                <option key={index} value={option.id || option}>
+                                    {typeof option === "object"
+                                        ? option.name ||
+                                          option.title ||
+                                          option.code
+                                        : option}
+                                </option>
+                            ))}
                     </select>
                 ) : (
                     <div className="block w-full p-2 mt-1 text-sm border-2 border-transparent rounded-md text-neutral-800 text-opacity-80">
@@ -291,14 +280,21 @@ function ProfileDepartment({
                 <div className="flex flex-col w-full md:ml-0 md:w-full">
                     <table className="w-full text-left border-collapse table-auto">
                         <tbody>
-                            {renderField(
-                                "Department",
-                                "department",
-                                localFormData.department,
-                                departmentOptions,
-                                false,
-                                handleInputChange
-                            )}
+                            {userDepartment ? (
+                                <tr>
+                                    <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
+                                        Department
+                                    </td>
+                                    <td className="w-2/3 p-2 py-2 align-center">
+                                        <a
+                                            href={`/departmentInner?departmentId=${userDepartment.id}`}
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            {userDepartment.name}
+                                        </a>
+                                    </td>
+                                </tr>
+                            ) : null}
                             {renderField(
                                 "Unit",
                                 "unit",
