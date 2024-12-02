@@ -111,6 +111,16 @@ const AddUnits = () => {
     };
 
     const createUnit = () => {
+        const trimmedNewUnit = newUnit.trim().toLowerCase();
+
+        if (trimmedNewUnit === "no unit") {
+            showMessage(
+                "error",
+                "You cannot add a unit with the name 'No Unit'."
+            );
+            return;
+        }
+
         if (newUnit.trim() === "" || !selectedDepartmentId) return;
 
         fetch("/api/department/business_units", {
@@ -156,7 +166,17 @@ const AddUnits = () => {
     };
 
     const saveUnit = () => {
-        if (editingUnitName.trim() === "") return;
+        const trimmedName = editingUnitName.trim().toLowerCase();
+
+        if (trimmedName === "no unit") {
+            showMessage("error", "You cannot save the name as 'No Unit'.");
+            return;
+        }
+
+        if (editingUnitName.trim() === "") {
+            showMessage("error", "Name cannot be empty.");
+            return;
+        }
 
         fetch(`/api/department/business_units/${editingUnitId}`, {
             method: "PATCH",
@@ -274,16 +294,14 @@ const AddUnits = () => {
 
             {/* Message Display */}
             {message && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div
-                        className={`bg-green-100 rounded-lg flex items-center justify-start py-4 px-8 ${
-                            message.type === "success"
-                                ? "font-bold text-lg bg-green-100 text-green-800  "
-                                : "font-bold text-lg bg-red-100 text-red-800"
-                        }`}
-                    >
-                        {message.text}
-                    </div>
+                <div
+                    className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 rounded-lg text-white ${
+                        message.type === "success"
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                    }`}
+                >
+                    {message.text}
                 </div>
             )}
 
