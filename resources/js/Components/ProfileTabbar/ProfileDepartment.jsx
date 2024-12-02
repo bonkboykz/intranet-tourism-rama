@@ -247,15 +247,30 @@ function ProfileDepartment({
                             {localFormData[`${name}_display`] || value}
                         </option>
                         {options &&
-                            options.map((option, index) => (
-                                <option key={index} value={option.id || option}>
-                                    {typeof option === "object"
-                                        ? option.name ||
-                                          option.title ||
-                                          option.code
-                                        : option}
-                                </option>
-                            ))}
+                            [...options]
+                                .sort((a, b) => {
+                                    const nameA =
+                                        typeof a === "object"
+                                            ? a.name || a.title || a.code || ""
+                                            : a;
+                                    const nameB =
+                                        typeof b === "object"
+                                            ? b.name || b.title || b.code || ""
+                                            : b;
+                                    return nameA.localeCompare(nameB); // Compare strings alphabetically
+                                })
+                                .map((option, index) => (
+                                    <option
+                                        key={index}
+                                        value={option.id || option}
+                                    >
+                                        {typeof option === "object"
+                                            ? option.name ||
+                                              option.title ||
+                                              option.code
+                                            : option}
+                                    </option>
+                                ))}
                     </select>
                 ) : (
                     <div className="block w-full p-2 mt-1 text-sm border-2 border-transparent rounded-md text-neutral-800 text-opacity-80">
