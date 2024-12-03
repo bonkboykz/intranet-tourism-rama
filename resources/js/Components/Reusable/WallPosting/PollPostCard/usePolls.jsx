@@ -26,7 +26,7 @@ function PollOption({
                 <button
                     disabled={disabled}
                     onClick={onClick}
-                    className="py-2 flex-auto outline-none border-none cursor-pointer break-all overflow-hidden text-red-800 text-start w-full disabled:cursor-default"
+                    className="py-2 flex-auto outline-none border-none cursor-pointer break-all overflow-hidden text-blue-900 active:text-white font-bold text-start w-full disabled:cursor-default"
                 >
                     {option}
                 </button>
@@ -263,9 +263,9 @@ export function usePolls(cachedPost, { refetchPost, loggedInUserId }) {
                 )}
 
                 <div
-                    className="text-secondary absolute right-[16px] bottom-[16px]"
+                    className="text-secondary absolute right-[16px] bottom-[16px] font-semibold"
                     style={{
-                        fontSize: 22,
+                        fontSize: 18,
                     }}
                 >
                     Total votes: {results.total_count_of_votes}

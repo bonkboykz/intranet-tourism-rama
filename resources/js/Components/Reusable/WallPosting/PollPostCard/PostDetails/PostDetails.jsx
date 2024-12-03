@@ -39,7 +39,7 @@ export function PostDetails({
                 />
                 Edit
             </p>
-            <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div>
+            {/* <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div> */}
             {!isClosed && (
                 <>
                     <p
@@ -53,7 +53,7 @@ export function PostDetails({
                         />
                         Close poll
                     </p>
-                    <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div>
+                    {/* <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div> */}
                 </>
             )}
 
@@ -68,7 +68,7 @@ export function PostDetails({
                 />
                 Export
             </p>
-            <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div>
+            {/* <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div> */}
             <p
                 className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
                 onClick={onDelete}
@@ -82,7 +82,7 @@ export function PostDetails({
             </p>
             {canMakeAnnouncement && (
                 <>
-                    <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div>
+                    {/* <div className="font-extrabold text-neutral-800 my-1 border-b-2 border-neutral-200"></div> */}
                     <p
                         className="cursor-pointer flex flex-row hover:bg-blue-100 rounded-xl p-2"
                         onClick={onAnnouncement}
