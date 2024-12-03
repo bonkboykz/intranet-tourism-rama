@@ -85,6 +85,22 @@ const StaffMemberCard = ({
     const isPhoneNumberAvailable = phoneNo !== null && phoneNo !== "null";
     const isWorkNumberAvailable = workNo !== null && workNo !== "null";
 
+    // let displayNumber = null;
+
+    // if (isPhoneNumberAvailable && workNo.length > 4) {
+    //     // Separate the last 4 digits
+    //     const lastFourDigits = workNo.slice(-4);
+    //     const restOfNumber = workNo.slice(0, -4);
+
+    //     // Combine the full number, separating the last 4 digits
+    //     displayNumber = `${restOfNumber} ${lastFourDigits}`;
+    // } else {
+    //     // If the number is 4 digits or less, just display it as-is
+    //     displayNumber = workNo;
+    // }
+
+    // console.log("displayNumber:", displayNumber);
+
     // console.log("imageUrl", imageUrl);
 
     // const source = imageUrl === '/assets/dummyStaffPlaceHolder.jpg' ? imageUrl : `/avatar/${imageUrl}`;
@@ -145,6 +161,7 @@ const StaffMemberCard = ({
                 <h3 className="staff-member-name">{name}</h3>
                 <p className="staff-member-role">{role}</p>
                 {/* <p className={`staff-member-status ${isDeactivated ? 'deactiate-offline' : status.toLowerCase()}`}>{isDeactivated ? 'Offline' : status}</p> */}
+                {/* <p className="staff-member-extension">{displayNumber}</p> */}
                 <p className="staff-member-extension">{workNo}</p>
             </div>
             <div className="card-footer">
