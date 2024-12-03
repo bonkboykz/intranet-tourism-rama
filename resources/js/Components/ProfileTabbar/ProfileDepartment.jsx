@@ -360,7 +360,7 @@ function ProfileDepartment({
                             </tr>
                             <tr>
                                 <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
-                                    Is Assistance
+                                    Is Secretary
                                 </td>
                                 <td className="w-2/3 py-2 align-center">
                                     {isEditing ? (
