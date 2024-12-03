@@ -17,7 +17,9 @@ export const AvatarTemplateTable = ({
         >
             {avatarTemplates.map((avatar) => (
                 <Fragment key={avatar.id}>
-                    <div>{avatar.name}</div>
+                    <div className="items-center flex font-bold">
+                        {avatar.name}
+                    </div>
                     <div>
                         <img
                             src={avatar.background}
