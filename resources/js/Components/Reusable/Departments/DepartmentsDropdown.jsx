@@ -120,6 +120,7 @@ const DepartmentDropdown = ({
         { text: "HQ/Department", isActive: false },
         { text: "State/Region", isActive: false },
         { text: "Overseas", isActive: false },
+        { text: "TIC", isActive: false },
     ]);
 
     const toggleFilterDropdown = () => {

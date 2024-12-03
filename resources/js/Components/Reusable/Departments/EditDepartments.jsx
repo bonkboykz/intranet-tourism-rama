@@ -531,6 +531,7 @@ function Card({
                             <option value="HQ/Department">HQ/Department</option>
                             <option value="State/Region">State/Region</option>
                             <option value="Overseas">Overseas</option>
+                            <option value="TIC">TIC</option>
                         </select>
                     </>
                 )}

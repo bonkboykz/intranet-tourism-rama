@@ -180,6 +180,8 @@ const Departments = () => {
                     return department.type === "State/Region";
                 case "Overseas":
                     return department.type === "Overseas";
+                case "TIC":
+                    return department.type === "TIC";
                 default:
                     return false;
             }
