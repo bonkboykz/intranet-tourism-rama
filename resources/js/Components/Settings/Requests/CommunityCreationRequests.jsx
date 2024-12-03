@@ -91,17 +91,17 @@ const CommunityCreationRow = ({
 
     return (
         <div className="flex items-center justify-between py-4 border-t border-gray-200">
-            <div className="flex items-center w-1/4">
+            <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-start max-md:items-start">
                 <img
                     className="w-10 h-10 rounded-full"
                     src={profileImage}
                     alt="User profile"
                 />
-                <div className="ml-3">
+                <div className="ml-3 max-md:ml-0 max-md:mt-1">
                     <p className="text-sm font-bold text-black">
                         {name} ({department})
                     </p>
-                    <p className="text-xs font-semibold text-black">
+                    <p className="text-xs font-semibold text-gray-600">
                         {formatTime(time)}
                     </p>
                 </div>
@@ -109,18 +109,18 @@ const CommunityCreationRow = ({
             <p className="w-1/4 text-xs font-semibold text-center text-black">
                 wants to create
             </p>
-            <div className="flex items-center w-1/4">
+            <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-center">
                 <img
                     className="w-10 h-10 rounded-full"
                     src={groupImage}
                     alt="Group"
                 />
-                <div className="ml-3">
+                <div className="ml-3 max-md:ml-0 max-md:mt-1">
                     <p className="text-sm font-bold text-black">{group}</p>
                 </div>
             </div>
             {status === "pending" && (
-                <div className="flex justify-end w-1/4">
+                <div className="flex justify-end w-1/4 max-md:flex-col max-md:justify-center max-md:gap-2">
                     {loading === true ? (
                         <Loader2 className="w-6 h-6 animate-spin" />
                     ) : (
@@ -132,7 +132,7 @@ const CommunityCreationRow = ({
                                 Approve
                             </button>
                             <button
-                                className="px-4 py-1 ml-2 text-sm font-bold text-white bg-[#FF5436] rounded-full"
+                                className="px-4 py-1 ml-2 max-md:ml-0 text-sm font-bold text-white bg-[#FF5436] rounded-full"
                                 onClick={onReject}
                             >
                                 Reject
