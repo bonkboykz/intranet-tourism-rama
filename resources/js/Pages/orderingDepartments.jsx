@@ -36,7 +36,7 @@ const OrderingDepartments = () => {
                 order: department.order,
                 imageUrl: department.banner
                     ? `/storage/${department.banner}`
-                    : "assets/departmentsDefault.jpg",
+                    : "assets/defaultDepartmentBanner.jpg",
             }));
 
             setDepartments((prevDepartments) => {

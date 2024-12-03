@@ -52,7 +52,7 @@ const Departments = () => {
                 order: department.order,
                 imageUrl: department.banner
                     ? `/storage/${department.banner}`
-                    : "assets/departmentsDefault.jpg",
+                    : "assets/defaultDepartmentBanner.jpg",
                 isMember: department.is_member,
                 type: department.type,
                 role: department.role,
@@ -254,7 +254,7 @@ const Departments = () => {
                                     name={department.name}
                                     imageUrl={
                                         department.imageUrl ||
-                                        "assets/departmentsDefault.jpg"
+                                        "assets/defaultDepartmentBanner.jpg"
                                     }
                                     departmentID={department.id}
                                     onDeleteClick={handleDeleteClick}

@@ -73,7 +73,7 @@ function CommunitySide() {
                         category: community.type,
                         imgSrc: community.banner
                             ? community.banner
-                            : "assets/departmentsDefault.jpg",
+                            : "assets/defaultCommunity.png",
                         altText: `${community.name} community image`,
                         createdAt: new Date(community.created_at),
                         isArchived: community.is_archived,
