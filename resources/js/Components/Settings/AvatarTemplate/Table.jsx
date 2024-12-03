@@ -48,7 +48,7 @@ export const AvatarTemplateTable = ({
                             />
                         </Switch>
                     </div>
-                    <div>
+                    <div className="flex w-full justify-center items-start">
                         <button onClick={() => isDeletePopupOpen(avatar.id)}>
                             <img
                                 className="w-6 h-6 mr-2"
