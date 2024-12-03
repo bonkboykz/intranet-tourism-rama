@@ -68,14 +68,14 @@ const PopupMenu = ({
                             onClose();
                             window.location.reload();
                         }}
-                        className="flex items-center w-full px-4 py-2 text-sm font-extrabold text-gray-700 hover:bg-gray-100 hover:rounded-t-xl"
+                        className="flex items-center w-full px-4 py-2 text-sm font-extrabold text-gray-700 hover:bg-gray-100 hover:rounded-xl"
                     >
                         {isArchived ? "Unarchive" : "Archive"}
                     </button>
                 )}
                 <button
                     onClick={handleDeleteClick}
-                    className="flex items-center w-full px-4 py-2 text-sm font-extrabold text-gray-700 hover:bg-gray-100 hover:rounded-b-xl"
+                    className="flex items-center w-full px-4 py-2 text-sm font-extrabold text-gray-700 hover:bg-gray-100 hover:rounded-xl"
                 >
                     Delete
                 </button>
@@ -84,13 +84,13 @@ const PopupMenu = ({
                 createPortal(
                     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                         <div
-                            className="bg-white p-6 rounded-lg shadow-lg"
+                            className="bg-white p-6 rounded-2xl shadow-lg"
                             ref={modalRef}
                         >
-                            <p className="mb-4 text-lg">
+                            <p className="mb-4 text-lg font-bold">
                                 Are you sure you want to delete this community?
                             </p>
-                            <div className="flex justify-center space-x-4">
+                            <div className="flex justify-center space-x-2">
                                 <button
                                     onClick={handleConfirmDelete}
                                     className={`px-8 py-1 text-base ${

@@ -326,7 +326,7 @@ const AddUnits = () => {
                                 <tbody>
                                     {filteredUnits.map((unit) => (
                                         <tr key={unit.id}>
-                                            <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                                            <td className="px-5 py-5 text-sm font-bold bg-white border-b border-gray-200">
                                                 {editingUnitId === unit.id ? (
                                                     <input
                                                         type="text"

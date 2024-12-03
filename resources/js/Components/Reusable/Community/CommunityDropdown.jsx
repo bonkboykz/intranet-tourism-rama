@@ -5,7 +5,7 @@ import { usePermissions } from "@/Utils/hooks/usePermissions";
 function MenuItem({ src, alt, text, isActive, onClick }) {
     return (
         <div
-            className={`flex items-center gap-3 p-2 m-0.5 rounded-md cursor-pointer ${
+            className={`flex items-center gap-3 p-2 m-0.5 rounded-xl cursor-pointer ${
                 isActive ? "bg-gray-100" : "hover:bg-gray-100"
             }`}
             onClick={() => onClick(text, src)}
@@ -31,7 +31,7 @@ function MenuItem({ src, alt, text, isActive, onClick }) {
 
 function IconMenu({ menuItems, onSelectFilter, closeDropdown }) {
     return (
-        <aside className="absolute flex flex-col p-2 bg-white rounded-lg shadow-lg w-[160px] text-neutral-800 mt-[180px] z-10 ">
+        <aside className="absolute flex flex-col p-2 bg-white rounded-xl shadow-lg w-[160px] text-neutral-800 mt-[180px] z-10 ">
             {menuItems.map((item, index) => (
                 <React.Fragment key={index}>
                     <MenuItem

@@ -17,7 +17,7 @@ export const BirthdayTemplateTable = ({
         >
             {birthdayTemplates.map((template) => (
                 <Fragment key={template.id}>
-                    <div>{template.name}</div>
+                    <div className="font-bold">{template.name}</div>
                     <div>
                         <img
                             src={template.background}

@@ -238,7 +238,7 @@ const AvatarTemplate = () => {
                 </h2>
                 <button
                     onClick={() => setIsPopupOpen(true)}
-                    className="px-2 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover mb-8"
+                    className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover mb-8"
                 >
                     Add New Template
                 </button>
