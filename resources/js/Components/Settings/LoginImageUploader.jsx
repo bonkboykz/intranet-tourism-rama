@@ -47,7 +47,7 @@ function FileInputSection({ onFileSelect, imageSrc }) {
             </button>
             {!imageSrc && (
                 <span className="flex-auto my-auto text-xs font-medium text-opacity-50 text-neutral-800">
-                    No file Chosen
+                    No file chosen
                 </span>
             )}
         </section>
