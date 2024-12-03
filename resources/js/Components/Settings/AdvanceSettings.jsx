@@ -122,7 +122,7 @@ const CoreFeatures = () => {
                 </ul>
             </div>
             <div className="w-full border-t border-gray-200"></div>
-            <div className="flex justify-end w-full px-4 py-4 mt-4 gap-x-3 sm:px-6">
+            <div className="flex justify-end w-full py-4 mt-4 gap-x-3 sm:px-0">
                 <button
                     type="button"
                     className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-custom ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -289,7 +289,7 @@ const SizeLimit = () => {
                 </ul>
             </div>
             <div className="w-full border-t border-gray-200"></div>
-            <div className="flex justify-end w-full px-4 py-4 mt-4 gap-x-3 sm:px-6">
+            <div className="flex justify-end w-full py-4 mt-4 gap-x-3">
                 <button
                     type="button"
                     className="inline-flex justify-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-custom ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
