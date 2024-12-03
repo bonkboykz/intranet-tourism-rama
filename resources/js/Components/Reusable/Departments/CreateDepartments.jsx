@@ -502,6 +502,7 @@ function Card({
                     <option value="HQ/Department">HQ/Department</option>
                     <option value="State/Region">State/Region</option>
                     <option value="Overseas">Overseas</option>
+                    <option value="TIC">TIC</option>
                 </select>
                 <div className="flex justify-between w-full gap-5 mt-6 text-sm">
                     <button
