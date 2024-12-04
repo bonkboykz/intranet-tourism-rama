@@ -17,18 +17,14 @@ const NotificationPopup = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Check if the click is outside the popup
             if (popupRef.current && !popupRef.current.contains(event.target)) {
                 fetchNotifications();
-
                 setIsPopupOpen(false);
             }
         };
 
-        // Add event listener for clicks
         document.addEventListener("mousedown", handleClickOutside);
 
-        // Remove event listener for clicks
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -39,13 +35,13 @@ const NotificationPopup = () => {
     };
 
     if (!isPopupOpen) {
-        return null; // Don't render the popup if it's closed
+        return null;
     }
 
     return (
         <div
             className="notification-box absolute right-0 max-md:-mr-4 mt-2 w-[300px] max-sm:w-[260px] bg-white border border-gray-200 rounded-lg shadow-lg z-50"
-            ref={popupRef} // Attach the reference to the popup div
+            ref={popupRef}
         >
             <h2
                 style={{
@@ -61,7 +57,7 @@ const NotificationPopup = () => {
                     <strong>Unread Notifications</strong>
                 )}
             </h2>
-            <ul className="flex flex-row gap-2">
+            <ul className="flex flex-row gap-2 px-3">
                 <li>
                     <button
                         onClick={() => handleTabChange("all")}
@@ -90,11 +86,18 @@ const NotificationPopup = () => {
                     </button>
                 </li>
             </ul>
-            <br />
-            <NotificationsList
-                notifications={notifications}
-                activeTab={activeTab}
-            />
+            <div
+                className="notifications-content overflow-y-auto max-h-[400px] px-3"
+                style={{
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#ccc #f5f5f5",
+                }}
+            >
+                <NotificationsList
+                    notifications={notifications}
+                    activeTab={activeTab}
+                />
+            </div>
             <div
                 onClick={() => {
                     window.location.href = "/profile/notifications";

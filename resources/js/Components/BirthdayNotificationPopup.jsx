@@ -8,8 +8,6 @@ import BirthdayCom from "./Reusable/Birthdayfunction/birthdaypopup";
 import Popup from "./Reusable/Popup";
 
 function BirthdayNotificationPopup({ onClose, userData }) {
-    // console.log("GGG", userData);
-
     const [birthdays, setBirthdays] = useState([]);
     const [isBirthdayComOpen, setIsBirthdayComOpen] = useState(false);
     const [selectedBirthday, setSelectedBirthday] = useState(null);
@@ -79,12 +77,15 @@ function BirthdayNotificationPopup({ onClose, userData }) {
                 <p className="text-sm font-semibold text-gray-900">
                     Today&apos;s Birthdays
                 </p>
-                {renderBirthdays()}
-                {birthdays.length === 0 && (
-                    <p className="text-sm text-gray-600 mt-1">
-                        No birthday today.
-                    </p>
-                )}
+                {/* Scrollable Birthday List */}
+                <div className="birthday-list max-h-[200px] overflow-y-auto mt-2">
+                    {renderBirthdays()}
+                    {birthdays.length === 0 && (
+                        <p className="text-sm text-gray-600 mt-1">
+                            No birthday today.
+                        </p>
+                    )}
+                </div>
                 <div className="w-full flex justify-end">
                     <button
                         onClick={onClose}
@@ -97,8 +98,6 @@ function BirthdayNotificationPopup({ onClose, userData }) {
 
             {/* Independent BirthdayCom Popup */}
             {selectedBirthday && (
-                // console.log("SBDAY", selectedBirthday.id),
-
                 <Popup
                     isOpen={isBirthdayComOpen}
                     onClose={closeBirthdayComPopup}
