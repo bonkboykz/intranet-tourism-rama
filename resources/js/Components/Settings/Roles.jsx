@@ -40,6 +40,7 @@ export default function Roles() {
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
     const [showDemotePopup, setShowDemotePopup] = useState(false);
     const [personToDemote, setPersonToDemote] = useState(null);
+    const [visiblePeople, setVisiblePeople] = useState([]);
     const csrfToken = useCsrf();
 
     const fetchDepartmentName = async (id) => {
@@ -144,18 +145,23 @@ export default function Roles() {
                     person.rolesWithCommunities?.filter((role) =>
                         role.name.includes("community admin")
                     ) || [];
-
+    
+                const matchesSearch =
+                    person.name.toLowerCase().includes(searchTerm.toLowerCase());
+    
                 return (
-                    superadminRole ||
-                    departmentAdminRoles.length > 0 ||
-                    communityAdminRoles.length > 0
+                    matchesSearch &&
+                    (superadminRole ||
+                        departmentAdminRoles.length > 0 ||
+                        communityAdminRoles.length > 0)
                 );
             });
-
+    
             setFilteredPeople(filtered);
             setLoading(false);
         }
     };
+    
 
     const fetchAllSearchResults = async (query) => {
         try {
@@ -177,6 +183,15 @@ export default function Roles() {
     };
 
     let debounceTimeout = null;
+
+    useEffect(() => {
+        // Dynamically filter the people when the search term changes
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        const filtered = filteredPeople.filter((person) =>
+            person.name.toLowerCase().includes(lowerCaseSearchTerm)
+        );
+        setVisiblePeople(filtered);
+    }, [searchTerm, filteredPeople]);
 
     // TODO: replace with a hook useDebounce
     useEffect(() => {
@@ -379,6 +394,17 @@ export default function Roles() {
                     )}
                 </div>
 
+                {/* Search Bar */}
+                <div className="mb-6">
+                    <input
+                        type="text"
+                        placeholder="Search members..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    />
+                </div>
+
                 {loading ? (
                     <div className="flex items-center justify-center h-64">
                         <div className="w-16 h-16 border-b-2 border-gray-900 rounded-full animate-spin"></div>
@@ -416,7 +442,7 @@ export default function Roles() {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {filteredPeople.map((person) => (
+                                    {visiblePeople.map((person) => (
                                         <tr key={person.id}>
                                             <td className="py-5 pl-4 pr-3 text-sm whitespace-nowrap sm:pl-0">
                                                 <div className="flex items-center">
@@ -534,7 +560,7 @@ export default function Roles() {
                                     No
                                 </button>
                                 <button
-                                    className="px-4 py-2 font-bold text-white bg-secondary rounded-md hover:bg-red-600"
+                                    className="px-4 py-2 font-bold text-white rounded-md bg-secondary hover:bg-red-600"
                                     onClick={handleAssignSuperAdmin}
                                 >
                                     Yes
@@ -563,7 +589,7 @@ export default function Roles() {
                                     No
                                 </button>
                                 <button
-                                    className="px-4 py-2 font-bold text-white bg-secondary rounded-md hover:bg-red-600"
+                                    className="px-4 py-2 font-bold text-white rounded-md bg-secondary hover:bg-red-600"
                                     onClick={handleDemoteToUser}
                                 >
                                     Yes
@@ -591,7 +617,7 @@ export default function Roles() {
                             <div className="flex justify-end mt-10">
                                 <button
                                     onClick={() => setShowPopup(false)}
-                                    className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
+                                    className="px-4 py-2 font-bold text-white rounded-full bg-primary hover:bg-primary-hover"
                                 >
                                     Close
                                 </button>

@@ -227,6 +227,13 @@ const AddUnits = () => {
         }
     };
 
+    if (isLoadingDepartments) {
+        return (
+            <div className="flex items-center justify-center h-64 max-w-[1050px]">
+                <div className="w-16 h-16 border-b-2 border-gray-900 max-w-[1050px] rounded-full animate-spin"></div>
+            </div>
+        );
+    }
     return (
         <div className="container p-8 mx-auto">
             <div className="flex items-center justify-between mb-6">
@@ -242,7 +249,7 @@ const AddUnits = () => {
                 {selectedDepartmentId && (
                     <button
                         onClick={() => setIsPopupOpen(true)}
-                        className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
+                        className="px-4 py-2 font-bold text-white rounded-full bg-primary hover:bg-primary-hover"
                         disabled={!selectedDepartmentId}
                     >
                         Add New Unit
@@ -408,7 +415,7 @@ const AddUnits = () => {
                             </button>
                             <button
                                 onClick={createUnit}
-                                className="px-4 py-2 text-white bg-primary rounded-full hover:bg-primary-hover"
+                                className="px-4 py-2 text-white rounded-full bg-primary hover:bg-primary-hover"
                                 disabled={!selectedDepartmentId}
                             >
                                 Add
