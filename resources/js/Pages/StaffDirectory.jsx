@@ -49,13 +49,12 @@ const StaffDirectory = () => {
                 name: department.name,
                 isMember: department.is_member,
                 role: department.role,
+                order: department.order,
             }));
 
             setDepartments((prevDepartments) => {
                 const allDepartments = [...prevDepartments, ...departmentData];
-                return allDepartments.sort((a, b) =>
-                    a.name.localeCompare(b.name)
-                );
+                return allDepartments.sort((a, b) => a.order - b.order);
             });
 
             if (data.data.next_page_url) {
