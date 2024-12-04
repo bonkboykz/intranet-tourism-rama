@@ -55,13 +55,13 @@ function FileInputSection({ onFileSelect, imageSrc }) {
 function ImageSection({ imageSrc, onDelete }) {
     return (
         <section className="flex gap-5 justify-between mt-3.5">
-            <figure className="flex justify-center items-center w-[350px] h-[90px] rounded-xl border border-solid border-neutral-200 overflow-hidden">
+            <figure className="flex justify-center items-center w-[350px] h-full rounded-xl border border-solid border-neutral-200 overflow-hidden">
                 {imageSrc ? (
                     <img
                         loading="lazy"
                         src={imageSrc}
                         alt="Uploaded"
-                        className="p-3 w-full h-full"
+                        className="p-3 w-full h-full object-cover"
                     />
                 ) : (
                     <span className="text-xs text-neutral-800">No image</span>

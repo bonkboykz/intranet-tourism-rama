@@ -176,7 +176,7 @@ export function EditPollPost({
                             className="inline-block bg-gray-100 p-4 text-center text-sm text-neutral-800 rounded-3xl cursor-pointer select-none"
                             onClick={() => setIncludeEndDate(!includeEndDate)}
                         >
-                            Choose end date (opt.)
+                            Choose end date
                         </label>
 
                         {includeEndDate && (

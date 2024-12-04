@@ -15,13 +15,13 @@ import { UserProfileAvatar } from "./UserProfileAvatar";
 function PollOption({ option, onRemove, onChange }) {
     return (
         <div className="flex gap-5 px-px mt-0 text-sm leading-5 text-neutral-800 max-md:flex-wrap">
-            <div className="flex flex-auto gap-3 px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-2xl items-center">
+            <div className="flex flex-auto gap-3 px-4 py-1 bg-gray-100 border-2 border-gray-300 rounded-2xl items-center">
                 <div className="flex items-center w-full">
                     <input
                         type="text"
                         value={option}
                         onChange={onChange}
-                        className="flex-auto bg-gray-100 text-md outline-none border-none"
+                        className="flex-auto bg-gray-100 text-md font-bold text-gray-600 outline-none border-none"
                     />
                 </div>
                 <img
@@ -240,7 +240,7 @@ export function InputPolls({
                                     setIncludeEndDate(!includeEndDate)
                                 }
                             >
-                                Choose end date (opt.)
+                                Choose end date
                             </label>
 
                             {includeEndDate && (
@@ -273,7 +273,7 @@ export function InputPolls({
                         </div>
                     </div>
                     <button
-                        className="w-full py-2 mt-4 text-white bg-primary hover:bg-primary-hover rounded-3xl"
+                        className="w-full py-2 mt-4 text-white font-bold bg-primary hover:bg-primary-hover rounded-3xl"
                         onClick={handlePostPoll}
                         disabled={isLoading} // Disable button when loading
                     >

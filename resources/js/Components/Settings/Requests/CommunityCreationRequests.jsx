@@ -109,7 +109,7 @@ const CommunityCreationRow = ({
             <p className="w-1/4 text-xs font-semibold text-center text-black">
                 wants to create
             </p>
-            <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-center">
+            <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-center max-md:items-center">
                 <img
                     className="w-10 h-10 rounded-full"
                     src={groupImage}

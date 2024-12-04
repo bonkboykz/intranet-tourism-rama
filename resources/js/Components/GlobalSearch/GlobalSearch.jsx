@@ -19,7 +19,7 @@ const CommunityItem = ({ id, name, type, banner, membersCount }) => {
         <article className="flex items-center w-full gap-3 py-1 ">
             <div className="">
                 <img
-                    src={banner ?? "assets/departmentsDefault.jpg"}
+                    src={banner ?? "assets/defaultDepartmentBanner.jpg"}
                     alt={`${name} community image`}
                     className="block w-[66px] h-[66px] object-cover object-center rounded-full max-w-[80px] max-h-[80px]"
                 />

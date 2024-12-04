@@ -101,7 +101,7 @@ const DepartmentInner = () => {
                             departmentBanner={
                                 departmentData?.banner
                                     ? departmentData.banner
-                                    : "assets/departmentsDefault.jpg"
+                                    : "assets/defaultDepartmentBanner.jpg"
                             }
                             userId={id}
                             onEditClick={handleEditClick}
