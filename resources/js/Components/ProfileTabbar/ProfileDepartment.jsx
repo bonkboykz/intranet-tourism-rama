@@ -132,7 +132,6 @@ function ProfileDepartment({
 
         try {
             while (currentPage <= lastPage) {
-                // const response = await fetch(`/api/department/business_units?page=${currentPage}`, {
                 const response = await fetch(
                     `/api/department/business_units?department_id=${departmentId}&page=${currentPage}`,
                     {
@@ -151,7 +150,14 @@ function ProfileDepartment({
                 lastPage = data.last_page;
                 currentPage++;
             }
-            setUnitOptions(allUnits);
+
+            // Remove duplicates, keeping only one "No Unit"
+            const filteredUnits = allUnits.filter(
+                (unit, index, self) =>
+                    index === self.findIndex((u) => u.name === unit.name)
+            );
+
+            setUnitOptions(filteredUnits);
         } catch (error) {
             console.error("Error fetching data for Units:", error);
         }
@@ -299,11 +305,14 @@ function ProfileDepartment({
                             {renderField(
                                 "Unit",
                                 "unit",
-                                localFormData.unit,
-                                unitOptions,
+                                localFormData.unit || "No Unit", // Show "No Unit" if localFormData.unit is empty
+                                unitOptions.length > 0
+                                    ? unitOptions
+                                    : [{ id: "", name: "No Unit" }], // Use "No Unit" if unitOptions is empty
                                 true,
                                 handleInputChange
                             )}
+
                             {renderField(
                                 "Job Title",
                                 "jobtitle",
