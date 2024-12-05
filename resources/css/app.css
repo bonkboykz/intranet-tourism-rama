@@ -234,7 +234,7 @@ pre {
 /* Theme 2 */
 .theme-2 {
     --primary-color: #0c359e;
-    --secondary-color: #ee99c2;
+    --secondary-color: #e675ab;
 }
 
 /* Theme 3 */
@@ -245,7 +245,7 @@ pre {
 
 /* Theme 4 */
 .theme-4 {
-    --primary-color: #8cb9bd;
+    --primary-color: #69b3b9;
     --secondary-color: #b67352;
 }
 
@@ -258,7 +258,7 @@ pre {
 /* Theme 6 */
 .theme-6 {
     --primary-color: #ff8080;
-    --secondary-color: #ffcf96;
+    --secondary-color: #f8bb6f;
 }
 
 /* Theme 7 */
@@ -270,17 +270,17 @@ pre {
 /* Theme 8 */
 .theme-8 {
     --primary-color: #f28585;
-    --secondary-color: #b7e5b4;
+    --secondary-color: #8be085;
 }
 
 /* Theme 9 */
 .theme-9 {
-    --primary-color: #561c24;
-    --secondary-color: #c7b7a3;
+    --primary-color: #571f26;
+    --secondary-color: #b8a185;
 }
 
 /* Theme 10 */
 .theme-10 {
     --primary-color: #665590;
-    --secondary-color: #f6ddce;
+    --secondary-color: #e9bda2;
 }
