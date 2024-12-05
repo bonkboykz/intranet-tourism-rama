@@ -535,9 +535,11 @@ class RequestController extends Controller
                 $query->where('name', 'superadmin');
             })->get();
 
+            $user = User::firstOrFail(auth()->id());
+
             // Send notifications
-            $superusers->each(function ($superuser) use ($newRequest, $community) {
-                $superuser->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $newRequest));
+            $superusers->each(function ($superuser) use ($user, $newRequest, $community) {
+                $superuser->notify(new DeleteCommunityRequestNotification($user, $community, $newRequest));
             });
         } catch (\Throwable $th) {
             \Log::error('Notification error: ' . $th->getMessage());
@@ -640,15 +642,17 @@ class RequestController extends Controller
                     $query->where('name', 'superadmin');
                 })->get();
 
+                $user = User::where('id', auth()->id())->firstOfFail();
+
                 // Notify all super admins about the approval
-                $superusers->each(function ($superuser) use ($requestToUpdate, $community) {
-                    $superuser->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $requestToUpdate));
+                $superusers->each(function ($superuser) use ($requestToUpdate, $community, $user) {
+                    $superuser->notify(new DeleteCommunityRequestNotification($user, $community, $requestToUpdate));
                 });
-                
-                $communityMembers->each(function ($member) use ($community) {
-                    $member->notify(new DeletingCommunityNotification($community->id, auth()->user()));
+
+                $communityMembers->each(function ($member) use ($community, $user) {
+                    $member->notify(new DeletingCommunityNotification($community->id, $community->name, $user));
                 });
-                
+
             } catch (\Throwable $th) {
                 \Log::error('Notification error: ' . $th->getMessage());
             }
@@ -714,8 +718,10 @@ class RequestController extends Controller
             $user = User::findOrFail($requestToUpdate->user_id);
             $community = Community::findOrFail($requestToUpdate->details['community_id']);
 
+            $current_user = User::where('id', auth()->id())->firstOrFail();
+
             // Notify the user about the rejection
-            $user->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $requestToUpdate));
+            $user->notify(new DeleteCommunityRequestNotification($current_user, $community, $requestToUpdate));
         } catch (\Throwable $th) {
             \Log::error('Notification error: ' . $th->getMessage());
         }
