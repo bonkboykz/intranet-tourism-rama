@@ -470,6 +470,44 @@ class RequestController extends Controller
         ]);
     }
 
+    // public function deleteCommunityDeleteRequest(HttpRequest $request)
+    // {
+    //     $request->validate([
+    //         'community_id' => 'required|exists:communities,id',
+    //     ]);
+
+    //     $community = Community::findOrFail($request->community_id);
+
+    //     $newRequest = Request::create([
+    //         'user_id' => auth()->id(),
+    //         'request_type' => 'delete_community',
+    //         'details' => [
+    //             'community_id' => $community->id,
+    //             'name' => $community->name,
+    //             'description' => $community->description,
+    //             'banner' => $community->banner,
+    //             'banner_original' => $community->banner_original,
+    //         ],
+    //         'status' => 'pending',
+    //     ]);
+
+    //     try {
+    //         $superusers = User::whereHas('roles', function ($query) {
+    //             $query->where('name', 'superadmin');
+    //         });
+
+    //         $superusers->get()->each(function ($superuser) use ($newRequest) {
+    //             $superuser->notify(new DeleteCommunityRequestNotification($newRequest));
+    //         });
+    //     } catch (\Throwable $th) {
+    //         $output = new ConsoleOutput();
+    //         $output->writeln($th->getMessage());
+    //     }
+
+    //     return response()->json(['status' => 'delete_request_sent']);
+    // }
+
+
     public function deleteCommunityDeleteRequest(HttpRequest $request)
     {
         $request->validate([
@@ -492,20 +530,78 @@ class RequestController extends Controller
         ]);
 
         try {
+            // Fetch superadmins
             $superusers = User::whereHas('roles', function ($query) {
                 $query->where('name', 'superadmin');
-            });
+            })->get();
 
-            $superusers->get()->each(function ($superuser) use ($newRequest) {
-                $superuser->notify(new DeleteCommunityRequestNotification($newRequest));
+            // Send notifications
+            $superusers->each(function ($superuser) use ($newRequest, $community) {
+                $superuser->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $newRequest));
             });
         } catch (\Throwable $th) {
-            $output = new ConsoleOutput();
-            $output->writeln($th->getMessage());
+            \Log::error('Notification error: ' . $th->getMessage());
         }
 
         return response()->json(['status' => 'delete_request_sent']);
     }
+
+
+    // public function approveCommunityDeleteRequest(HttpRequest $request)
+// {
+//     $request->validate([
+//         'request_id' => 'required|exists:requests,id',
+//         'community_id' => 'required|exists:communities,id',
+//     ]);
+
+    //     $requestId = $request->input('request_id');
+//     $communityId = $request->input('community_id');
+
+    //     try {
+//         $requestToUpdate = Request::findOrFail($requestId);
+
+    //         // Prevent duplicate approvals
+//         if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+//             return response()->json(['status' => $requestToUpdate->status]);
+//         }
+
+    //         $requestToUpdate->status = 'approved';
+//         $requestToUpdate->action_at = now();
+//         $requestToUpdate->save();
+
+    //         $community = Community::findOrFail($communityId);
+//         $communityMembers = $community->members;
+
+    //         // Delete all community members
+//         CommunityMember::where('community_id', $communityId)->delete();
+
+    //         // Delete the community
+//         $community->delete();
+
+    //         try {
+//             $superusers = User::whereHas('roles', function ($query) {
+//                 $query->where('name', 'superadmin');
+//             })->get();
+
+    //             // Notify all super admins about the approval
+//             $superusers->each(function ($superuser) use ($requestToUpdate, $community) {
+//                 $superuser->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $requestToUpdate));
+//             });
+
+    //             // Notify all community members about the deletion
+//             $communityMembers->each(function ($member) use ($community) {
+//                 $member->notify(new DeletingCommunityNotification($community->id, auth()->user()));
+//             });
+//         } catch (\Throwable $th) {
+//             \Log::error('Notification error: ' . $th->getMessage());
+//         }
+
+    //         return response()->json(['status' => 'approved', 'request_id' => $requestId, 'community_id' => $communityId]);
+//     } catch (\Exception $e) {
+//         \Log::error("Error approving community deletion request: " . $e->getMessage());
+//         return response()->json(['error' => 'Failed to approve community deletion'], 500);
+//     }
+// }
 
     public function approveCommunityDeleteRequest(HttpRequest $request)
     {
@@ -520,6 +616,7 @@ class RequestController extends Controller
         try {
             $requestToUpdate = Request::findOrFail($requestId);
 
+            // Prevent duplicate approvals
             if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
                 return response()->json(['status' => $requestToUpdate->status]);
             }
@@ -528,41 +625,72 @@ class RequestController extends Controller
             $requestToUpdate->action_at = now();
             $requestToUpdate->save();
 
-            $community = Community::findOrFail($communityId);
-            $communityMember = $community->members();
 
-            // delete all community members
+            $community = Community::findOrFail($communityId);
+            $communityMembers = $community->members;
+
+            // Delete all community members
             CommunityMember::where('community_id', $communityId)->delete();
 
+            // Delete the community
             $community->delete();
 
             try {
-                $user_id = Auth::id();
-                $currentUser = User::where('id', $user_id)->firstOrFail();
                 $superusers = User::whereHas('roles', function ($query) {
                     $query->where('name', 'superadmin');
-                });
+                })->get();
 
-                $superusers->get()->each(function ($superuser) use ($requestToUpdate) {
-                    $superuser->notify(new DeleteCommunityRequestNotification($requestToUpdate));
+                // Notify all super admins about the approval
+                $superusers->each(function ($superuser) use ($requestToUpdate, $community) {
+                    $superuser->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $requestToUpdate));
                 });
-
-                $communityMember->each(function ($member) use ($currentUser, $communityId) {
-                    $member->notify(new DeletingCommunityNotification($communityId, $currentUser));
+                
+                $communityMembers->each(function ($member) use ($community) {
+                    $member->notify(new DeletingCommunityNotification($community->id, auth()->user()));
                 });
+                
             } catch (\Throwable $th) {
-                $output = new ConsoleOutput();
-                $output->writeln($th->getMessage());
+                \Log::error('Notification error: ' . $th->getMessage());
             }
 
             return response()->json(['status' => 'approved', 'request_id' => $requestId, 'community_id' => $communityId]);
         } catch (\Exception $e) {
-            Log::error("Error approving community deletion request: " . $e->getMessage());
+            \Log::error("Error approving community deletion request: " . $e->getMessage());
             return response()->json(['error' => 'Failed to approve community deletion'], 500);
         }
     }
 
 
+    // public function rejectCommunityDeleteRequest(HttpRequest $request)
+// {
+//     $request->validate([
+//         'request_id' => 'required|exists:requests,id',
+//     ]);
+
+    //     $requestId = $request->request_id;
+//     $requestToUpdate = Request::findOrFail($requestId);
+
+    //     // Prevent duplicate rejections
+//     if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
+//         return response()->json(['status' => $requestToUpdate->status]);
+//     }
+
+    //     $requestToUpdate->status = 'rejected';
+//     $requestToUpdate->action_at = now();
+//     $requestToUpdate->save();
+
+    //     try {
+//         $user = User::findOrFail($requestToUpdate->user_id);
+//         $community = Community::findOrFail($requestToUpdate->details['community_id']);
+
+    //         // Notify the user about the rejection
+//         $user->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $requestToUpdate));
+//     } catch (\Throwable $th) {
+//         \Log::error('Notification error: ' . $th->getMessage());
+//     }
+
+    //     return response()->json(['status' => $requestToUpdate->status]);
+// }
 
     public function rejectCommunityDeleteRequest(HttpRequest $request)
     {
@@ -573,6 +701,7 @@ class RequestController extends Controller
         $requestId = $request->request_id;
         $requestToUpdate = Request::findOrFail($requestId);
 
+        // Prevent duplicate rejections
         if ($requestToUpdate->status === 'approved' || $requestToUpdate->status === 'rejected') {
             return response()->json(['status' => $requestToUpdate->status]);
         }
@@ -581,13 +710,14 @@ class RequestController extends Controller
         $requestToUpdate->action_at = now();
         $requestToUpdate->save();
 
-
         try {
-            $user = User::find($requestToUpdate->user_id);
-            $user->notify(new DeleteCommunityRequestNotification($requestToUpdate));
+            $user = User::findOrFail($requestToUpdate->user_id);
+            $community = Community::findOrFail($requestToUpdate->details['community_id']);
+
+            // Notify the user about the rejection
+            $user->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $requestToUpdate));
         } catch (\Throwable $th) {
-            $output = new ConsoleOutput();
-            $output->writeln($th->getMessage());
+            \Log::error('Notification error: ' . $th->getMessage());
         }
 
         return response()->json(['status' => $requestToUpdate->status]);
