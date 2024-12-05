@@ -17,17 +17,17 @@ const AllNotificationsPage = () => {
     return (
         <Example>
             <div className="w-full min-h-screen bg-slate-100">
-                <section className="flex flex-col items-center py-10 px-40 max-md:px-4">
-                    <header className="flex justify-between items-center w-full">
+                <section className="flex flex-col items-center justify-end py-10 px-40 max-md:px-4 md:px-8">
+                    <header className="flex justify-between items-center w-full max-w-[1200px]">
                         <div className="w-full font-sans text-3xl sm:text-4xl font-extrabold text-neutral-800 mt-10 max-md:mt-4 mb-4">
                             My Notifications
-                            <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b border-neutral-300"></div>
+                            <div className="font-extrabold mt-4 mb-6 max-md:mb-0 border-b w-full border-neutral-300"></div>
                         </div>
                     </header>
 
                     {/* <div className='w-1/3 border-b-2'></div> */}
 
-                    <div className="rounded-xl shadow-sm max-w-full mb-10 w-full">
+                    <div className="rounded-xl shadow-sm mb-10 w-full max-w-[1200px]">
                         <section className="flex flex-col gap-5 pt-7 w-full bg-white rounded-2xl shadow-2xl">
                             <div className="flex flex-col pb-5">
                                 <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-800 pl-6 pr-6 flex justify-between">

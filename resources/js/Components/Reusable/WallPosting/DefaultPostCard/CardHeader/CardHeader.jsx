@@ -43,7 +43,7 @@ export function CardHeader({ post, isClosed }) {
             {isClosed && (
                 <div
                     className={
-                        "p-2 rounded-3xl min-w-20 font-bold bg-secondary text-white border-none"
+                        "text-sm py-1 px-4 rounded-3xl min-w-20 font-bold bg-secondary text-white border-none"
                     }
                 >
                     Poll is closed
