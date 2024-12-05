@@ -271,7 +271,7 @@ import Pagination from "../Paginator";
 import UserFilePopup from "../Reusable/UserFilePopup";
 
 const SearchInput = ({ searchTerm, onSearch }) => (
-    <div className="flex w-full gap-0 px-4 py-0.5 text-md bg-gray-100 rounded-full text-neutral-800 text-opacity-50 mt-8 my-2">
+    <div className="flex w-full gap-0 px-4 py-0.5 text-md bg-gray-100 rounded-full text-neutral-800 text-opacity-50">
         <input
             type="text"
             className="w-full text-neutral-800 bg-gray-100 border-none font-bold focus:outline-none rounded-full"
@@ -283,7 +283,7 @@ const SearchInput = ({ searchTerm, onSearch }) => (
 );
 
 const SearchButton = () => (
-    <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-primary hover:bg-primary-hover rounded-3xl mt-8">
+    <button className="justify-center px-4 py-3 ml-2 my-auto text-sm font-bold text-center text-white bg-primary hover:bg-primary-hover rounded-3xl">
         Search
     </button>
 );

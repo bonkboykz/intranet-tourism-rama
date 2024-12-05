@@ -195,7 +195,7 @@ export default function Header({ setSidebarOpen }) {
 
             <div className="flex items-center self-stretch flex-1 gap-x-4 lg:gap-x-6">
                 <img
-                    className="h-8 w-[70px] hidden lg:block"
+                    className="h-full w-auto py-5 hidden lg:block object-cover"
                     src={settings.logo}
                     alt="Jomla Logo"
                 />

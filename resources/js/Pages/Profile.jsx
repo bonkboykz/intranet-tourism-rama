@@ -484,7 +484,7 @@ function ProfileContent() {
                             </div>
                         </div>
 
-                        <div className="flex-col w-full flex bg-white h-auto rounded-b-lg max-w-[875px]">
+                        <div className="flex-col w-full flex bg-none h-auto rounded-b-lg max-w-[875px]">
                             {activeTab === "activities" && (
                                 <div className="flex md:px-20 w-full justify-center lg:py-6 bg-gray-100 flex-col items-center ">
                                     <ShareYourThoughts
@@ -508,7 +508,7 @@ function ProfileContent() {
                             )}
                             {activeTab === "bio" && (
                                 <>
-                                    <section className="flex flex-col w-full gap-2 px-8 py-4 mt-6 bg-white rounded-lg shadow-custom max-md:flex-wrap max-md:px-5 max-md:max-w-full">
+                                    <section className="flex flex-col w-full gap-2 px-8 py-4 my-6 bg-white rounded-lg shadow-custom max-md:flex-wrap max-md:px-5 max-md:max-w-full">
                                         <div className="flex items-center justify-between">
                                             <div className="separator text-xl font-semibold mt-2 pl-4 justify-center">
                                                 Bio Information

@@ -23,9 +23,9 @@ const Settings = () => {
         <Example>
             <div className="flex flex-col w-full min-h-screen bg-gray-100">
                 {/* Main Title inside the gray background */}
-                <div className="px-4 py-6 sm:px-6 lg:px-8 bg-gray-100">
+                {/* <div className="px-4 py-6 sm:px-6 lg:px-8 bg-gray-100">
                     <h1 className="text-4xl font-bold text-gray-900">Link</h1>
-                </div>
+                </div> */}
 
                 <div className="flex flex-col md:flex-row w-full">
                     {/* Top section for Department Links */}

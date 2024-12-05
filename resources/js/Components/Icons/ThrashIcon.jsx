@@ -2,20 +2,23 @@ export const ThrashIcon = (props) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="26"
-            height="26"
-            viewBox="0 0 26 26"
-            fill="none"
+            width="40"
+            height="40"
+            viewBox="0 0 28 28" // Adjusted viewBox for better centering
+            fill="currentColor"
+            className="size-6"
             {...props}
         >
-            <circle cx="13" cy="13" r="13" fill="currentcolor" />
+            {/* Circle */}
+            <circle cx="14" cy="14" r="14" fill="currentColor" />
+
+            {/* Refresh Symbol */}
             <path
-                d="M10.3998 18.7777L9.53317 11.5555H16.4665L15.5998 18.7777H10.3998Z"
+                fillRule="evenodd"
+                d="M13.836 2.477a.75.75 0 0 1 .75.75v3.182a.75.75 0 0 1-.75.75h-3.182a.75.75 0 0 1 0-1.5h1.37l-.84-.841a4.5 4.5 0 0 0-7.08.932.75.75 0 0 1-1.3-.75 6 6 0 0 1 9.44-1.242l.842.84V3.227a.75.75 0 0 1 .75-.75Zm-.911 7.5A.75.75 0 0 1 13.199 11a6 6 0 0 1-9.44 1.241l-.84-.84v1.371a.75.75 0 0 1-1.5 0V9.591a.75.75 0 0 1 .75-.75H5.35a.75.75 0 0 1 0 1.5H3.98l.841.841a4.5 4.5 0 0 0 7.08-.932.75.75 0 0 1 1.025-.273Z"
                 fill="white"
-            />
-            <path
-                d="M8.6665 10.1111V8.66661H11.2665V7.22217H14.7332V8.66661H17.3332V10.1111H8.6665Z"
-                fill="white"
+                clipRule="evenodd"
+                transform="translate(6, 6)" // Slight offset for centering
             />
         </svg>
     );

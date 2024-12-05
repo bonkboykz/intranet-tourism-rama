@@ -55,13 +55,13 @@ function FileInputSection({ onFileSelect, imageSrc }) {
 function ImageSection({ imageSrc, onDelete }) {
     return (
         <section className="flex gap-5 justify-between mt-3.5">
-            <figure className="flex justify-center items-center w-[190px] h-[50px] rounded-xl border border-solid border-neutral-200 overflow-hidden">
+            <figure className="flex justify-center items-center w-[350px] h-full rounded-xl border border-solid border-neutral-200 overflow-hidden">
                 {imageSrc ? (
                     <img
                         loading="lazy"
                         src={imageSrc}
                         alt="Uploaded"
-                        className="object-cover w-full h-full"
+                        className="p-3 w-full h-full object-cover"
                     />
                 ) : (
                     <span className="text-xs text-neutral-800">No image</span>
@@ -126,7 +126,7 @@ function LogoUploader() {
     }
 
     return (
-        <article className="flex flex-col px-5 py-4 bg-white rounded-xl shadow-custom max-w-[296px]">
+        <article className="flex flex-col px-5 py-4 bg-white rounded-xl shadow-custom max-w-[360px]">
             <header>
                 <h1 className="text-2xl font-bold text-neutral-800">
                     Jomla! Intranet Logo
@@ -137,6 +137,9 @@ function LogoUploader() {
                 onFileSelect={handleFileSelect}
             />
             <ImageSection imageSrc={imageSrc} onDelete={handleDelete} />
+            <span className="mt-2 text-xs text-neutral-500">
+                Recommended size: (70 x 40) px
+            </span>
             <button
                 disabled={imageSrc === settings.logo}
                 onClick={handleSave}

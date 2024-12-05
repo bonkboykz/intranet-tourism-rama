@@ -709,6 +709,7 @@ const AddMemberPopup = ({
                                             />
                                         </MenuButton>
                                         <MenuItems className="absolute z-10 w-full mt-2 overflow-y-auto origin-top-right bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none custom-scrollbar">
+
                                             {/* <MenuItem
                                                 key="no-unit"
                                                 onClick={() => {
@@ -729,6 +730,30 @@ const AddMemberPopup = ({
                                                     </a>
                                                 )}
                                             </MenuItem> */}
+                                            {!units.some(
+                                                (u) => u.name === "No Unit"
+                                            ) && (
+                                                <MenuItem
+                                                    key="no-unit"
+                                                    onClick={() => {
+                                                        setUnit("No Unit");
+                                                        setUnitId("");
+                                                    }}
+                                                >
+                                                    {({ active }) => (
+                                                        <a
+                                                            href="#"
+                                                            className={`block px-4 py-2 text-sm ${
+                                                                active
+                                                                    ? "bg-gray-100 text-gray-900"
+                                                                    : "text-gray-700"
+                                                            }`}
+                                                        >
+                                                            No Unit
+                                                        </a>
+                                                    )}
+                                                </MenuItem>
+                                            )}
                                             {units.map((unit) => (
                                                 <MenuItem
                                                     key={unit.id}
@@ -754,6 +779,7 @@ const AddMemberPopup = ({
                                             ))}
                                         </MenuItems>
                                     </Menu>
+
                                     {unitError && (
                                         <div className="mt-2 text-secondary">
                                             You must select a unit

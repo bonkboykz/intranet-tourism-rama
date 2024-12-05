@@ -5,7 +5,7 @@ import { AuditTrailCalendar } from "./Calendar";
 
 function SearchButton({ children }) {
     return (
-        <button className="justify-center py-5 font-bold text-white bg-primary px-11 rounded-3xl max-md:px-5">
+        <button className="justify-center px-4 font-bold text-white bg-primary rounded-3xl max-md:px-5">
             {children}
         </button>
     );
@@ -98,7 +98,7 @@ export function AuditTrailSearch({
                     id="searchInput"
                     type="search"
                     placeholder="Search"
-                    className="items-start self-start justify-center p-5 text-opacity-50 border border-solid grow rounded-3xl border-neutral-200 text-neutral-800 w-fit max-md:pr-5 max-md:max-w-full"
+                    className="items-start self-start justify-center px-6 py-3 text-opacity-50 border border-solid grow rounded-3xl border-neutral-200 text-neutral-800 w-fit max-md:pr-5 max-md:max-w-full"
                     value={search}
                     onChange={(e) => onSearch(e.target.value)}
                     onKeyDown={(e) => {
@@ -109,7 +109,7 @@ export function AuditTrailSearch({
                 />
                 <SearchButton>Search</SearchButton>
             </form>
-            <section className="flex self-start justify-between gap-5 mt-6">
+            <section className="flex self-start justify-between gap-5 mt-4">
                 <AuditTrailCalendar
                     startDate={startDate}
                     endDate={endDate}

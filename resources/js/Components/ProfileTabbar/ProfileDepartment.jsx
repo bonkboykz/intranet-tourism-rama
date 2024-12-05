@@ -46,6 +46,7 @@ function ProfileDepartment({
         "Tetap",
         "Kontrak",
         "MySTEP",
+        "Interim",
     ]);
     const [gradeOptions, setGradeOptions] = useState([]);
     const [supervisorsOptions, setSupervisorsOptions] = useState([]);
@@ -131,7 +132,6 @@ function ProfileDepartment({
 
         try {
             while (currentPage <= lastPage) {
-                // const response = await fetch(`/api/department/business_units?page=${currentPage}`, {
                 const response = await fetch(
                     `/api/department/business_units?department_id=${departmentId}&page=${currentPage}`,
                     {
@@ -150,7 +150,14 @@ function ProfileDepartment({
                 lastPage = data.last_page;
                 currentPage++;
             }
-            setUnitOptions(allUnits);
+
+            // Remove duplicates, keeping only one "No Unit"
+            const filteredUnits = allUnits.filter(
+                (unit, index, self) =>
+                    index === self.findIndex((u) => u.name === unit.name)
+            );
+
+            setUnitOptions(filteredUnits);
         } catch (error) {
             console.error("Error fetching data for Units:", error);
         }
@@ -194,6 +201,10 @@ function ProfileDepartment({
             onFormDataChange(updatedData);
         }
     };
+
+    const userDepartment = departmentOptions.find(
+        (option) => option.id === departmentId
+    );
 
     const formatPhoneNumber = (number) => {
         // Remove non-digit characters
@@ -239,7 +250,7 @@ function ProfileDepartment({
                         name={name}
                         value={localFormData[name] || ""}
                         onChange={onChangeHandler}
-                        className="block w-full sm:w-full md:w-full lg:w-full p-2 mt-1 overflow-y-auto text-sm border-2 rounded-full text-neutral-800 text-opacity-80 border-stone-300 max-md:ml-4"
+                        className="block w-full p-2 mt-1 overflow-y-auto text-sm border-2 rounded-full sm:w-full md:w-full lg:w-full text-neutral-800 text-opacity-80 border-stone-300 max-md:ml-4"
                         ref={inputRef}
                         style={{ maxHeight: "150px" }}
                     >
@@ -276,22 +287,32 @@ function ProfileDepartment({
                 <div className="flex flex-col w-full md:ml-0 md:w-full">
                     <table className="w-full text-left border-collapse table-auto">
                         <tbody>
-                            {renderField(
-                                "Department",
-                                "department",
-                                localFormData.department,
-                                departmentOptions,
-                                false,
-                                handleInputChange
-                            )}
+                            {userDepartment ? (
+                                <tr>
+                                    <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
+                                        Department
+                                    </td>
+                                    <td className="w-2/3 p-2 py-2 align-center">
+                                        <a
+                                            href={`/departmentInner?departmentId=${userDepartment.id}`}
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            {userDepartment.name}
+                                        </a>
+                                    </td>
+                                </tr>
+                            ) : null}
                             {renderField(
                                 "Unit",
                                 "unit",
-                                localFormData.unit,
-                                unitOptions,
+                                localFormData.unit || "No Unit", // Show "No Unit" if localFormData.unit is empty
+                                unitOptions.length > 0
+                                    ? unitOptions
+                                    : [{ id: "", name: "No Unit" }], // Use "No Unit" if unitOptions is empty
                                 true,
                                 handleInputChange
                             )}
+
                             {renderField(
                                 "Job Title",
                                 "jobtitle",
@@ -325,7 +346,7 @@ function ProfileDepartment({
                                 handleInputChange
                             )}
                             <tr>
-                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
+                                <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                     Is HOD
                                 </td>
                                 <td className="w-2/3 py-2 align-center">
@@ -348,8 +369,8 @@ function ProfileDepartment({
                                 </td>
                             </tr>
                             <tr>
-                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
-                                    Is Assistance
+                                <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
+                                    Is Secretary
                                 </td>
                                 <td className="w-2/3 py-2 align-center">
                                     {isEditing ? (
@@ -371,7 +392,7 @@ function ProfileDepartment({
                                 </td>
                             </tr>
                             <tr>
-                                <td className="w-1/3  py-2 font-semibold capitalize align-center text-neutral-800">
+                                <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                     Location
                                 </td>
                                 <td className="w-2/3 py-2 align-center">
@@ -381,7 +402,7 @@ function ProfileDepartment({
                                             name="location"
                                             value={localFormData.location || ""}
                                             onChange={handleInputChange}
-                                            className="block w-full sm:w-full md:w-full lg:w-full p-2 mt-1 text-sm border-2 rounded-full text-neutral-800 text-opacity-80 border-stone-300 max-md:ml-4"
+                                            className="block w-full p-2 mt-1 text-sm border-2 rounded-full sm:w-full md:w-full lg:w-full text-neutral-800 text-opacity-80 border-stone-300 max-md:ml-4"
                                         />
                                     ) : (
                                         <div className="block w-full p-2 mt-1 text-sm border-2 border-transparent rounded-md text-neutral-800 text-opacity-80">
@@ -394,7 +415,7 @@ function ProfileDepartment({
                                 <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                     Office Number
                                 </td>
-                                <td className="w-2/3 py-2 align-center ml-20 text-neutral-800">
+                                <td className="w-2/3 py-2 ml-20 align-center text-neutral-800">
                                     {isEditing ? (
                                         <PhoneInput
                                             country={"my"}
@@ -409,7 +430,7 @@ function ProfileDepartment({
                                             }}
                                         />
                                     ) : (
-                                        <div className="text-neutral-800 text-opacity-80 font-normal">
+                                        <div className="font-normal text-neutral-800 text-opacity-80">
                                             {formatWorkNumber(
                                                 localFormData.phone
                                             )}

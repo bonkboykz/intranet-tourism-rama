@@ -2,11 +2,14 @@
 
 namespace App\Notifications;
 
+use App\Models\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Modules\Communities\Models\Community;
+use Modules\User\Models\User;
 
 class DeleteCommunityRequestNotification extends Notification implements ShouldQueue
 {
@@ -14,65 +17,89 @@ class DeleteCommunityRequestNotification extends Notification implements ShouldQ
 
     public $community;
     public $user;
-
     public $request;
-
     public $user_avatar;
 
-    public function __construct($request)
+    /**
+     * Constructor.
+     */
+    public function __construct(User $user, Community $community, Request $request)
     {
+        $this->user = $user;
+        $this->community = $community;
         $this->request = $request;
 
+        // Avatar generation logic
+        $this->user_avatar = $this->generateAvatar();
     }
 
+    /**
+     * Generate avatar URL.
+     */
+    protected function generateAvatar()
+    {
+        return $this->user->profile->image
+            ?? $this->user->profile->staff_image
+            ?? 'https://ui-avatars.com/api/?name=' . urlencode($this->user->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
+    /**
+     * Notification channels.
+     */
     public function via($notifiable)
     {
+        \Log::info("Sending notification to user: {$notifiable->id} via " . implode(', ', ['database', 'broadcast']));
         return ['database', 'broadcast'];
     }
 
+
+    /**
+     * Notification data for the database.
+     */
     public function toDatabase($notifiable)
     {
-        if ($this->request->status !== 'pending') {
-            return [
-                'message' => 'Your request to delete a community has been ' . $this->request->status . '.',
-                'request_id' => $this->request->id, // Store the request ID in the notification
-                'details' => $this->request->details,
-            ];
-        }
-
         return [
-            'message' => 'New request to delete a community.',
-            'request_id' => $this->request->id, // Store the request ID in the notification
+            'message' => $this->buildMessage(),
+            'request_id' => $this->request->id,
             'details' => $this->request->details,
         ];
     }
 
-    // Broadcast notification format (for Laravel Echo + Reverb)
+
+
+
+    /**
+     * Notification data for broadcast.
+     */
     public function toBroadcast($notifiable)
     {
-        // if request was updated (accepted, rejected) send a notification to the user
-        if ($this->request->status !== 'pending') {
-            return new BroadcastMessage([
-                'message' => 'Your request to delete a community has been ' . $this->request->status . '.',
-                'request_id' => $this->request->id,
-                'details' => $this->request->details,
-
-            ]);
-        }
-
         return new BroadcastMessage([
-            'message' => 'New request to delete a community.',
+            'message' => $this->buildMessage(),
             'request_id' => $this->request->id,
             'details' => $this->request->details,
         ]);
     }
 
+    /**
+     * Build notification message.
+     */
+    protected function buildMessage()
+    {
+        if ($this->request->status !== 'pending') {
+            return 'Your request to delete the community ' . $this->community->name . ' has been ' . $this->request->status . '.';
+        }
+
+        return 'New request to delete the community "' . $this->community->name . '".';
+    }
+
+    /**
+     * Notification data for mail.
+     */
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line($this->user->name . ' has requested to delete the community ' . $this->community->name)
+            ->line($this->user->name . ' has requested to delete the community ' . $this->community->name . '.')
             ->action('Review Request', url('/communities/' . $this->community->id . '/requests'))
             ->line('Please review the request and take appropriate action.');
     }
-
 }

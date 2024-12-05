@@ -16,6 +16,7 @@ const AddUnits = () => {
     const [message, setMessage] = useState(null);
     const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
     const [isLoadingUnits, setIsLoadingUnits] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const csrfToken = useCsrf();
 
     const fetchDepartments = async (url) => {
@@ -97,6 +98,7 @@ const AddUnits = () => {
 
     useEffect(() => {
         if (selectedDepartmentId) {
+            console.log("Fetching units for department:", selectedDepartmentId);
             fetchUnits(
                 `/api/department/business_units?department_id=${selectedDepartmentId}&page=1`
             );
@@ -143,6 +145,10 @@ const AddUnits = () => {
                 showMessage("error", error.message);
             });
     };
+
+    const filteredUnits = units.filter((unit) =>
+        unit.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const editUnit = (id, name) => {
         setEditingUnitId(id);
@@ -204,6 +210,13 @@ const AddUnits = () => {
         }
     };
 
+    if (isLoadingDepartments) {
+        return (
+            <div className="flex items-center justify-center h-64 max-w-[1050px]">
+                <div className="w-16 h-16 border-b-2 border-gray-900 max-w-[1050px] rounded-full animate-spin"></div>
+            </div>
+        );
+    }
     return (
         <div className="container p-8 mx-auto">
             <div className="flex items-center justify-between mb-6">
@@ -219,7 +232,7 @@ const AddUnits = () => {
                 {selectedDepartmentId && (
                     <button
                         onClick={() => setIsPopupOpen(true)}
-                        className="px-4 py-2 font-bold text-white bg-primary rounded-full hover:bg-primary-hover"
+                        className="px-4 py-2 font-bold text-white rounded-full bg-primary hover:bg-primary-hover"
                         disabled={!selectedDepartmentId}
                     >
                         Add New Unit
@@ -258,6 +271,17 @@ const AddUnits = () => {
                 )}
             </div>
 
+            {/* Search Input */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="Search units..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+
             {/* Message Display */}
             {message && (
                 <div
@@ -290,9 +314,9 @@ const AddUnits = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {units.map((unit) => (
+                                    {filteredUnits.map((unit) => (
                                         <tr key={unit.id}>
-                                            <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                                            <td className="px-5 py-5 text-sm font-bold bg-white border-b border-gray-200">
                                                 {editingUnitId === unit.id ? (
                                                     <input
                                                         type="text"
@@ -374,7 +398,7 @@ const AddUnits = () => {
                             </button>
                             <button
                                 onClick={createUnit}
-                                className="px-4 py-2 text-white bg-primary rounded-full hover:bg-primary-hover"
+                                className="px-4 py-2 text-white rounded-full bg-primary hover:bg-primary-hover"
                                 disabled={!selectedDepartmentId}
                             >
                                 Add

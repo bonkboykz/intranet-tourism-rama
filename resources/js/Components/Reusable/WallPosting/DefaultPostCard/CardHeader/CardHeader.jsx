@@ -25,7 +25,7 @@ export function CardHeader({ post, isClosed }) {
                 </span>
             </div>
         );
-    }
+    } //sini
 
     return (
         <div className="flex w-full items-center justify-between h-auto mb-4">
@@ -43,10 +43,10 @@ export function CardHeader({ post, isClosed }) {
             {isClosed && (
                 <div
                     className={
-                        "p-2 rounded-3xl min-w-20 font-bold bg-secondary text-white border-none"
+                        "text-sm py-1 px-4 rounded-3xl min-w-20 font-bold bg-secondary text-white border-none"
                     }
                 >
-                    Post is closed
+                    Poll is closed
                 </div>
             )}
         </div>

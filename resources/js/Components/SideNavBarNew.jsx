@@ -360,10 +360,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 </Transition.Child>
 
                                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white shadow-sm px-6 pb-2 ring-1 ring-gray-200 border-r border-gray-200">
-                                    <div className="flex h-16 shrink-0 items-center lg:hidden">
+                                    {/* Add the logo here */}
+                                    <div className="mt-16 flex h-16 shrink-0 items-center sm:block lg:hidden">
                                         <img
-                                            className="h-8 w-[70px]"
-                                            src="assets/Jomla logo red.svg"
+                                            className="h-6"
+                                            src={settings.logo}
                                             alt="Jomla Logo"
                                         />
                                     </div>

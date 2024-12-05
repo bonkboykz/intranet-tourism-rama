@@ -632,235 +632,251 @@ function Calendar() {
         <Example>
             <main className="z-0 min-h-screen w-full bg-gray-100 flex-row flex justify-center items-start gap-20 md:gap-12">
                 <div
-                    className="container mx-auto mt-4 bg-white rounded-md"
+                    className="container mx-auto mt-4 rounded-md"
                     style={{ maxWidth: "90%" }}
                 >
-                    <h1 className="mb-3 font-sans p-2 text-4xl font-bold text-left">
-                        Calendar
-                    </h1>
-                    <hr
-                        className="mx-auto my-2"
-                        style={{ borderColor: "#E4E4E4", borderWidth: "1px" }}
-                    />
-                    <div className="flex flex-col items-center w-full mt-3 mb-8 p-2">
-                        <div className="flex items-center justify-between w-full">
-                            <input
-                                type="search"
-                                className="flex w-full xs:w-fit px-6 max-md:pl-4 py-3 mt-2 bg-gray-100 border-gray-100 rounded-full input-no-outline"
-                                placeholder="Search for events"
-                                aria-label="Search"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <div className="flex w-fit justify-end flex-row mt-2 ml-2 max-md:gap-2 gap-3">
-                                <button
-                                    onClick={handlePrint}
-                                    className="flex items-center justify-center h-[50px] w-[50px]  bg-red-500 rounded-full hover:bg-red-700"
-                                >
-                                    <svg
-                                        width="24px"
-                                        height="24px"
-                                        viewBox="0 0 400 400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="white"
+                    {/* sini */}
+                    <div className="bg-white w-full rounded-2xl px-6 py-6 mb-8 shadow-custom">
+                        {/* <div> */}
+                        <h1 className="mb-3 font-sans p-2 text-4xl font-bold text-left">
+                            Calendar
+                        </h1>
+                        <hr
+                            className="mx-auto my-2"
+                            style={{
+                                borderColor: "#E4E4E4",
+                                borderWidth: "1px",
+                            }}
+                        />
+                        <div className="flex flex-col items-center w-full mt-3">
+                            <div className="flex items-center justify-between w-full">
+                                <input
+                                    type="search"
+                                    className="flex w-full xs:w-fit px-6 max-md:pl-4 py-3 mt-2 bg-gray-100 border-gray-100 rounded-full input-no-outline"
+                                    placeholder="Search for events"
+                                    aria-label="Search"
+                                    value={searchTerm}
+                                    onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                    }
+                                />
+                                <div className="flex w-fit justify-end flex-row mt-2 ml-3 max-md:gap-2 gap-3">
+                                    <button
+                                        onClick={handlePrint}
+                                        className="flex items-center justify-center h-[50px] w-[50px]  bg-secondary rounded-full hover:bg-secondary-hover"
                                     >
-                                        <g id="xxx-file">
-                                            <path
-                                                className="cls-1"
-                                                d="M325,105H250a5,5,0,0,1-5-5V25a5,5,0,0,1,10,0V95h70a5,5,0,0,1,0,10Z"
-                                            />
-                                            <path
-                                                className="cls-1"
-                                                d="M300,380H100a30,30,0,0,1-30-30V50a30,30,0,0,1,30-30H250a5,5,0,0,1,3.54,1.46l75,75A5,5,0,0,1,330,100V350A30,30,0,0,1,300,380ZM100,30A20,20,0,0,0,80,50V350a20,20,0,0,0,20,20H300a20,20,0,0,0,20-20V102.07L247.93,30Z"
-                                            />
-                                            <path
-                                                className="cls-1"
-                                                d="M275,180H125a5,5,0,0,1,0-10H275a5,5,0,0,1,0,10Z"
-                                            />
-                                            <path
-                                                className="cls-1"
-                                                d="M275,230H125a5,5,0,0,1,0-10H275a5,5,0,0,1,0,10Z"
-                                            />
-                                            <path
-                                                className="cls-1"
-                                                d="M275,280H125a5,5,0,0,1,0-10H275a5,5,0,0,1,0,10Z"
-                                            />
-                                            <path
-                                                className="cls-1"
-                                                d="M200,330H125a5,5,0,0,1,0-10h75a5,5,0,0,1,0,10Z"
-                                            />
-                                        </g>
-                                    </svg>
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setEventData({
-                                            title: "",
-                                            venue: "",
-                                            startDate: format(
-                                                new Date(),
-                                                "yyyy-MM-dd"
-                                            ),
-                                            endDate: format(
-                                                new Date(),
-                                                "yyyy-MM-dd"
-                                            ),
-                                            startTime: "",
-                                            endTime: "",
-                                            description: "",
-                                            color: "purple",
-                                        });
+                                        <svg
+                                            width="24px"
+                                            height="24px"
+                                            viewBox="0 0 400 400"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="white"
+                                        >
+                                            <g id="xxx-file">
+                                                <path
+                                                    className="cls-1"
+                                                    d="M325,105H250a5,5,0,0,1-5-5V25a5,5,0,0,1,10,0V95h70a5,5,0,0,1,0,10Z"
+                                                />
+                                                <path
+                                                    className="cls-1"
+                                                    d="M300,380H100a30,30,0,0,1-30-30V50a30,30,0,0,1,30-30H250a5,5,0,0,1,3.54,1.46l75,75A5,5,0,0,1,330,100V350A30,30,0,0,1,300,380ZM100,30A20,20,0,0,0,80,50V350a20,20,0,0,0,20,20H300a20,20,0,0,0,20-20V102.07L247.93,30Z"
+                                                />
+                                                <path
+                                                    className="cls-1"
+                                                    d="M275,180H125a5,5,0,0,1,0-10H275a5,5,0,0,1,0,10Z"
+                                                />
+                                                <path
+                                                    className="cls-1"
+                                                    d="M275,230H125a5,5,0,0,1,0-10H275a5,5,0,0,1,0,10Z"
+                                                />
+                                                <path
+                                                    className="cls-1"
+                                                    d="M275,280H125a5,5,0,0,1,0-10H275a5,5,0,0,1,0,10Z"
+                                                />
+                                                <path
+                                                    className="cls-1"
+                                                    d="M200,330H125a5,5,0,0,1,0-10h75a5,5,0,0,1,0,10Z"
+                                                />
+                                            </g>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setEventData({
+                                                title: "",
+                                                venue: "",
+                                                startDate: format(
+                                                    new Date(),
+                                                    "yyyy-MM-dd"
+                                                ),
+                                                endDate: format(
+                                                    new Date(),
+                                                    "yyyy-MM-dd"
+                                                ),
+                                                startTime: "",
+                                                endTime: "",
+                                                description: "",
+                                                color: "purple",
+                                            });
 
-                                        setIsModalOpen(true);
-                                    }}
-                                    className="flex items-center justify-center text-white bg-primary hover:bg-primary-hover h-[50px] w-[50px] rounded-full"
-                                >
-                                    <span className="text-3xl font-bold">
-                                        +
-                                    </span>
-                                </button>
+                                            setIsModalOpen(true);
+                                        }}
+                                        className="flex items-center justify-center text-white bg-primary hover:bg-primary-hover h-[50px] w-[50px] rounded-full"
+                                    >
+                                        <span className="text-3xl font-bold">
+                                            +
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    {/* sampai sini */}
 
-                    <FullCalendar
-                        datesSet={handleDatesSet}
-                        plugins={[
-                            dayGridPlugin,
-                            timeGridPlugin,
-                            interactionPlugin,
-                            listPlugin,
-                        ]}
-                        initialView="dayGridMonth"
-                        selectable={true}
-                        selectHelper={true}
-                        ref={calendarRef}
-                        select={handleDateSelect}
-                        eventClick={handleEventClick}
-                        selectLongPressDelay={0}
-                        height={650}
-                        buttonText={{
-                            today: "Today",
-                            year: "Year",
-                            month: "Month",
-                            day: "Day",
-                        }}
-                        // editable={!isMobile}
-                        events={events}
-                        eventDidMount={(info) => {
-                            if (window.innerWidth < 768) return;
+                    <div className="bg-white p-6 rounded-2xl shadow-custom">
+                        <FullCalendar
+                            datesSet={handleDatesSet}
+                            plugins={[
+                                dayGridPlugin,
+                                timeGridPlugin,
+                                interactionPlugin,
+                                listPlugin,
+                            ]}
+                            initialView="dayGridMonth"
+                            selectable={true}
+                            selectHelper={true}
+                            ref={calendarRef}
+                            select={handleDateSelect}
+                            eventClick={handleEventClick}
+                            selectLongPressDelay={0}
+                            height={650}
+                            buttonText={{
+                                today: "Today",
+                                year: "Year",
+                                month: "Month",
+                                day: "Day",
+                            }}
+                            // editable={!isMobile}
+                            events={events}
+                            eventDidMount={(info) => {
+                                if (window.innerWidth < 768) return;
 
-                            if (info.event.extendedProps.isBirthday) return;
+                                if (info.event.extendedProps.isBirthday) return;
 
-                            const descContent = info.event.extendedProps
-                                .description
-                                ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
-                                : "";
-                            const venueContent = info.event.extendedProps.venue
-                                ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
-                                : "";
-                            const popoverContent = `
-                                <div>
-                                    <p class="event-title"><strong>${info.event.title}</strong></p>
-                                    <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
-                                    ${venueContent}
-                                    ${descContent}
-                                </div>`;
+                                const descContent = info.event.extendedProps
+                                    .description
+                                    ? `<p><strong>Description:</strong> ${info.event.extendedProps.description}</p>`
+                                    : "";
+                                const venueContent = info.event.extendedProps
+                                    .venue
+                                    ? `<p><strong>Venue:</strong> ${info.event.extendedProps.venue}</p>`
+                                    : "";
+                                const popoverContent = `
+                                    <div>
+                                        <p class="event-title"><strong>${info.event.title}</strong></p>
+                                        <p><strong>Created by:</strong> ${info.event.extendedProps.userName}</p>
+                                        ${venueContent}
+                                        ${descContent}
+                                    </div>`;
 
-                            new bootstrap.Popover(info.el, {
-                                placement: "auto",
-                                trigger: "hover",
-                                container: "body",
-                                customClass: "custom-popover",
-                                content: popoverContent,
-                                html: true,
-                            });
-                        }}
-                        dayCellContent={(props) => (
-                            <DayCellContent
-                                {...props}
-                                birthdays={birthdays}
-                                user={user}
-                            />
-                        )}
-                        eventContent={(eventInfo) => {
-                            const isBirthday =
-                                eventInfo.event.extendedProps.isBirthday;
-                            if (isBirthday) {
-                                return;
-                            }
+                                new bootstrap.Popover(info.el, {
+                                    placement: "auto",
+                                    trigger: "hover",
+                                    container: "body",
+                                    customClass: "custom-popover",
+                                    content: popoverContent,
+                                    html: true,
+                                });
+                            }}
+                            dayCellContent={(props) => (
+                                <DayCellContent
+                                    {...props}
+                                    birthdays={birthdays}
+                                    user={user}
+                                />
+                            )}
+                            eventContent={(eventInfo) => {
+                                const isBirthday =
+                                    eventInfo.event.extendedProps.isBirthday;
+                                if (isBirthday) {
+                                    return;
+                                }
 
-                            const borderColor =
-                                eventInfo.event.backgroundColor || "gray";
-                            const isAuthor =
-                                user.id ===
-                                    eventInfo.event.extendedProps.user.id ||
-                                hasRole("superadmin");
+                                const borderColor =
+                                    eventInfo.event.backgroundColor || "gray";
+                                const isAuthor =
+                                    user.id ===
+                                        eventInfo.event.extendedProps.user.id ||
+                                    hasRole("superadmin");
 
-                            return (
-                                <div
-                                    key={eventInfo.event.id}
-                                    style={{
-                                        backgroundColor:
-                                            eventInfo.backgroundColor,
-                                        padding: "10px 15px",
-                                        borderRadius: "2px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        minHeight: "30px",
-                                        minWidth: "50px",
-                                        width: "100%",
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        border: `2px solid ${
-                                            searchParams.get("event") ===
-                                            eventInfo.event.id
-                                                ? "blue"
-                                                : borderColor
-                                        }`,
-                                        cursor: "pointer",
-                                    }}
-                                    className="fc-event-title"
-                                >
+                                return (
                                     <div
+                                        key={eventInfo.event.id}
                                         style={{
-                                            borderLeft: `5px solid ${eventInfo.event.backgroundColor}`,
-                                            height: "100%",
-                                            opacity: "50%",
+                                            backgroundColor:
+                                                eventInfo.backgroundColor,
+                                            padding: "10px 15px",
+                                            borderRadius: "2px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            minHeight: "30px",
+                                            minWidth: "50px",
+                                            width: "100%",
+                                            whiteSpace: "nowrap",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            border: `2px solid ${
+                                                searchParams.get("event") ===
+                                                eventInfo.event.id
+                                                    ? "blue"
+                                                    : borderColor
+                                            }`,
+                                            cursor: "pointer",
                                         }}
-                                    />
-                                    <span
-                                        className="event-title"
-                                        style={{ color: "white", flexGrow: 1 }}
+                                        className="fc-event-title"
                                     >
-                                        {eventInfo.event.title}
-                                    </span>
-                                    {isAuthor && (
-                                        <img
-                                            src={pencilIcon}
-                                            alt="Edit"
-                                            className="inline-block size-6 md:w-4 md:h-4 ml-2 cursor-pointer"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                e.preventDefault();
-                                                handleEditClick(
-                                                    eventInfo.event
-                                                );
-                                            }}
-                                            onTouchStart={(e) => {
-                                                e.stopPropagation();
-                                                e.preventDefault();
-                                                handleEditClick(
-                                                    eventInfo.event
-                                                );
+                                        <div
+                                            style={{
+                                                borderLeft: `5px solid ${eventInfo.event.backgroundColor}`,
+                                                height: "100%",
+                                                opacity: "50%",
                                             }}
                                         />
-                                    )}
-                                </div>
-                            );
-                        }}
-                    />
+                                        <span
+                                            className="event-title"
+                                            style={{
+                                                color: "white",
+                                                flexGrow: 1,
+                                            }}
+                                        >
+                                            {eventInfo.event.title}
+                                        </span>
+                                        {isAuthor && (
+                                            <img
+                                                src={pencilIcon}
+                                                alt="Edit"
+                                                className="inline-block size-6 md:w-4 md:h-4 ml-2 cursor-pointer"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
+                                                    handleEditClick(
+                                                        eventInfo.event
+                                                    );
+                                                }}
+                                                onTouchStart={(e) => {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
+                                                    handleEditClick(
+                                                        eventInfo.event
+                                                    );
+                                                }}
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            }}
+                        />
+                    </div>
 
                     <div className="pb-10"></div>
 
@@ -963,7 +979,7 @@ function Calendar() {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="modal-submit-button font-bold"
+                                        className="w-full p-2 border-none text-white font-bold text-md rounded-md bg-primary hover:bg-primary-hover"
                                     >
                                         Confirm
                                     </button>
@@ -974,7 +990,7 @@ function Calendar() {
 
                     {isEditModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-container">
+                            <div className="modal-container w-[400px] max-md:w-[290px]">
                                 <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
                                     Edit Event
                                 </h1>
@@ -1073,7 +1089,7 @@ function Calendar() {
                                         </button>
                                         <button
                                             type="submit"
-                                            className="modal-save-button font-bold"
+                                            className="modal-save-button bg-primary hover:bg-primary-hover font-bold"
                                         >
                                             Save
                                         </button>
@@ -1085,14 +1101,14 @@ function Calendar() {
 
                     {isDeleteConfirmOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-container">
-                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
-                                    Confirmation of deletion
-                                </h1>
+                            <div className="modal-container gap-y-4 flex flex-col">
+                                <div className="flex items-center justify-center text-2xl font-bold text-neutral-800">
+                                    Confirm action
+                                </div>
                                 <p>
                                     Are you sure you want to delete this event?
                                 </p>
-                                <div className="button-container mt-4">
+                                <div className="button-container">
                                     <button
                                         type="button"
                                         className="modal-delete-button font-bold"
@@ -1102,7 +1118,7 @@ function Calendar() {
                                     </button>
                                     <button
                                         type="button"
-                                        className="modal-save-button font-bold"
+                                        className="modal-save-button bg-primary hover:bg-primary-hover font-bold"
                                         onClick={handleCancelDelete}
                                     >
                                         Cancel

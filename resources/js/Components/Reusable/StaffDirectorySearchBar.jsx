@@ -130,12 +130,12 @@ const SearchMembers = ({
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <div className="flex w-full space-x-3 sm:justify-end sm:w-auto">
-                    <button
+                    {/* <button
                         onClick={handleSearch}
                         className="font-bold mt-0 text-md px-4 py-2 items-center bg-primary text-white rounded-full hover:bg-primary-hover h-[43px]"
                     >
                         Search
-                    </button>
+                    </button> */}
                     <button
                         onClick={handleStaffListButton}
                         className="shrink=0 w-10 aspect-square"

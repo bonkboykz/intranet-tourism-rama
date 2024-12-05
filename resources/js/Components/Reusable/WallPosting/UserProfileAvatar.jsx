@@ -7,7 +7,7 @@ const getDepartmentOrCommunityBannerUrl = (group) => {
         )}&rounded=true`;
     }
 
-    if (group.banner.includes("assets/departmentsDefault.jpg")) {
+    if (group.banner.includes("assets/defaultDepartmentBanner.jpg")) {
         return group.banner;
     }
 

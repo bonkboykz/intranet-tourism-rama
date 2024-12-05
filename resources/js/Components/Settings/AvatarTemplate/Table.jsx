@@ -17,7 +17,9 @@ export const AvatarTemplateTable = ({
         >
             {avatarTemplates.map((avatar) => (
                 <Fragment key={avatar.id}>
-                    <div>{avatar.name}</div>
+                    <div className="items-center flex font-bold">
+                        {avatar.name}
+                    </div>
                     <div>
                         <img
                             src={avatar.background}
@@ -48,7 +50,7 @@ export const AvatarTemplateTable = ({
                             />
                         </Switch>
                     </div>
-                    <div>
+                    <div className="flex w-full justify-center items-start">
                         <button onClick={() => isDeletePopupOpen(avatar.id)}>
                             <img
                                 className="w-6 h-6 mr-2"

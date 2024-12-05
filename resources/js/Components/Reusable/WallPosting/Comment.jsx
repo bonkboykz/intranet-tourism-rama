@@ -452,7 +452,7 @@ const Comment = ({
                                                     )}
                                                 </span>
                                             </div>
-                                            <div className="text-sm mt-1 mx-3 break-all overflow-hidden">
+                                            <div className="text-sm mt-1 mx-1 break-all overflow-hidden">
                                                 {renderContentWithTags(
                                                     comment.content,
                                                     comment.mentions

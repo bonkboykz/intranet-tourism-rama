@@ -10,7 +10,8 @@ export function UserStory({
                 display: "inline-block",
                 margin: "10px",
                 position: "relative",
-                marginRight: "10px",
+                marginRight: "1px",
+                width: "80px",
             }}
         >
             <button
@@ -37,11 +38,11 @@ export function UserStory({
                             !avatar.src // check if src variable is empty
                                 ? `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${avatar.fullName}&rounded=true` // if src is empty = src equals to this path
                                 : avatar.src ===
-                                  "/assets/dummyStaffPlaceHolder.jpg" //if avatar.src is not empty, check id avatar.src is equal to this path
-                                ? avatar.src // if it is equal to the path, then src = avatar.src
-                                : avatar.src.startsWith("avatar/") // if not equal, then check if avatar.src starts with avatar/
-                                ? `/storage/${avatar.src}` // if yes, then src = storage/{avatar.src}
-                                : `/storage/avatar/${avatar.src}` // If no then then src =
+                                    "/assets/dummyStaffPlaceHolder.jpg" //if avatar.src is not empty, check id avatar.src is equal to this path
+                                  ? avatar.src // if it is equal to the path, then src = avatar.src
+                                  : avatar.src.startsWith("avatar/") // if not equal, then check if avatar.src starts with avatar/
+                                    ? `/storage/${avatar.src}` // if yes, then src = storage/{avatar.src}
+                                    : `/storage/avatar/${avatar.src}` // If no then then src =
                         }
                         alt={avatar.alt}
                         style={{
