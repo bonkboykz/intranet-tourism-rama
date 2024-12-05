@@ -296,7 +296,7 @@ function ProfileHeader({
                         </div>
 
                         <div className="flex flex-col w-full self-start mt-16 max-md:mx-0 max-md:-mt-12">
-                            <div className="flex items-center max-md:ml-0">
+                            <div className="flex items-center mt-2 max-md:ml-0">
                                 <h1 className="text-3xl font-extrabold text-neutral-800 relative max-md:-mt-4 max-md:text-2xl max-md:mx-2 text-start">
                                     {name}
                                 </h1>
