@@ -709,7 +709,7 @@ const AddMemberPopup = ({
                                             />
                                         </MenuButton>
                                         <MenuItems className="absolute z-10 w-full mt-2 overflow-y-auto origin-top-right bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none custom-scrollbar">
-                                            <MenuItem
+                                            {/* <MenuItem
                                                 key="no-unit"
                                                 onClick={() => {
                                                     setUnit("No Unit");
@@ -725,10 +725,10 @@ const AddMemberPopup = ({
                                                                 : "text-gray-700"
                                                         }`}
                                                     >
-                                                        No Unit
+                                                        -
                                                     </a>
                                                 )}
-                                            </MenuItem>
+                                            </MenuItem> */}
                                             {units.map((unit) => (
                                                 <MenuItem
                                                     key={unit.id}

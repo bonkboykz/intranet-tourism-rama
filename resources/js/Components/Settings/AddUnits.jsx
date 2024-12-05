@@ -109,16 +109,6 @@ const AddUnits = () => {
     };
 
     const createUnit = () => {
-        const trimmedNewUnit = newUnit.trim().toLowerCase();
-
-        if (trimmedNewUnit === "no unit") {
-            showMessage(
-                "error",
-                "You cannot add a unit with the name 'No Unit'."
-            );
-            return;
-        }
-
         if (newUnit.trim() === "" || !selectedDepartmentId) return;
 
         fetch("/api/department/business_units", {
@@ -160,13 +150,6 @@ const AddUnits = () => {
     };
 
     const saveUnit = () => {
-        const trimmedName = editingUnitName.trim().toLowerCase();
-
-        if (trimmedName === "no unit") {
-            showMessage("error", "You cannot save the name as 'No Unit'.");
-            return;
-        }
-
         if (editingUnitName.trim() === "") {
             showMessage("error", "Name cannot be empty.");
             return;

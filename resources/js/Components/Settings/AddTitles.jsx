@@ -143,7 +143,13 @@ const AddTitles = () => {
             );
             toast.success("Title deleted successfully.");
         } catch (e) {
-            toastError(e.message);
+            const errorMessage =
+                e.response?.data?.error ||
+                e.message ||
+                "An unknown error occurred.";
+            toastError(errorMessage);
+
+            console.error("Error deleting title:", e);
         }
     };
 
