@@ -979,7 +979,7 @@ function Calendar() {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="modal-submit-button font-bold"
+                                        className="w-full p-2 border-none text-white font-bold text-md rounded-md bg-primary hover:bg-primary-hover"
                                     >
                                         Confirm
                                     </button>
@@ -990,7 +990,7 @@ function Calendar() {
 
                     {isEditModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-container">
+                            <div className="modal-container w-[400px] max-md:w-[290px]">
                                 <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
                                     Edit Event
                                 </h1>
@@ -1089,7 +1089,7 @@ function Calendar() {
                                         </button>
                                         <button
                                             type="submit"
-                                            className="modal-save-button font-bold"
+                                            className="modal-save-button bg-primary hover:bg-primary-hover font-bold"
                                         >
                                             Save
                                         </button>
@@ -1101,14 +1101,14 @@ function Calendar() {
 
                     {isDeleteConfirmOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                            <div className="modal-container">
-                                <h1 className="flex items-center justify-center mx-4 mb-4 text-2xl font-bold text-neutral-800">
-                                    Confirmation of deletion
-                                </h1>
+                            <div className="modal-container gap-y-4 flex flex-col">
+                                <div className="flex items-center justify-center text-2xl font-bold text-neutral-800">
+                                    Confirm action
+                                </div>
                                 <p>
                                     Are you sure you want to delete this event?
                                 </p>
-                                <div className="button-container mt-4">
+                                <div className="button-container">
                                     <button
                                         type="button"
                                         className="modal-delete-button font-bold"
@@ -1118,7 +1118,7 @@ function Calendar() {
                                     </button>
                                     <button
                                         type="button"
-                                        className="modal-save-button font-bold"
+                                        className="modal-save-button bg-primary hover:bg-primary-hover font-bold"
                                         onClick={handleCancelDelete}
                                     >
                                         Cancel
