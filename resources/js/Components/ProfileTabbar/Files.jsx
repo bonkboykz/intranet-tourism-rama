@@ -283,7 +283,7 @@ const SearchInput = ({ searchTerm, onSearch }) => (
 );
 
 const SearchButton = () => (
-    <button className="justify-center px-4 py-3 my-auto text-sm font-bold text-center text-white bg-primary hover:bg-primary-hover rounded-3xl">
+    <button className="justify-center px-4 py-3 ml-2 my-auto text-sm font-bold text-center text-white bg-primary hover:bg-primary-hover rounded-3xl">
         Search
     </button>
 );
