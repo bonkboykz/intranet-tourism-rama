@@ -205,7 +205,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                 <div className="relative">
                     {activeTab === "Members" && (
                         <div className="flex justify-center w-full mt-4">
-                            <div className="max-w-[900px] w-full border-inherit rounded-2xl shadow-2xl">
+                            <div className="max-w-[900px] w-full border-inherit rounded-2xl bg-white shadow-custom">
                                 <DepartmentMembers
                                     departmentID={departmentID}
                                     loggedInID={userId}
@@ -215,8 +215,8 @@ function Navigation({ userId, departmentID, departmentName }) {
                     )}
 
                     {activeTab === "Files" && (
-                        <div>
-                            <div className="flex gap-4 ml-12 whitespace-nowrap">
+                        <div className=" bg-white rounded-2xl">
+                            <div className="flex mt-4 py-4 px-4 whitespace-nowrap">
                                 <SearchInput
                                     onSearch={setSearchTerm}
                                     searchTerm={searchTerm}
@@ -238,7 +238,7 @@ function Navigation({ userId, departmentID, departmentName }) {
                     )}
 
                     {activeTab === "Post" && (
-                        <div className="flex flex-col shadow-2xl pb-6 rounded-xl mt-6">
+                        <div className="flex flex-col">
                             <div className="max-md:px-6 md:px-20 pt-8 w-full whitespace-nowrap content-items pb-8">
                                 {isMember && (
                                     <ShareYourThoughts

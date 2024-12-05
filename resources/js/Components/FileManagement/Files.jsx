@@ -316,7 +316,7 @@ const FileTable = ({
     return (
         <div className="w-full overflow-visible">
             <SavingPopup isSaving={isSaving} />
-            <div className="flow-root mt-8">
+            <div className="flow-root">
                 <div className="max-h-auto max-w-[1100px] overflow-auto p-4 rounded-2xl bg-white">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[600px] border-separate table-fixed rounded-2xl shadow-custom border-spacing-1">
