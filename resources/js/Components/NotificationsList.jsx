@@ -8,23 +8,19 @@ import {
     getNotificationAvatar,
     getProfileImage,
 } from "@/Utils/getProfileImage";
-import { useLazyLoading } from "@/Utils/hooks/useLazyLoading";
 
-function NotificationsList({ activeTab }) {
-    const {
-        data: notifications,
-        hasMore,
-        nextPage: loadMore,
-        isLoading,
-    } = useLazyLoading("/api/notifications", {
-        activeTab,
-        per_page: 5, // Load 5 notifications per request
-    });
-
-    const [readMap, setReadMap] = useState({});
+function NotificationsList({
+    activeTab,
+    notifications,
+    shouldSlice,
+    loadMore,
+    hasMore,
+    currentPage,
+}) {
+    const [readMap, setReadmap] = useState({});
 
     const markAsRead = async (id) => {
-        setReadMap({ ...readMap, [id]: true });
+        setReadmap({ ...readMap, [id]: true });
 
         try {
             await axios.post(`/api/markAsRead/${id}`);
@@ -43,14 +39,24 @@ function NotificationsList({ activeTab }) {
             ).values()
         );
 
-        if (activeTab === "all") {
+        if (!shouldSlice && activeTab === "all") {
             return uniqueNotifications;
         }
 
-        return uniqueNotifications.filter(
-            (notification) => !notification.read_at
-        );
-    }, [activeTab, notifications]);
+        if (!shouldSlice && activeTab !== "all") {
+            return uniqueNotifications.filter(
+                (notification) => !notification.read_at
+            );
+        }
+
+        if (activeTab === "all") {
+            return uniqueNotifications.slice(0, 4);
+        }
+
+        return uniqueNotifications
+            .filter((notification) => !notification.read_at)
+            .slice(0, 6);
+    }, [activeTab, notifications, shouldSlice]);
 
     const handleNotificationClick = useCallback((notification) => {
         switch (notification.type) {
@@ -64,18 +70,9 @@ function NotificationsList({ activeTab }) {
         }
     }, []);
 
-    // Display loading icon during the initial load
-    if (isLoading && notifications.length === 0) {
-        return (
-            <div className="flex justify-center items-center min-h-[200px]">
-                <Loader2 className="w-12 h-12 animate-spin" />
-            </div>
-        );
-    }
-
     return (
         <InfiniteScroll
-            pageStart={1}
+            pageStart={currentPage}
             loadMore={loadMore}
             hasMore={hasMore}
             loader={
@@ -87,7 +84,7 @@ function NotificationsList({ activeTab }) {
                 </div>
             }
         >
-            <div className="notification-list px-2">
+            <div className="notification-list px-2 ">
                 <ul>
                     {filteredNotifications.map((notification) => (
                         <div
@@ -119,6 +116,7 @@ function NotificationsList({ activeTab }) {
                                         borderRadius: "100%",
                                     }}
                                 />
+                                {/* Icons for different notification types */}
                                 {notification.status && (
                                     <img
                                         className="absolute h-5 w-5 right-0 bottom-0 bg-blue"
@@ -152,11 +150,6 @@ function NotificationsList({ activeTab }) {
                         </div>
                     ))}
                 </ul>
-                {isLoading && (
-                    <div className="flex justify-center py-4">
-                        <Loader2 className="w-8 h-8 animate-spin" />
-                    </div>
-                )}
             </div>
         </InfiniteScroll>
     );
