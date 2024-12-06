@@ -23,15 +23,15 @@ function PollOptionAnswered({ option, percentage }) {
                     className="absolute top-0 left-0 h-full bg-gray-400 bg-dark-100 rounded-3xl"
                     style={{ width: `${percentage}%` }}
                 ></div>
-                <div className="relative flex gap-2 items-center z-10">
-                    <div>{percentage.toFixed(1)}%</div>
-                </div>
                 <button
                     disabled
-                    className="relative py-2 flex-auto outline-none border-none text-start z-10"
+                    className="relative py-2 flex-auto outline-none border-none text-start z-10 font-bold"
                 >
                     {option}
                 </button>
+                <div className="relative flex gap-2 items-center z-10">
+                    <div>{percentage.toFixed(2)}%</div>
+                </div>
             </div>
         </div>
     );
@@ -163,7 +163,7 @@ export function PollCard({ post, className }) {
                         />
                     ))}
                 </div>
-                <div className="flex w-full justify-between mt-4 px-1">
+                <div className="flex w-full justify-between items-center mt-4 px-1">
                     <div>
                         <button
                             className="bg-secondary text-white px-4 py-2 rounded-lg"
@@ -201,7 +201,7 @@ export function PollCard({ post, className }) {
                 className={cn(
                     // cachedPost.type === "announcement" ? "-mt-16" : "mt-10",
                     "w-full lg:w-full max-w-[900px]",
-                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-xl w-full relative",
+                    "mt-10 p-4 rounded-2xl bg-white border-2 shadow-custom w-full relative",
                     cachedPost.announced &&
                         (cachedPost.community_id || cachedPost.department_id
                             ? "relative pt-20"
@@ -278,7 +278,7 @@ export function PollCard({ post, className }) {
             </article>
 
             {showFeedback && (
-                <div className="mt-8">
+                <div className="mt-4 z-5000">
                     <Feedback
                         postId={post.id}
                         onClose={() => setShowFeedback(false)}
