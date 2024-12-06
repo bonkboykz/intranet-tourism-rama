@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo,useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import moment from "moment";
@@ -41,7 +41,7 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
         setIsDeleteModalVisible(false);
     };
 
-    const maxLength = 50;
+    const maxLength = 100;
     const truncatedFeedback =
         feedback.feedback_text.length > maxLength
             ? `${feedback.feedback_text.substring(0, maxLength)}...`
@@ -50,32 +50,32 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
     return (
         <>
             <div
-                className="grid border-t border-gray-200 cursor-pointer py-8"
+                className="grid border-t w-full border-gray-200 cursor-pointer py-4"
                 style={{
                     gridTemplateColumns: "2fr 3fr 1fr",
                 }}
                 onClick={handleRead}
             >
-                <div className="flex items-center">
+                <div className="flex items-center max-md:flex-col max-md:items-start">
                     <img
                         className="w-10 h-10 rounded-full"
                         src={getProfileImage(feedback.userProfile)}
                         alt="User profile"
                     />
-                    <div className="ml-3">
+                    <div className="ml-3 max-md:ml-0 max-md:mt-2">
                         <p className="text-sm font-bold text-black">
                             {feedback.user.name}{" "}
                             {feedback.userDepartment
                                 ? `(${feedback.userDepartment.name})`
                                 : ""}
                         </p>
-                        <p className="text-xs font-semibold text-black">
+                        <p className="text-xs font-semibold text-gray-400">
                             {formatTime(feedback.created_at)}
                         </p>
                     </div>
                 </div>
                 <div className="flex justify-start">
-                    <p className="pl-20 text-sm font-semibold text-center text-black">
+                    <p className="ml-6 text-sm font-semibold text-start text-black">
                         {truncatedFeedback}
                     </p>
                 </div>
@@ -98,10 +98,10 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
                     onClick={() => setIsFeedbackModalVisible(false)}
                 >
                     <div
-                        className="relative p-8 bg-white rounded-lg shadow-lg w-[600px]"
+                        className="relative p-8 bg-white rounded-2xl shadow-lg w-[600px]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="mb-4 text-2xl font-bold text-center">
+                        <h2 className="mb-4 text-2xl font-bold text-start">
                             {feedback.user.name}{" "}
                             {feedback.userDepartment
                                 ? `(${feedback.userDepartment.name})`
@@ -111,12 +111,12 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
                             className="mb-5 border-t border-gray-300"
                             style={{ borderColor: "#E4E4E4", width: "100%" }}
                         />
-                        <p className="mb-2 text-lg font-medium text-center">
+                        <p className="mb-2 text-lg font-medium text-start">
                             {feedback.feedback_text}
                         </p>
                         <div className="flex justify-center space-x-4">
                             <button
-                                className="px-8 py-2 mt-5 text-white bg-primary rounded-full"
+                                className="px-8 py-2 mt-5 text-white bg-primary hover:bg-primary-hover rounded-full"
                                 onClick={() => setIsFeedbackModalVisible(false)}
                             >
                                 Back
@@ -127,7 +127,7 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
             )}
             {isDeleteModalVisible && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
                     onClick={() => setIsDeleteModalVisible(false)}
                 >
                     <div
@@ -138,9 +138,9 @@ const FeedbackRow = ({ feedback, onRead, onDelete }) => {
                             <h2 className="mb-4 text-lg font-bold">
                                 Delete the feedback permanently?
                             </h2>
-                            <div className="flex justify-center space-x-4">
+                            <div className="flex justify-center space-x-2">
                                 <button
-                                    className="px-8 py-2 text-base font-bold text-white bg-primary border border-blue-500 rounded-full"
+                                    className="px-8 py-2 text-base font-bold text-white bg-primary hover:bg-primary-hover border rounded-full"
                                     onClick={handleDelete}
                                 >
                                     Yes
@@ -227,15 +227,15 @@ const Feedback = ({ postId }) => {
 
     return (
         <>
-            <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px] mb-10">
+            <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom border-2 w-full mb-4 max-w-[1200px]">
                 <h2
                     className="mb-4 text-2xl font-bold text-primary cursor-default grid text-center"
                     style={{
                         gridTemplateColumns: "2fr 3fr 1fr",
                     }}
                 >
-                    <div>User</div>
-                    <div>Feedback</div>
+                    <div className="text-start">User</div>
+                    <div className="text-start ml-6">Feedback</div>
                 </h2>
                 {feedbackList.map((feedback) => (
                     <FeedbackRow
@@ -246,7 +246,7 @@ const Feedback = ({ postId }) => {
                     />
                 ))}
             </section>
-            <div className="max-w-[900px]">
+            <div className="w-full max-w-[1200px]">
                 <div className="flex items-center justify-end">
                     <button
                         className={`px-4 py-2 bg-[#FAFBFD] border border-[#D5D5D5] rounded-l-lg shadow-custom ${

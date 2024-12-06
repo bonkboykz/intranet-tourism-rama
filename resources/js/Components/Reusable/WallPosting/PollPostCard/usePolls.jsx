@@ -18,7 +18,7 @@ function PollOption({
         <div className="flex gap-5 mt-3 text-md leading-5 text-neutral-800 max-md:flex-wrap min-h-12">
             <div
                 className={cn(
-                    `flex flex-auto gap-3 px-4 bg-gray-100 rounded-3xl max-md:flex-wrap items-center transition`,
+                    `flex flex-auto gap-3 px-4 bg-gray-100 rounded-3xl items-center transition`,
                     selected && "bg-primary text-white",
                     disabled && "opacity-60"
                 )}

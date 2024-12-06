@@ -16,7 +16,7 @@ export function Polls() {
         <>
             {userPolls.map((post) => (
                 <div key={post.id}>
-                    <PollCard post={post} className="max-w-full" />
+                    <PollCard post={post} className="max-w-[1200px]" />
                 </div>
             ))}
 
@@ -24,7 +24,7 @@ export function Polls() {
                 <button
                     disabled={isLoading}
                     onClick={nextPage}
-                    className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-primary hover:bg-primary-hover flex align-center justify-center"
+                    className="w-full py-2 mt-4 bg-primary-600 text-white rounded-md bg-primary hover:bg-primary-hover flex align-center justify-center max-w-[1200px]"
                 >
                     {isLoading ? (
                         <Loader2 className="w-6 h-6 animate-spin" />
