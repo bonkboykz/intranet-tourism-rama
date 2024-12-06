@@ -9,6 +9,7 @@ export function CommunityTitle({ post }) {
     const { hasRole } = usePermissions();
 
     const isCommunityAdmin = hasRole(`community admin ${post.community.id}`);
+    const { isSuperAdmin } = usePermissions();
 
     if (post.post_as === "member") {
         return (
@@ -17,21 +18,32 @@ export function CommunityTitle({ post }) {
             </div>
         );
     }
+    if (isSuperAdmin) {
+        return (
+            <div className="text-base font-semibold text-neutral-800">
+                {post.community.name} ({post.user.name})
+            </div>
+        );
+    }
 
     const title =
         post.community.name + (isCommunityAdmin ? ` (${post.user.name})` : "");
 
     return (
-        <div className="text-base font-semibold text-neutral-800">
-            {post.community.name}
-        </div>
+        <div className="text-base font-semibold text-neutral-800">{title}</div>
     );
 }
 
 export function DepartmentTitle({ post }) {
-    const { isAdmin } = useContext(DepartmentContext);
+    const { hasRole, isSuperAdmin } = usePermissions();
 
-    const { isSuperAdmin } = usePermissions();
+    // Ensure department data is valid
+    if (!post.department || !post.department.id || !post.department.name) {
+        console.error("Invalid department data:", post.department);
+        return null;
+    }
+
+    const isAdmin = hasRole(`department admin ${post.department.id}`);
 
     if (post.post_as === "member") {
         return (
@@ -44,7 +56,7 @@ export function DepartmentTitle({ post }) {
     if (isSuperAdmin) {
         return (
             <div className="text-base font-semibold text-neutral-800">
-                {post.user.name}
+                {post.department.name} ({post.user.name})
             </div>
         );
     }
