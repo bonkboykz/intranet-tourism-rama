@@ -196,7 +196,7 @@ export function AuditTrailCalendar({
                     className="absolute top-12 left-0 z-50 w-[300px] h-auto bg-white border border-gray-300 rounded-md shadow-custom"
                 >
                     <div className="text-center lg:mt-2">
-                        <div className="flex items-center text-gray-900">
+                        <div className="flex items-center text-gray-900 mx-3 my-4">
                             <button
                                 type="button"
                                 className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"

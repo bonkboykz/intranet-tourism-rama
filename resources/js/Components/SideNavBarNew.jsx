@@ -361,7 +361,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
                                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white shadow-sm px-6 pb-2 ring-1 ring-gray-200 border-r border-gray-200">
                                     {/* Add the logo here */}
-                                    <div className="mt-16 flex h-16 shrink-0 items-center sm:block lg:hidden">
+                                    <div className="mt-20 flex h-16 shrink-0 items-center sm:block lg:hidden">
                                         <img
                                             className="h-6"
                                             src={settings.logo}
