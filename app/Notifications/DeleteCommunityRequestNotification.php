@@ -89,7 +89,7 @@ class DeleteCommunityRequestNotification extends Notification implements ShouldQ
             return 'Your request to delete the community ' . $this->community->name . ' has been ' . $this->request->status . '.';
         }
 
-        return 'New request to delete the community ' . $this->community->name . '.';
+        return 'New request to delete the community "' . $this->community->name . '".';
     }
 
     /**
