@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 
 
 
+
 class RequestController extends Controller
 {
 
@@ -626,7 +627,6 @@ class RequestController extends Controller
             $requestToUpdate->action_at = now();
             $requestToUpdate->save();
 
-
             $community = Community::findOrFail($communityId);
             $communityMembers = $community->members;
 
@@ -637,21 +637,15 @@ class RequestController extends Controller
             $community->delete();
 
             try {
-                $superusers = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'superadmin');
-                })->get();
+                $user = User::where('id', auth()->id())->firstOrFail();
 
-                $user = User::where('id', auth()->id())->firstOfFail();
-
-                // Notify all super admins about the approval
-                $superusers->each(function ($superuser) use ($requestToUpdate, $community, $user) {
-                    $superuser->notify(new DeleteCommunityRequestNotification($user, $community, $requestToUpdate));
-                });
-
+                // Notify all community members about the deletion
                 $communityMembers->each(function ($member) use ($community, $user) {
                     $member->notify(new DeletingCommunityNotification($community->id, $community->name, $user));
                 });
 
+                // Log success
+                \Log::info('Community members notified about the deletion of community: ' . $community->name);
             } catch (\Throwable $th) {
                 \Log::error('Notification error: ' . $th->getMessage());
             }
@@ -662,6 +656,7 @@ class RequestController extends Controller
             return response()->json(['error' => 'Failed to approve community deletion'], 500);
         }
     }
+
 
 
     // public function rejectCommunityDeleteRequest(HttpRequest $request)
