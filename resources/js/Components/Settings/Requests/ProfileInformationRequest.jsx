@@ -184,23 +184,26 @@ const ProfileInformationRequest = () => {
         )
         .map((request) => ({
             id: request.id,
-            name: request.user.name,
-            department: request.userDepartment,
+            name: request.user?.name || "Unknown User",
+            department: request.userDepartment || "No Department",
 
-            time: new Date(request.created_at),
+            time: request.created_at ? new Date(request.created_at) : null,
             profileImage: getProfileImage(
                 request.userProfile,
-                request.user.name
+                request.user?.name || "Unknown User"
             ),
             status: request.status,
             changeType: "Department Information",
-            oldLocation: request.user.employment_post.location || "No location",
-            newLocation: request.details.location || "No location",
+            oldLocation:
+                request.user?.employment_post?.location || "No location",
+            newLocation: request.details?.location || "No location",
             oldUnit: request.business_unit?.name || "No Unit",
-            newUnit: request.details.business_unit_name,
-            oldOfficeNumber: request.user.employment_post.work_phone,
-            newOfficeNumber: request.details.work_phone,
+            newUnit: request.details?.business_unit_name || "No Unit",
+            oldOfficeNumber:
+                request.user?.employment_post?.work_phone || "No Phone",
+            newOfficeNumber: request.details?.work_phone || "No Phone",
         }));
+
     return (
         <section className="flex flex-col px-5 py-4 bg-white rounded-2xl shadow-custom max-w-[900px]">
             <h2 className="mb-4 text-2xl font-bold text-primary">
