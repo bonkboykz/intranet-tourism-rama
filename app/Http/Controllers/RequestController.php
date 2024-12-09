@@ -535,11 +535,9 @@ class RequestController extends Controller
                 $query->where('name', 'superadmin');
             })->get();
 
-            $user = User::firstOrFail(auth()->id());
-
             // Send notifications
-            $superusers->each(function ($superuser) use ($user, $newRequest, $community) {
-                $superuser->notify(new DeleteCommunityRequestNotification($user, $community, $newRequest));
+            $superusers->each(function ($superuser) use ($newRequest, $community) {
+                $superuser->notify(new DeleteCommunityRequestNotification(auth()->user(), $community, $newRequest));
             });
         } catch (\Throwable $th) {
             \Log::error('Notification error: ' . $th->getMessage());
@@ -547,6 +545,7 @@ class RequestController extends Controller
 
         return response()->json(['status' => 'delete_request_sent']);
     }
+
 
 
     // public function approveCommunityDeleteRequest(HttpRequest $request)

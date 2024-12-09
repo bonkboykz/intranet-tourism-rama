@@ -2,14 +2,11 @@
 
 namespace App\Notifications;
 
-use App\Models\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Modules\Communities\Models\Community;
-use Modules\User\Models\User;
 
 class DeleteCommunityRequestNotification extends Notification implements ShouldQueue
 {
@@ -23,7 +20,7 @@ class DeleteCommunityRequestNotification extends Notification implements ShouldQ
     /**
      * Constructor.
      */
-    public function __construct(User $user, Community $community, Request $request)
+    public function __construct($user, $community, $request)
     {
         $this->user = $user;
         $this->community = $community;
@@ -65,7 +62,7 @@ class DeleteCommunityRequestNotification extends Notification implements ShouldQ
         ];
     }
 
-
+  
 
 
     /**
