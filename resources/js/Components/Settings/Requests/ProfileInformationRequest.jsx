@@ -17,6 +17,7 @@ const ProfileInformationRow = ({
     newUnit,
     oldLocation,
     newLocation,
+    location,
     id,
     status,
     onUpdate,
@@ -185,6 +186,7 @@ const ProfileInformationRequest = () => {
             id: request.id,
             name: request.user.name,
             department: request.userDepartment,
+
             time: new Date(request.created_at),
             profileImage: getProfileImage(
                 request.userProfile,
@@ -192,8 +194,8 @@ const ProfileInformationRequest = () => {
             ),
             status: request.status,
             changeType: "Department Information",
-            oldLocation: request.user.employment_post.location,
-            newLocation: request.details.location,
+            oldLocation: request.user.employment_post.location || "No location",
+            newLocation: request.details.location || "No location",
             oldUnit: request.business_unit?.name || "No Unit",
             newUnit: request.details.business_unit_name,
             oldOfficeNumber: request.user.employment_post.work_phone,
