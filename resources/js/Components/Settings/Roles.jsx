@@ -400,7 +400,7 @@ export default function Roles() {
                         type="text"
                         placeholder="Search members..."
                         value={searchTerm}
-                        onChange={handleSearchInputChange}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                     />
                 </div>
