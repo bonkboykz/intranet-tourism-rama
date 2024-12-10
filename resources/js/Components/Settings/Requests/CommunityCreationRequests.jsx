@@ -109,14 +109,16 @@ const CommunityCreationRow = ({
             <p className="w-1/4 text-xs font-semibold text-center text-black">
                 wants to create
             </p>
-            <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-center max-md:items-center">
+            <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-center max-md:items-center max-md:mx-3">
                 <img
                     className="w-10 h-10 rounded-full"
                     src={groupImage}
                     alt="Group"
                 />
                 <div className="ml-3 max-md:ml-0 max-md:mt-1">
-                    <p className="text-sm font-bold text-black">{group}</p>
+                    <p className="text-sm font-bold text-black max-md:text-center">
+                        {group}
+                    </p>
                 </div>
             </div>
             {status === "pending" && (

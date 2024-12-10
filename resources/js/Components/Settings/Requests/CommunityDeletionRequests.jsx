@@ -97,7 +97,7 @@ const CommunityDeletionRow = ({
                     alt="Group"
                 />
                 <div className="ml-3 max-md:ml-0 max-md:mt-1">
-                    <p className="text-sm font-bold text-black text-center">
+                    <p className="text-sm font-bold text-black max-md:text-center">
                         {group}
                     </p>
                 </div>
