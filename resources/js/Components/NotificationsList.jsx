@@ -88,16 +88,16 @@ function NotificationsList({
                 <ul>
                     {filteredNotifications.map((notification) => (
                         <div
-                            className="flex flex-row h-auto py-2 px-1 mb-2 hover:bg-blue-100 items-center rounded-xl relative cursor-pointer"
+                            className="flex flex-row p-2 mb-1 hover:bg-blue-100 items-center rounded-xl relative cursor-pointer"
                             key={notification.id}
                             onMouseOver={() => markAsRead(notification.id)}
                             onClick={() =>
                                 handleNotificationClick(notification)
                             }
                         >
-                            <div className="flex items-center bg-gray h-16 relative">
+                            <div className="flex items-center bg-gray w-16 h-16 relative">
                                 <img
-                                    className="h-10 w-10 ml-2"
+                                    className="object-cover rounded-full "
                                     src={
                                         notification.data.user_avatar
                                             ? getNotificationAvatar(
@@ -110,11 +110,6 @@ function NotificationsList({
                                               )
                                     }
                                     alt=""
-                                    style={{
-                                        height: "60px",
-                                        width: "60px",
-                                        borderRadius: "100%",
-                                    }}
                                 />
                                 {/* Icons for different notification types */}
                                 {notification.status && (
@@ -125,11 +120,11 @@ function NotificationsList({
                                     />
                                 )}
                             </div>
-                            <div className="flex flex-col w-48 h-50 ml-2">
-                                <div className="block px-1 py-1 text-sm font-semibold notification-message">
+                            <div className="flex flex-col w-full ml-3 mr-2">
+                                <div className="block px-1 text-sm font-semibold notification-message">
                                     <span>{notification.data.message}</span>
                                 </div>
-                                <div className="block px-1 py-1 text-sm font-medium text-neutral-800 text-opacity-50">
+                                <div className="block px-1 text-sm text-neutral-800 text-opacity-50">
                                     {formatTimeAgo(notification.created_at)}
                                 </div>
                             </div>

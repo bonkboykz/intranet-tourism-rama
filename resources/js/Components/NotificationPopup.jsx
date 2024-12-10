@@ -57,7 +57,7 @@ const NotificationPopup = () => {
                     <strong>Unread Notifications</strong>
                 )}
             </h2>
-            <ul className="flex flex-row gap-2 px-3">
+            <ul className="flex flex-row gap-2 px-1 mb-2">
                 <li>
                     <button
                         onClick={() => handleTabChange("all")}
@@ -87,7 +87,7 @@ const NotificationPopup = () => {
                 </li>
             </ul>
             <div
-                className="notifications-content overflow-y-auto max-h-[400px] px-3"
+                className="notifications-content overflow-y-auto max-h-[400px] px-1"
                 style={{
                     scrollbarWidth: "thin",
                     scrollbarColor: "#ccc #f5f5f5",
