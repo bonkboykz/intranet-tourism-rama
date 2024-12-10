@@ -58,7 +58,7 @@ function BirthdayNotificationPopup({ onClose, userData }) {
         return birthdays.map((birthday, index) => (
             <div
                 key={index}
-                className="cursor-pointer text-sm text-gray-600 mt-1 p-2 hover:bg-blue-100 rounded flex items-center"
+                className="cursor-pointer text-sm text-gray-600 mt-1 p-2 hover:bg-blue-100 rounded-md flex items-center"
                 onClick={() => handleBirthdayClick(birthday)}
             >
                 <img
@@ -78,7 +78,7 @@ function BirthdayNotificationPopup({ onClose, userData }) {
                     Today&apos;s Birthdays
                 </p>
                 {/* Scrollable Birthday List */}
-                <div className="birthday-list max-h-[200px] overflow-y-auto mt-2">
+                <div className="birthday-list max-h-[200px] overflow-y-auto mt-1">
                     {renderBirthdays()}
                     {birthdays.length === 0 && (
                         <p className="text-sm text-gray-600 mt-1">

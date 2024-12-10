@@ -292,7 +292,7 @@ function ProfileDepartment({
                                     <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                         Department
                                     </td>
-                                    <td className="w-2/3 p-2 py-2 align-center">
+                                    <td className="w-2/3 px-2 py-2 align-center text-sm">
                                         <a
                                             href={`/departmentInner?departmentId=${userDepartment.id}`}
                                             className="text-blue-600 hover:underline"
@@ -415,7 +415,7 @@ function ProfileDepartment({
                                 <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                     Office Number
                                 </td>
-                                <td className="w-2/3 py-2 ml-20 align-center text-neutral-800">
+                                <td className="w-2/3 py-2 px-2 ml-0 align-center text-neutral-800">
                                     {isEditing ? (
                                         <PhoneInput
                                             country={"my"}

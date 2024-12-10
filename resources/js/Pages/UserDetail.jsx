@@ -573,8 +573,8 @@ function UserDetailContent() {
                                                             />
                                                         </div>
 
-                                                        <div className="flex ml-4 flex-row space-x-36 mt-4 my-auto max-md:max-w-full md:flex-row max-md:gap-0">
-                                                            <div className="text-base font-medium">
+                                                        <div className="flex w-full ml-4 flex-row mt-4 my-auto max-md:max-w-full md:flex-row max-md:gap-0">
+                                                            <div className="font-semibold text-neutral-800 w-1/3">
                                                                 Status
                                                             </div>
                                                             <div
@@ -582,7 +582,7 @@ function UserDetailContent() {
                                                                     profileData.is_active
                                                                         ? "bg-red-500"
                                                                         : "bg-green-500"
-                                                                } text-white text-xs px-3 py-2   rounded-full`}
+                                                                } text-white text-xs px-3 py-2 rounded-full`}
                                                             >
                                                                 {profileData.is_active
                                                                     ? "Deactivated"
