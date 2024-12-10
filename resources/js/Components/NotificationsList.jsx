@@ -88,7 +88,7 @@ function NotificationsList({
                 <ul>
                     {filteredNotifications.map((notification) => (
                         <div
-                            className="flex flex-row p-2 mb-1 hover:bg-blue-100 items-center rounded-xl relative cursor-pointer"
+                            className="flex flex-row p-2 mb-1 hover:bg-blue-100 items-start rounded-xl relative cursor-pointer"
                             key={notification.id}
                             onMouseOver={() => markAsRead(notification.id)}
                             onClick={() =>

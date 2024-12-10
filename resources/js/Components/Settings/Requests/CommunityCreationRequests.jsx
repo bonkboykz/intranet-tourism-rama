@@ -111,7 +111,7 @@ const CommunityCreationRow = ({
             </p>
             <div className="flex items-center w-1/4 max-md:flex-col max-md:justify-center max-md:items-center max-md:mx-3">
                 <img
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 rounded-full object-cover"
                     src={groupImage}
                     alt="Group"
                 />
