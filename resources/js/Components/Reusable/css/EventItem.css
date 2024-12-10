@@ -42,7 +42,7 @@
     margin-left: 2px;
     margin-top: 1px;
     overflow: hidden;
-    position: absolute;
+    /* position: absolute; */
   }
 
   .event-day {

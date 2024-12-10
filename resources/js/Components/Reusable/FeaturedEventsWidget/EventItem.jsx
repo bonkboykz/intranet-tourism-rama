@@ -42,17 +42,19 @@ const EventItem = ({ start_date, end_date, title, eventId }) => {
                 <div className="event-day">{start_day}</div>
                 <div className="event-month">{abbreviatedMonth}</div>
             </div>
-            <div className="event-details ml-14">
+            <div className="event-details ml-1">
                 <div className="event-title whitespace-nowrap overflow-hidden text-ellipsis">
                     {title}
                 </div>
                 {isSameDay ? (
                     <div className="event-full-date">{`${start_month} ${start_day}, ${start_year}`}</div>
                 ) : isSameMonth ? (
-                    <div className="event-full-date">{`${start_day}-${end_day} ${start_month} ${start_year}`}</div>
+                    <div className="event-full-date">{`${start_day} - ${end_day} ${start_month} ${start_year}`}</div>
                 ) : (
                     <>
-                        <div className="event-full-date">{`${start_month} ${start_day}, ${start_year}`}</div>
+                        <div className="event-full-date">
+                            {`${start_month} ${start_day}, ${start_year}`} -
+                        </div>
                         <div className="event-full-date">{`${end_month} ${end_day}, ${end_year}`}</div>
                     </>
                 )}
