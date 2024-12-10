@@ -42,9 +42,6 @@ export default function Roles() {
     const [personToDemote, setPersonToDemote] = useState(null);
     const [visiblePeople, setVisiblePeople] = useState([]);
     const csrfToken = useCsrf();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10); // Number of items per page
-    const [totalPages, setTotalPages] = useState(1);
 
     const fetchDepartmentName = async (id) => {
         try {
@@ -166,19 +163,6 @@ export default function Roles() {
         }
     };
 
-    useEffect(() => {
-        // Filter users when roles are fetched or when search term changes
-        if (usersWithRoles) {
-            const filtered = usersWithRoles.filter((person) => {
-                return person.name
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase());
-            });
-            setFilteredPeople(filtered);
-            setTotalPages(Math.ceil(filtered.length / itemsPerPage));
-            setCurrentPage(1); // Reset to the first page when the filter changes
-        }
-    }, [usersWithRoles, searchTerm]);
     const fetchAllSearchResults = async (query) => {
         try {
             const response = await fetch(
@@ -199,20 +183,7 @@ export default function Roles() {
     };
 
     let debounceTimeout = null;
-    useEffect(() => {
-        // Update visible people based on the current page
-        const indexOfLastItem = currentPage * itemsPerPage;
-        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-        const currentPeople = filteredPeople.slice(
-            indexOfFirstItem,
-            indexOfLastItem
-        );
-        setVisiblePeople(currentPeople);
-    }, [currentPage, filteredPeople]);
 
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
     useEffect(() => {
         // Dynamically filter the people when the search term changes
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -240,17 +211,7 @@ export default function Roles() {
     const handleSearchInputChange = (e) => {
         setSearchTerm(e.target.value);
     };
-    const nextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
 
-    const prevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
     const handleSelectPerson = (person) => {
         setSelectedPersonForSuperAdmin(person);
         setShowConfirmationPopup(true);
@@ -520,36 +481,7 @@ export default function Roles() {
                         </div>
                     </div>
                 )}
-                {/* Pagination Controls */}
-                <div className="flex justify-center mt-6">
-                    <button
-                        onClick={prevPage}
-                        className="px-4 py-2 mx-1 text-sm font-medium bg-gray-200 text-gray-700 rounded disabled:opacity-50"
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </button>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => paginate(index + 1)}
-                            className={`px-4 py-2 mx-1 text-sm font-medium ${
-                                currentPage === index + 1
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 text-gray-700"
-                            } rounded`}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                    <button
-                        onClick={nextPage}
-                        className="px-4 py-2 mx-1 text-sm font-medium bg-gray-200 text-gray-700 rounded disabled:opacity-50"
-                        disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </button>
-                </div>
+
                 {isSearchPopupOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="bg-white rounded-2xl pt-7 px-4 w-[400px] shadow-lg">
