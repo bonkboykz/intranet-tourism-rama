@@ -266,7 +266,7 @@ function ProfileBio({
                                 <td className="w-1/3 py-2 font-semibold capitalize align-center text-neutral-800">
                                     WhatsApp Number
                                 </td>
-                                <td className="w-2/3 py-2 align-center ml-20 text-neutral-800">
+                                <td className="w-2/3 py-2 align-center ml-20 text-neutral-800 text-sm">
                                     {isEditing ? (
                                         <PhoneInput
                                             country={"my"}

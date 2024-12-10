@@ -430,7 +430,7 @@ function ProfileDepartment({
                                             }}
                                         />
                                     ) : (
-                                        <div className="font-normal text-neutral-800 text-opacity-80">
+                                        <div className="font-normal text-sm text-neutral-800 text-opacity-80">
                                             {formatWorkNumber(
                                                 localFormData.phone
                                             )}
