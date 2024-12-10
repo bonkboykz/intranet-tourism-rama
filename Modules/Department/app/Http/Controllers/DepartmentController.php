@@ -86,18 +86,46 @@ class DepartmentController extends Controller
         ]);
     }
 
+    // public function store()
+    // {
+    //     DB::beginTransaction();
+    //     try {
+
+    //         $validated = request()->validate(...Department::rules());
+    //         $imagePath = null;
+    //         if (request()->hasFile('banner')) {
+    //             $imagePath = uploadFile(request()->file('banner'), null, 'banner')['path'];
+    //         }
+
+    //         Department::create(array_merge($validated, ['banner' => $imagePath]));
+
+    //         DB::commit();
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         throw $th;
+    //     }
+
+    //     return response()->noContent();
+    // }
     public function store()
     {
         DB::beginTransaction();
         try {
-
             $validated = request()->validate(...Department::rules());
+
             $imagePath = null;
             if (request()->hasFile('banner')) {
                 $imagePath = uploadFile(request()->file('banner'), null, 'banner')['path'];
             }
 
-            Department::create(array_merge($validated, ['banner' => $imagePath]));
+            // Create the department
+            $department = Department::create(array_merge($validated, ['banner' => $imagePath]));
+
+            // Create a "No Unit" business unit for the new department
+            BusinessUnit::create([
+                'name' => 'No Unit',
+                'department_id' => $department->id,
+            ]);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -107,6 +135,7 @@ class DepartmentController extends Controller
 
         return response()->noContent();
     }
+
 
     public function update(Department $department)
     {
@@ -241,9 +270,6 @@ class DepartmentController extends Controller
 
 
             $currentUser->notify(new AssigningAdminDepartmentNotification($user, $department->id, false));
-
-
-
         } catch (\Throwable $th) {
             $output = new ConsoleOutput();
             $output->writeln($th->getMessage());
@@ -302,14 +328,13 @@ class DepartmentController extends Controller
 
 
             $currentUser->notify(new RevokingAdminDepartmentNotification($user, $department->id, false));
-
-        } catch (\Throwable $th) {}
+        } catch (\Throwable $th) {
+        }
 
 
 
         return response()->json([
             'message' => 'User has been successfully revoked as a department admin.',
         ]);
-
     }
 }
