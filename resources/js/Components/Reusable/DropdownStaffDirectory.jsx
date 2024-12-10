@@ -259,7 +259,7 @@ const DepartmentDropdown = ({
                 ["admin", "superadmin"].includes(selectedDepartment.role) && (
                     <div className="relative flex flex-row items-center justify-between w-full max-md:mt-4 max-md:flex-row max-md:justify-between lg:ml-0">
                         <button
-                            className="flex items-center justify-center gap-1 text-sm font-bold px-6 py-2.5 bg-secondary text-white rounded-full hover:bg-secondary-hover"
+                            className="flex items-center justify-center h-full gap-1 text-sm font-bold px-4 py-2 my-2 bg-secondary text-white rounded-full hover:bg-secondary-hover"
                             onClick={toggleAddMemberPopup}
                         >
                             <span className=" font-bold text-xl">+</span>{" "}
